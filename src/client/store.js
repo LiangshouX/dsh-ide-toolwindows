@@ -47,7 +47,13 @@ function initialState() {
     active: false,
     error: null,
     fatal: null,
+    /** The DSH workspace root (the outer boundary). */
+    workspaceRoot: '',
+    /** The selected IDE project root (workspace root or a first-level child). */
     root: '',
+    /** Root + first-level folders offered by the project picker. */
+    projects: [],
+    projectPicker: false,
     home: '',
     workspaces: [],
     settings: null,
@@ -174,15 +180,20 @@ export class WorkbenchStore {
       const workspaces = await call('workspace.list')
       const settings = settingsResult.value
       const preferred = this.#pickRoot(settings, workspaces)
+      const savedProject = preferred !== undefined ? settings?.projectRoots?.[preferred] : undefined
       this.set({
         settings,
         workspaces: workspaces.items,
         home: workspaces.defaultDirectory ?? '',
-        root: preferred ?? '',
+        workspaceRoot: preferred ?? '',
+        root: typeof savedProject === 'string' && savedProject !== '' ? savedProject : (preferred ?? ''),
         phase: 'ready',
       })
       if (preferred !== undefined && preferred !== '') {
-        this.#restoreWorkspace(preferred)
+        await this.loadProjects(preferred)
+        const projectRoot = this.#projectRootFor(preferred)
+        this.set({ root: projectRoot })
+        this.#restoreWorkspace(projectRoot)
         this.patch('commit', { mode: settings?.editor?.sideBySide === false ? 'unified' : 'side' })
         void this.refreshStatus({ initial: true })
         void this.refreshShells()
@@ -213,24 +224,77 @@ export class WorkbenchStore {
     return workspaces.items[0]?.path
   }
 
-  /** The tree is rooted at `root`; everything else refreshes from it. */
-  async setRoot(root) {
-    if (typeof root !== 'string' || root === '') return
+  /**
+   * Load the IDE project candidates (workspace root + first-level folders).
+   * A failure is non-fatal: the workspace root is always a usable candidate.
+   * @param {string} [workspaceRoot]
+   */
+  async loadProjects(workspaceRoot = this.state.workspaceRoot) {
+    if (typeof workspaceRoot !== 'string' || workspaceRoot === '') return []
+    let projects = []
+    try {
+      const result = await call('workspace.projects', { root: workspaceRoot })
+      projects = Array.isArray(result?.projects)
+        ? result.projects
+            .filter(project => project !== null && typeof project === 'object' && typeof project.path === 'string')
+            .map(project => ({
+              path: project.path,
+              name: typeof project.name === 'string' && project.name !== '' ? project.name : baseName(project.path),
+              isRepo: project.isRepo === true,
+              isRoot: project.isRoot === true || project.path === workspaceRoot,
+            }))
+        : []
+    } catch {
+      projects = []
+    }
+    if (!projects.some(project => project.path === workspaceRoot)) {
+      projects.unshift({ path: workspaceRoot, name: baseName(workspaceRoot), isRepo: false, isRoot: true })
+    }
+    this.set({ projects })
+    return projects
+  }
+
+  /** The persisted project root for a workspace, when the folder still exists. */
+  #projectRootFor(workspaceRoot) {
+    const saved = this.state.settings?.projectRoots?.[workspaceRoot]
+    if (typeof saved === 'string' && this.state.projects.some(project => project.path === saved)) return saved
+    return workspaceRoot
+  }
+
+  /** Persist the selected project immediately (does not wait for debounce). */
+  #rememberProjectRoot(projectRoot) {
+    const workspaceRoot = this.state.workspaceRoot
+    if (workspaceRoot === '' || projectRoot === '') return
+    const projectRoots = { ...(this.state.settings?.projectRoots ?? {}), [workspaceRoot]: projectRoot }
+    this.state.settings = { ...(this.state.settings ?? {}), projectRoots }
+    void call('settings.update', { patch: { projectRoots: { [workspaceRoot]: projectRoot } } })
+      .then((result) => { this.state.settings = result.value })
+      .catch(() => {})
+  }
+
+  /** Switch the DSH workspace; its project root is restored from settings. */
+  async setRoot(workspaceRoot) {
+    if (typeof workspaceRoot !== 'string' || workspaceRoot === '') return
+    if (workspaceRoot === this.state.workspaceRoot) return
     if (this.state.tabs.some(tab => tab.dirty === true)) {
       this.askConfirm(
         this.t('editor.unsavedTitle'),
         this.t('editor.unsavedSwitchRoot'),
         this.t('editor.discardChanges'),
-        () => { void this.#switchRoot(root) },
+        () => { void this.#switchWorkspace(workspaceRoot) },
       )
       return
     }
-    await this.#switchRoot(root)
+    await this.#switchWorkspace(workspaceRoot)
   }
 
-  async #switchRoot(root) {
+  async #switchWorkspace(workspaceRoot) {
+    await this.loadProjects(workspaceRoot)
+    const projectRoot = this.#projectRootFor(workspaceRoot)
     this.set({
-      root,
+      workspaceRoot,
+      root: projectRoot,
+      projectPicker: false,
       dirs: new Map(),
       expanded: new Set(),
       selectedPath: '',
@@ -240,11 +304,68 @@ export class WorkbenchStore {
       status: initialState().status,
       git: { ...initialState().git },
     })
-    this.#restoreWorkspace(root)
+    this.#rememberProjectRoot(projectRoot)
+    this.#restoreWorkspace(projectRoot)
+    void this.loadDir(projectRoot)
     await this.refreshStatus({ initial: true })
     void this.refreshShells()
     void this.loadLog(true)
     void this.persistNow()
+  }
+
+  /** Switch the IDE project root inside the current workspace. */
+  async selectProject(projectRoot) {
+    if (typeof projectRoot !== 'string' || projectRoot === '') return
+    if (!this.state.projects.some(project => project.path === projectRoot)) return
+    if (projectRoot === this.state.root) {
+      this.set({ projectPicker: false })
+      return
+    }
+    if (this.state.tabs.some(tab => tab.dirty === true)) {
+      this.askConfirm(
+        this.t('editor.unsavedTitle'),
+        this.t('editor.unsavedSwitchRoot'),
+        this.t('editor.discardChanges'),
+        () => { void this.#switchProject(projectRoot) },
+      )
+      return
+    }
+    await this.#switchProject(projectRoot)
+  }
+
+  async #switchProject(projectRoot) {
+    this.set({
+      root: projectRoot,
+      projectPicker: false,
+      dirs: new Map(),
+      expanded: new Set(),
+      selectedPath: '',
+      filter: '',
+      tabs: [],
+      activeId: null,
+      status: initialState().status,
+      git: { ...initialState().git },
+    })
+    this.#rememberProjectRoot(projectRoot)
+    this.#restoreWorkspace(projectRoot)
+    void this.loadDir(projectRoot)
+    await this.refreshStatus({ initial: true })
+    void this.refreshShells()
+    void this.loadLog(true)
+    void this.persistNow()
+  }
+
+  openProjectPicker() {
+    if (this.state.workspaceRoot === '') {
+      this.openRootPicker()
+      return
+    }
+    this.set({ projectPicker: true })
+    void this.loadProjects()
+  }
+
+  closeProjectPicker() {
+    this.set({ projectPicker: false })
   }
 
   #restoreWorkspace(root) {
@@ -292,7 +413,7 @@ export class WorkbenchStore {
 
   async #persist() {
     const state = this.state
-    if (state.root === '') return
+    if (state.workspaceRoot === '' || state.root === '') return
     const fileTabs = state.tabs
       .filter(tab => tab.kind === 'file')
       .map(tab => ({
@@ -312,7 +433,8 @@ export class WorkbenchStore {
     try {
       const result = await call('settings.update', {
         patch: {
-          lastRoot: state.root,
+          lastRoot: state.workspaceRoot,
+          projectRoots: { [state.workspaceRoot]: state.root },
           workspaceState: { [state.root]: workspaceState },
         },
       })

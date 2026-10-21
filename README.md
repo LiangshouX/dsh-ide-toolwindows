@@ -9,7 +9,7 @@ exactly like an IDE).
 
 | Tool window | Shortcut | Behavior |
 |---|---|---|
-| **Project** | `Alt+1` | Lazy file tree with Git status coloring (blue modified, green added/untracked, red conflict) and **per-type icons** (Java coffee cup, JS/TS, Python, Markdown, JSON, SQL, shell, images…). Single click opens a **preview tab** (italic, reused by every further click); double click **pins** it. Right-click: copy relative/absolute name, reveal in Explorer, refresh. |
+| **Project** | `Alt+1` | Lazy file tree with Git status coloring (blue modified, green added/untracked, red conflict) and **per-type icons** (Java coffee cup, JS/TS, Python, Markdown, JSON, SQL, shell, images…). The project-name dropdown selects the **IDE project root**: the workspace root or any **first-level folder**, with a Git badge for folders that own a repository. Single click opens a **preview tab** (italic, reused by every further click); double click **pins** it. Right-click: copy relative/absolute name, reveal in Explorer, refresh. |
 | **Editor** | — | Files open **read-only by default**. Text tabs toggle between read-only and **edit** (CodeMirror 6 with syntax highlighting); `Ctrl+S` saves, restore discards, a dot marks unsaved changes, and closing a dirty tab asks first. |
 | **Markdown** | — | Markdown opens **rendered with the harness's own `MarkdownText`** (same typography/tables/task lists/code cards as DSH chat), with a **document outline** button for heading navigation. A Preview / Source switch flips to the raw document. |
 | **Commit** | `Alt+0` | `Staged Changes` / `Unstaged Changes` / `Unversioned Files` with per-file stage / unstage / discard, unified or side-by-side diff, **line-level and hunk-level staging**, recent-message dropdown, `Amend`, `Commit` and `Commit and Push`. The sidebar stripe badge is the unstaged file count. |
@@ -19,6 +19,23 @@ exactly like an IDE).
 | **Push** | `Ctrl+Shift+K` | Pushes the current branch from inside the workbench. |
 
 Every shortcut can be rebound in **Settings → IDE Tool Windows**.
+
+### Workspace vs. IDE project root
+
+A DSH workspace is often a container: the root itself is not a Git repository,
+while one or more first-level folders are. The IDE Project can be pointed at
+any of them:
+
+- Click the project-name dropdown in the Project panel header (or the workspace
+  menu → **Select IDE project**).
+- Pick the workspace root or a first-level folder. Folders with a `.git` entry
+  show a **Git** badge; hidden folders and `node_modules` are not listed.
+- The Project tree, Git/Commit data, new terminal sessions and saved tab state
+  all switch to that folder. The selection is remembered **per workspace** in
+  `settings.json` (`projectRoots`) and restored on the next launch/page reload.
+- If the current folder is not a repository, the Project picker, Git window,
+  Commit window and empty-editor welcome show a shortcut to choose a Git
+  subproject.
 
 ## How it fits the harness
 
@@ -43,6 +60,8 @@ Every shortcut can be rebound in **Settings → IDE Tool Windows**.
 - No file creation / rename / delete from the tree (V2).
 - Markdown previews do not rewrite relative images/links to local files yet;
   external http(s) images work through the host's renderer.
+- The project-root picker lists the workspace root plus **first-level** folders
+  only; it does not recursively discover repositories.
 - No interactive rebase, merge-conflict 3-way editor, stash, blame, fetch/pull.
 - Terminal sessions do not survive closing the workbench panel (the PTY ends
   with the panel); DSH restart never restores them.

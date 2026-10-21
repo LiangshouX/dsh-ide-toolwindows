@@ -48,7 +48,9 @@ export const DEFAULT_SETTINGS = {
     focusCommit: 'Ctrl+K',
     push: 'Ctrl+Shift+K',
   },
-  /** Per-root UI state: expanded dirs, open tabs, dock geometry. */
+  /** Selected IDE project root per workspace root. */
+  projectRoots: {},
+  /** Per-project UI state: expanded dirs, open tabs, dock geometry. */
   workspaceState: {},
 }
 

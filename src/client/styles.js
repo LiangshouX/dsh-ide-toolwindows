@@ -128,6 +128,15 @@ export const CSS = `
 }
 .itw-panel-title { font-size: 12px; font-weight: 700; letter-spacing: .02em; }
 .itw-panel-sub { color: var(--itw-muted); font-size: 11px; }
+.itw-project-sub-btn {
+  display: flex; align-items: center; gap: 4px; min-width: 0; max-width: 64%; padding: 2px 5px;
+  border-radius: 5px; color: var(--itw-muted); font-size: 11px; text-align: left;
+}
+.itw-project-sub-btn:hover { background: rgba(127, 127, 127, .12); color: var(--itw-fg); }
+.itw-project-workspace-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 110px; }
+.itw-project-sep { opacity: .55; }
+.itw-project-sub-name { color: var(--itw-fg); font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.itw-project-current { color: var(--itw-accent); font-weight: 500; }
 .itw-panel-header .itw-spacer { flex: 1; }
 .itw-panel-body { flex: 1; min-height: 0; overflow: auto; position: relative; }
 
@@ -236,6 +245,8 @@ export const CSS = `
 .itw-welcome-action:hover { border-color: var(--itw-border-strong); background: var(--itw-panel-2); }
 .itw-welcome-action .itw-kbd { margin-left: auto; }
 .itw-welcome-meta { display: flex; gap: 16px; color: var(--itw-muted); font-size: 12px; border-top: 1px solid var(--itw-border); padding-top: 14px; }
+.itw-welcome-hint { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 12px; padding: 8px 10px; border: 1px solid var(--itw-border); border-radius: 7px; color: var(--itw-muted); font-size: 12px; }
+.itw-commit-hint { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 7px 10px; border-bottom: 1px solid var(--itw-border); color: var(--itw-muted); font-size: 11.5px; background: var(--itw-panel-2); }
 .itw-kbd {
   display: inline-flex; align-items: center; height: 19px; padding: 0 6px; border-radius: 4px;
   border: 1px solid var(--itw-border-strong); border-bottom-width: 2px; background: var(--itw-panel-2);
@@ -487,4 +498,21 @@ export const CSS = `
 .itw-root-item { display: flex; align-items: center; gap: 8px; padding: 7px 8px; border-radius: 6px; border: 1px solid var(--itw-border); text-align: left; }
 .itw-root-item:hover { background: rgba(127, 127, 127, .1); }
 .itw-root-item .itw-root-path { color: var(--itw-muted); font-size: 11px; overflow: hidden; text-overflow: ellipsis; }
+.itw-project-picker { width: min(620px, calc(100% - 40px)); max-height: min(80vh, 720px); display: flex; flex-direction: column; }
+.itw-modal-hint { color: var(--itw-muted); font-size: 12px; margin: -2px 0 12px; }
+.itw-project-picker-list { display: flex; flex-direction: column; gap: 3px; overflow: auto; min-height: 0; margin-bottom: 12px; }
+.itw-project-group { color: var(--itw-muted); font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 8px 4px 3px; }
+.itw-project-choice {
+  display: flex; align-items: center; gap: 9px; width: 100%; padding: 7px 8px; border-radius: 7px;
+  border: 1px solid transparent; text-align: left;
+}
+.itw-project-choice:hover { background: rgba(127, 127, 127, .1); }
+.itw-project-choice.itw-current { border-color: var(--itw-border-strong); background: rgba(76, 154, 255, .07); }
+.itw-project-choice-icon { display: flex; align-items: center; justify-content: center; flex: 0 0 18px; color: var(--itw-muted); }
+.itw-project-choice-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.itw-project-choice-text b { font-size: 12.5px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.itw-project-choice-path { color: var(--itw-muted); font-size: 10.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.itw-project-repo-badge { font-size: 9.5px; color: var(--itw-git-add, #57a86b); border: 1px solid currentColor; border-radius: 999px; padding: 1px 6px; flex: 0 0 auto; }
+.itw-project-current-badge { font-size: 9.5px; color: var(--itw-accent); border: 1px solid currentColor; border-radius: 999px; padding: 1px 6px; flex: 0 0 auto; }
+.itw-project-empty { padding: 10px 8px; color: var(--itw-muted); font-size: 11.5px; }
 `

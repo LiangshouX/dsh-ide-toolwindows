@@ -4,11 +4,11 @@
 > 实测窗口 1938×1038 物理像素（1.25 DPI）。插件以本地 linked bundle 安装，
 > `plugin_manager install_bundle` 结果 `application: applied`、`warnings: []`。
 
-## 自动化测试（33 项全部通过）
+## 自动化测试（37 项全部通过）
 
 ```sh
 cd dsh-ide-toolwindows && npm test
-# 33 pass / 0 fail
+# 37 pass / 0 fail
 ```
 
 覆盖：
@@ -22,7 +22,8 @@ cd dsh-ide-toolwindows && npm test
 | `tests/file-types.test.mjs` | Java/TS/Python/Markdown/JSON/SQL/Shell/图片等图标分类与特殊文件名（`.env`、`Dockerfile`、锁文件） |
 | `tests/markdown-outline.test.mjs` | 标题提取（忽略 fenced code）、slug、重复标题去重 |
 | `tests/workspace-write.test.mjs` | 原子写入、UTF-8/BOM/UTF-16 编码保持、路径越界与缺失文件拒绝 |
-| `tests/render.test.mjs` | 真实 React SSR：Workbench / Project / Commit / Git / Diff / Code / **Markdown 预览 + 目录** / **编辑态工具栏** |
+| `tests/projects.test.mjs` | 项目候选 = 根目录 + 一级子目录（跳过隐藏/`node_modules`）、Git 标记；**真实 git**：容器根无仓库、选中子目录后 `isRepo=true` |
+| `tests/render.test.mjs` | 真实 React SSR：Workbench / Project / Commit / Git / Diff / Code / **Markdown 预览 + 目录** / **编辑态工具栏** / **项目选择器** / **非仓库 Git 提示** |
 
 另用 `.verify/patch-test.mjs`（临时脚本，已随 `.verify` 清理）在真实 git 仓库中复核：
 选择 2 个新增行 → `git diff --cached` 恰好只有这 2 行；整块 → 删除+新增；
@@ -46,7 +47,11 @@ cd dsh-ide-toolwindows && npm test
 | **Windows 中文编码** | ✅ | 粘贴并执行 `echo 中文你好` → 输出 `中文你好`，无乱码 |
 | 多终端会话 + 徽标 | ✅ | 侧条/底部 Terminal 徽标显示会话数 |
 | 快捷键 | ✅ | Alt+1 打开/聚焦 Project、Alt+0 Commit、Alt+9 Git、Alt+F12 Terminal；从会话页首次按下会“显示”而非“关闭” |
-| 设置持久化 | ✅ | `C:\Users\<user>\.dsh\ide-toolwindows\settings.json` 由客户端写入 lastRoot/workspaceState |
+| 设置持久化 | ✅ | `C:\Users\<user>\.dsh\ide-toolwindows\settings.json` 由客户端写入 lastRoot / projectRoots / workspaceState |
+| **项目根目录选择器** | ✅ | Project 标题旁下拉打开「选择 IDE 项目」；列出工作区根目录 + 一级子目录，子目录带 **Git** 标记、当前项带「当前」标记 |
+| **容器工作区 + 嵌套 Git** | ✅ | 工作区根 `DSH-IDE-TOOLWINDOWS-ROOT` 无 repo 时 Git 显示提示；选 `dsh-ide-toolwindows` 后文件树切到插件目录、分支 `main`、Git 日志 2 条提交、状态栏 16 项改动 |
+| **项目选择持久化** | ✅ | 选择子目录后刷新整个页面：Project 根、Git 分支/日志与状态栏均恢复为子目录（`projectRoots` 映射生效） |
+| **非仓库回退提示** | ✅ | Git / Commit 窗口和欢迎页显示「当前目录不是 Git 仓库」+「选择 Git 子项目」按钮，点击打开同一选择器 |
 | 路径围栏 / 同源准入 | ✅ | 未认证请求返回 403；`..` 越界被拒绝 |
 | 主题跟随 | ✅ | 全部使用 `--dsw-alias-*`；Claude 皮肤下按钮/高亮随品牌色 |
 | **按类型文件图标** | ✅ | 实机放大核对：`Main.java` 咖啡杯、`app.ts` TS、`data.json` `{}`、`SVG` 图片、`query.sql` 数据库、`README.md` M↓、`run.ps1` `>_`、`style.css` `#`、普通文件灰色文档 |
@@ -60,6 +65,8 @@ cd dsh-ide-toolwindows && npm test
 
 ## 已知限制（V1 规格内）
 
+- 项目根目录选择器只扫描工作区根目录的**一级**子目录；更深层的独立仓库需先打开
+  其上级目录，或将其作为工作区打开。
 - 终端会话随面板卸载结束；DSH 重启不恢复（规格允许）。
 - 宿主侧条图标无法显示数字徽标，徽标画在插件自绘 stripe。
 - 关闭工作台面板即关闭所有终端会话（`deactivate` 清空会话）。
@@ -68,11 +75,14 @@ cd dsh-ide-toolwindows && npm test
 
 ## 最终状态
 
-- **全部验收项均已通过**（33 项自动化测试 + 实机核对，含重启后合并提交 first-parent 差异）。
+- **全部验收项均已通过**（37 项自动化测试 + 实机核对，含重启后合并提交 first-parent 差异）。
 - V1.1 增强（0.2.0）：按类型文件图标、Markdown 只读渲染 + 目录、默认只读的编辑开关（CodeMirror）、
   脏标记 / 保存 / 还原 / 关闭确认、BOM 与换行保持；`fs.write` 已由 bundle reload 加载并实机保存成功。
+- V1.2（0.2.1）：IDE 项目根目录选择（工作区根目录 + 一级子目录、Git 标记、按工作区持久化），
+  非仓库时的 Git/Commit/欢迎页回退提示；刷新页面后选择与 Git 数据均恢复。
 - Git 表新增窄宽响应：底部面板宽度 < 640px 时隐藏作者/日期两列，把空间留给提交消息。
 - 验收过程只读取了 `D:\Harness\deepseek-harness`（打开日志/差异、输入消息但未提交）；
   曾弹出的 Discard 对话框已取消，文件与 index 均未改动（`git status` 仍为两个 untracked 文件）。
 - 本插件测试用的临时仓库、演示文件、截图与 `.render-tmp` 均已清理；`settings.json` 的 `lastRoot`
-  恢复为 `D:\Code\Node\DSH-IDE-TOOLWINDOWS-ROOT`，`workspaceState` 清空。
+  为 `D:\Code\Node\DSH-IDE-TOOLWINDOWS-ROOT`，`projectRoots` 保留本次验证选中的
+  `dsh-ide-toolwindows` 子目录，`workspaceState` 清空。

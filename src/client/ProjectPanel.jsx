@@ -193,7 +193,15 @@ export function ProjectPanel({ store, state }) {
   return React.createElement(React.Fragment, null,
     React.createElement('div', { className: 'itw-panel-header' },
       React.createElement('span', { className: 'itw-panel-title' }, t('project.title')),
-      React.createElement('span', { className: 'itw-panel-sub' }, baseName(state.root)),
+      React.createElement('button', {
+        type: 'button',
+        className: 'itw-project-sub-btn',
+        title: `${t('project.selectProject')} — ${state.root}`,
+        onClick: () => store.openProjectPicker(),
+      },
+        React.createElement('span', { className: 'itw-project-sub-name' }, baseName(state.root) || t('project.empty')),
+        React.createElement(ChevronDown, { size: 11 }),
+      ),
       React.createElement('span', { className: 'itw-spacer' }),
       React.createElement('button', {
         type: 'button', className: `itw-iconbtn ${filterOpen ? 'itw-on' : ''}`, title: t('project.filter'),

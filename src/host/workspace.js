@@ -8,7 +8,7 @@
 import { spawn } from 'node:child_process'
 import { existsSync } from 'node:fs'
 import { lstat, open, readdir, readFile, realpath, rename, stat, unlink, writeFile } from 'node:fs/promises'
-import { dirname, extname, isAbsolute, join, relative, resolve, sep } from 'node:path'
+import { basename, dirname, extname, isAbsolute, join, relative, resolve, sep } from 'node:path'
 import { ApiError } from './wire.js'
 
 /** Image extensions served inline as data URLs. */
@@ -61,6 +61,45 @@ export function resolveInside(root, input) {
 /** POSIX-style workspace-relative path (stable across platforms). */
 export function toRelative(root, absolute) {
   return relative(root, absolute).split(sep).join('/')
+}
+
+/** Upper bound on the subdirectory list shown by the project picker. */
+const MAX_PROJECTS = 400
+
+/**
+ * The folders that can serve as an IDE project root: the workspace root plus
+ * its first-level directories. Hidden folders and `node_modules` are skipped;
+ * `isRepo` marks a folder that owns a `.git` entry (file or directory).
+ * @param {string} root workspace root (absolute)
+ */
+export async function listProjectCandidates(root) {
+  const absolute = await canonicalRoot(root)
+  const projects = [{
+    path: absolute,
+    name: basename(absolute) || absolute,
+    isRepo: existsSync(join(absolute, '.git')),
+    isRoot: true,
+  }]
+  let entries
+  try {
+    entries = await readdir(absolute, { withFileTypes: true })
+  } catch {
+    return { workspace: absolute, projects }
+  }
+  const children = []
+  for (const entry of entries) {
+    if (!entry.isDirectory()) continue
+    if (entry.name === 'node_modules' || entry.name.startsWith('.')) continue
+    const child = join(absolute, entry.name)
+    children.push({
+      path: child,
+      name: entry.name,
+      isRepo: existsSync(join(child, '.git')),
+      isRoot: false,
+    })
+  }
+  children.sort((left, right) => collator.compare(left.name, right.name))
+  return { workspace: absolute, projects: [...projects, ...children.slice(0, MAX_PROJECTS)] }
 }
 
 /** Human ordering: directories first, then numeric-aware name order. */

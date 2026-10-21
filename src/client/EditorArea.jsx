@@ -23,6 +23,7 @@ import { isMarkdownPath } from './store.js'
 function Welcome({ store, state }) {
   const t = store.t
   const branch = state.status.branch
+  const repoProjects = (state.projects ?? []).filter(project => project.isRepo === true && project.path !== state.root)
   const Shortcut = ({ shortcut, children }) => React.createElement(Kbd, null, shortcut)
   const actions = [
     { key: 'project', icon: 'project', title: t('welcome.project'), shortcut: state.settings?.shortcuts?.project ?? 'Alt+1', onClick: () => store.showTool('project') },
@@ -49,6 +50,15 @@ function Welcome({ store, state }) {
           : React.createElement('span', null, t('welcome.noRepo')),
         React.createElement('span', null, state.root),
       ),
+      state.status.isRepo !== true && repoProjects.length > 0
+        ? React.createElement('div', { className: 'itw-welcome-hint' },
+            React.createElement('span', null, t('project.noRepoHint')),
+            React.createElement('button', {
+              type: 'button', className: 'itw-textbtn itw-small',
+              onClick: () => store.openProjectPicker(),
+            }, t('project.chooseRepo')),
+          )
+        : null,
     ),
   )
 }

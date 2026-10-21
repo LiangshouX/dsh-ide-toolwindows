@@ -417,6 +417,16 @@ var en = {
   "project.noMatches": "No matching files",
   "project.loading": "Loading\u2026",
   "project.switchWorkspace": "Switch workspace",
+  "project.selectProject": "Select IDE project",
+  "project.selectProjectHint": "The Project tree, Git repository and new terminal sessions use this folder.",
+  "project.workspaceRoot": "Workspace root",
+  "project.subdirectories": "First-level folders",
+  "project.current": "Current",
+  "project.gitRepo": "Git",
+  "project.noSubdirectories": "No first-level folders",
+  "project.noRepoHint": "This folder is not a Git repository. Choose a folder marked Git.",
+  "project.chooseRepo": "Choose Git subproject",
+  "project.refreshProjects": "Refresh folders",
   "commit.title": "Commit",
   "commit.staged": "Staged Changes",
   "commit.unstaged": "Unstaged Changes",
@@ -621,6 +631,16 @@ var zh = {
   "project.noMatches": "\u6CA1\u6709\u5339\u914D\u7684\u6587\u4EF6",
   "project.loading": "\u52A0\u8F7D\u4E2D\u2026",
   "project.switchWorkspace": "\u5207\u6362\u5DE5\u4F5C\u533A",
+  "project.selectProject": "\u9009\u62E9 IDE \u9879\u76EE",
+  "project.selectProjectHint": "Project \u6587\u4EF6\u6811\u3001Git \u4ED3\u5E93\u548C\u65B0\u7EC8\u7AEF\u4F1A\u8BDD\u90FD\u4F7F\u7528\u8FD9\u4E2A\u76EE\u5F55\u3002",
+  "project.workspaceRoot": "\u5DE5\u4F5C\u533A\u6839\u76EE\u5F55",
+  "project.subdirectories": "\u4E00\u7EA7\u5B50\u76EE\u5F55",
+  "project.current": "\u5F53\u524D",
+  "project.gitRepo": "Git",
+  "project.noSubdirectories": "\u6CA1\u6709\u4E00\u7EA7\u5B50\u76EE\u5F55",
+  "project.noRepoHint": "\u5F53\u524D\u76EE\u5F55\u4E0D\u662F Git \u4ED3\u5E93\uFF0C\u8BF7\u9009\u62E9\u5E26 Git \u6807\u8BB0\u7684\u76EE\u5F55\u3002",
+  "project.chooseRepo": "\u9009\u62E9 Git \u5B50\u9879\u76EE",
+  "project.refreshProjects": "\u5237\u65B0\u76EE\u5F55",
   "commit.title": "Commit",
   "commit.staged": "\u5DF2\u6682\u5B58\u7684\u6539\u52A8",
   "commit.unstaged": "\u672A\u6682\u5B58\u7684\u6539\u52A8",
@@ -1010,7 +1030,13 @@ function initialState() {
     active: false,
     error: null,
     fatal: null,
+    /** The DSH workspace root (the outer boundary). */
+    workspaceRoot: "",
+    /** The selected IDE project root (workspace root or a first-level child). */
     root: "",
+    /** Root + first-level folders offered by the project picker. */
+    projects: [],
+    projectPicker: false,
     home: "",
     workspaces: [],
     settings: null,
@@ -1132,15 +1158,20 @@ var WorkbenchStore = class {
       const workspaces = await call("workspace.list");
       const settings = settingsResult.value;
       const preferred = this.#pickRoot(settings, workspaces);
+      const savedProject = preferred !== void 0 ? settings?.projectRoots?.[preferred] : void 0;
       this.set({
         settings,
         workspaces: workspaces.items,
         home: workspaces.defaultDirectory ?? "",
-        root: preferred ?? "",
+        workspaceRoot: preferred ?? "",
+        root: typeof savedProject === "string" && savedProject !== "" ? savedProject : preferred ?? "",
         phase: "ready"
       });
       if (preferred !== void 0 && preferred !== "") {
-        this.#restoreWorkspace(preferred);
+        await this.loadProjects(preferred);
+        const projectRoot = this.#projectRootFor(preferred);
+        this.set({ root: projectRoot });
+        this.#restoreWorkspace(projectRoot);
         this.patch("commit", { mode: settings?.editor?.sideBySide === false ? "unified" : "side" });
         void this.refreshStatus({ initial: true });
         void this.refreshShells();
@@ -1166,25 +1197,72 @@ var WorkbenchStore = class {
     }
     return workspaces.items[0]?.path;
   }
-  /** The tree is rooted at `root`; everything else refreshes from it. */
-  async setRoot(root) {
-    if (typeof root !== "string" || root === "") return;
+  /**
+   * Load the IDE project candidates (workspace root + first-level folders).
+   * A failure is non-fatal: the workspace root is always a usable candidate.
+   * @param {string} [workspaceRoot]
+   */
+  async loadProjects(workspaceRoot = this.state.workspaceRoot) {
+    if (typeof workspaceRoot !== "string" || workspaceRoot === "") return [];
+    let projects = [];
+    try {
+      const result = await call("workspace.projects", { root: workspaceRoot });
+      projects = Array.isArray(result?.projects) ? result.projects.filter((project) => project !== null && typeof project === "object" && typeof project.path === "string").map((project) => ({
+        path: project.path,
+        name: typeof project.name === "string" && project.name !== "" ? project.name : baseName(project.path),
+        isRepo: project.isRepo === true,
+        isRoot: project.isRoot === true || project.path === workspaceRoot
+      })) : [];
+    } catch {
+      projects = [];
+    }
+    if (!projects.some((project) => project.path === workspaceRoot)) {
+      projects.unshift({ path: workspaceRoot, name: baseName(workspaceRoot), isRepo: false, isRoot: true });
+    }
+    this.set({ projects });
+    return projects;
+  }
+  /** The persisted project root for a workspace, when the folder still exists. */
+  #projectRootFor(workspaceRoot) {
+    const saved = this.state.settings?.projectRoots?.[workspaceRoot];
+    if (typeof saved === "string" && this.state.projects.some((project) => project.path === saved)) return saved;
+    return workspaceRoot;
+  }
+  /** Persist the selected project immediately (does not wait for debounce). */
+  #rememberProjectRoot(projectRoot) {
+    const workspaceRoot = this.state.workspaceRoot;
+    if (workspaceRoot === "" || projectRoot === "") return;
+    const projectRoots = { ...this.state.settings?.projectRoots ?? {}, [workspaceRoot]: projectRoot };
+    this.state.settings = { ...this.state.settings ?? {}, projectRoots };
+    void call("settings.update", { patch: { projectRoots: { [workspaceRoot]: projectRoot } } }).then((result) => {
+      this.state.settings = result.value;
+    }).catch(() => {
+    });
+  }
+  /** Switch the DSH workspace; its project root is restored from settings. */
+  async setRoot(workspaceRoot) {
+    if (typeof workspaceRoot !== "string" || workspaceRoot === "") return;
+    if (workspaceRoot === this.state.workspaceRoot) return;
     if (this.state.tabs.some((tab3) => tab3.dirty === true)) {
       this.askConfirm(
         this.t("editor.unsavedTitle"),
         this.t("editor.unsavedSwitchRoot"),
         this.t("editor.discardChanges"),
         () => {
-          void this.#switchRoot(root);
+          void this.#switchWorkspace(workspaceRoot);
         }
       );
       return;
     }
-    await this.#switchRoot(root);
+    await this.#switchWorkspace(workspaceRoot);
   }
-  async #switchRoot(root) {
+  async #switchWorkspace(workspaceRoot) {
+    await this.loadProjects(workspaceRoot);
+    const projectRoot = this.#projectRootFor(workspaceRoot);
     this.set({
-      root,
+      workspaceRoot,
+      root: projectRoot,
+      projectPicker: false,
       dirs: /* @__PURE__ */ new Map(),
       expanded: /* @__PURE__ */ new Set(),
       selectedPath: "",
@@ -1194,11 +1272,66 @@ var WorkbenchStore = class {
       status: initialState().status,
       git: { ...initialState().git }
     });
-    this.#restoreWorkspace(root);
+    this.#rememberProjectRoot(projectRoot);
+    this.#restoreWorkspace(projectRoot);
+    void this.loadDir(projectRoot);
     await this.refreshStatus({ initial: true });
     void this.refreshShells();
     void this.loadLog(true);
     void this.persistNow();
+  }
+  /** Switch the IDE project root inside the current workspace. */
+  async selectProject(projectRoot) {
+    if (typeof projectRoot !== "string" || projectRoot === "") return;
+    if (!this.state.projects.some((project) => project.path === projectRoot)) return;
+    if (projectRoot === this.state.root) {
+      this.set({ projectPicker: false });
+      return;
+    }
+    if (this.state.tabs.some((tab3) => tab3.dirty === true)) {
+      this.askConfirm(
+        this.t("editor.unsavedTitle"),
+        this.t("editor.unsavedSwitchRoot"),
+        this.t("editor.discardChanges"),
+        () => {
+          void this.#switchProject(projectRoot);
+        }
+      );
+      return;
+    }
+    await this.#switchProject(projectRoot);
+  }
+  async #switchProject(projectRoot) {
+    this.set({
+      root: projectRoot,
+      projectPicker: false,
+      dirs: /* @__PURE__ */ new Map(),
+      expanded: /* @__PURE__ */ new Set(),
+      selectedPath: "",
+      filter: "",
+      tabs: [],
+      activeId: null,
+      status: initialState().status,
+      git: { ...initialState().git }
+    });
+    this.#rememberProjectRoot(projectRoot);
+    this.#restoreWorkspace(projectRoot);
+    void this.loadDir(projectRoot);
+    await this.refreshStatus({ initial: true });
+    void this.refreshShells();
+    void this.loadLog(true);
+    void this.persistNow();
+  }
+  openProjectPicker() {
+    if (this.state.workspaceRoot === "") {
+      this.openRootPicker();
+      return;
+    }
+    this.set({ projectPicker: true });
+    void this.loadProjects();
+  }
+  closeProjectPicker() {
+    this.set({ projectPicker: false });
   }
   #restoreWorkspace(root) {
     const saved = this.state.settings?.workspaceState?.[root];
@@ -1237,7 +1370,7 @@ var WorkbenchStore = class {
   }
   async #persist() {
     const state = this.state;
-    if (state.root === "") return;
+    if (state.workspaceRoot === "" || state.root === "") return;
     const fileTabs = state.tabs.filter((tab3) => tab3.kind === "file").map((tab3) => ({
       path: tab3.path,
       rel: tab3.rel,
@@ -1255,7 +1388,8 @@ var WorkbenchStore = class {
     try {
       const result = await call("settings.update", {
         patch: {
-          lastRoot: state.root,
+          lastRoot: state.workspaceRoot,
+          projectRoots: { [state.workspaceRoot]: state.root },
           workspaceState: { [state.root]: workspaceState }
         }
       });
@@ -2786,7 +2920,17 @@ function ProjectPanel({ store, state }) {
       "div",
       { className: "itw-panel-header" },
       import_react4.default.createElement("span", { className: "itw-panel-title" }, t2("project.title")),
-      import_react4.default.createElement("span", { className: "itw-panel-sub" }, baseName(state.root)),
+      import_react4.default.createElement(
+        "button",
+        {
+          type: "button",
+          className: "itw-project-sub-btn",
+          title: `${t2("project.selectProject")} \u2014 ${state.root}`,
+          onClick: () => store.openProjectPicker()
+        },
+        import_react4.default.createElement("span", { className: "itw-project-sub-name" }, baseName(state.root) || t2("project.empty")),
+        import_react4.default.createElement(ChevronDown, { size: 11 })
+      ),
       import_react4.default.createElement("span", { className: "itw-spacer" }),
       import_react4.default.createElement("button", {
         type: "button",
@@ -3213,6 +3357,16 @@ function CommitPanel({ store, state }) {
         }
       }, import_react5.default.createElement(IconRefresh, { width: 14, height: 14 }))
     ),
+    state.status.isRepo !== true ? import_react5.default.createElement(
+      "div",
+      { className: "itw-commit-hint" },
+      import_react5.default.createElement("span", null, t2("project.noRepoHint")),
+      import_react5.default.createElement("button", {
+        type: "button",
+        className: "itw-textbtn itw-small",
+        onClick: () => store.openProjectPicker()
+      }, t2("project.chooseRepo"))
+    ) : null,
     import_react5.default.createElement(
       "div",
       { className: "itw-commit-message" },
@@ -3515,6 +3669,7 @@ function RefChip({ value }) {
 function GitPanel({ store, state }) {
   const t2 = store.t;
   const git = state.git;
+  const repoProjects = (state.projects ?? []).filter((project) => project.isRepo === true && project.path !== state.root);
   const [scrollTop, setScrollTop] = (0, import_react6.useState)(0);
   const [viewport, setViewport] = (0, import_react6.useState)(300);
   const [menu, setMenu] = (0, import_react6.useState)(null);
@@ -3689,8 +3844,17 @@ ${commit.shortHash} ${commit.subject}`, t2("git.revert"), () => {
         rows.length === 0 && git.loading !== true ? import_react6.default.createElement(
           "div",
           { className: "itw-git-empty" },
-          import_react6.default.createElement("div", null, git.error ?? (state.status.isRepo === true ? t2("git.noCommits") : t2("welcome.noRepo"))),
-          git.error !== null && git.error !== void 0 ? import_react6.default.createElement("button", { type: "button", className: "itw-textbtn itw-small", style: { marginTop: 10 }, onClick: () => {
+          import_react6.default.createElement(
+            "div",
+            null,
+            state.status.isRepo === true ? git.error ?? t2("git.noCommits") : t2("project.noRepoHint")
+          ),
+          state.status.isRepo !== true ? import_react6.default.createElement("button", {
+            type: "button",
+            className: "itw-textbtn itw-primary itw-small",
+            style: { marginTop: 10 },
+            onClick: () => store.openProjectPicker()
+          }, repoProjects.length > 0 ? t2("project.chooseRepo") : t2("project.selectProject")) : git.error !== null && git.error !== void 0 ? import_react6.default.createElement("button", { type: "button", className: "itw-textbtn itw-small", style: { marginTop: 10 }, onClick: () => {
             void store.loadLog(true);
           } }, t2("common.retry")) : null
         ) : import_react6.default.createElement(
@@ -44665,6 +44829,7 @@ function DiffView({ store, state, tab: tab3 }) {
 function Welcome({ store, state }) {
   const t2 = store.t;
   const branch = state.status.branch;
+  const repoProjects = (state.projects ?? []).filter((project) => project.isRepo === true && project.path !== state.root);
   const Shortcut = ({ shortcut, children }) => import_react12.default.createElement(Kbd, null, shortcut);
   const actions = [
     { key: "project", icon: "project", title: t2("welcome.project"), shortcut: state.settings?.shortcuts?.project ?? "Alt+1", onClick: () => store.showTool("project") },
@@ -44701,7 +44866,17 @@ function Welcome({ store, state }) {
         { className: "itw-welcome-meta" },
         state.status.isRepo === true ? import_react12.default.createElement("span", null, `${t2("welcome.branch")}: ${state.status.detached === true ? t2("git.detached") : branch ?? "HEAD"}`) : import_react12.default.createElement("span", null, t2("welcome.noRepo")),
         import_react12.default.createElement("span", null, state.root)
-      )
+      ),
+      state.status.isRepo !== true && repoProjects.length > 0 ? import_react12.default.createElement(
+        "div",
+        { className: "itw-welcome-hint" },
+        import_react12.default.createElement("span", null, t2("project.noRepoHint")),
+        import_react12.default.createElement("button", {
+          type: "button",
+          className: "itw-textbtn itw-small",
+          onClick: () => store.openProjectPicker()
+        }, t2("project.chooseRepo"))
+      ) : null
     )
   );
 }
@@ -45299,7 +45474,9 @@ function TopBar({ store, state, onOpenSettings }) {
   const t2 = store.t;
   const branch = state.status.branch;
   const detached = state.status.detached === true;
-  const title = baseName(state.root) || t2("project.empty");
+  const workspaceTitle = baseName(state.workspaceRoot) || t2("project.empty");
+  const projectTitle = baseName(state.root);
+  const showProject = state.root !== state.workspaceRoot && projectTitle !== "";
   const [menu, setMenu] = (0, import_react14.useState)(null);
   return import_react14.default.createElement(
     "div",
@@ -45309,12 +45486,17 @@ function TopBar({ store, state, onOpenSettings }) {
       {
         type: "button",
         className: "itw-project-select",
-        title: state.root,
+        title: state.workspaceRoot,
         onClick: (event) => setMenu({ x: event.clientX, y: event.clientY + 8 })
       },
       import_react14.default.createElement(StripeIcon, { tool: "project", size: 16 }),
-      import_react14.default.createElement("span", { className: "itw-project-name" }, title),
-      import_react14.default.createElement("span", { className: "itw-project-path" }, state.root)
+      import_react14.default.createElement(
+        "span",
+        { className: "itw-project-name" },
+        workspaceTitle,
+        showProject ? import_react14.default.createElement("span", { className: "itw-project-current" }, ` / ${projectTitle}`) : null
+      ),
+      import_react14.default.createElement("span", { className: "itw-project-path" }, state.root || state.workspaceRoot)
     ),
     state.status.isRepo === true ? import_react14.default.createElement(
       "span",
@@ -45351,12 +45533,13 @@ function TopBar({ store, state, onOpenSettings }) {
         ...state.workspaces.length > 0 ? state.workspaces.map((workspace) => ({
           key: workspace.path,
           text: workspace.title,
-          icon: workspace.path === state.root ? import_react14.default.createElement("span", { style: { color: "var(--itw-accent)" } }, "\u25CF") : null,
+          icon: workspace.path === state.workspaceRoot ? import_react14.default.createElement("span", { style: { color: "var(--itw-accent)" } }, "\u25CF") : null,
           action: () => {
             void store.setRoot(workspace.path);
           }
         })) : [{ text: t2("project.empty"), disabled: true }],
         null,
+        { key: "project", text: t2("project.selectProject"), action: () => store.openProjectPicker() },
         { key: "open", text: t2("project.openWorkspace"), action: () => store.openRootPicker() }
       ]
     }) : null
@@ -45540,6 +45723,81 @@ function RootPicker({ store, state }) {
     )
   );
 }
+function ProjectPicker({ store, state }) {
+  const t2 = store.t;
+  if (state.projectPicker !== true) return null;
+  const projects = Array.isArray(state.projects) ? state.projects : [];
+  const root = projects.filter((project) => project.isRoot === true);
+  const children = projects.filter((project) => project.isRoot !== true);
+  const choice = (project) => import_react14.default.createElement(
+    "button",
+    {
+      key: project.path,
+      type: "button",
+      className: `itw-project-choice ${project.path === state.root ? "itw-current" : ""}`,
+      title: project.path,
+      onClick: () => {
+        void store.selectProject(project.path);
+      }
+    },
+    import_react14.default.createElement(
+      "span",
+      { className: "itw-project-choice-icon" },
+      project.isRepo === true ? import_react14.default.createElement(IconGit, { width: 15, height: 15 }) : import_react14.default.createElement(IconFolder, { size: 15 })
+    ),
+    import_react14.default.createElement(
+      "span",
+      { className: "itw-project-choice-text" },
+      import_react14.default.createElement("b", null, project.name),
+      import_react14.default.createElement("span", { className: "itw-project-choice-path" }, project.path)
+    ),
+    project.isRepo === true ? import_react14.default.createElement("span", { className: "itw-project-repo-badge" }, t2("project.gitRepo")) : null,
+    project.path === state.root ? import_react14.default.createElement("span", { className: "itw-project-current-badge" }, t2("project.current")) : null
+  );
+  return import_react14.default.createElement(
+    "div",
+    {
+      className: "itw-modal-backdrop",
+      onMouseDown: (event) => {
+        if (event.target === event.currentTarget) store.closeProjectPicker();
+      }
+    },
+    import_react14.default.createElement(
+      "div",
+      {
+        className: "itw-modal itw-project-picker",
+        role: "dialog",
+        "aria-modal": "true"
+      },
+      import_react14.default.createElement("h2", null, t2("project.selectProject")),
+      import_react14.default.createElement("p", { className: "itw-modal-hint" }, t2("project.selectProjectHint")),
+      import_react14.default.createElement(
+        "div",
+        { className: "itw-project-picker-list" },
+        import_react14.default.createElement("div", { className: "itw-project-group" }, t2("project.workspaceRoot")),
+        ...root.map(choice),
+        import_react14.default.createElement("div", { className: "itw-project-group" }, t2("project.subdirectories")),
+        children.length === 0 ? import_react14.default.createElement("div", { className: "itw-project-empty" }, t2("project.noSubdirectories")) : children.map(choice)
+      ),
+      import_react14.default.createElement(
+        "div",
+        { className: "itw-modal-actions" },
+        import_react14.default.createElement("button", {
+          type: "button",
+          className: "itw-textbtn",
+          onClick: () => {
+            void store.loadProjects();
+          }
+        }, import_react14.default.createElement(IconRefresh, { width: 12, height: 12 }), t2("project.refreshProjects")),
+        import_react14.default.createElement("button", {
+          type: "button",
+          className: "itw-textbtn",
+          onClick: () => store.closeProjectPicker()
+        }, t2("common.cancel"))
+      )
+    )
+  );
+}
 function SettingsModal({ store, state, onClose }) {
   return import_react14.default.createElement(
     "div",
@@ -45664,6 +45922,7 @@ function Workbench({ store }) {
     import_react14.default.createElement(ConfirmModal, { dialog: state.confirm, onClose: () => store.dismissConfirm() }),
     import_react14.default.createElement(Toast, { toast: state.toast }),
     import_react14.default.createElement(RootPicker, { store, state }),
+    import_react14.default.createElement(ProjectPicker, { store, state }),
     settingsOpen ? import_react14.default.createElement(SettingsModal, { store, state, onClose: () => setSettingsOpen(false) }) : null
   );
 }
@@ -45793,6 +46052,15 @@ var CSS = `
 }
 .itw-panel-title { font-size: 12px; font-weight: 700; letter-spacing: .02em; }
 .itw-panel-sub { color: var(--itw-muted); font-size: 11px; }
+.itw-project-sub-btn {
+  display: flex; align-items: center; gap: 4px; min-width: 0; max-width: 64%; padding: 2px 5px;
+  border-radius: 5px; color: var(--itw-muted); font-size: 11px; text-align: left;
+}
+.itw-project-sub-btn:hover { background: rgba(127, 127, 127, .12); color: var(--itw-fg); }
+.itw-project-workspace-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 110px; }
+.itw-project-sep { opacity: .55; }
+.itw-project-sub-name { color: var(--itw-fg); font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.itw-project-current { color: var(--itw-accent); font-weight: 500; }
 .itw-panel-header .itw-spacer { flex: 1; }
 .itw-panel-body { flex: 1; min-height: 0; overflow: auto; position: relative; }
 
@@ -45901,6 +46169,8 @@ var CSS = `
 .itw-welcome-action:hover { border-color: var(--itw-border-strong); background: var(--itw-panel-2); }
 .itw-welcome-action .itw-kbd { margin-left: auto; }
 .itw-welcome-meta { display: flex; gap: 16px; color: var(--itw-muted); font-size: 12px; border-top: 1px solid var(--itw-border); padding-top: 14px; }
+.itw-welcome-hint { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 12px; padding: 8px 10px; border: 1px solid var(--itw-border); border-radius: 7px; color: var(--itw-muted); font-size: 12px; }
+.itw-commit-hint { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 7px 10px; border-bottom: 1px solid var(--itw-border); color: var(--itw-muted); font-size: 11.5px; background: var(--itw-panel-2); }
 .itw-kbd {
   display: inline-flex; align-items: center; height: 19px; padding: 0 6px; border-radius: 4px;
   border: 1px solid var(--itw-border-strong); border-bottom-width: 2px; background: var(--itw-panel-2);
@@ -46152,6 +46422,23 @@ var CSS = `
 .itw-root-item { display: flex; align-items: center; gap: 8px; padding: 7px 8px; border-radius: 6px; border: 1px solid var(--itw-border); text-align: left; }
 .itw-root-item:hover { background: rgba(127, 127, 127, .1); }
 .itw-root-item .itw-root-path { color: var(--itw-muted); font-size: 11px; overflow: hidden; text-overflow: ellipsis; }
+.itw-project-picker { width: min(620px, calc(100% - 40px)); max-height: min(80vh, 720px); display: flex; flex-direction: column; }
+.itw-modal-hint { color: var(--itw-muted); font-size: 12px; margin: -2px 0 12px; }
+.itw-project-picker-list { display: flex; flex-direction: column; gap: 3px; overflow: auto; min-height: 0; margin-bottom: 12px; }
+.itw-project-group { color: var(--itw-muted); font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 8px 4px 3px; }
+.itw-project-choice {
+  display: flex; align-items: center; gap: 9px; width: 100%; padding: 7px 8px; border-radius: 7px;
+  border: 1px solid transparent; text-align: left;
+}
+.itw-project-choice:hover { background: rgba(127, 127, 127, .1); }
+.itw-project-choice.itw-current { border-color: var(--itw-border-strong); background: rgba(76, 154, 255, .07); }
+.itw-project-choice-icon { display: flex; align-items: center; justify-content: center; flex: 0 0 18px; color: var(--itw-muted); }
+.itw-project-choice-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.itw-project-choice-text b { font-size: 12.5px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.itw-project-choice-path { color: var(--itw-muted); font-size: 10.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.itw-project-repo-badge { font-size: 9.5px; color: var(--itw-git-add, #57a86b); border: 1px solid currentColor; border-radius: 999px; padding: 1px 6px; flex: 0 0 auto; }
+.itw-project-current-badge { font-size: 9.5px; color: var(--itw-accent); border: 1px solid currentColor; border-radius: 999px; padding: 1px 6px; flex: 0 0 auto; }
+.itw-project-empty { padding: 10px 8px; color: var(--itw-muted); font-size: 11.5px; }
 `;
 
 // src/client/index.jsx

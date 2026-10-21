@@ -82,6 +82,7 @@ function RefChip({ value }) {
 export function GitPanel({ store, state }) {
   const t = store.t
   const git = state.git
+  const repoProjects = (state.projects ?? []).filter(project => project.isRepo === true && project.path !== state.root)
   const [scrollTop, setScrollTop] = useState(0)
   const [viewport, setViewport] = useState(300)
   const [menu, setMenu] = useState(null)
@@ -226,10 +227,19 @@ export function GitPanel({ store, state }) {
       React.createElement('div', { className: 'itw-git-scroll', ref: scrollRef, onScroll },
         rows.length === 0 && git.loading !== true
           ? React.createElement('div', { className: 'itw-git-empty' },
-              React.createElement('div', null, git.error ?? (state.status.isRepo === true ? t('git.noCommits') : t('welcome.noRepo'))),
-              git.error !== null && git.error !== undefined
-                ? React.createElement('button', { type: 'button', className: 'itw-textbtn itw-small', style: { marginTop: 10 }, onClick: () => { void store.loadLog(true) } }, t('common.retry'))
-                : null,
+              React.createElement('div', null,
+                state.status.isRepo === true
+                  ? (git.error ?? t('git.noCommits'))
+                  : t('project.noRepoHint'),
+              ),
+              state.status.isRepo !== true
+                ? React.createElement('button', {
+                    type: 'button', className: 'itw-textbtn itw-primary itw-small', style: { marginTop: 10 },
+                    onClick: () => store.openProjectPicker(),
+                  }, repoProjects.length > 0 ? t('project.chooseRepo') : t('project.selectProject'))
+                : (git.error !== null && git.error !== undefined
+                    ? React.createElement('button', { type: 'button', className: 'itw-textbtn itw-small', style: { marginTop: 10 }, onClick: () => { void store.loadLog(true) } }, t('common.retry'))
+                    : null),
             )
           : React.createElement('div', { className: 'itw-git-rows', style: { height: `${rows.length * ROW_HEIGHT}px` } },
               rows.slice(start, end).map((row, index) => {

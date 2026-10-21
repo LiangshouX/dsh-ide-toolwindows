@@ -134,6 +134,15 @@ export function CommitPanel({ store, state }) {
         onClick: () => { void store.refreshStatus({ initial: true }); void store.loadCommitMessages() },
       }, React.createElement(IconRefresh, { width: 14, height: 14 })),
     ),
+    state.status.isRepo !== true
+      ? React.createElement('div', { className: 'itw-commit-hint' },
+          React.createElement('span', null, t('project.noRepoHint')),
+          React.createElement('button', {
+            type: 'button', className: 'itw-textbtn itw-small',
+            onClick: () => store.openProjectPicker(),
+          }, t('project.chooseRepo')),
+        )
+      : null,
     React.createElement('div', { className: 'itw-commit-message' },
       React.createElement('textarea', {
         ref: textareaRef,

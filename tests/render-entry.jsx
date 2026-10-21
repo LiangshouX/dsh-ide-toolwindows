@@ -20,7 +20,10 @@ function baseStore() {
   store.state = {
     ...store.state,
     phase: 'ready',
+    workspaceRoot: 'C:\\work\\demo',
     root: 'C:\\work\\demo',
+    projects: [{ path: 'C:\\work\\demo', name: 'demo', isRoot: true, isRepo: true }],
+    projectPicker: false,
     active: true,
     settings: {
       lastRoot: 'C:\\work\\demo',
@@ -137,6 +140,29 @@ export function renderCode() {
   }
   store.state.tabs = [tab]
   store.state.activeId = tab.id
+  return renderToStaticMarkup(React.createElement(Workbench, { store }))
+}
+
+export function renderProjectPicker() {
+  const store = baseStore()
+  store.state.projectPicker = true
+  store.state.projects = [
+    { path: 'C:\\work\\demo', name: 'demo', isRoot: true, isRepo: false },
+    { path: 'C:\\work\\demo\\repo-a', name: 'repo-a', isRoot: false, isRepo: true },
+    { path: 'C:\\work\\demo\\repo-b', name: 'repo-b', isRoot: false, isRepo: false },
+  ]
+  return renderToStaticMarkup(React.createElement(Workbench, { store }))
+}
+
+export function renderGitNoRepo() {
+  const store = baseStore()
+  store.state.status = { ...store.state.status, isRepo: false, entries: [], branch: undefined }
+  store.state.projects = [
+    { path: 'C:\\work\\demo', name: 'demo', isRoot: true, isRepo: false },
+    { path: 'C:\\work\\demo\\repo-a', name: 'repo-a', isRoot: false, isRepo: true },
+  ]
+  store.state.layout = { ...store.state.layout, bottom: 'git' }
+  store.state.git = { ...store.state.git, error: 'fatal: not a git repository', loading: false, commits: [] }
   return renderToStaticMarkup(React.createElement(Workbench, { store }))
 }
 

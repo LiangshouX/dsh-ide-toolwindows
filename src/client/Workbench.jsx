@@ -5,7 +5,7 @@
  */
 import React, { useEffect, useRef, useState } from 'react'
 import { useWorkbench } from './hooks.js'
-import { IconGit, IconGear, IconRefresh, IconTerminal, StripeIcon } from './icons.jsx'
+import { IconFolder, IconGit, IconGear, IconRefresh, IconTerminal, StripeIcon } from './icons.jsx'
 import { ProjectPanel } from './ProjectPanel.jsx'
 import { CommitPanel } from './CommitPanel.jsx'
 import { GitPanel } from './GitPanel.jsx'
@@ -19,18 +19,23 @@ function TopBar({ store, state, onOpenSettings }) {
   const t = store.t
   const branch = state.status.branch
   const detached = state.status.detached === true
-  const title = baseName(state.root) || t('project.empty')
+  const workspaceTitle = baseName(state.workspaceRoot) || t('project.empty')
+  const projectTitle = baseName(state.root)
+  const showProject = state.root !== state.workspaceRoot && projectTitle !== ''
   const [menu, setMenu] = useState(null)
   return React.createElement('div', { className: 'itw-topbar' },
     React.createElement('button', {
       type: 'button',
       className: 'itw-project-select',
-      title: state.root,
+      title: state.workspaceRoot,
       onClick: event => setMenu({ x: event.clientX, y: event.clientY + 8 }),
     },
       React.createElement(StripeIcon, { tool: 'project', size: 16 }),
-      React.createElement('span', { className: 'itw-project-name' }, title),
-      React.createElement('span', { className: 'itw-project-path' }, state.root),
+      React.createElement('span', { className: 'itw-project-name' },
+        workspaceTitle,
+        showProject ? React.createElement('span', { className: 'itw-project-current' }, ` / ${projectTitle}`) : null,
+      ),
+      React.createElement('span', { className: 'itw-project-path' }, state.root || state.workspaceRoot),
     ),
     state.status.isRepo === true
       ? React.createElement('span', { className: 'itw-branch-chip', title: state.status.upstream ?? '' },
@@ -62,11 +67,12 @@ function TopBar({ store, state, onOpenSettings }) {
               ? state.workspaces.map(workspace => ({
                   key: workspace.path,
                   text: workspace.title,
-                  icon: workspace.path === state.root ? React.createElement('span', { style: { color: 'var(--itw-accent)' } }, '●') : null,
+                  icon: workspace.path === state.workspaceRoot ? React.createElement('span', { style: { color: 'var(--itw-accent)' } }, '●') : null,
                   action: () => { void store.setRoot(workspace.path) },
                 }))
               : [{ text: t('project.empty'), disabled: true }]),
             null,
+            { key: 'project', text: t('project.selectProject'), action: () => store.openProjectPicker() },
             { key: 'open', text: t('project.openWorkspace'), action: () => store.openRootPicker() },
           ],
         })
@@ -212,6 +218,65 @@ function RootPicker({ store, state }) {
   )
 }
 
+function ProjectPicker({ store, state }) {
+  const t = store.t
+  if (state.projectPicker !== true) return null
+  const projects = Array.isArray(state.projects) ? state.projects : []
+  const root = projects.filter(project => project.isRoot === true)
+  const children = projects.filter(project => project.isRoot !== true)
+  const choice = project => React.createElement('button', {
+    key: project.path,
+    type: 'button',
+    className: `itw-project-choice ${project.path === state.root ? 'itw-current' : ''}`,
+    title: project.path,
+    onClick: () => { void store.selectProject(project.path) },
+  },
+    React.createElement('span', { className: 'itw-project-choice-icon' },
+      project.isRepo === true
+        ? React.createElement(IconGit, { width: 15, height: 15 })
+        : React.createElement(IconFolder, { size: 15 }),
+    ),
+    React.createElement('span', { className: 'itw-project-choice-text' },
+      React.createElement('b', null, project.name),
+      React.createElement('span', { className: 'itw-project-choice-path' }, project.path),
+    ),
+    project.isRepo === true
+      ? React.createElement('span', { className: 'itw-project-repo-badge' }, t('project.gitRepo'))
+      : null,
+    project.path === state.root
+      ? React.createElement('span', { className: 'itw-project-current-badge' }, t('project.current'))
+      : null,
+  )
+  return React.createElement('div', {
+    className: 'itw-modal-backdrop',
+    onMouseDown: event => { if (event.target === event.currentTarget) store.closeProjectPicker() },
+  },
+    React.createElement('div', {
+      className: 'itw-modal itw-project-picker', role: 'dialog', 'aria-modal': 'true',
+    },
+      React.createElement('h2', null, t('project.selectProject')),
+      React.createElement('p', { className: 'itw-modal-hint' }, t('project.selectProjectHint')),
+      React.createElement('div', { className: 'itw-project-picker-list' },
+        React.createElement('div', { className: 'itw-project-group' }, t('project.workspaceRoot')),
+        ...root.map(choice),
+        React.createElement('div', { className: 'itw-project-group' }, t('project.subdirectories')),
+        children.length === 0
+          ? React.createElement('div', { className: 'itw-project-empty' }, t('project.noSubdirectories'))
+          : children.map(choice),
+      ),
+      React.createElement('div', { className: 'itw-modal-actions' },
+        React.createElement('button', {
+          type: 'button', className: 'itw-textbtn',
+          onClick: () => { void store.loadProjects() },
+        }, React.createElement(IconRefresh, { width: 12, height: 12 }), t('project.refreshProjects')),
+        React.createElement('button', {
+          type: 'button', className: 'itw-textbtn', onClick: () => store.closeProjectPicker(),
+        }, t('common.cancel')),
+      ),
+    ),
+  )
+}
+
 function SettingsModal({ store, state, onClose }) {
   return React.createElement('div', { className: 'itw-modal-backdrop', onMouseDown: event => { if (event.target === event.currentTarget) onClose() } },
     React.createElement('div', { className: 'itw-modal', style: { width: 'min(620px, calc(100% - 40px))', maxHeight: '80%', overflow: 'auto' }, role: 'dialog', 'aria-modal': 'true' },
@@ -320,6 +385,7 @@ export function Workbench({ store }) {
     React.createElement(ConfirmModal, { dialog: state.confirm, onClose: () => store.dismissConfirm() }),
     React.createElement(Toast, { toast: state.toast }),
     React.createElement(RootPicker, { store, state }),
+    React.createElement(ProjectPicker, { store, state }),
     settingsOpen ? React.createElement(SettingsModal, { store, state, onClose: () => setSettingsOpen(false) }) : null,
   )
 }

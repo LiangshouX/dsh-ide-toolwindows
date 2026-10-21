@@ -129,6 +129,24 @@ test('diff component renders unified mode with hunk actions', async () => {
   assert.match(html, /commit\.stageAll/)
 })
 
+test('project picker lists the workspace root and first-level folders', async () => {
+  const mod = await loadModule()
+  const html = mod.renderProjectPicker()
+  assert.match(html, /itw-project-picker/)
+  assert.match(html, /itw-project-choice/)
+  assert.match(html, /repo-a/)
+  assert.match(html, /project\.gitRepo/)
+  assert.match(html, /project\.current/)
+})
+
+test('Git window points a non-repository folder at the project picker', async () => {
+  const mod = await loadModule()
+  const html = mod.renderGitNoRepo()
+  assert.match(html, /project\.noRepoHint/)
+  assert.match(html, /project\.chooseRepo/)
+  assert.doesNotMatch(html, /fatal: not a git repository/)
+})
+
 test('markdown preview renders the fallback document and outline', async () => {
   const mod = await loadModule()
   const html = mod.renderMarkdown()

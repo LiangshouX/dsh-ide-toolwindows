@@ -20,8 +20,8 @@ import { WebSocketServer, WebSocket } from 'ws'
 import { runGit, repoRootOf, status as gitStatus, diff as gitDiff, stage as gitStage, unstage as gitUnstage, discard as gitDiscard, applyPatch as gitApplyPatch, commit as gitCommit, push as gitPush, log as gitLog, branches as gitBranches, checkout as gitCheckout, revert as gitRevert, commitDetail, showFile, recentMessages } from './host/git.js'
 import { SettingsStore, settingsFile } from './host/settings-store.js'
 import {
-  canonicalRoot, listDirectory, readFileForPreview, resolveInside, revealInExplorer,
-  shellArgv, shellCandidates, terminalEnv, toRelative, writeFileText,
+  canonicalRoot, listDirectory, listProjectCandidates, readFileForPreview, resolveInside,
+  revealInExplorer, shellArgv, shellCandidates, terminalEnv, toRelative, writeFileText,
 } from './host/workspace.js'
 import {
   ApiError, optionalBoolean, optionalInteger, readJsonBody, requireString, stringArray,
@@ -118,6 +118,12 @@ export function apply(ctx) {
       const path = requireString(payload, 'path')
       const workspace = await ctx.workspaceRegistry.create(path)
       return { id: workspace.id, path: workspace.path, title: workspace.title }
+    },
+
+    /** Root + first-level folders that can be selected as the IDE project. */
+    'workspace.projects': async (payload) => {
+      const root = await canonicalRoot(payload?.root)
+      return listProjectCandidates(root)
     },
 
     // ── filesystem ───────────────────────────────────────────────────────
