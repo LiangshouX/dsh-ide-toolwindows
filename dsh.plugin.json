@@ -3,7 +3,8 @@
   "displayName": "IDE Tool Windows",
   "version": "0.2.0",
   "description": "JetBrains-style Project, Commit, Terminal and Git tool windows with read-only Markdown preview, outline navigation and an edit mode.",
-  "author": "local",
+  "author": "LiangshouX",
+  "homepage": "https://github.com/LiangshouX/dsh-ide-toolwindows",
   "license": "MIT",
   "tags": [
     "ide",

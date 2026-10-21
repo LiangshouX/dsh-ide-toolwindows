@@ -60,6 +60,20 @@ or use DSH Settings → Plugins → install from a directory. Install depends on
 `ws` (host PTY transport); the client is a prebuilt single file
 (`dist/client.js`, xterm bundled).
 
+## Install from GitHub
+
+Repository: <https://github.com/LiangshouX/dsh-ide-toolwindows>
+
+```sh
+git clone https://github.com/LiangshouX/dsh-ide-toolwindows.git
+cd dsh-ide-toolwindows
+npm install --omit=dev    # only the host runtime dependency (ws)
+dsh plugin install .
+```
+
+The repository ships the built client, so no client build step is needed.
+Use `npm install` (without `--omit=dev`) only when developing.
+
 ## Development
 
 ```sh

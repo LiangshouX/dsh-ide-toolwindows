@@ -42,6 +42,19 @@ dsh plugin install /绝对路径/dsh-ide-toolwindows
 
 或在 DSH 设置 → 插件中从目录安装。宿主依赖 `ws`（PTY 传输）；客户端是预构建单文件（`dist/client.js`，xterm 已内联）。
 
+## 从 GitHub 安装
+
+仓库：<https://github.com/LiangshouX/dsh-ide-toolwindows>
+
+```sh
+git clone https://github.com/LiangshouX/dsh-ide-toolwindows.git
+cd dsh-ide-toolwindows
+npm install --omit=dev    # 只安装宿主运行时依赖 ws
+dsh plugin install .
+```
+
+仓库中已包含构建好的客户端，无需再执行客户端构建；仅在开发时需要完整 `npm install`。
+
 ## 开发
 
 ```sh
