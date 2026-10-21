@@ -1,0 +1,439 @@
+/**
+ * dsh-ide-toolwindows — Host half.
+ *
+ * One fenced HTTP surface (`/ide-toolwindows/api/<method>`) and one WebSocket
+ * upgrade (`/ide-toolwindows/ws/terminal`) back the four tool windows:
+ *
+ *   Project   fs.tree / fs.read / fs.reveal / git.status
+ *   Commit    git.status / diff / stage / unstage / discard / applyPatch / commit
+ *   Git       git.log / branches / checkout / revert / detail / push
+ *   Terminal  ws terminal + terminal.shells / terminal.activity
+ *
+ * Git is always the system CLI (argv arrays, never a shell string), so the
+ * user's own credential manager, hooks and config apply. Every request is
+ * admitted through the public Connection service (the same fence `/api` uses).
+ */
+import { randomUUID } from 'node:crypto'
+import { stat, unlink } from 'node:fs/promises'
+import { relative, sep } from 'node:path'
+import { WebSocketServer, WebSocket } from 'ws'
+import { runGit, repoRootOf, status as gitStatus, diff as gitDiff, stage as gitStage, unstage as gitUnstage, discard as gitDiscard, applyPatch as gitApplyPatch, commit as gitCommit, push as gitPush, log as gitLog, branches as gitBranches, checkout as gitCheckout, revert as gitRevert, commitDetail, showFile, recentMessages } from './host/git.js'
+import { SettingsStore, settingsFile } from './host/settings-store.js'
+import {
+  canonicalRoot, listDirectory, readFileForPreview, resolveInside, revealInExplorer,
+  shellArgv, shellCandidates, terminalEnv, toRelative, writeFileText,
+} from './host/workspace.js'
+import {
+  ApiError, optionalBoolean, optionalInteger, readJsonBody, requireString, stringArray,
+  writeError, writeOk,
+} from './host/wire.js'
+
+export const name = 'dsh-ide-toolwindows'
+
+/** Services the host half needs before it can mount. */
+export const inject = ['webServer', 'connection', 'subprocess', 'workspaceRegistry']
+
+const API_PREFIX = '/ide-toolwindows/api/'
+const WS_PATH = '/ide-toolwindows/ws/terminal'
+
+/** Clamp a numeric query parameter. */
+function clamp(value, min, max, fallback) {
+  const number = Number(value)
+  if (!Number.isFinite(number)) return fallback
+  return Math.min(Math.max(Math.trunc(number), min), max)
+}
+
+/**
+ * Mount the plugin.
+ * @param {any} ctx cordis host context
+ */
+export function apply(ctx) {
+  const settings = new SettingsStore()
+  /** Live terminal handles by session id, for the activity endpoint and unload. */
+  const terminals = new Map()
+
+  const fence = (req) => ctx.connection.requestRejection(req) === undefined
+
+  /**
+   * Canonical workspace root + git command environment.
+   *
+   * A workspace can be a container whose repository lives deeper; git then
+   * reports repository-relative paths while the tree/API speak
+   * workspace-relative paths. `prefix` is the bridge, and every git call runs
+   * at the repository toplevel.
+   */
+  const repoEnv = async (payload) => {
+    const current = await settings.get()
+    const workspaceRoot = await canonicalRoot(payload?.root)
+    const toplevel = await repoRootOf({ gitPath: current.git.path, root: workspaceRoot })
+    const root = toplevel ?? workspaceRoot
+    const prefix = toplevel === null || toplevel === workspaceRoot
+      ? ''
+      : relative(workspaceRoot, toplevel).split(sep).join('/')
+    return { root, workspaceRoot, prefix, gitPath: current.git.path }
+  }
+
+  /** Workspace-relative path → repository-relative path. */
+  const toRepoPath = (env, path) => {
+    const normalized = String(path).split('\\').join('/')
+    if (env.prefix === '') return normalized
+    const prefix = `${env.prefix}/`
+    if (!normalized.startsWith(prefix)) {
+      throw new ApiError('forbidden', 'path is outside the repository', 403)
+    }
+    return normalized.slice(prefix.length)
+  }
+
+  /** Prefix a repository-relative path with the workspace prefix. */
+  const fromRepoPath = (env, path) => (env.prefix === '' ? path : `${env.prefix}/${path}`)
+
+  /** All tool-window API methods. */
+  const api = {
+    // ── workspaces ───────────────────────────────────────────────────────
+    'workspace.list': async () => {
+      const current = await settings.get()
+      const items = ctx.workspaceRegistry.list().map(item => ({
+        id: item.id,
+        path: item.path,
+        title: item.title,
+        updatedAt: item.updatedAt,
+      }))
+      let defaultRoot
+      const candidates = [current.lastRoot, items.slice().sort((a, b) => String(b.updatedAt).localeCompare(String(a.updatedAt)))[0]?.path]
+      for (const candidate of candidates) {
+        if (typeof candidate !== 'string' || candidate === '') continue
+        try {
+          const info = await stat(candidate)
+          if (info.isDirectory()) { defaultRoot = candidate; break }
+        } catch { /* try the next candidate */ }
+      }
+      return {
+        items,
+        defaultRoot,
+        defaultDirectory: ctx.get?.('workingDirectory')?.defaultDirectory ?? undefined,
+      }
+    },
+
+    'workspace.add': async (payload) => {
+      const path = requireString(payload, 'path')
+      const workspace = await ctx.workspaceRegistry.create(path)
+      return { id: workspace.id, path: workspace.path, title: workspace.title }
+    },
+
+    // ── filesystem ───────────────────────────────────────────────────────
+    'fs.tree': async (payload) => {
+      const current = await settings.get()
+      const root = await canonicalRoot(payload.root)
+      const path = typeof payload.path === 'string' && payload.path !== '' ? payload.path : root
+      const listing = await listDirectory(root, path, { showHidden: current.project.showHidden })
+      return { root, ...listing }
+    },
+
+    'fs.read': async (payload) => {
+      const root = await canonicalRoot(payload.root)
+      return readFileForPreview(root, requireString(payload, 'path'))
+    },
+
+    'fs.write': async (payload) => {
+      const root = await canonicalRoot(payload.root)
+      const path = requireString(payload, 'path')
+      const content = requireString(payload, 'content', { allowEmpty: true })
+      const encoding = typeof payload.encoding === 'string' ? payload.encoding : 'utf-8'
+      return writeFileText(root, path, content, encoding)
+    },
+
+    'fs.reveal': async (payload) => {
+      const root = await canonicalRoot(payload.root)
+      const absolute = resolveInside(root, requireString(payload, 'path'))
+      return { revealed: revealInExplorer(absolute), path: toRelative(root, absolute) }
+    },
+
+    // ── git ──────────────────────────────────────────────────────────────
+    'git.status': async (payload) => {
+      const env = await repoEnv(payload)
+      const snapshot = await gitStatus(env)
+      return {
+        ...snapshot,
+        root: env.workspaceRoot,
+        workspaceRoot: env.workspaceRoot,
+        repoRoot: snapshot.root ?? null,
+        entries: (snapshot.entries ?? []).map(entry => ({ ...entry, path: fromRepoPath(env, entry.path) })),
+        gitPath: env.gitPath,
+      }
+    },
+
+    'git.diff': async (payload) => {
+      const env = await repoEnv(payload)
+      const path = requireString(payload, 'path')
+      const staged = optionalBoolean(payload, 'staged', false)
+      const untracked = optionalBoolean(payload, 'untracked', false)
+      if (untracked) {
+        const file = await readFileForPreview(env.workspaceRoot, path)
+        return { untracked: true, ...file }
+      }
+      return { untracked: false, diff: await gitDiff(env, toRepoPath(env, path), staged) }
+    },
+
+    'git.stage': async (payload) => {
+      const env = await repoEnv(payload)
+      await gitStage(env, stringArray(payload, 'paths').map(path => toRepoPath(env, path)))
+      return { ok: true }
+    },
+
+    'git.unstage': async (payload) => {
+      const env = await repoEnv(payload)
+      await gitUnstage(env, stringArray(payload, 'paths').map(path => toRepoPath(env, path)))
+      return { ok: true }
+    },
+
+    'git.discard': async (payload) => {
+      const env = await repoEnv(payload)
+      const paths = stringArray(payload, 'paths').map(path => toRepoPath(env, path))
+      const untracked = stringArray(payload, 'untracked')
+      for (const path of untracked) {
+        await unlink(resolveInside(env.workspaceRoot, path)).catch(() => {})
+      }
+      if (paths.length > 0) await gitDiscard(env, paths)
+      return { ok: true }
+    },
+
+    'git.apply-patch': async (payload) => {
+      const env = await repoEnv(payload)
+      const direction = payload.direction === 'unstage' ? 'unstage' : 'stage'
+      await gitApplyPatch(env, requireString(payload, 'patch'), direction)
+      return { ok: true }
+    },
+
+    'git.commit': async (payload) => {
+      const env = await repoEnv(payload)
+      return gitCommit(env, requireString(payload, 'message'), optionalBoolean(payload, 'amend', false))
+    },
+
+    'git.push': async (payload) => {
+      const env = await repoEnv(payload)
+      return gitPush(env)
+    },
+
+    'git.log': async (payload) => {
+      const env = await repoEnv(payload)
+      const commits = await gitLog(env, {
+        skip: optionalInteger(payload, 'skip', 0),
+        count: optionalInteger(payload, 'count', 200),
+        branch: typeof payload.branch === 'string' ? payload.branch : undefined,
+        author: typeof payload.author === 'string' ? payload.author : undefined,
+        query: typeof payload.query === 'string' ? payload.query : undefined,
+      })
+      return { commits, hasMore: commits.length > 0 }
+    },
+
+    'git.branches': async (payload) => {
+      const env = await repoEnv(payload)
+      return gitBranches(env)
+    },
+
+    'git.checkout': async (payload) => {
+      const env = await repoEnv(payload)
+      return gitCheckout(env, requireString(payload, 'ref'))
+    },
+
+    'git.revert': async (payload) => {
+      const env = await repoEnv(payload)
+      return gitRevert(env, requireString(payload, 'hash'))
+    },
+
+    'git.detail': async (payload) => {
+      const env = await repoEnv(payload)
+      return commitDetail(env, requireString(payload, 'hash'))
+    },
+
+    'git.show': async (payload) => {
+      const env = await repoEnv(payload)
+      const content = await showFile(env, requireString(payload, 'rev'), requireString(payload, 'path'))
+      return { content }
+    },
+
+    'git.messages': async (payload) => {
+      const env = await repoEnv(payload)
+      return { messages: await recentMessages(env, optionalInteger(payload, 'count', 10)) }
+    },
+
+    // ── terminal ─────────────────────────────────────────────────────────
+    'terminal.shells': async () => ({ shells: shellCandidates() }),
+
+    'terminal.activity': async (payload) => {
+      const id = requireString(payload, 'id')
+      const handle = terminals.get(id)
+      if (handle === undefined) return { state: 'unknown' }
+      try {
+        return await handle.inspectActivity()
+      } catch {
+        return { state: 'unknown' }
+      }
+    },
+
+    // ── settings ─────────────────────────────────────────────────────────
+    'settings.get': async () => {
+      const value = await settings.get()
+      return { value, file: settingsFile() }
+    },
+
+    'settings.update': async (payload) => {
+      const patch = payload?.patch
+      if (patch === null || typeof patch !== 'object' || Array.isArray(patch)) {
+        throw new ApiError('bad-request', 'invalid settings patch')
+      }
+      const value = await settings.update(patch)
+      return { value }
+    },
+  }
+
+  // ── JSON API route ─────────────────────────────────────────────────────
+  ctx.effect(() => ctx.webServer.register({
+    kind: 'prefix',
+    path: '/ide-toolwindows/api',
+    handler: async (req, res) => {
+      if (!fence(req)) {
+        writeError(res, new ApiError('forbidden', 'forbidden', 403))
+        return
+      }
+      if (req.method !== 'POST') {
+        writeError(res, new ApiError('method-error', 'method not allowed', 405))
+        return
+      }
+      const pathname = new URL(req.url ?? '/', 'http://dsh.internal').pathname
+      const method = pathname.startsWith(API_PREFIX) ? pathname.slice(API_PREFIX.length) : undefined
+      if (method === undefined || method === '' || method.includes('/')) {
+        writeError(res, new ApiError('not-found', 'unknown API method', 404))
+        return
+      }
+      try {
+        const payload = await readJsonBody(req)
+        const handler = Object.hasOwn(api, method) ? api[method] : undefined
+        if (typeof handler !== 'function') throw new ApiError('not-found', `unknown API method "${method}"`, 404)
+        const result = await handler(payload)
+        writeOk(res, result)
+      } catch (error) {
+        writeError(res, error)
+      }
+    },
+  }), 'dsh-ide-toolwindows: JSON API')
+
+  // ── Terminal WebSocket ─────────────────────────────────────────────────
+  const wss = new WebSocketServer({ noServer: true })
+
+  /**
+   * Serve one terminal socket: allocate a real PTY, stream output, accept
+   * input/resize/signal frames, and terminate the process when the socket
+   * closes (a closed tab must not leave a shell running).
+   */
+  const attachTerminal = async (ws, req) => {
+    const url = new URL(req.url ?? '/', 'http://dsh.internal')
+    let handle
+    let sessionId = randomUUID()
+    try {
+      const current = await settings.get()
+      const root = await canonicalRoot(url.searchParams.get('root'))
+      const requestedCwd = url.searchParams.get('cwd')
+      const cwd = requestedCwd !== null && requestedCwd !== '' ? resolveInside(root, requestedCwd) : root
+      const shells = shellCandidates()
+      const requestedShell = url.searchParams.get('shell') ?? current.terminal.shell
+      const shell = shells.find(item => item.id === requestedShell) ?? shells[0]
+      if (shell === undefined) throw new ApiError('terminal-unavailable', 'no supported shell was found')
+      const cols = clamp(url.searchParams.get('cols'), 20, 400, 80)
+      const rows = clamp(url.searchParams.get('rows'), 5, 200, 24)
+      handle = await ctx.subprocess.spawnTerminal({
+        argv: shellArgv(shell.id, shell.path),
+        cwd,
+        env: terminalEnv(),
+        rows,
+        cols,
+        terminalType: 'xterm-256color',
+        graceMs: 2000,
+      })
+      terminals.set(sessionId, handle)
+      const send = (frame) => {
+        if (ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify(frame))
+      }
+      send({ type: 'ready', info: { id: sessionId, shell: { id: shell.id, label: shell.label, path: shell.path }, cwd, root } })
+      handle.output.setEncoding('utf8')
+      handle.output.on('data', (chunk) => {
+        const text = typeof chunk === 'string' ? chunk : Buffer.from(chunk).toString('utf8')
+        if (text !== '') send({ type: 'data', data: text })
+      })
+      handle.output.on('error', (error) => {
+        send({ type: 'error', message: error instanceof Error ? error.message : String(error) })
+      })
+      handle.done.then((outcome) => {
+        send({ type: 'exit', exitCode: outcome.exitCode, signal: outcome.signal })
+        ws.close()
+      }).catch((error) => {
+        send({ type: 'error', message: error instanceof Error ? error.message : String(error) })
+        ws.close()
+      })
+
+      let writeChain = Promise.resolve()
+      const write = (data) => {
+        if (typeof data !== 'string' || data === '') return
+        writeChain = writeChain.then(() => handle.write(data)).catch(() => {})
+      }
+      ws.on('message', (raw) => {
+        let frame
+        try {
+          frame = JSON.parse(typeof raw === 'string' ? raw : raw.toString('utf8'))
+        } catch {
+          return
+        }
+        if (frame === null || typeof frame !== 'object') return
+        if (frame.type === 'input') write(frame.data)
+        else if (frame.type === 'resize') {
+          const resizeCols = clamp(frame.cols, 20, 400, cols)
+          const resizeRows = clamp(frame.rows, 5, 200, rows)
+          void handle.resize(resizeCols, resizeRows).catch(() => {})
+        } else if (frame.type === 'signal') {
+          const allowed = new Set(['SIGINT', 'SIGTERM', 'SIGKILL', 'SIGTSTP', 'SIGHUP'])
+          if (allowed.has(frame.signal)) void handle.signalForeground(frame.signal).catch(() => {})
+        }
+      })
+      ws.on('close', () => {
+        terminals.delete(sessionId)
+        void handle.terminate().catch(() => {})
+      })
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error)
+      if (ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify({ type: 'error', message }))
+      ws.close()
+      if (handle !== undefined) {
+        terminals.delete(sessionId)
+        void handle.terminate().catch(() => {})
+      }
+    }
+  }
+
+  ctx.effect(() => ctx.webServer.registerUpgrade({
+    path: WS_PATH,
+    handler: (req, socket, head) => {
+      if (!fence(req)) {
+        socket.destroy()
+        return
+      }
+      wss.handleUpgrade(req, socket, head, (ws) => {
+        void attachTerminal(ws, req)
+      })
+    },
+  }), 'dsh-ide-toolwindows: terminal WebSocket')
+
+  // ── teardown ───────────────────────────────────────────────────────────
+  ctx.effect(() => () => {
+    for (const client of wss.clients) client.close()
+    wss.close()
+    for (const [id, handle] of terminals) {
+      terminals.delete(id)
+      void handle.terminate().catch(() => {})
+    }
+  }, 'dsh-ide-toolwindows: teardown')
+
+  ctx.effect(() => {
+    ctx.logger?.info?.('dsh-ide-toolwindows ready (API %s, terminal %s)', API_PREFIX, WS_PATH)
+    return () => {}
+  }, 'dsh-ide-toolwindows: announce')
+}

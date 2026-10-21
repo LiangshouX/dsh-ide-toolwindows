@@ -1,0 +1,371 @@
+/**
+ * Workspace filesystem + shell discovery helpers.
+ *
+ * Every path crossing the wire is either the workspace root or a path with a
+ * lexically verified containment check, so a crafted `path` cannot walk out of
+ * the project the user opened.
+ */
+import { spawn } from 'node:child_process'
+import { existsSync } from 'node:fs'
+import { lstat, open, readdir, readFile, realpath, rename, stat, unlink, writeFile } from 'node:fs/promises'
+import { dirname, extname, isAbsolute, join, relative, resolve, sep } from 'node:path'
+import { ApiError } from './wire.js'
+
+/** Image extensions served inline as data URLs. */
+const IMAGE_TYPES = {
+  '.png': 'image/png',
+  '.jpg': 'image/jpeg',
+  '.jpeg': 'image/jpeg',
+  '.gif': 'image/gif',
+  '.webp': 'image/webp',
+  '.svg': 'image/svg+xml',
+  '.bmp': 'image/bmp',
+  '.ico': 'image/x-icon',
+  '.avif': 'image/avif',
+}
+
+/** File read cap for the editor/preview (bytes). */
+const MAX_TEXT_BYTES = 2 << 20
+/** Image inline cap (bytes). */
+const MAX_IMAGE_BYTES = 8 << 20
+/** Per-directory listing cap. */
+const MAX_ENTRIES = 5000
+
+/** Canonicalize and verify one workspace root. */
+export async function canonicalRoot(input) {
+  if (typeof input !== 'string' || input.trim() === '') throw new ApiError('bad-request', 'missing workspace root')
+  if (!isAbsolute(input)) throw new ApiError('bad-request', 'workspace root must be absolute')
+  let real
+  try {
+    real = await realpath(input)
+  } catch {
+    throw new ApiError('not-found', `workspace root does not exist: ${input}`, 404)
+  }
+  const info = await stat(real)
+  if (!info.isDirectory()) throw new ApiError('bad-request', `workspace root is not a directory: ${input}`)
+  return real
+}
+
+/** Resolve one in-workspace path; absolute inputs must stay inside the root. */
+export function resolveInside(root, input) {
+  if (typeof input !== 'string' || input === '') throw new ApiError('bad-request', 'missing path')
+  const absolute = isAbsolute(input) ? resolve(input) : resolve(root, input)
+  const rel = relative(root, absolute)
+  if (rel === '') return absolute
+  if (rel.startsWith('..') || isAbsolute(rel)) {
+    throw new ApiError('forbidden', 'path is outside the workspace', 403)
+  }
+  return absolute
+}
+
+/** POSIX-style workspace-relative path (stable across platforms). */
+export function toRelative(root, absolute) {
+  return relative(root, absolute).split(sep).join('/')
+}
+
+/** Human ordering: directories first, then numeric-aware name order. */
+const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' })
+
+/**
+ * List one directory level.
+ * @param {string} root canonical workspace root
+ * @param {string} path absolute path inside the workspace
+ * @param {{ showHidden?: boolean }} [options]
+ */
+export async function listDirectory(root, path, options = {}) {
+  const showHidden = options.showHidden !== false
+  const dir = resolveInside(root, path)
+  let entries
+  try {
+    entries = await readdir(dir, { withFileTypes: true })
+  } catch (error) {
+    throw new ApiError('fs-error', `cannot read directory: ${error instanceof Error ? error.message : String(error)}`, 404)
+  }
+  const output = []
+  let truncated = false
+  for (const entry of entries) {
+    const name = entry.name
+    if (name === '.git' || name === '.DS_Store') continue
+    const hidden = name.startsWith('.')
+    if (hidden && !showHidden) continue
+    const absolute = join(dir, name)
+    let isDir = entry.isDirectory()
+    let isSymlink = entry.isSymbolicLink()
+    if (isSymlink) {
+      try {
+        const target = await stat(absolute)
+        isDir = target.isDirectory()
+      } catch {
+        // broken link: keep it visible as a file row
+      }
+    }
+    let size
+    let mtimeMs
+    try {
+      const info = await lstat(absolute)
+      size = info.size
+      mtimeMs = info.mtimeMs
+    } catch {
+      // ToC entry disappeared between readdir and stat: still list it.
+    }
+    output.push({
+      name,
+      path: absolute,
+      rel: toRelative(root, absolute),
+      isDir,
+      isSymlink,
+      hidden,
+      size,
+      mtimeMs,
+      ext: isDir ? '' : extname(name).toLowerCase(),
+    })
+    if (output.length >= MAX_ENTRIES) {
+      truncated = true
+      break
+    }
+  }
+  output.sort((a, b) => {
+    if (a.isDir !== b.isDir) return a.isDir ? -1 : 1
+    return collator.compare(a.name, b.name)
+  })
+  return { path: dir, rel: toRelative(root, dir), entries: output, truncated }
+}
+
+/** Decode a text buffer using its BOM when present (UTF-8 otherwise). */
+function decodeText(buffer) {
+  if (buffer.length >= 3 && buffer[0] === 0xEF && buffer[1] === 0xBB && buffer[2] === 0xBF) {
+    return { encoding: 'utf-8-bom', content: buffer.subarray(3).toString('utf8') }
+  }
+  if (buffer.length >= 2 && buffer[0] === 0xFF && buffer[1] === 0xFE) {
+    return { encoding: 'utf-16le', content: buffer.subarray(2).toString('utf16le') }
+  }
+  if (buffer.length >= 2 && buffer[0] === 0xFE && buffer[1] === 0xFF) {
+    const swapped = Buffer.from(buffer.subarray(2))
+    swapped.swap16()
+    return { encoding: 'utf-16be', content: swapped.toString('utf16le') }
+  }
+  return { encoding: 'utf-8', content: buffer.toString('utf8') }
+}
+
+/** Heuristic binary detection (NUL in the first 8 KiB). */
+function looksBinary(buffer) {
+  const probe = buffer.subarray(0, 8192)
+  for (let index = 0; index < probe.length; index += 1) {
+    if (probe[index] === 0) return true
+  }
+  return false
+}
+
+/**
+ * Read one file for the editor / preview.
+ * @param {string} root canonical workspace root
+ * @param {string} path absolute path inside the workspace
+ */
+export async function readFileForPreview(root, path) {
+  const absolute = resolveInside(root, path)
+  let info
+  try {
+    info = await stat(absolute)
+  } catch {
+    throw new ApiError('not-found', `file not found: ${toRelative(root, absolute)}`, 404)
+  }
+  if (info.isDirectory()) throw new ApiError('bad-request', 'path is a directory')
+  const ext = extname(absolute).toLowerCase()
+  const relativePath = toRelative(root, absolute)
+  const mime = IMAGE_TYPES[ext]
+  if (mime !== undefined) {
+    if (info.size > MAX_IMAGE_BYTES) {
+      return { kind: 'binary', size: info.size, mtimeMs: info.mtimeMs, path: relativePath }
+    }
+    const bytes = await readFile(absolute)
+    return {
+      kind: 'image',
+      mime,
+      size: info.size,
+      mtimeMs: info.mtimeMs,
+      dataUrl: `data:${mime};base64,${bytes.toString('base64')}`,
+      path: relativePath,
+    }
+  }
+  if (info.size > MAX_TEXT_BYTES) {
+    // Read only the front slice: a huge file must never be loaded whole just
+    // to show a read-only preview.
+    const handle = await open(absolute, 'r')
+    let slice
+    try {
+      const buffer = Buffer.alloc(MAX_TEXT_BYTES)
+      const { bytesRead } = await handle.read(buffer, 0, MAX_TEXT_BYTES, 0)
+      slice = buffer.subarray(0, bytesRead)
+    } finally {
+      await handle.close()
+    }
+    if (looksBinary(slice)) {
+      return { kind: 'binary', size: info.size, mtimeMs: info.mtimeMs, path: relativePath }
+    }
+    const decoded = decodeText(slice)
+    return {
+      kind: 'text',
+      content: decoded.content,
+      encoding: decoded.encoding,
+      size: info.size,
+      mtimeMs: info.mtimeMs,
+      truncated: true,
+      path: relativePath,
+    }
+  }
+  const buffer = await readFile(absolute)
+  if (looksBinary(buffer)) {
+    return { kind: 'binary', size: info.size, mtimeMs: info.mtimeMs, path: relativePath }
+  }
+  const decoded = decodeText(buffer)
+  return {
+    kind: 'text',
+    content: decoded.content,
+    encoding: decoded.encoding,
+    size: info.size,
+    mtimeMs: info.mtimeMs,
+    truncated: false,
+    path: relativePath,
+  }
+}
+
+/** File write cap for the editor (bytes). */
+const MAX_WRITE_BYTES = 8 << 20
+
+/** Encode editor text back into the encoding it was read with. */
+export function encodeText(content, encoding) {
+  const text = String(content ?? '')
+  switch (encoding) {
+    case 'utf-8-bom':
+      return Buffer.concat([Buffer.from([0xEF, 0xBB, 0xBF]), Buffer.from(text, 'utf8')])
+    case 'utf-16le':
+      return Buffer.concat([Buffer.from([0xFF, 0xFE]), Buffer.from(text, 'utf16le')])
+    case 'utf-16be': {
+      const le = Buffer.from(text, 'utf16le')
+      le.swap16()
+      return Buffer.concat([Buffer.from([0xFE, 0xFF]), le])
+    }
+    default:
+      return Buffer.from(text, 'utf8')
+  }
+}
+
+/**
+ * Save one editor buffer atomically in place.
+ *
+ * The path must already exist inside the workspace and must not be a symlink:
+ * the editor never creates files, so a missing target is an error rather than
+ * an implicit directory escape through a link.
+ * @param {string} root canonical workspace root
+ * @param {string} path absolute path inside the workspace
+ * @param {string} content new text
+ * @param {string} [encoding] encoding reported by the read
+ */
+export async function writeFileText(root, path, content, encoding = 'utf-8') {
+  const absolute = resolveInside(root, path)
+  let info
+  try {
+    info = await lstat(absolute)
+  } catch {
+    throw new ApiError('not-found', `file not found: ${toRelative(root, absolute)}`, 404)
+  }
+  if (info.isSymbolicLink()) throw new ApiError('forbidden', 'refusing to write through a symlink', 403)
+  if (info.isDirectory()) throw new ApiError('bad-request', 'path is a directory')
+  const buffer = encodeText(content, encoding)
+  if (buffer.length > MAX_WRITE_BYTES) {
+    throw new ApiError('too-large', `file exceeds the ${MAX_WRITE_BYTES} byte write limit`, 413)
+  }
+  const temp = `${absolute}.dsh-itw-${process.pid}-${Date.now()}.tmp`
+  try {
+    await writeFile(temp, buffer)
+    await rename(temp, absolute)
+  } catch (error) {
+    await unlink(temp).catch(() => {})
+    throw new ApiError('fs-error', `cannot save file: ${error instanceof Error ? error.message : String(error)}`, 500)
+  }
+  const after = await stat(absolute)
+  return { size: after.size, mtimeMs: after.mtimeMs, encoding, path: toRelative(root, absolute) }
+}
+
+/** Reveal a path in the OS file manager (detached, no output). */
+export function revealInExplorer(absolute) {
+  const platform = process.platform
+  let command
+  let args
+  if (platform === 'win32') {
+    command = 'explorer.exe'
+    args = [`/select,${absolute}`]
+  } else if (platform === 'darwin') {
+    command = 'open'
+    args = ['-R', absolute]
+  } else {
+    command = 'xdg-open'
+    args = [dirname(absolute)]
+  }
+  try {
+    const child = spawn(command, args, { detached: true, stdio: 'ignore', windowsHide: true })
+    child.unref()
+    return true
+  } catch {
+    return false
+  }
+}
+
+/** Candidate shell executables for this platform. */
+export function shellCandidates() {
+  const candidates = []
+  const add = (id, label, path) => {
+    if (typeof path === 'string' && path !== '' && existsSync(path) && !candidates.some(item => item.id === id)) {
+      candidates.push({ id, label, path })
+    }
+  }
+  if (process.platform === 'win32') {
+    const localAppData = process.env.LOCALAPPDATA ?? ''
+    const programFiles = process.env.ProgramFiles ?? 'C:\\Program Files'
+    const programFilesX86 = process.env['ProgramFiles(x86)'] ?? 'C:\\Program Files (x86)'
+    const whereCandidates = [
+      ['pwsh', 'PowerShell 7', ['C:\\Program Files\\PowerShell\\7\\pwsh.exe', join(localAppData, 'Microsoft\\WindowsApps\\pwsh.exe')]],
+      ['powershell', 'Windows PowerShell', ['C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe']],
+      ['cmd', 'Command Prompt', ['C:\\Windows\\System32\\cmd.exe']],
+      ['git-bash', 'Git Bash', [
+        join(programFiles, 'Git\\bin\\bash.exe'),
+        join(programFilesX86, 'Git\\bin\\bash.exe'),
+        join(localAppData, 'Programs\\Git\\bin\\bash.exe'),
+      ]],
+    ]
+    for (const [id, label, paths] of whereCandidates) add(id, label, paths.find(candidate => existsSync(candidate)))
+  } else {
+    add('zsh', 'zsh', '/bin/zsh')
+    add('bash', 'bash', '/bin/bash')
+    const fromEnv = process.env.SHELL
+    if (typeof fromEnv === 'string' && fromEnv !== '') add(fromEnv.split('/').pop() ?? 'shell', fromEnv, fromEnv)
+  }
+  return candidates
+}
+
+/** argv for one shell profile, tuned for interactive use. */
+export function shellArgv(id, path) {
+  if (process.platform === 'win32') {
+    if (id === 'pwsh') return [path, '-NoLogo']
+    if (id === 'powershell') return [path, '-NoLogo']
+    if (id === 'git-bash') return [path, '--login', '-i']
+    return [path]
+  }
+  return [path, '-l']
+}
+
+/** Environment for an interactive terminal (UTF-8 everywhere). */
+export function terminalEnv() {
+  const env = {}
+  for (const [key, value] of Object.entries(process.env)) {
+    if (typeof value === 'string') env[key] = value
+  }
+  env.TERM = 'xterm-256color'
+  env.COLORTERM = 'truecolor'
+  env.PYTHONUTF8 = '1'
+  env.PYTHONIOENCODING = 'utf-8'
+  env.LANG = env.LANG ?? 'en_US.UTF-8'
+  env.LC_ALL = env.LC_ALL ?? 'en_US.UTF-8'
+  delete env.ELECTRON_RUN_AS_NODE
+  return env
+}

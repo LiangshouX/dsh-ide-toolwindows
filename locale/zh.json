@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "IDE 工具窗口",
+    "description": "JetBrains 风格的 Project / Commit / Terminal / Git 工具窗，共享同一份仓库状态：预览标签、Git 着色、差异暂存、提交图谱与内嵌终端。"
+  }
+}
