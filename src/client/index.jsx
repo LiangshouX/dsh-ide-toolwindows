@@ -102,9 +102,9 @@ function BoundWorkbench({ getStore, sessionId, useTabInfo, ctx, reportVisible, r
   return React.createElement(Workbench, { store, visible: tab.visible, fullscreen: sidebar.fullscreen })
 }
 
-function BoundSettings({ store, close }) {
+function BoundSettings({ store }) {
   const state = useWorkbench(store)
-  return React.createElement(SettingsSection, { store, state, close })
+  return React.createElement(SettingsSection, { store, state })
 }
 
 function OpenButton({ open, t }) {
@@ -309,9 +309,9 @@ export function apply(ctx) {
 
   ctx.effect(() => ctx.slots.inject('settings.section', () => ctx.slots.register({
     name: 'settings.section', id: PANEL_ID, order: 60, label: () => t('settings.nav'),
-  }, props => React.createElement(React.Fragment, null,
+  }, () => React.createElement(React.Fragment, null,
     React.createElement(Styles),
-    React.createElement(BoundSettings, { store: settingsStore, close: props?.close }),
+    React.createElement(BoundSettings, { store: settingsStore }),
   ))), 'dsh-ide-toolwindows: settings section')
 
   ctx.effect(() => {

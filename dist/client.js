@@ -339,6 +339,9 @@ var en = {
   "settings.saved": "Saved",
   "settings.reset": "Reset to defaults",
   "settings.shortcuts": "Shortcuts",
+  "settings.shortcutsGroupHint": "Click a shortcut, then press the new key combination. Esc cancels.",
+  "settings.pressKeys": "Press keys\u2026",
+  "settings.recordShortcutHint": "Click, then press the new shortcut",
   "settings.projectShortcut": "Project window",
   "settings.projectShortcutHint": "Open / focus Project",
   "settings.commitShortcut": "Commit window",
@@ -750,6 +753,9 @@ var zh = {
   "settings.saved": "\u5DF2\u4FDD\u5B58",
   "settings.reset": "\u6062\u590D\u9ED8\u8BA4\u8BBE\u7F6E",
   "settings.shortcuts": "\u5FEB\u6377\u952E",
+  "settings.shortcutsGroupHint": "\u70B9\u51FB\u5FEB\u6377\u952E\u540E\u6309\u4E0B\u65B0\u7684\u7EC4\u5408\u952E\uFF1B\u6309 Esc \u53D6\u6D88\u3002",
+  "settings.pressKeys": "\u6309\u4E0B\u7EC4\u5408\u952E\u2026",
+  "settings.recordShortcutHint": "\u70B9\u51FB\u540E\u6309\u4E0B\u65B0\u7684\u7EC4\u5408\u952E",
   "settings.projectShortcut": "Project \u5DE5\u5177\u7A97",
   "settings.projectShortcutHint": "\u6253\u5F00 / \u805A\u7126 Project",
   "settings.commitShortcut": "Commit \u5DE5\u5177\u7A97",
@@ -4442,7 +4448,14 @@ function Toast({ toast }) {
     )
   );
 }
-function ShortcutCapture({ value, onCapture, active, onActivate }) {
+function ShortcutCapture({
+  value,
+  onCapture,
+  active,
+  onActivate,
+  pressText = "Press keys\u2026",
+  hint = "Click, then press the new shortcut"
+}) {
   const [armed, setArmed] = (0, import_react3.useState)(false);
   (0, import_react3.useEffect)(() => {
     if (!armed) return void 0;
@@ -4481,8 +4494,9 @@ function ShortcutCapture({ value, onCapture, active, onActivate }) {
       setArmed(true);
       onActivate?.(true);
     },
-    title: "Click and press the new shortcut"
-  }, armed ? "Press keys\u2026" : value);
+    title: hint,
+    "aria-label": hint
+  }, armed ? pressText : value);
 }
 function Kbd({ children }) {
   return import_react3.default.createElement("span", { className: "itw-kbd" }, children);
@@ -48816,24 +48830,33 @@ function SettingsForm({ store, state, compact }) {
     setDraft(next);
     commit(patch);
   };
+  const Group = ({ title, description, children }) => import_react15.default.createElement(
+    "section",
+    { className: "itw-settings-group" },
+    import_react15.default.createElement("h3", { className: "itw-settings-group-title" }, title),
+    description !== void 0 ? import_react15.default.createElement("p", { className: "itw-settings-group-desc" }, description) : null,
+    import_react15.default.createElement("div", { className: "itw-settings-rows" }, children)
+  );
   const Row = ({ label, hint, children }) => import_react15.default.createElement(
     "div",
     { className: "itw-settings-row" },
     import_react15.default.createElement(
       "div",
       { className: "itw-settings-label" },
-      import_react15.default.createElement("div", null, label),
+      import_react15.default.createElement("div", { className: "itw-settings-title" }, label),
       hint !== void 0 ? import_react15.default.createElement("div", { className: "itw-settings-hint" }, hint) : null
     ),
-    children
+    import_react15.default.createElement("div", { className: "itw-settings-control" }, children)
   );
   return import_react15.default.createElement(
     "div",
     { className: "itw-settings" },
     import_react15.default.createElement(
-      "div",
-      { className: "itw-settings-group" },
-      import_react15.default.createElement("h3", null, t2("settings.shortcuts")),
+      Group,
+      {
+        title: t2("settings.shortcuts"),
+        description: t2("settings.shortcutsGroupHint")
+      },
       SHORTCUT_FIELDS.map(([field, labelKey]) => import_react15.default.createElement(
         Row,
         {
@@ -48845,14 +48868,15 @@ function SettingsForm({ store, state, compact }) {
           value: draft.shortcuts?.[field] ?? "",
           active: capturing,
           onActivate: setCapturing,
-          onCapture: (value) => update({ shortcuts: { [field]: value } })
+          onCapture: (value) => update({ shortcuts: { [field]: value } }),
+          pressText: t2("settings.pressKeys"),
+          hint: t2("settings.recordShortcutHint")
         })
       ))
     ),
     import_react15.default.createElement(
-      "div",
-      { className: "itw-settings-group" },
-      import_react15.default.createElement("h3", null, t2("settings.terminalGroup")),
+      Group,
+      { title: t2("settings.terminalGroup") },
       import_react15.default.createElement(
         Row,
         { label: t2("settings.defaultShell"), hint: t2("settings.defaultShellHint") },
@@ -48889,9 +48913,8 @@ function SettingsForm({ store, state, compact }) {
       )
     ),
     import_react15.default.createElement(
-      "div",
-      { className: "itw-settings-group" },
-      import_react15.default.createElement("h3", null, t2("settings.filesGroup")),
+      Group,
+      { title: t2("settings.filesGroup") },
       import_react15.default.createElement(
         Row,
         { label: t2("project.alwaysSelect") },
@@ -48971,12 +48994,11 @@ function SettingsForm({ store, state, compact }) {
       )
     ),
     import_react15.default.createElement(
-      "div",
-      { className: "itw-settings-group" },
-      import_react15.default.createElement("h3", null, t2("settings.ideGroup")),
+      Group,
+      { title: t2("settings.ideGroup"), description: t2("settings.idePathHint") },
       IDE_OPTIONS.map((ide) => import_react15.default.createElement(
         Row,
-        { key: ide.id, label: ide.title, hint: t2("settings.idePathHint") },
+        { key: ide.id, label: ide.title },
         import_react15.default.createElement("input", {
           type: "text",
           className: "itw-input",
@@ -48988,9 +49010,8 @@ function SettingsForm({ store, state, compact }) {
       ))
     ),
     import_react15.default.createElement(
-      "div",
-      { className: "itw-settings-group" },
-      import_react15.default.createElement("h3", null, t2("settings.editorGroup")),
+      Group,
+      { title: t2("settings.editorGroup") },
       import_react15.default.createElement(
         Row,
         { label: t2("settings.openMode"), hint: t2("settings.openModeHint") },
@@ -49039,9 +49060,8 @@ function SettingsForm({ store, state, compact }) {
       )
     ),
     import_react15.default.createElement(
-      "div",
-      { className: "itw-settings-group" },
-      import_react15.default.createElement("h3", null, t2("settings.gitGroup")),
+      Group,
+      { title: t2("settings.gitGroup") },
       import_react15.default.createElement(
         Row,
         { label: t2("settings.gitPath"), hint: t2("settings.gitPathHint") },
@@ -49057,22 +49077,19 @@ function SettingsForm({ store, state, compact }) {
         { label: t2("settings.commitTemplate"), hint: t2("settings.commitTemplateHint") },
         import_react15.default.createElement("input", {
           type: "text",
-          style: { minWidth: 240 },
           value: draft.git?.commitTemplate ?? "",
           onChange: (event) => update({ git: { commitTemplate: event.target.value } })
         })
       )
     ),
     import_react15.default.createElement(
-      "div",
-      { className: "itw-settings-group" },
-      import_react15.default.createElement("h3", null, t2("settings.commitGroup")),
+      Group,
+      { title: t2("settings.commitGroup") },
       import_react15.default.createElement(
         Row,
         { label: t2("settings.testCommand"), hint: t2("settings.testCommandHint") },
         import_react15.default.createElement("input", {
           type: "text",
-          style: { minWidth: 240 },
           placeholder: "npm test",
           value: draft.commit?.testCommand ?? "",
           onChange: (event) => update({ commit: { testCommand: event.target.value } })
@@ -49083,7 +49100,6 @@ function SettingsForm({ store, state, compact }) {
         { label: t2("settings.optimizeCommand"), hint: t2("settings.optimizeCommandHint") },
         import_react15.default.createElement("input", {
           type: "text",
-          style: { minWidth: 240 },
           value: draft.commit?.optimizeImportsCommand ?? "",
           onChange: (event) => update({ commit: { optimizeImportsCommand: event.target.value } })
         })
@@ -49093,16 +49109,14 @@ function SettingsForm({ store, state, compact }) {
         { label: t2("settings.cleanupCommand"), hint: t2("settings.cleanupCommandHint") },
         import_react15.default.createElement("input", {
           type: "text",
-          style: { minWidth: 240 },
           value: draft.commit?.cleanupCommand ?? "",
           onChange: (event) => update({ commit: { cleanupCommand: event.target.value } })
         })
       )
     ),
     import_react15.default.createElement(
-      "div",
-      { className: "itw-settings-group" },
-      import_react15.default.createElement("h3", null, t2("settings.appearanceGroup")),
+      Group,
+      { title: t2("settings.appearanceGroup") },
       import_react15.default.createElement(
         Row,
         { label: t2("settings.highlight") },
@@ -49115,24 +49129,25 @@ function SettingsForm({ store, state, compact }) {
       import_react15.default.createElement(
         Row,
         { label: t2("settings.language"), hint: t2("settings.languageHint") },
-        import_react15.default.createElement("span", { style: { color: "var(--itw-muted)", fontSize: 12 } }, t2("settings.followDsh"))
+        import_react15.default.createElement("span", { className: "itw-settings-value" }, t2("settings.followDsh"))
       )
     ),
-    saved === true ? import_react15.default.createElement("div", { className: "itw-settings-saved" }, t2("settings.saved")) : null,
-    compact === true ? null : import_react15.default.createElement(
+    import_react15.default.createElement(
       "div",
-      { style: { marginTop: 8 } },
-      import_react15.default.createElement("button", {
+      { className: "itw-settings-footer" },
+      compact === true ? null : import_react15.default.createElement("button", {
         type: "button",
-        className: "itw-textbtn itw-small",
+        className: "itw-textbtn itw-small itw-settings-reset",
         onClick: () => {
           const reset = {
             git: { path: "", colors: true, commitTemplate: "" },
             idea: { path: "" },
             webstorm: { path: "" },
             vscode: { path: "" },
-            terminal: { shell: "auto", copyOnSelect: false },
-            project: { alwaysSelectOpened: true, showHidden: true },
+            terminal: { shell: "auto", copyOnSelect: false, fontSize: 13 },
+            project: { alwaysSelectOpened: true, showHidden: true, showIgnored: false, singleClickOpen: false },
+            commit: { groupByDirectory: false },
+            delete: { useRecycleBin: true },
             editor: { fontSize: 13, highlight: true, openMode: "auto", editableMaxBytes: 1 << 20, markdownPreview: true },
             links: { chatFiles: "ide" },
             shortcuts: {
@@ -49151,20 +49166,16 @@ function SettingsForm({ store, state, compact }) {
           setDraft({ ...draft, ...reset });
           commit(reset);
         }
-      }, t2("settings.reset"))
+      }, t2("settings.reset")),
+      saved === true ? import_react15.default.createElement("div", { className: "itw-settings-saved", role: "status" }, t2("settings.saved")) : null
     )
   );
 }
-function SettingsSection({ store, state, close }) {
+function SettingsSection({ store, state }) {
   return import_react15.default.createElement(
     "div",
-    { style: { padding: "8px 4px 24px" } },
-    import_react15.default.createElement(SettingsForm, { store, state }),
-    import_react15.default.createElement(
-      "div",
-      { style: { marginTop: 12 } },
-      import_react15.default.createElement("button", { type: "button", className: "itw-textbtn itw-small", onClick: () => close?.() }, store.t("common.close"))
-    )
+    { className: "itw-settings-section" },
+    import_react15.default.createElement(SettingsForm, { store, state })
   );
 }
 
@@ -49777,15 +49788,14 @@ function Workbench({ store, visible = true, fullscreen = false }) {
 
 // src/client/styles.js
 var CSS2 = `
-.itw-root {
-  container-type: inline-size;
-  container-name: ide-workbench;
+.itw-root, .itw-settings {
   --itw-bg: var(--dsw-alias-bg-base, #15171c);
   --itw-panel: var(--dsw-alias-bg-layer-1, #1b1e24);
   --itw-panel-2: var(--dsw-alias-bg-layer-2, #22262e);
   --itw-overlay: var(--dsw-alias-bg-overlay, #262b34);
   --itw-border: var(--dsw-alias-border-l1, #2c313a);
   --itw-border-strong: var(--dsw-alias-border-l2, #3b424e);
+  --itw-divider: var(--dsw-alias-border-l2, #3b424e);
   --itw-fg: var(--dsw-alias-label-primary, #d8dce3);
   --itw-muted: var(--dsw-alias-label-secondary, #8a93a1);
   --itw-accent: var(--dsw-alias-brand-primary, #4c9aff);
@@ -49807,6 +49817,10 @@ var CSS2 = `
   --itw-excluded-bg: rgba(176, 139, 79, .16);
   --itw-font: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei UI", "PingFang SC", sans-serif;
   --itw-mono: "JetBrains Mono", "Cascadia Code", "SF Mono", Consolas, "Courier New", monospace;
+}
+.itw-root {
+  container-type: inline-size;
+  container-name: ide-workbench;
   position: relative;
   flex: 1 1 auto;
   width: 100%;
@@ -50329,24 +50343,95 @@ var CSS2 = `
 .itw-term-host .xterm { height: 100%; }
 .itw-term-error { padding: 16px; color: var(--itw-error); font-size: 12px; white-space: pre-wrap; user-select: text; }
 
-.itw-settings { padding: 4px 4px 24px; max-width: 640px; }
-.itw-settings-group { margin-bottom: 22px; }
-.itw-settings-group h3 { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--itw-muted); margin: 0 0 8px; }
-.itw-settings-row { display: flex; align-items: center; gap: 12px; min-height: 34px; padding: 4px 0; border-bottom: 1px solid var(--itw-border); }
-.itw-settings-row .itw-settings-label { flex: 1; min-width: 0; }
-.itw-settings-row .itw-settings-hint { color: var(--itw-muted); font-size: 11px; }
-.itw-settings-row input[type="text"], .itw-settings-row input[type="number"], .itw-settings-row select {
-  height: 26px; border-radius: 5px; border: 1px solid var(--itw-border); background: var(--itw-panel-2);
-  padding: 0 8px; font-size: 12px; outline: none; min-width: 160px;
+/*
+ * Settings also render outside the .itw-root pane (the native settings.section
+ * page), so the block above carries the design tokens and this section
+ * re-declares only what it needs. Hierarchy: group title -> row title -> row
+ * hint -> control.
+ */
+.itw-settings-section { width: 100%; }
+.itw-settings {
+  container-type: inline-size;
+  container-name: itw-settings;
+  width: 100%;
+  max-width: 720px;
+  padding: 8px 0;
+  color: var(--itw-fg);
+  font-family: var(--itw-font);
+  font-size: 14px;
+  line-height: 1.45;
 }
-.itw-settings-row input[type="checkbox"] { accent-color: var(--itw-accent); width: 15px; height: 15px; }
+.itw-settings *, .itw-settings *::before, .itw-settings *::after { box-sizing: border-box; }
+.itw-settings :where(button, input, select) { font: inherit; color: inherit; }
+.itw-settings :where(button) { background: none; border: 0; padding: 0; cursor: pointer; }
+.itw-settings-group { margin: 0; }
+.itw-settings-group + .itw-settings-group {
+  margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--itw-divider);
+}
+.itw-settings-group-title {
+  margin: 0; color: var(--itw-fg); font-size: 15px; font-weight: 600; line-height: 24px;
+  letter-spacing: 0; text-transform: none;
+}
+.itw-settings-group-desc { margin: 2px 0 0; max-width: 560px; color: var(--itw-muted); font-size: 12px; line-height: 18px; }
+.itw-settings-rows { display: flex; flex-direction: column; margin-top: 4px; }
+.itw-settings-row {
+  display: flex; align-items: center; gap: 24px; min-height: 48px; padding: 12px 0;
+  border-bottom: .5px solid var(--itw-divider);
+}
+.itw-settings-rows > .itw-settings-row:last-child { border-bottom: 0; }
+.itw-settings-label { flex: 1 1 auto; min-width: 0; }
+.itw-settings-title { color: var(--itw-fg); font-size: 14px; line-height: 22px; }
+.itw-settings-hint { margin-top: 2px; color: var(--itw-muted); font-size: 12px; line-height: 18px; }
+.itw-settings-control {
+  flex: 0 0 auto; margin-left: auto; display: flex; align-items: center; justify-content: flex-end; gap: 8px;
+}
+.itw-settings-control input[type="text"], .itw-settings-control input[type="number"],
+.itw-settings-control select {
+  height: 32px; min-width: 0; padding: 0 10px; color: var(--itw-fg);
+  border: 1px solid var(--itw-border-strong); border-radius: 6px; background: var(--itw-bg);
+  font-size: 13px; outline: none; transition: border-color .12s ease, box-shadow .12s ease;
+}
+.itw-settings-control input[type="text"] { width: 300px; }
+.itw-settings-control select { width: 220px; padding-right: 26px; }
+.itw-settings-control input[type="number"] {
+  width: 96px; padding-right: 8px; text-align: right; font-variant-numeric: tabular-nums;
+}
+.itw-settings-control :is(input[type="text"], input[type="number"], select):hover { border-color: var(--itw-muted); }
+.itw-settings-control :is(input[type="text"], input[type="number"], select):focus {
+  border-color: var(--itw-accent); box-shadow: 0 0 0 1px var(--itw-accent);
+}
+.itw-settings-control input[type="checkbox"] {
+  width: 16px; height: 16px; margin: 0; accent-color: var(--itw-accent); cursor: pointer;
+}
+.itw-settings-value { color: var(--itw-muted); font-size: 13px; }
 .itw-settings-shortcut {
-  display: inline-flex; align-items: center; justify-content: center; min-width: 110px; height: 26px; padding: 0 10px;
-  border: 1px solid var(--itw-border); border-radius: 6px; background: var(--itw-panel-2); font-family: var(--itw-mono);
-  font-size: 11.5px; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center; min-width: 150px; height: 32px; padding: 0 12px;
+  border: 1px solid var(--itw-border-strong); border-radius: 7px; background: var(--itw-panel-2);
+  color: var(--itw-fg); font-family: var(--itw-mono); font-size: 12px; letter-spacing: .02em;
+  cursor: pointer; transition: border-color .12s ease, background .12s ease, color .12s ease;
 }
-.itw-settings-shortcut.itw-capturing { border-color: var(--itw-accent); color: var(--itw-accent); }
-.itw-settings-saved { color: var(--itw-success); font-size: 11.5px; }
+.itw-settings-shortcut:hover { border-color: var(--itw-muted); background: var(--itw-bg); }
+.itw-settings-shortcut:focus-visible { outline: 2px solid var(--itw-accent); outline-offset: 1px; }
+.itw-settings-shortcut.itw-capturing {
+  border-color: var(--itw-accent); color: var(--itw-accent); background: var(--itw-bg);
+}
+.itw-settings .itw-textbtn {
+  display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px; border-radius: 6px;
+  border: 1px solid var(--itw-border-strong); color: var(--itw-fg); background: transparent; font-size: 12.5px;
+}
+.itw-settings .itw-textbtn:hover { border-color: var(--itw-muted); background: var(--itw-panel-2); }
+.itw-settings-footer {
+  display: flex; align-items: center; gap: 12px; margin-top: 22px; padding-top: 16px;
+  border-top: 1px solid var(--itw-divider);
+}
+.itw-settings-saved { margin-left: auto; color: var(--itw-success); font-size: 12px; }
+@container itw-settings (max-width: 520px) {
+  .itw-settings-row { flex-wrap: wrap; gap: 8px 16px; padding: 12px 0; }
+  .itw-settings-control { width: 100%; justify-content: flex-start; }
+  .itw-settings-control input[type="text"] { width: 100%; }
+  .itw-settings-control select { width: 100%; }
+  .itw-settings-shortcut { min-width: 132px; }
+}
 
 .itw-modal-backdrop {
   position: absolute; inset: 0; background: rgba(0, 0, 0, .45); display: flex; align-items: center; justify-content: center; z-index: 50;
@@ -50683,9 +50768,9 @@ function BoundWorkbench({ getStore, sessionId, useTabInfo, ctx, reportVisible, r
   if (!isMounted) return null;
   return import_react18.default.createElement(Workbench, { store, visible: tab3.visible, fullscreen: sidebar.fullscreen });
 }
-function BoundSettings({ store, close }) {
+function BoundSettings({ store }) {
   const state = useWorkbench(store);
-  return import_react18.default.createElement(SettingsSection, { store, state, close });
+  return import_react18.default.createElement(SettingsSection, { store, state });
 }
 function OpenButton({ open, t: t2 }) {
   return import_react18.default.createElement("button", {
@@ -50905,11 +50990,11 @@ ${CSS2}`);
     id: PANEL_ID,
     order: 60,
     label: () => t2("settings.nav")
-  }, (props) => import_react18.default.createElement(
+  }, () => import_react18.default.createElement(
     import_react18.default.Fragment,
     null,
     import_react18.default.createElement(Styles),
-    import_react18.default.createElement(BoundSettings, { store: settingsStore, close: props?.close })
+    import_react18.default.createElement(BoundSettings, { store: settingsStore })
   ))), "dsh-ide-toolwindows: settings section");
   ctx.effect(() => {
     const onKeyDown = (event) => {

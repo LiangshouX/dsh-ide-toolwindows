@@ -5,15 +5,14 @@
  * harness light/dark theme and transparent skins.
  */
 export const CSS = `
-.itw-root {
-  container-type: inline-size;
-  container-name: ide-workbench;
+.itw-root, .itw-settings {
   --itw-bg: var(--dsw-alias-bg-base, #15171c);
   --itw-panel: var(--dsw-alias-bg-layer-1, #1b1e24);
   --itw-panel-2: var(--dsw-alias-bg-layer-2, #22262e);
   --itw-overlay: var(--dsw-alias-bg-overlay, #262b34);
   --itw-border: var(--dsw-alias-border-l1, #2c313a);
   --itw-border-strong: var(--dsw-alias-border-l2, #3b424e);
+  --itw-divider: var(--dsw-alias-border-l2, #3b424e);
   --itw-fg: var(--dsw-alias-label-primary, #d8dce3);
   --itw-muted: var(--dsw-alias-label-secondary, #8a93a1);
   --itw-accent: var(--dsw-alias-brand-primary, #4c9aff);
@@ -35,6 +34,10 @@ export const CSS = `
   --itw-excluded-bg: rgba(176, 139, 79, .16);
   --itw-font: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei UI", "PingFang SC", sans-serif;
   --itw-mono: "JetBrains Mono", "Cascadia Code", "SF Mono", Consolas, "Courier New", monospace;
+}
+.itw-root {
+  container-type: inline-size;
+  container-name: ide-workbench;
   position: relative;
   flex: 1 1 auto;
   width: 100%;
@@ -557,24 +560,95 @@ export const CSS = `
 .itw-term-host .xterm { height: 100%; }
 .itw-term-error { padding: 16px; color: var(--itw-error); font-size: 12px; white-space: pre-wrap; user-select: text; }
 
-.itw-settings { padding: 4px 4px 24px; max-width: 640px; }
-.itw-settings-group { margin-bottom: 22px; }
-.itw-settings-group h3 { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--itw-muted); margin: 0 0 8px; }
-.itw-settings-row { display: flex; align-items: center; gap: 12px; min-height: 34px; padding: 4px 0; border-bottom: 1px solid var(--itw-border); }
-.itw-settings-row .itw-settings-label { flex: 1; min-width: 0; }
-.itw-settings-row .itw-settings-hint { color: var(--itw-muted); font-size: 11px; }
-.itw-settings-row input[type="text"], .itw-settings-row input[type="number"], .itw-settings-row select {
-  height: 26px; border-radius: 5px; border: 1px solid var(--itw-border); background: var(--itw-panel-2);
-  padding: 0 8px; font-size: 12px; outline: none; min-width: 160px;
+/*
+ * Settings also render outside the .itw-root pane (the native settings.section
+ * page), so the block above carries the design tokens and this section
+ * re-declares only what it needs. Hierarchy: group title -> row title -> row
+ * hint -> control.
+ */
+.itw-settings-section { width: 100%; }
+.itw-settings {
+  container-type: inline-size;
+  container-name: itw-settings;
+  width: 100%;
+  max-width: 720px;
+  padding: 8px 0;
+  color: var(--itw-fg);
+  font-family: var(--itw-font);
+  font-size: 14px;
+  line-height: 1.45;
 }
-.itw-settings-row input[type="checkbox"] { accent-color: var(--itw-accent); width: 15px; height: 15px; }
+.itw-settings *, .itw-settings *::before, .itw-settings *::after { box-sizing: border-box; }
+.itw-settings :where(button, input, select) { font: inherit; color: inherit; }
+.itw-settings :where(button) { background: none; border: 0; padding: 0; cursor: pointer; }
+.itw-settings-group { margin: 0; }
+.itw-settings-group + .itw-settings-group {
+  margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--itw-divider);
+}
+.itw-settings-group-title {
+  margin: 0; color: var(--itw-fg); font-size: 15px; font-weight: 600; line-height: 24px;
+  letter-spacing: 0; text-transform: none;
+}
+.itw-settings-group-desc { margin: 2px 0 0; max-width: 560px; color: var(--itw-muted); font-size: 12px; line-height: 18px; }
+.itw-settings-rows { display: flex; flex-direction: column; margin-top: 4px; }
+.itw-settings-row {
+  display: flex; align-items: center; gap: 24px; min-height: 48px; padding: 12px 0;
+  border-bottom: .5px solid var(--itw-divider);
+}
+.itw-settings-rows > .itw-settings-row:last-child { border-bottom: 0; }
+.itw-settings-label { flex: 1 1 auto; min-width: 0; }
+.itw-settings-title { color: var(--itw-fg); font-size: 14px; line-height: 22px; }
+.itw-settings-hint { margin-top: 2px; color: var(--itw-muted); font-size: 12px; line-height: 18px; }
+.itw-settings-control {
+  flex: 0 0 auto; margin-left: auto; display: flex; align-items: center; justify-content: flex-end; gap: 8px;
+}
+.itw-settings-control input[type="text"], .itw-settings-control input[type="number"],
+.itw-settings-control select {
+  height: 32px; min-width: 0; padding: 0 10px; color: var(--itw-fg);
+  border: 1px solid var(--itw-border-strong); border-radius: 6px; background: var(--itw-bg);
+  font-size: 13px; outline: none; transition: border-color .12s ease, box-shadow .12s ease;
+}
+.itw-settings-control input[type="text"] { width: 300px; }
+.itw-settings-control select { width: 220px; padding-right: 26px; }
+.itw-settings-control input[type="number"] {
+  width: 96px; padding-right: 8px; text-align: right; font-variant-numeric: tabular-nums;
+}
+.itw-settings-control :is(input[type="text"], input[type="number"], select):hover { border-color: var(--itw-muted); }
+.itw-settings-control :is(input[type="text"], input[type="number"], select):focus {
+  border-color: var(--itw-accent); box-shadow: 0 0 0 1px var(--itw-accent);
+}
+.itw-settings-control input[type="checkbox"] {
+  width: 16px; height: 16px; margin: 0; accent-color: var(--itw-accent); cursor: pointer;
+}
+.itw-settings-value { color: var(--itw-muted); font-size: 13px; }
 .itw-settings-shortcut {
-  display: inline-flex; align-items: center; justify-content: center; min-width: 110px; height: 26px; padding: 0 10px;
-  border: 1px solid var(--itw-border); border-radius: 6px; background: var(--itw-panel-2); font-family: var(--itw-mono);
-  font-size: 11.5px; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center; min-width: 150px; height: 32px; padding: 0 12px;
+  border: 1px solid var(--itw-border-strong); border-radius: 7px; background: var(--itw-panel-2);
+  color: var(--itw-fg); font-family: var(--itw-mono); font-size: 12px; letter-spacing: .02em;
+  cursor: pointer; transition: border-color .12s ease, background .12s ease, color .12s ease;
 }
-.itw-settings-shortcut.itw-capturing { border-color: var(--itw-accent); color: var(--itw-accent); }
-.itw-settings-saved { color: var(--itw-success); font-size: 11.5px; }
+.itw-settings-shortcut:hover { border-color: var(--itw-muted); background: var(--itw-bg); }
+.itw-settings-shortcut:focus-visible { outline: 2px solid var(--itw-accent); outline-offset: 1px; }
+.itw-settings-shortcut.itw-capturing {
+  border-color: var(--itw-accent); color: var(--itw-accent); background: var(--itw-bg);
+}
+.itw-settings .itw-textbtn {
+  display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px; border-radius: 6px;
+  border: 1px solid var(--itw-border-strong); color: var(--itw-fg); background: transparent; font-size: 12.5px;
+}
+.itw-settings .itw-textbtn:hover { border-color: var(--itw-muted); background: var(--itw-panel-2); }
+.itw-settings-footer {
+  display: flex; align-items: center; gap: 12px; margin-top: 22px; padding-top: 16px;
+  border-top: 1px solid var(--itw-divider);
+}
+.itw-settings-saved { margin-left: auto; color: var(--itw-success); font-size: 12px; }
+@container itw-settings (max-width: 520px) {
+  .itw-settings-row { flex-wrap: wrap; gap: 8px 16px; padding: 12px 0; }
+  .itw-settings-control { width: 100%; justify-content: flex-start; }
+  .itw-settings-control input[type="text"] { width: 100%; }
+  .itw-settings-control select { width: 100%; }
+  .itw-settings-shortcut { min-width: 132px; }
+}
 
 .itw-modal-backdrop {
   position: absolute; inset: 0; background: rgba(0, 0, 0, .45); display: flex; align-items: center; justify-content: center; z-index: 50;

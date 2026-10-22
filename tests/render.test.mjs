@@ -214,6 +214,18 @@ test('edit mode renders save/restore and the dirty marker', async () => {
   assert.match(html, /editor\.dirty/)
 })
 
+test('settings render grouped rows with a shared control column', async () => {
+  const mod = await loadModule()
+  const html = mod.renderSettings()
+  assert.match(html, /itw-settings-group-title/)
+  assert.match(html, /itw-settings-group-desc/)
+  assert.match(html, /itw-settings-control/)
+  assert.match(html, /settings\.shortcutsGroupHint/)
+  assert.match(html, /itw-settings-shortcut/)
+  // The external-IDE explanation is a group description, not repeated per row.
+  assert.equal((html.match(/settings\.idePathHint/g) ?? []).length, 1)
+})
+
 test('client opens a native sidebar tab without registering a central page', async () => {
   const mod = await loadModule()
   const entries = []

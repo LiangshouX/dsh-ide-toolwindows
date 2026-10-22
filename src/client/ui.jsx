@@ -177,7 +177,10 @@ export function Toast({ toast }) {
 }
 
 /** Inline editable keyboard-shortcut chip (captures one combo). */
-export function ShortcutCapture({ value, onCapture, active, onActivate }) {
+export function ShortcutCapture({
+  value, onCapture, active, onActivate,
+  pressText = 'Press keys…', hint = 'Click, then press the new shortcut',
+}) {
   const [armed, setArmed] = useState(false)
   useEffect(() => {
     if (!armed) return undefined
@@ -209,8 +212,9 @@ export function ShortcutCapture({ value, onCapture, active, onActivate }) {
     type: 'button',
     className: `itw-settings-shortcut ${armed ? 'itw-capturing' : ''}`,
     onClick: () => { setArmed(true); onActivate?.(true) },
-    title: 'Click and press the new shortcut',
-  }, armed ? 'Press keys…' : value)
+    title: hint,
+    'aria-label': hint,
+  }, armed ? pressText : value)
 }
 
 export function Kbd({ children }) {

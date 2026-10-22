@@ -8,6 +8,7 @@ import { renderToStaticMarkup } from 'react-dom/server'
 import { WorkbenchStore } from '../src/client/store.js'
 import { Workbench } from '../src/client/Workbench.jsx'
 import { DiffView } from '../src/client/DiffView.jsx'
+import { SettingsForm } from '../src/client/SettingsPanel.jsx'
 export { apply as applyClient, inject as clientInject } from '../src/client/index.jsx'
 
 const t = (key) => key
@@ -288,4 +289,23 @@ export function renderProjectQuickFilter() {
   store.state.filterMode = 'files'
   store.state.fileIndex = ['src/main.ts', 'a.ts']
   return renderToStaticMarkup(React.createElement(Workbench, { store }))
+}
+
+export function renderSettings() {
+  const store = { t: key => key, updateSettings: async () => {} }
+  const state = {
+    settings: {
+      git: { path: '', colors: true, commitTemplate: '' },
+      idea: { path: '' },
+      webstorm: { path: '' },
+      vscode: { path: '' },
+      terminal: { shell: 'auto', copyOnSelect: false, fontSize: 13 },
+      project: { alwaysSelectOpened: true, showHidden: true },
+      editor: { fontSize: 13, highlight: true },
+      links: { chatFiles: 'ide' },
+      shortcuts: { project: 'Alt+1', commit: 'Alt+0', git: 'Alt+9', terminal: 'Alt+F12' },
+    },
+    terminal: { shells: [{ id: 'pwsh', label: 'PowerShell' }] },
+  }
+  return renderToStaticMarkup(React.createElement(SettingsForm, { store, state }))
 }

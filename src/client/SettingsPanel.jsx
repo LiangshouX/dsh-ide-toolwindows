@@ -71,17 +71,31 @@ export function SettingsForm({ store, state, compact }) {
     commit(patch)
   }
 
+  // A settings group is a titled block of rows. The description is shared by
+  // every row (instead of repeating the same hint under each control).
+  const Group = ({ title, description, children }) => React.createElement('section', { className: 'itw-settings-group' },
+    React.createElement('h3', { className: 'itw-settings-group-title' }, title),
+    description !== undefined
+      ? React.createElement('p', { className: 'itw-settings-group-desc' }, description)
+      : null,
+    React.createElement('div', { className: 'itw-settings-rows' }, children),
+  )
+
+  // Label and hint form the reading column; every control sits in the same
+  // right-hand column so switches, selects and text fields line up.
   const Row = ({ label, hint, children }) => React.createElement('div', { className: 'itw-settings-row' },
     React.createElement('div', { className: 'itw-settings-label' },
-      React.createElement('div', null, label),
+      React.createElement('div', { className: 'itw-settings-title' }, label),
       hint !== undefined ? React.createElement('div', { className: 'itw-settings-hint' }, hint) : null,
     ),
-    children,
+    React.createElement('div', { className: 'itw-settings-control' }, children),
   )
 
   return React.createElement('div', { className: 'itw-settings' },
-    React.createElement('div', { className: 'itw-settings-group' },
-      React.createElement('h3', null, t('settings.shortcuts')),
+    React.createElement(Group, {
+      title: t('settings.shortcuts'),
+      description: t('settings.shortcutsGroupHint'),
+    },
       SHORTCUT_FIELDS.map(([field, labelKey]) => React.createElement(Row, {
         key: field,
         label: t(`settings.${labelKey}`),
@@ -92,11 +106,12 @@ export function SettingsForm({ store, state, compact }) {
           active: capturing,
           onActivate: setCapturing,
           onCapture: value => update({ shortcuts: { [field]: value } }),
+          pressText: t('settings.pressKeys'),
+          hint: t('settings.recordShortcutHint'),
         }),
       )),
     ),
-    React.createElement('div', { className: 'itw-settings-group' },
-      React.createElement('h3', null, t('settings.terminalGroup')),
+    React.createElement(Group, { title: t('settings.terminalGroup') },
       React.createElement(Row, { label: t('settings.defaultShell'), hint: t('settings.defaultShellHint') },
         React.createElement('select', {
           className: 'itw-select',
@@ -122,8 +137,7 @@ export function SettingsForm({ store, state, compact }) {
         }),
       ),
     ),
-    React.createElement('div', { className: 'itw-settings-group' },
-      React.createElement('h3', null, t('settings.filesGroup')),
+    React.createElement(Group, { title: t('settings.filesGroup') },
       React.createElement(Row, { label: t('project.alwaysSelect') },
         React.createElement('input', {
           type: 'checkbox',
@@ -184,9 +198,8 @@ export function SettingsForm({ store, state, compact }) {
         }),
       ),
     ),
-    React.createElement('div', { className: 'itw-settings-group' },
-      React.createElement('h3', null, t('settings.ideGroup')),
-      IDE_OPTIONS.map(ide => React.createElement(Row, { key: ide.id, label: ide.title, hint: t('settings.idePathHint') },
+    React.createElement(Group, { title: t('settings.ideGroup'), description: t('settings.idePathHint') },
+      IDE_OPTIONS.map(ide => React.createElement(Row, { key: ide.id, label: ide.title },
         React.createElement('input', {
           type: 'text', className: 'itw-input', 'aria-label': ide.title,
           value: draft[ide.id]?.path ?? '',
@@ -195,8 +208,7 @@ export function SettingsForm({ store, state, compact }) {
         }),
       )),
     ),
-    React.createElement('div', { className: 'itw-settings-group' },
-      React.createElement('h3', null, t('settings.editorGroup')),
+    React.createElement(Group, { title: t('settings.editorGroup') },
       React.createElement(Row, { label: t('settings.openMode'), hint: t('settings.openModeHint') },
         React.createElement('select', {
           value: draft.editor?.openMode ?? 'auto',
@@ -229,8 +241,7 @@ export function SettingsForm({ store, state, compact }) {
         }),
       ),
     ),
-    React.createElement('div', { className: 'itw-settings-group' },
-      React.createElement('h3', null, t('settings.gitGroup')),
+    React.createElement(Group, { title: t('settings.gitGroup') },
       React.createElement(Row, { label: t('settings.gitPath'), hint: t('settings.gitPathHint') },
         React.createElement('input', {
           type: 'text',
@@ -242,18 +253,15 @@ export function SettingsForm({ store, state, compact }) {
       React.createElement(Row, { label: t('settings.commitTemplate'), hint: t('settings.commitTemplateHint') },
         React.createElement('input', {
           type: 'text',
-          style: { minWidth: 240 },
           value: draft.git?.commitTemplate ?? '',
           onChange: event => update({ git: { commitTemplate: event.target.value } }),
         }),
       ),
     ),
-    React.createElement('div', { className: 'itw-settings-group' },
-      React.createElement('h3', null, t('settings.commitGroup')),
+    React.createElement(Group, { title: t('settings.commitGroup') },
       React.createElement(Row, { label: t('settings.testCommand'), hint: t('settings.testCommandHint') },
         React.createElement('input', {
           type: 'text',
-          style: { minWidth: 240 },
           placeholder: 'npm test',
           value: draft.commit?.testCommand ?? '',
           onChange: event => update({ commit: { testCommand: event.target.value } }),
@@ -262,7 +270,6 @@ export function SettingsForm({ store, state, compact }) {
       React.createElement(Row, { label: t('settings.optimizeCommand'), hint: t('settings.optimizeCommandHint') },
         React.createElement('input', {
           type: 'text',
-          style: { minWidth: 240 },
           value: draft.commit?.optimizeImportsCommand ?? '',
           onChange: event => update({ commit: { optimizeImportsCommand: event.target.value } }),
         }),
@@ -270,14 +277,12 @@ export function SettingsForm({ store, state, compact }) {
       React.createElement(Row, { label: t('settings.cleanupCommand'), hint: t('settings.cleanupCommandHint') },
         React.createElement('input', {
           type: 'text',
-          style: { minWidth: 240 },
           value: draft.commit?.cleanupCommand ?? '',
           onChange: event => update({ commit: { cleanupCommand: event.target.value } }),
         }),
       ),
     ),
-    React.createElement('div', { className: 'itw-settings-group' },
-      React.createElement('h3', null, t('settings.appearanceGroup')),
+    React.createElement(Group, { title: t('settings.appearanceGroup') },
       React.createElement(Row, { label: t('settings.highlight') },
         React.createElement('input', {
           type: 'checkbox',
@@ -286,23 +291,22 @@ export function SettingsForm({ store, state, compact }) {
         }),
       ),
       React.createElement(Row, { label: t('settings.language'), hint: t('settings.languageHint') },
-        React.createElement('span', { style: { color: 'var(--itw-muted)', fontSize: 12 } }, t('settings.followDsh')),
+        React.createElement('span', { className: 'itw-settings-value' }, t('settings.followDsh')),
       ),
     ),
-    saved === true
-      ? React.createElement('div', { className: 'itw-settings-saved' }, t('settings.saved'))
-      : null,
-    compact === true ? null : React.createElement('div', { style: { marginTop: 8 } },
-      React.createElement('button', {
-        type: 'button', className: 'itw-textbtn itw-small',
+    React.createElement('div', { className: 'itw-settings-footer' },
+      compact === true ? null : React.createElement('button', {
+        type: 'button', className: 'itw-textbtn itw-small itw-settings-reset',
         onClick: () => {
           const reset = {
             git: { path: '', colors: true, commitTemplate: '' },
             idea: { path: '' },
             webstorm: { path: '' },
             vscode: { path: '' },
-            terminal: { shell: 'auto', copyOnSelect: false },
-            project: { alwaysSelectOpened: true, showHidden: true },
+            terminal: { shell: 'auto', copyOnSelect: false, fontSize: 13 },
+            project: { alwaysSelectOpened: true, showHidden: true, showIgnored: false, singleClickOpen: false },
+            commit: { groupByDirectory: false },
+            delete: { useRecycleBin: true },
             editor: { fontSize: 13, highlight: true, openMode: 'auto', editableMaxBytes: 1 << 20, markdownPreview: true },
             links: { chatFiles: 'ide' },
             shortcuts: {
@@ -314,16 +318,16 @@ export function SettingsForm({ store, state, compact }) {
           commit(reset)
         },
       }, t('settings.reset')),
+      saved === true
+        ? React.createElement('div', { className: 'itw-settings-saved', role: 'status' }, t('settings.saved'))
+        : null,
     ),
   )
 }
 
-/** The native settings.section page (owner props: close). */
-export function SettingsSection({ store, state, close }) {
-  return React.createElement('div', { style: { padding: '8px 4px 24px' } },
+/** The native settings.section page: the shell already owns the close action. */
+export function SettingsSection({ store, state }) {
+  return React.createElement('div', { className: 'itw-settings-section' },
     React.createElement(SettingsForm, { store, state }),
-    React.createElement('div', { style: { marginTop: 12 } },
-      React.createElement('button', { type: 'button', className: 'itw-textbtn itw-small', onClick: () => close?.() }, store.t('common.close')),
-    ),
   )
 }
