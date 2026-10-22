@@ -96,6 +96,14 @@ test('workbench renders the project window and welcome screen', async () => {
   assert.match(html, /src/)
 })
 
+test('fullscreen IDE pane offers restore with pressed state', async () => {
+  const mod = await loadModule()
+  const html = mod.renderFullscreen()
+  assert.match(html, /layout\.exitFullscreen/)
+  assert.match(html, /aria-pressed="true"/)
+  assert.doesNotMatch(html, /title="layout\.fullscreen"/)
+})
+
 test('commit and git windows render their rows and graph', async () => {
   const mod = await loadModule()
   const html = mod.renderCommitAndGit()

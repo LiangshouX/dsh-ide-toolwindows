@@ -919,6 +919,18 @@ export class WorkbenchStore {
     }
   }
 
+  /** Open the saved file in its current IntelliJ IDEA project. */
+  async openInIdea(path) {
+    try {
+      const result = await call('fs.openInIdea', { root: this.state.root, path })
+      this.toast('success', this.t('project.ideaRequested'))
+      return result
+    } catch (error) {
+      this.toast('error', this.t('project.ideaFailed'), error instanceof Error ? error.message : String(error))
+      return undefined
+    }
+  }
+
   // ── editor tabs ───────────────────────────────────────────────────────
   get activeTab() {
     return this.state.tabs.find(tab => tab.id === this.state.activeId) ?? null
@@ -1835,15 +1847,14 @@ export class WorkbenchStore {
     this.set({ cursor })
   }
 
-  /** Browser full screen (View | Enter Full Screen / F11). */
-  toggleFullscreen() {
-    const doc = globalThis.document
-    if (doc === undefined || doc === null) return
-    if (doc.fullscreenElement !== null && doc.fullscreenElement !== undefined) {
-      void doc.exitFullscreen?.()
-      return
-    }
-    void doc.documentElement?.requestFullscreen?.().catch(() => {})
+  /** Toggle the captured IDE pane's presentation, preserving the browser window. */
+  toggleFullscreen(element) {
+    const sidebar = this.ctx.sidebarRight
+    if (sidebar === undefined) return false
+    const target = sidebar.commandTarget(element)
+    if (target === undefined) return false
+    sidebar.toggleFullscreen(target)
+    return true
   }
 
   #focusCommitLater() {

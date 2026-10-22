@@ -15,7 +15,7 @@ import { SettingsForm } from './SettingsPanel.jsx'
 import { ConfirmModal, ContextMenu, Kbd, Toast } from './ui.jsx'
 import { baseName } from './util.js'
 
-function TopBar({ store, state, onOpenSettings }) {
+function TopBar({ store, state, fullscreen, onOpenSettings }) {
   const t = store.t
   const branch = state.status.branch
   const detached = state.status.detached === true
@@ -56,8 +56,11 @@ function TopBar({ store, state, onOpenSettings }) {
       onClick: () => store.toggleHideAll(),
     }, '⊟'),
     React.createElement('button', {
-      type: 'button', className: 'itw-iconbtn', title: t('layout.fullscreen'),
-      onClick: () => store.toggleFullscreen(),
+      type: 'button', className: `itw-iconbtn ${fullscreen ? 'itw-on' : ''}`,
+      title: t(fullscreen ? 'layout.exitFullscreen' : 'layout.fullscreen'),
+      'aria-label': t(fullscreen ? 'layout.exitFullscreen' : 'layout.fullscreen'),
+      'aria-pressed': fullscreen,
+      onClick: event => store.toggleFullscreen(event.currentTarget),
     }, '⛶'),
     React.createElement('button', {
       type: 'button', className: 'itw-iconbtn', title: t('common.refresh'),
@@ -305,7 +308,7 @@ function SettingsModal({ store, state, onClose }) {
   )
 }
 
-export function Workbench({ store, visible = true }) {
+export function Workbench({ store, visible = true, fullscreen = false }) {
   const state = useWorkbench(store)
   const [settingsOpen, setSettingsOpen] = useState(false)
   const leftRef = useRef(null)
@@ -378,7 +381,7 @@ export function Workbench({ store, visible = true }) {
     : null
 
   return React.createElement('div', { className: 'itw-root' },
-    React.createElement(TopBar, { store, state, onOpenSettings: () => setSettingsOpen(true) }),
+    React.createElement(TopBar, { store, state, fullscreen, onOpenSettings: () => setSettingsOpen(true) }),
     React.createElement('div', { className: 'itw-body' },
       React.createElement(Stripe, { store, state }),
       left,

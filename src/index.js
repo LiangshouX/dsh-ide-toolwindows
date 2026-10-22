@@ -19,6 +19,7 @@ import { relative, sep } from 'node:path'
 import { WebSocketServer, WebSocket } from 'ws'
 import { runGit, repoRootOf, status as gitStatus, diff as gitDiff, diffRev as gitDiffRev, diffRefs as gitDiffRefs, stage as gitStage, unstage as gitUnstage, discard as gitDiscard, applyPatch as gitApplyPatch, commit as gitCommit, push as gitPush, log as gitLog, branches as gitBranches, checkout as gitCheckout, revert as gitRevert, commitDetail, commitFileDiff, showFile, recentMessages } from './host/git.js'
 import { SettingsStore, settingsFile } from './host/settings-store.js'
+import { openInIdea } from './host/idea.js'
 import {
   canonicalRoot, listDirectory, listProjectCandidates, readFileForPreview, resolveInside,
   revealInExplorer, runCommand, shellArgv, shellCandidates, terminalEnv, toRelative, writeFileText,
@@ -155,6 +156,12 @@ export function apply(ctx) {
       const root = await canonicalRoot(payload.root)
       const absolute = resolveInside(root, requireString(payload, 'path'))
       return { revealed: revealInExplorer(absolute), path: toRelative(root, absolute) }
+    },
+
+    'fs.openInIdea': async (payload) => {
+      const current = await settings.get()
+      // Use the selected IDE project root, never repoEnv's git toplevel.
+      return openInIdea(payload, current.idea.path)
     },
 
     'fs.create': async (payload) => {

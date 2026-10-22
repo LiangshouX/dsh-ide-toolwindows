@@ -51,6 +51,7 @@ export function SettingsForm({ store, state, compact }) {
       ...draft,
       ...patch,
       git: { ...draft.git, ...(patch.git ?? {}) },
+      idea: { ...draft.idea, ...(patch.idea ?? {}) },
       terminal: { ...draft.terminal, ...(patch.terminal ?? {}) },
       project: { ...draft.project, ...(patch.project ?? {}) },
       commit: { ...draft.commit, ...(patch.commit ?? {}) },
@@ -167,6 +168,17 @@ export function SettingsForm({ store, state, compact }) {
       ),
     ),
     React.createElement('div', { className: 'itw-settings-group' },
+      React.createElement('h3', null, t('settings.ideaGroup')),
+      React.createElement(Row, { label: t('settings.ideaPath'), hint: t('settings.ideaPathHint') },
+        React.createElement('input', {
+          type: 'text', className: 'itw-input',
+          value: draft.idea?.path ?? '',
+          placeholder: t('settings.ideaAuto'),
+          onChange: event => update({ idea: { path: event.target.value } }),
+        }),
+      ),
+    ),
+    React.createElement('div', { className: 'itw-settings-group' },
       React.createElement('h3', null, t('settings.editorGroup')),
       React.createElement(Row, { label: t('settings.defaultReadOnly'), hint: t('settings.defaultReadOnlyHint') },
         React.createElement('input', {
@@ -252,6 +264,7 @@ export function SettingsForm({ store, state, compact }) {
         onClick: () => {
           const reset = {
             git: { path: '', colors: true, commitTemplate: '' },
+            idea: { path: '' },
             terminal: { shell: 'auto', copyOnSelect: false },
             project: { alwaysSelectOpened: true, showHidden: true },
             editor: { fontSize: 13, highlight: true, defaultReadOnly: true, markdownPreview: true },

@@ -368,7 +368,15 @@ var en = {
   "settings.useRecycleBin": "Move deleted files to the recycle bin",
   "settings.useRecycleBinHint": "Off = permanent delete (always confirmed)",
   "layout.hideAll": "Hide all tool windows (Ctrl+Shift+F12)",
-  "layout.fullscreen": "Full screen (F11)",
+  "layout.fullscreen": "Full screen IDE pane (F11)",
+  "layout.exitFullscreen": "Restore IDE pane (F11)",
+  "project.openInIdea": "Open in IntelliJ IDEA",
+  "project.ideaRequested": "IntelliJ IDEA launch requested",
+  "project.ideaFailed": "Could not open in IntelliJ IDEA",
+  "settings.ideaGroup": "IntelliJ IDEA",
+  "settings.ideaPath": "IDEA executable path",
+  "settings.ideaPathHint": "Empty = auto-detect. Windows: choose idea64.exe, not a .cmd/.bat script. Opens the current IDE project and the saved file on disk.",
+  "settings.ideaAuto": "Auto-detect IntelliJ IDEA",
   "settings.gitGroup": "Git",
   "settings.gitPath": "git executable path",
   "settings.gitPathHint": "Empty = resolve from PATH",
@@ -678,7 +686,15 @@ var zh = {
   "settings.useRecycleBin": "\u5220\u9664\u6587\u4EF6\u65F6\u79FB\u5165\u56DE\u6536\u7AD9",
   "settings.useRecycleBinHint": "\u5173\u95ED\u5219\u6C38\u4E45\u5220\u9664\uFF08\u59CB\u7EC8\u4E8C\u6B21\u786E\u8BA4\uFF09",
   "layout.hideAll": "\u6536\u8D77\u5168\u90E8\u5DE5\u5177\u7A97\uFF08Ctrl+Shift+F12\uFF09",
-  "layout.fullscreen": "\u5168\u5C4F\uFF08F11\uFF09",
+  "layout.fullscreen": "IDE \u5DE5\u5177\u7A97\u53E3\u5168\u5C4F\uFF08F11\uFF09",
+  "layout.exitFullscreen": "\u8FD8\u539F IDE \u5DE5\u5177\u7A97\u53E3\uFF08F11\uFF09",
+  "project.openInIdea": "\u5728 IntelliJ IDEA \u4E2D\u6253\u5F00",
+  "project.ideaRequested": "\u5DF2\u8BF7\u6C42 IntelliJ IDEA \u6253\u5F00\u9879\u76EE\u548C\u6587\u4EF6",
+  "project.ideaFailed": "\u65E0\u6CD5\u5728 IntelliJ IDEA \u4E2D\u6253\u5F00",
+  "settings.ideaGroup": "IntelliJ IDEA",
+  "settings.ideaPath": "IDEA \u53EF\u6267\u884C\u6587\u4EF6\u8DEF\u5F84",
+  "settings.ideaPathHint": "\u7559\u7A7A\u81EA\u52A8\u67E5\u627E\u3002Windows \u8BF7\u9009\u62E9 idea64.exe\uFF0C\u4E0D\u4F7F\u7528 .cmd/.bat \u811A\u672C\u3002\u6253\u5F00\u5F53\u524D IDE \u9879\u76EE\u548C\u78C1\u76D8\u4E0A\u5DF2\u4FDD\u5B58\u7684\u6587\u4EF6\u3002",
+  "settings.ideaAuto": "\u81EA\u52A8\u67E5\u627E IntelliJ IDEA",
   "settings.gitGroup": "Git",
   "settings.gitPath": "git \u53EF\u6267\u884C\u8DEF\u5F84",
   "settings.gitPathHint": "\u7559\u7A7A = \u4ECE PATH \u89E3\u6790",
@@ -2111,6 +2127,17 @@ ${names}${extra}`,
       this.toast("error", this.t("common.error"), error instanceof Error ? error.message : String(error));
     }
   }
+  /** Open the saved file in its current IntelliJ IDEA project. */
+  async openInIdea(path2) {
+    try {
+      const result = await call("fs.openInIdea", { root: this.state.root, path: path2 });
+      this.toast("success", this.t("project.ideaRequested"));
+      return result;
+    } catch (error) {
+      this.toast("error", this.t("project.ideaFailed"), error instanceof Error ? error.message : String(error));
+      return void 0;
+    }
+  }
   // ── editor tabs ───────────────────────────────────────────────────────
   get activeTab() {
     return this.state.tabs.find((tab3) => tab3.id === this.state.activeId) ?? null;
@@ -2946,16 +2973,14 @@ ${outcome.output ?? ""}`.trim();
     if (current !== null && cursor !== null && current.line === cursor.line && current.col === cursor.col) return;
     this.set({ cursor });
   }
-  /** Browser full screen (View | Enter Full Screen / F11). */
-  toggleFullscreen() {
-    const doc2 = globalThis.document;
-    if (doc2 === void 0 || doc2 === null) return;
-    if (doc2.fullscreenElement !== null && doc2.fullscreenElement !== void 0) {
-      void doc2.exitFullscreen?.();
-      return;
-    }
-    void doc2.documentElement?.requestFullscreen?.().catch(() => {
-    });
+  /** Toggle the captured IDE pane's presentation, preserving the browser window. */
+  toggleFullscreen(element) {
+    const sidebar = this.ctx.sidebarRight;
+    if (sidebar === void 0) return false;
+    const target = sidebar.commandTarget(element);
+    if (target === void 0) return false;
+    sidebar.toggleFullscreen(target);
+    return true;
   }
   #focusCommitLater() {
     this.patch("commit", { focusTick: (this.state.commit.focusTick ?? 0) + 1 });
@@ -3939,6 +3964,9 @@ function ProjectPanel({ store, state }) {
       } },
       { key: "terminal", text: t2("project.openTerminal"), action: () => {
         store.addTerminal({ cwd: isDir ? entry.path : entry === void 0 ? state.root : parentDir });
+      } },
+      { key: "idea", text: t2("project.openInIdea"), icon: import_react4.default.createElement(IconExternal, { width: 13, height: 13 }), disabled: entry === void 0 || isDir, action: () => {
+        if (entry !== void 0 && !entry.isDir) void store.openInIdea(entry.path);
       } },
       { key: "reveal", text: t2("project.reveal"), icon: import_react4.default.createElement(IconExternal, { width: 13, height: 13 }), disabled: entry === void 0, action: () => {
         void store.reveal(entry.path);
@@ -46824,6 +46852,14 @@ function TabBar({ store, state }) {
           disabled: menu.tab.dirty !== true,
           action: () => store.discardDraft(menu.tab.id)
         },
+        {
+          key: "idea",
+          text: t2("project.openInIdea"),
+          disabled: menu.tab.kind !== "file",
+          action: () => {
+            if (menu.tab.kind === "file") void store.openInIdea(menu.tab.path);
+          }
+        },
         null,
         {
           key: "pin",
@@ -47085,6 +47121,7 @@ function SettingsForm({ store, state, compact }) {
       ...draft,
       ...patch,
       git: { ...draft.git, ...patch.git ?? {} },
+      idea: { ...draft.idea, ...patch.idea ?? {} },
       terminal: { ...draft.terminal, ...patch.terminal ?? {} },
       project: { ...draft.project, ...patch.project ?? {} },
       commit: { ...draft.commit, ...patch.commit ?? {} },
@@ -47239,6 +47276,22 @@ function SettingsForm({ store, state, compact }) {
     import_react13.default.createElement(
       "div",
       { className: "itw-settings-group" },
+      import_react13.default.createElement("h3", null, t2("settings.ideaGroup")),
+      import_react13.default.createElement(
+        Row,
+        { label: t2("settings.ideaPath"), hint: t2("settings.ideaPathHint") },
+        import_react13.default.createElement("input", {
+          type: "text",
+          className: "itw-input",
+          value: draft.idea?.path ?? "",
+          placeholder: t2("settings.ideaAuto"),
+          onChange: (event) => update({ idea: { path: event.target.value } })
+        })
+      )
+    ),
+    import_react13.default.createElement(
+      "div",
+      { className: "itw-settings-group" },
       import_react13.default.createElement("h3", null, t2("settings.editorGroup")),
       import_react13.default.createElement(
         Row,
@@ -47349,6 +47402,7 @@ function SettingsForm({ store, state, compact }) {
         onClick: () => {
           const reset = {
             git: { path: "", colors: true, commitTemplate: "" },
+            idea: { path: "" },
             terminal: { shell: "auto", copyOnSelect: false },
             project: { alwaysSelectOpened: true, showHidden: true },
             editor: { fontSize: 13, highlight: true, defaultReadOnly: true, markdownPreview: true },
@@ -47382,7 +47436,7 @@ function SettingsSection({ store, state, close }) {
 }
 
 // src/client/Workbench.jsx
-function TopBar({ store, state, onOpenSettings }) {
+function TopBar({ store, state, fullscreen, onOpenSettings }) {
   const t2 = store.t;
   const branch = state.status.branch;
   const detached = state.status.detached === true;
@@ -47428,9 +47482,11 @@ function TopBar({ store, state, onOpenSettings }) {
     }, "\u229F"),
     import_react14.default.createElement("button", {
       type: "button",
-      className: "itw-iconbtn",
-      title: t2("layout.fullscreen"),
-      onClick: () => store.toggleFullscreen()
+      className: `itw-iconbtn ${fullscreen ? "itw-on" : ""}`,
+      title: t2(fullscreen ? "layout.exitFullscreen" : "layout.fullscreen"),
+      "aria-label": t2(fullscreen ? "layout.exitFullscreen" : "layout.fullscreen"),
+      "aria-pressed": fullscreen,
+      onClick: (event) => store.toggleFullscreen(event.currentTarget)
     }, "\u26F6"),
     import_react14.default.createElement("button", {
       type: "button",
@@ -47749,7 +47805,7 @@ function SettingsModal({ store, state, onClose }) {
     )
   );
 }
-function Workbench({ store, visible = true }) {
+function Workbench({ store, visible = true, fullscreen = false }) {
   const state = useWorkbench(store);
   const [settingsOpen, setSettingsOpen] = (0, import_react14.useState)(false);
   const leftRef = (0, import_react14.useRef)(null);
@@ -47822,7 +47878,7 @@ function Workbench({ store, visible = true }) {
   return import_react14.default.createElement(
     "div",
     { className: "itw-root" },
-    import_react14.default.createElement(TopBar, { store, state, onOpenSettings: () => setSettingsOpen(true) }),
+    import_react14.default.createElement(TopBar, { store, state, fullscreen, onOpenSettings: () => setSettingsOpen(true) }),
     import_react14.default.createElement(
       "div",
       { className: "itw-body" },
@@ -48521,12 +48577,12 @@ function PanelIcon({ size = 20 }) {
   );
 }
 function BoundWorkbench({ getStore, sessionId, useTabInfo }) {
-  const { tab: tab3 } = useTabInfo();
+  const { tab: tab3, sidebar } = useTabInfo();
   const store = getStore(sessionId, tab3.id);
   (0, import_react15.useEffect)(() => {
     void store.init();
   }, [store]);
-  return import_react15.default.createElement(Workbench, { store, visible: tab3.visible });
+  return import_react15.default.createElement(Workbench, { store, visible: tab3.visible, fullscreen: sidebar.fullscreen });
 }
 function BoundSettings({ store, close }) {
   const state = useWorkbench(store);
@@ -48657,7 +48713,8 @@ ${CSS}`);
       if (store?.state.active !== true) return;
       if (event.key === "F11") {
         event.preventDefault();
-        store.toggleFullscreen();
+        event.stopPropagation();
+        store.toggleFullscreen(event.target);
       } else if (matchesShortcut(shortcuts.hideAll ?? "Ctrl+Shift+F12", event)) {
         event.preventDefault();
         store.toggleHideAll();

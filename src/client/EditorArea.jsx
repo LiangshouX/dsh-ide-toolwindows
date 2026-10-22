@@ -186,6 +186,10 @@ function TabBar({ store, state }) {
               key: 'revert', text: t('editor.restore'), disabled: menu.tab.dirty !== true,
               action: () => store.discardDraft(menu.tab.id),
             },
+            {
+              key: 'idea', text: t('project.openInIdea'), disabled: menu.tab.kind !== 'file',
+              action: () => { if (menu.tab.kind === 'file') void store.openInIdea(menu.tab.path) },
+            },
             null,
             {
               key: 'pin', text: t('common.pinTab'), disabled: menu.tab.kind !== 'file' || menu.tab.preview !== true,

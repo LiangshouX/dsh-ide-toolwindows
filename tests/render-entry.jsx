@@ -79,6 +79,10 @@ index 1111111..2222222 100644
 +const c = 4
 `
 
+export function renderFullscreen() {
+  return renderToStaticMarkup(React.createElement(Workbench, { store: baseStore(), fullscreen: true }))
+}
+
 export function renderProject() {
   const store = baseStore()
   return renderToStaticMarkup(React.createElement(Workbench, { store }))

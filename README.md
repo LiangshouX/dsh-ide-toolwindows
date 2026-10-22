@@ -36,6 +36,13 @@ exactly like an IDE).
 
 Every shortcut can be rebound in **Settings → IDE Tool Windows**.
 
+### IDE fullscreen and IntelliJ IDEA integration
+
+- The workbench fullscreen button and `F11` switch its sidebar panel between fullscreen and the previous docked presentation, retaining the open tabs and split layout.
+- Right-click a file in Project or an editor file tab and choose **Open in IntelliJ IDEA**. The launcher receives both the selected **IDE project root** and the file path, including spaces and Unicode names.
+- **Settings → IDE Tool Windows → IntelliJ IDEA** accepts an executable path; empty enables auto-detection. On Windows select `bin/idea64.exe` from your IDEA installation.
+- IDEA opens the saved file on disk. Save pending workbench edits first. Launch failures show their reason; success means the launch request was accepted.
+
 ### Workspace vs. IDE project root
 
 A DSH workspace is often a container: the root itself is not a Git repository,

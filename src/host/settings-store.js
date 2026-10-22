@@ -8,6 +8,7 @@
 import { copyFile, mkdir, readFile, rename, writeFile } from 'node:fs/promises'
 import { homedir } from 'node:os'
 import { dirname, join } from 'node:path'
+import { ApiError } from './wire.js'
 
 /** The settings schema version this build writes. */
 export const SETTINGS_VERSION = 2
@@ -17,6 +18,7 @@ export const DEFAULT_SETTINGS = {
   version: SETTINGS_VERSION,
   /** Last root the user worked in (absolute path). */
   lastRoot: '',
+  idea: { path: '' },
   git: {
     path: '',
     colors: true,
@@ -161,6 +163,9 @@ export class SettingsStore {
         await copyFile(settingsFile(), `${settingsFile()}.v${parsed.version ?? 1}.bak.json`).catch(() => {})
       }
       this.value = deepMerge(DEFAULT_SETTINGS, isPlainObject(parsed) ? { ...parsed, version: SETTINGS_VERSION } : {})
+      if (!isPlainObject(this.value.idea) || typeof this.value.idea.path !== 'string' || this.value.idea.path.includes('\0')) {
+        this.value.idea = { ...DEFAULT_SETTINGS.idea }
+      }
     } catch {
       this.value = structuredClone(DEFAULT_SETTINGS)
     }
@@ -169,6 +174,11 @@ export class SettingsStore {
 
   /** Merge one patch and persist atomically (serialized). */
   async update(patch) {
+    if (Object.hasOwn(patch, 'idea')) {
+      if (!isPlainObject(patch.idea) || (Object.hasOwn(patch.idea, 'path') && (typeof patch.idea.path !== 'string' || patch.idea.path.includes('\0')))) {
+        throw new ApiError('bad-request', 'idea.path must be a string without NUL characters')
+      }
+    }
     await this.get()
     this.value = deepMerge(this.value, patch)
     const snapshot = structuredClone(this.value)

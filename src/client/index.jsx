@@ -26,10 +26,10 @@ function PanelIcon({ size = 20 }) {
 }
 
 function BoundWorkbench({ getStore, sessionId, useTabInfo }) {
-  const { tab } = useTabInfo()
+  const { tab, sidebar } = useTabInfo()
   const store = getStore(sessionId, tab.id)
   useEffect(() => { void store.init() }, [store])
-  return React.createElement(Workbench, { store, visible: tab.visible })
+  return React.createElement(Workbench, { store, visible: tab.visible, fullscreen: sidebar.fullscreen })
 }
 
 function BoundSettings({ store, close }) {
@@ -148,7 +148,8 @@ export function apply(ctx) {
       if (store?.state.active !== true) return
       if (event.key === 'F11') {
         event.preventDefault()
-        store.toggleFullscreen()
+        event.stopPropagation()
+        store.toggleFullscreen(event.target)
       } else if (matchesShortcut(shortcuts.hideAll ?? 'Ctrl+Shift+F12', event)) {
         event.preventDefault()
         store.toggleHideAll()
