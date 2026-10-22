@@ -193,7 +193,8 @@ export function parseStatusV2(buffer) {
       continue
     }
     if (record.startsWith('! ')) {
-      result.entries.push({ path: record.slice(2), xy: '!!', untracked: true, conflict: false })
+      // `--ignored=matching` lists ignored paths here, not as untracked.
+      result.entries.push({ path: record.slice(2), xy: '!!', untracked: false, conflict: false, ignored: true })
     }
   }
   return result
@@ -226,13 +227,15 @@ export function parseNumstat(output) {
  * One repository status snapshot, shaped for the three Commit groups.
  * @param {{ gitPath?: string, root: string }} env
  */
-export async function status(env) {
+export async function status(env, options = {}) {
   const root = await repoRootOf(env)
   if (root === null) {
     return { isRepo: false, entries: [], root: null }
   }
   const repo = { ...env, root }
-  const statusResult = await runGit(repo, ['status', '--porcelain=v2', '--branch', '-z'])
+  const args = ['status', '--porcelain=v2', '--branch', '-z']
+  if (options.ignored === true) args.push('--ignored=matching')
+  const statusResult = await runGit(repo, args)
   const parsed = parseStatusV2(statusResult.stdout)
   let unstagedNumstat = new Map()
   let stagedNumstat = new Map()
@@ -250,10 +253,11 @@ export async function status(env) {
     return {
       path: entry.path,
       xy: entry.xy,
-      untracked: entry.untracked,
+      untracked: entry.untracked === true && entry.ignored !== true,
       conflict: entry.conflict,
-      staged: entry.conflict || (!entry.untracked && x !== '.' && x !== '?'),
-      unstaged: entry.conflict || (!entry.untracked && y !== '.' && y !== '?'),
+      ignored: entry.ignored === true,
+      staged: entry.conflict || (!entry.untracked && !entry.ignored && x !== '.' && x !== '?'),
+      unstaged: entry.conflict || (!entry.untracked && !entry.ignored && y !== '.' && y !== '?'),
       stagedLines: stagedNumstat.get(entry.path),
       unstagedLines: unstagedNumstat.get(entry.path),
     }
@@ -289,6 +293,30 @@ export async function diff(env, path, staged) {
 export async function stage(env, paths) {
   if (paths.length === 0) throw new ApiError('bad-request', 'no paths')
   await runGit(env, ['add', '--', ...paths])
+}
+
+/**
+ * Diff one path against a revision (Change View "Last Revision"/"Latest").
+ * `latest` resolves the upstream; when the branch has none it falls back to
+ * HEAD so the view still shows the local change.
+ * @param {{ gitPath?: string, root: string }} env
+ * @param {string} path repo-relative path
+ * @param {string} rev 'head' | 'latest' | any git revision
+ */
+export async function diffRev(env, path, rev) {
+  const argsFor = ref => ['diff', '--no-color', '--no-ext-diff', '--unified=3', ref, '--', path]
+  const base = rev === 'latest' || rev === 'upstream' ? '@{upstream}' : (rev === 'head' ? 'HEAD' : rev)
+  if (base === '@{upstream}') {
+    try {
+      const result = await runGit(env, argsFor(base))
+      return result.stdout
+    } catch {
+      const result = await runGit(env, argsFor('HEAD'), { allowFailure: true })
+      return result.stdout
+    }
+  }
+  const result = await runGit(env, argsFor(base), { allowFailure: true })
+  return result.stdout
 }
 
 /** Unstage the given paths (new files leave the index and stay untracked). */
@@ -384,6 +412,7 @@ export async function log(env, options = {}) {
   else args.push('--all')
   if (options.author && options.author !== '') args.push(`--author=${options.author}`)
   if (options.query && options.query !== '') args.push(`--grep=${options.query}`, '--regexp-ignore-case')
+  if (options.path && options.path !== '') args.push('--', options.path)
   const { stdout } = await runGit(env, args)
   return parseLog(stdout)
 }
@@ -443,6 +472,21 @@ export async function commitDetail(env, hash) {
     body: (fields[8] ?? '').trim(),
     diff: patch.stdout,
   }
+}
+
+/** Two-ended diff (commit..commit, branch..branch). */
+export async function diffRefs(env, a, b) {
+  const result = await runGit(env, ['diff', '--no-color', '--no-ext-diff', '--unified=3', a, b], { allowFailure: true })
+  return result.stdout
+}
+
+/** One file's diff inside one commit (first parent for merges). */
+export async function commitFileDiff(env, hash, path) {
+  if (!/^[0-9a-f]{7,40}$/i.test(hash ?? '')) throw new ApiError('bad-request', 'invalid commit hash')
+  const result = await runGit(env, [
+    'show', '--no-color', '--no-ext-diff', '--format=', '--unified=3', '--first-parent', '-m', hash, '--', path,
+  ], { allowFailure: true })
+  return result.stdout
 }
 
 /** File content at a revision. */

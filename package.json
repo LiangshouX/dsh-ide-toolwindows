@@ -1,7 +1,7 @@
 {
   "name": "dsh-ide-toolwindows",
-  "version": "0.2.1",
-  "description": "JetBrains-style tool windows for DeepSeek Harness: Project, Commit, Terminal, Git — preview tabs, git coloring, diff staging, commit graph and an embedded PTY, in one shared repository model. | DSH 插件：JetBrains 式工具窗——Project / Commit / Terminal / Git 四窗共享同一份仓库状态，预览标签、Git 着色、差异暂存、提交图谱与内嵌终端。",
+  "version": "0.3.0",
+  "description": "JetBrains-style tool windows for DeepSeek Harness: Project, Commit, Terminal, Git 鈥?preview tabs, git coloring, diff staging, commit graph and an embedded PTY, in one shared repository model. | DSH 鎻掍欢锛欽etBrains 寮忓伐鍏风獥鈥斺€擯roject / Commit / Terminal / Git 鍥涚獥鍏变韩鍚屼竴浠戒粨搴撶姸鎬侊紝棰勮鏍囩銆丟it 鐫€鑹层€佸樊寮傛殏瀛樸€佹彁浜ゅ浘璋变笌鍐呭祵缁堢銆?,
   "type": "module",
   "repository": {
     "type": "git",

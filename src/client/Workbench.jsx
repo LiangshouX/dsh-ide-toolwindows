@@ -52,6 +52,14 @@ function TopBar({ store, state, onOpenSettings }) {
       : null,
     React.createElement('div', { className: 'itw-top-spacer' }),
     React.createElement('button', {
+      type: 'button', className: 'itw-iconbtn', title: t('layout.hideAll'),
+      onClick: () => store.toggleHideAll(),
+    }, '⊟'),
+    React.createElement('button', {
+      type: 'button', className: 'itw-iconbtn', title: t('layout.fullscreen'),
+      onClick: () => store.toggleFullscreen(),
+    }, '⛶'),
+    React.createElement('button', {
       type: 'button', className: 'itw-iconbtn', title: t('common.refresh'),
       onClick: () => { void store.reloadTree(); void store.refreshStatus({ initial: true }); void store.loadBranches() },
     }, React.createElement(IconRefresh, { width: 15, height: 15 })),
@@ -83,38 +91,28 @@ function TopBar({ store, state, onOpenSettings }) {
 function Stripe({ store, state }) {
   const t = store.t
   const sessions = state.terminal.sessions.length
+  const button = (tool, active, children) => React.createElement('button', {
+    type: 'button',
+    className: `itw-stripe-btn ${active ? 'itw-on' : ''}`,
+    title: `${t(`${tool}.title`)} (${state.settings?.shortcuts?.[tool] ?? ''})`,
+    onClick: () => store.toggleTool(tool),
+  }, children)
   return React.createElement('div', { className: 'itw-stripe' },
-    React.createElement('button', {
-      type: 'button',
-      className: `itw-stripe-btn ${state.layout.left === 'project' ? 'itw-on' : ''}`,
-      title: `${t('project.title')} (${state.settings?.shortcuts?.project ?? 'Alt+1'})`,
-      onClick: () => store.toggleTool('project'),
-    }, React.createElement(StripeIcon, { tool: 'project', size: 20 })),
-    React.createElement('button', {
-      type: 'button',
-      className: `itw-stripe-btn ${state.layout.left === 'commit' ? 'itw-on' : ''}`,
-      title: `${t('commit.title')} (${state.settings?.shortcuts?.commit ?? 'Alt+0'})`,
-      onClick: () => store.toggleTool('commit'),
-    },
-      React.createElement(StripeIcon, { tool: 'commit', size: 20 }),
-      state.changeCount > 0 ? React.createElement('span', { className: 'itw-badge' }, state.changeCount > 99 ? '99+' : state.changeCount) : null,
-    ),
+    button('project', state.layout.left === 'project',
+      React.createElement(StripeIcon, { tool: 'project', size: 20 })),
+    button('commit', state.layout.left === 'commit',
+      React.createElement('span', null,
+        React.createElement(StripeIcon, { tool: 'commit', size: 20 }),
+        state.changeCount > 0 ? React.createElement('span', { className: 'itw-badge' }, state.changeCount > 99 ? '99+' : state.changeCount) : null,
+      )),
     React.createElement('div', { className: 'itw-stripe-spacer' }),
-    React.createElement('button', {
-      type: 'button',
-      className: `itw-stripe-btn ${state.layout.bottom === 'git' ? 'itw-on' : ''}`,
-      title: `${t('git.title')} (${state.settings?.shortcuts?.git ?? 'Alt+9'})`,
-      onClick: () => store.toggleTool('git'),
-    }, React.createElement(StripeIcon, { tool: 'git', size: 20 })),
-    React.createElement('button', {
-      type: 'button',
-      className: `itw-stripe-btn ${state.layout.bottom === 'terminal' ? 'itw-on' : ''}`,
-      title: `${t('terminal.title')} (${state.settings?.shortcuts?.terminal ?? 'Alt+F12'})`,
-      onClick: () => store.toggleTool('terminal'),
-    },
-      React.createElement(StripeIcon, { tool: 'terminal', size: 20 }),
-      sessions > 0 ? React.createElement('span', { className: 'itw-badge itw-badge-dirty' }, sessions) : null,
-    ),
+    button('git', state.layout.bottom === 'git',
+      React.createElement(StripeIcon, { tool: 'git', size: 20 })),
+    button('terminal', state.layout.bottom === 'terminal',
+      React.createElement('span', null,
+        React.createElement(StripeIcon, { tool: 'terminal', size: 20 }),
+        sessions > 0 ? React.createElement('span', { className: 'itw-badge itw-badge-dirty' }, sessions) : null,
+      )),
   )
 }
 
@@ -145,23 +143,41 @@ function StatusBar({ store, state }) {
   const t = store.t
   const summary = store.summary()
   const active = state.tabs.find(tab => tab.id === state.activeId)
-  const lines = active?.payload?.kind === 'text' && typeof active.payload.content === 'string'
-    ? active.payload.content.split('\n').length
+  const text = active?.payload?.kind === 'text' ? active.payload : undefined
+  const lines = text !== undefined && typeof text.content === 'string'
+    ? text.content.split('\n').length
     : undefined
+  const encoding = text === undefined
+    ? undefined
+    : text.encoding === 'utf-8-bom'
+      ? 'UTF-8 BOM'
+      : text.encoding === 'utf-16le'
+        ? 'UTF-16 LE'
+        : text.encoding === 'utf-16be'
+          ? 'UTF-16 BE'
+          : 'UTF-8'
+  const eol = text === undefined ? undefined : (text.eol === '\r\n' ? 'CRLF' : 'LF')
+  const cursor = state.cursor !== null && state.cursor !== undefined && active?.editing === true ? state.cursor : null
   return React.createElement('div', { className: 'itw-statusbar' },
     React.createElement('span', { className: 'itw-status-item' },
       React.createElement('span', { className: `itw-status-dot ${state.statusError !== null ? 'itw-busy' : ''}` }),
       state.status.isRepo === true ? t('status.ready') : t('welcome.noRepo'),
     ),
     summary.branch !== undefined
-      ? React.createElement('span', { className: 'itw-status-item' }, summary.branch)
+      ? React.createElement('span', { className: 'itw-status-item', style: { cursor: 'pointer' }, onClick: () => store.showTool('git') }, summary.branch)
       : null,
     summary.changes > 0
-      ? React.createElement('span', { className: 'itw-status-item' }, `${summary.changes} ${t('status.changes')}`)
+      ? React.createElement('span', { className: 'itw-status-item', style: { cursor: 'pointer' }, onClick: () => store.showTool('commit') }, `${summary.changes} ${t('status.changes')}`)
       : null,
     React.createElement('div', { className: 'itw-spacer' }),
+    cursor !== null
+      ? React.createElement('span', { className: 'itw-status-item' }, `${t('editor.line')} ${cursor.line}:${cursor.col}`)
+      : null,
     lines !== undefined
       ? React.createElement('span', { className: 'itw-status-item' }, `${lines} ${t('editor.lines')}`)
+      : null,
+    encoding !== undefined
+      ? React.createElement('span', { className: 'itw-status-item' }, `${encoding} ${eol}`)
       : null,
     React.createElement('span', { className: 'itw-status-item' },
       React.createElement(Kbd, null, state.settings?.shortcuts?.project ?? 'Alt+1'),
@@ -344,7 +360,10 @@ export function Workbench({ store }) {
   }
 
   const bottom = state.layout.bottom !== null && state.layout.bottom !== undefined
-    ? React.createElement('div', { className: 'itw-bottom', style: { height: `${state.layout.bottomHeight}px` } },
+    ? React.createElement('div', {
+        className: 'itw-bottom',
+        style: { height: `${state.layout.bottomHeight}px` },
+      },
         React.createElement('div', { className: 'itw-bottom-resizer', onPointerDown: startBottomResize }),
         React.createElement(BottomTabs, { store, state }),
         React.createElement('div', { className: 'itw-bottom-body' },

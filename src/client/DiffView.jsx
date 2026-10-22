@@ -6,7 +6,7 @@
  * `git apply --cached` changes exactly the selected lines.
  */
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { buildPatch, firstFile, hunkChangeIndexes, parseUnifiedDiff, sideBySideRows, unifiedRows } from './diff.js'
+import { buildPatch, firstFile, hunkChangeIndexes, parseUnifiedDiff, sideBySideRows, unifiedRows, wordSegments } from './diff.js'
 import { IconRefresh } from './icons.jsx'
 
 const LINE_HEIGHT = 20
@@ -26,12 +26,14 @@ function diffSource(tab) {
     return { text: tab.detail?.diff ?? '', staged: false, stageable: false, path: tab.detail?.subject ?? tab.hash }
   }
   const payload = tab.payload
-  if (payload === undefined || payload === null) return { text: '', staged: tab.staged === true, stageable: true, path: tab.rel }
+  // A commit-scoped (or compare) diff is read-only: never offer staging on it.
+  const stageable = tab.commitHash === undefined && tab.readOnly !== true
+  if (payload === undefined || payload === null) return { text: '', staged: tab.staged === true, stageable, path: tab.rel }
   if (payload.untracked === true) {
-    if (payload.kind === 'text') return { text: syntheticAddDiff(tab.rel, payload.content), staged: false, stageable: true, path: tab.rel }
-    return { text: '', staged: false, stageable: true, path: tab.rel, binary: true }
+    if (payload.kind === 'text') return { text: syntheticAddDiff(tab.rel, payload.content), staged: false, stageable, path: tab.rel }
+    return { text: '', staged: false, stageable, path: tab.rel, binary: true }
   }
-  return { text: payload.diff ?? '', staged: tab.staged === true, stageable: true, path: tab.rel }
+  return { text: payload.diff ?? '', staged: tab.staged === true, stageable, path: tab.rel }
 }
 
 export function DiffView({ store, state, tab }) {
@@ -43,6 +45,8 @@ export function DiffView({ store, state, tab }) {
   const [scrollTop, setScrollTop] = useState(0)
   const [viewport, setViewport] = useState(400)
   const [applying, setApplying] = useState(false)
+  const [openBlocks, setOpenBlocks] = useState(() => new Set())
+  const [wordLevel, setWordLevel] = useState(false)
   const scrollRef = useRef(null)
   const selecting = useRef(false)
 
@@ -90,8 +94,37 @@ export function DiffView({ store, state, tab }) {
     return output
   }, [files, mode, t])
 
+  // Read-only diffs (commit / compare) collapse long unchanged runs; editable
+  // diffs keep every line so line/hunk staging indexes stay stable.
+  const viewRows = useMemo(() => {
+    if (source.stageable) return rows
+    const output = []
+    let run = []
+    let key = ''
+    const flush = () => {
+      if (run.length === 0) return
+      if (run.length > 12 && !openBlocks.has(key)) {
+        output.push({ kind: 'collapsed', count: run.length, blockKey: key, file: run[0].file })
+      } else {
+        output.push(...run)
+      }
+      run = []
+    }
+    rows.forEach((row, index) => {
+      if (row.kind === 'context') {
+        if (run.length === 0) key = `block-${index}`
+        run.push(row)
+        return
+      }
+      flush()
+      output.push(row)
+    })
+    flush()
+    return output
+  }, [rows, source.stageable, openBlocks])
+
   const start = Math.max(0, Math.floor(scrollTop / LINE_HEIGHT) - 8)
-  const end = Math.min(rows.length, Math.ceil((scrollTop + viewport) / LINE_HEIGHT) + 8)
+  const end = Math.min(viewRows.length, Math.ceil((scrollTop + viewport) / LINE_HEIGHT) + 8)
 
   const addIndex = (index) => {
     if (typeof index !== 'number') return
@@ -190,7 +223,7 @@ export function DiffView({ store, state, tab }) {
     )
   }
 
-  const renderSideCell = (side, isLeft) => {
+  const renderSideCell = (side, isLeft, segments) => {
     if (side === null || side === undefined) {
       return React.createElement('div', { className: 'itw-diff-side-cell itw-blank' },
         React.createElement('span', { className: 'itw-diff-num' }),
@@ -207,17 +240,25 @@ export function DiffView({ store, state, tab }) {
         onMouseEnter: () => { if (source.stageable) onGutterEnter(side.index) },
       }, isLeft ? '−' : '+'),
       React.createElement('span', { className: 'itw-diff-num' }, side.no ?? ''),
-      React.createElement('span', { className: 'itw-diff-text' }, side.text === '' ? '\u00a0' : side.text),
+      React.createElement('span', { className: 'itw-diff-text' },
+        segments === null || segments === undefined
+          ? (side.text === '' ? '\u00a0' : side.text)
+          : segments.map((segment, index) => (segment.changed
+              ? React.createElement('span', { key: index, className: isLeft ? 'itw-word-del' : 'itw-word-add' }, segment.text)
+              : segment.text))),
     )
   }
 
   const renderSideRow = (row, offset) => {
     if (row.kind === 'file' || row.kind === 'binary' || row.kind === 'hunk') return renderChromeRow(row, offset)
+    const segments = wordLevel && row.kind === 'change'
+      ? wordSegments(row.left?.text ?? '', row.right?.text ?? '')
+      : null
     return React.createElement('div', {
       key: `side:${row.left?.index ?? 'x'}:${row.right?.index ?? 'y'}`,
       className: 'itw-diff-side',
       style: { ...rowStyle(offset), display: 'grid' },
-    }, renderSideCell(row.left, true), renderSideCell(row.right, false))
+    }, renderSideCell(row.left, true, segments?.left), renderSideCell(row.right, false, segments?.right))
   }
 
   const toolbar = React.createElement('div', { className: 'itw-diff-toolbar' },
@@ -238,6 +279,10 @@ export function DiffView({ store, state, tab }) {
           }, t('commit.unified')),
         )
       : null,
+    React.createElement('button', {
+      type: 'button', className: `itw-textbtn itw-small ${wordLevel ? 'itw-primary' : ''}`,
+      title: t('commit.wordLevel'), onClick: () => setWordLevel(value => !value),
+    }, 'Aa'),
     source.stageable && selection.size > 0
       ? React.createElement('button', {
           type: 'button', className: 'itw-textbtn itw-primary itw-small', disabled: applying,
@@ -257,33 +302,24 @@ export function DiffView({ store, state, tab }) {
     ref: scrollRef,
     onScroll: event => setScrollTop(event.currentTarget.scrollTop),
   },
-    rows.length === 0
+    viewRows.length === 0
       ? React.createElement('div', { className: 'itw-empty' }, t('commit.selectFile'))
-      : React.createElement('div', { className: 'itw-diff-inner', style: { height: `${rows.length * LINE_HEIGHT}px` } },
-          rows.slice(start, end).map((row, index) => {
+      : React.createElement('div', { className: 'itw-diff-inner', style: { height: `${viewRows.length * LINE_HEIGHT}px` } },
+          viewRows.slice(start, end).map((row, index) => {
             const offset = start + index
+            if (row.kind === 'collapsed') {
+              return React.createElement('div', {
+                key: row.blockKey,
+                className: 'itw-diff-collapsed',
+                onClick: () => setOpenBlocks(previous => new Set([...previous, row.blockKey])),
+              }, `\u22ef ${row.count} ${t('diff.collapsedLines')}`)
+            }
             return mode === 'side' ? renderSideRow(row, offset) : renderUnifiedRow(row, offset)
           }),
         ),
   )
 
-  if (tab.kind === 'commit' && tab.detail !== null && tab.detail !== undefined) {
-    const detail = tab.detail
-    return React.createElement('div', { className: 'itw-diff' },
-      React.createElement('div', { style: { padding: '10px 12px', borderBottom: '1px solid var(--itw-border)' } },
-        React.createElement('div', { style: { fontWeight: 700, fontSize: 13, marginBottom: 4 } }, detail.subject),
-        React.createElement('div', { style: { color: 'var(--itw-muted)', fontSize: 11.5, display: 'flex', gap: 12, flexWrap: 'wrap' } },
-          React.createElement('span', { style: { fontFamily: 'var(--itw-mono)' } }, detail.shortHash),
-          React.createElement('span', null, detail.author),
-          React.createElement('span', null, detail.date),
-          detail.refs.length > 0 ? React.createElement('span', null, detail.refs.join(', ')) : null,
-        ),
-        detail.body !== '' ? React.createElement('pre', { style: { margin: '8px 0 0', whiteSpace: 'pre-wrap', color: 'var(--itw-muted)', fontSize: 11.5, fontFamily: 'var(--itw-font)' } }, detail.body) : null,
-      ),
-      toolbar,
-      body,
-    )
-  }
-
+  // The commit metadata lives in the Git tool window's bottom details pane;
+  // the editor area only shows the full diff (no duplicated header block).
   return React.createElement('div', { className: 'itw-diff' }, toolbar, body)
 }

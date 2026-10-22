@@ -359,11 +359,28 @@ var en = {
   "settings.fontSize": "Font size",
   "settings.filesGroup": "File tree",
   "settings.showHidden": "Show hidden files",
+  "settings.singleClickOpen": "Open files with single click",
+  "settings.singleClickOpenHint": "Single click opens a preview tab (edited files become real tabs)",
+  "settings.showIgnored": "Show ignored files",
+  "settings.showIgnoredHint": "List .gitignore matches in grey (hidden by default)",
+  "settings.groupByDirectory": "Group changes by directory",
+  "settings.groupByDirectoryHint": "Default display mode of the Commit window",
+  "settings.useRecycleBin": "Move deleted files to the recycle bin",
+  "settings.useRecycleBinHint": "Off = permanent delete (always confirmed)",
+  "layout.hideAll": "Hide all tool windows (Ctrl+Shift+F12)",
+  "layout.fullscreen": "Full screen (F11)",
   "settings.gitGroup": "Git",
   "settings.gitPath": "git executable path",
   "settings.gitPathHint": "Empty = resolve from PATH",
   "settings.commitTemplate": "Commit message template",
   "settings.commitTemplateHint": "Shown as the message placeholder",
+  "settings.commitGroup": "Commit tasks",
+  "settings.testCommand": "Run Tests command",
+  "settings.testCommandHint": "Runs before committing when checked; empty = option hidden",
+  "settings.optimizeCommand": "Optimize Imports command",
+  "settings.optimizeCommandHint": "Optional; e.g. the project formatter",
+  "settings.cleanupCommand": "Code Cleanup command",
+  "settings.cleanupCommandHint": "Optional; e.g. lint --fix",
   "settings.appearanceGroup": "Appearance",
   "settings.editorGroup": "Editor",
   "settings.defaultReadOnly": "Open files read-only",
@@ -427,6 +444,58 @@ var en = {
   "project.noRepoHint": "This folder is not a Git repository. Choose a folder marked Git.",
   "project.chooseRepo": "Choose Git subproject",
   "project.refreshProjects": "Refresh folders",
+  "project.newFile": "New File\u2026",
+  "project.newDir": "New Directory\u2026",
+  "project.nameLabel": "Name",
+  "project.templateLabel": "Template",
+  "project.create": "Create",
+  "project.cut": "Cut",
+  "project.copy": "Copy",
+  "project.paste": "Paste",
+  "project.duplicate": "Duplicate",
+  "project.delete": "Delete",
+  "project.rename": "Rename",
+  "project.copyPath": "Copy Path/Reference",
+  "project.expandAll": "Expand All",
+  "project.collapseAll": "Collapse All",
+  "project.synchronize": "Synchronize",
+  "project.synchronized": "Tree synchronized",
+  "project.addFavorite": "Add to Favorites",
+  "project.removeFavorite": "Remove from Favorites",
+  "project.favorites": "Favorites",
+  "project.openTerminal": "Open in Terminal",
+  "project.moveTitle": "Move",
+  "project.moveTarget": "Destination folder",
+  "project.movePlaceholder": "Absolute path, or a path inside the project",
+  "project.move": "Move",
+  "project.deleteTitle": "Delete",
+  "project.deleteOne": "Delete this item?",
+  "project.deleteMany": "Delete these items?",
+  "project.deleteDirty": "Open files with unsaved changes will be closed.",
+  "project.tplPlain": "Empty file",
+  "project.tplJava": "Java class",
+  "project.tplKotlin": "Kotlin class",
+  "project.tplTs": "TypeScript file",
+  "project.tplJs": "JavaScript file",
+  "project.tplPython": "Python file",
+  "project.tplMarkdown": "Markdown file",
+  "project.tplJson": "JSON file",
+  "project.tplHtml": "HTML file",
+  "project.tplCss": "Stylesheet",
+  "project.tplShell": "Shell script",
+  "project.tplGitignore": ".gitignore",
+  "git.add": "Add",
+  "git.showDiff": "Show Diff",
+  "git.showHistory": "Show History",
+  "git.clearPath": "Clear path filter",
+  "git.openFull": "Open full diff",
+  "git.detailHint": "Double-click a commit for the full diff",
+  "git.compare": "Compare",
+  "git.compareHint": "Ctrl+click two commits, then Compare",
+  "git.clearCompare": "Clear comparison",
+  "git.compareWithHead": "Compare with HEAD",
+  "diff.collapsedLines": "unchanged lines \xB7 click to expand",
+  "commit.wordLevel": "Word-level diff",
   "commit.title": "Commit",
   "commit.staged": "Staged Changes",
   "commit.unstaged": "Unstaged Changes",
@@ -462,6 +531,33 @@ var en = {
   "commit.unified": "Unified",
   "commit.selectFile": "Select a file to see its diff",
   "commit.failed": "Operation failed",
+  "commit.changes": "Changes",
+  "commit.unversioned": "Unversioned Files",
+  "commit.noChangesGroup": "No changes",
+  "commit.noUnversioned": "No unversioned files",
+  "commit.groupByDirectoryHint": "Group changed files by folder",
+  "commit.changelist": "Changelist",
+  "commit.newChangelist": "New Changelist\u2026",
+  "commit.changelistName": "Changelist name",
+  "commit.moveToChangelist": "Move to Changelist",
+  "commit.rollback": "Rollback",
+  "commit.rollbackTitle": "Rollback changes?",
+  "commit.showDiff": "Show Diff",
+  "commit.jumpToSource": "Jump to Source",
+  "commit.addToIgnore": "Add to .gitignore",
+  "commit.checkAll": "Include all in commit",
+  "commit.uncheckAll": "Exclude all from commit",
+  "commit.check": "Include in commit",
+  "commit.revert": "Revert",
+  "commit.workingTree": "Working Tree",
+  "commit.lastRevision": "Last Revision",
+  "commit.latest": "Latest",
+  "commit.showDiffWith": "Show Diff with",
+  "commit.noDiff": "No changes to show",
+  "commit.taskTests": "Run Tests",
+  "commit.taskOptimize": "Optimize Imports",
+  "commit.taskCleanup": "Code Cleanup",
+  "commit.taskFailed": "Pre-commit task failed",
   "git.title": "Git",
   "git.history": "History",
   "git.branchFilter": "Branch",
@@ -573,11 +669,28 @@ var zh = {
   "settings.fontSize": "\u5B57\u53F7",
   "settings.filesGroup": "\u6587\u4EF6\u6811",
   "settings.showHidden": "\u663E\u793A\u9690\u85CF\u6587\u4EF6",
+  "settings.singleClickOpen": "\u5355\u51FB\u6253\u5F00\u6587\u4EF6",
+  "settings.singleClickOpenHint": "\u5355\u51FB\u6253\u5F00\u9884\u89C8\u6807\u7B7E\uFF0C\u7F16\u8F91\u540E\u8F6C\u4E3A\u6B63\u5F0F\u6807\u7B7E",
+  "settings.showIgnored": "\u663E\u793A\u88AB\u5FFD\u7565\u7684\u6587\u4EF6",
+  "settings.showIgnoredHint": "\u4EE5\u7070\u8272\u5217\u51FA .gitignore \u547D\u4E2D\u7684\u6587\u4EF6\uFF08\u9ED8\u8BA4\u9690\u85CF\uFF09",
+  "settings.groupByDirectory": "\u6309\u76EE\u5F55\u5206\u7EC4\u663E\u793A\u6539\u52A8",
+  "settings.groupByDirectoryHint": "Commit \u7A97\u53E3\u7684\u9ED8\u8BA4\u5C55\u793A\u65B9\u5F0F",
+  "settings.useRecycleBin": "\u5220\u9664\u6587\u4EF6\u65F6\u79FB\u5165\u56DE\u6536\u7AD9",
+  "settings.useRecycleBinHint": "\u5173\u95ED\u5219\u6C38\u4E45\u5220\u9664\uFF08\u59CB\u7EC8\u4E8C\u6B21\u786E\u8BA4\uFF09",
+  "layout.hideAll": "\u6536\u8D77\u5168\u90E8\u5DE5\u5177\u7A97\uFF08Ctrl+Shift+F12\uFF09",
+  "layout.fullscreen": "\u5168\u5C4F\uFF08F11\uFF09",
   "settings.gitGroup": "Git",
   "settings.gitPath": "git \u53EF\u6267\u884C\u8DEF\u5F84",
   "settings.gitPathHint": "\u7559\u7A7A = \u4ECE PATH \u89E3\u6790",
   "settings.commitTemplate": "\u63D0\u4EA4\u6D88\u606F\u6A21\u677F",
   "settings.commitTemplateHint": "\u4F5C\u4E3A\u63D0\u4EA4\u6D88\u606F\u6846\u7684\u5360\u4F4D\u63D0\u793A",
+  "settings.commitGroup": "\u63D0\u4EA4\u524D\u4EFB\u52A1",
+  "settings.testCommand": "\u8FD0\u884C\u6D4B\u8BD5\u547D\u4EE4",
+  "settings.testCommandHint": "\u52FE\u9009\u540E\u63D0\u4EA4\u524D\u6267\u884C\uFF1B\u7559\u7A7A\u5219\u9690\u85CF\u8BE5\u9009\u9879",
+  "settings.optimizeCommand": "\u4F18\u5316\u5BFC\u5165\u547D\u4EE4",
+  "settings.optimizeCommandHint": "\u53EF\u9009\uFF0C\u4F8B\u5982\u9879\u76EE\u683C\u5F0F\u5316\u547D\u4EE4",
+  "settings.cleanupCommand": "\u4EE3\u7801\u6E05\u7406\u547D\u4EE4",
+  "settings.cleanupCommandHint": "\u53EF\u9009\uFF0C\u4F8B\u5982 lint --fix",
   "settings.appearanceGroup": "\u5916\u89C2",
   "settings.editorGroup": "\u7F16\u8F91\u5668",
   "settings.defaultReadOnly": "\u6253\u5F00\u6587\u4EF6\u9ED8\u8BA4\u53EA\u8BFB",
@@ -641,6 +754,58 @@ var zh = {
   "project.noRepoHint": "\u5F53\u524D\u76EE\u5F55\u4E0D\u662F Git \u4ED3\u5E93\uFF0C\u8BF7\u9009\u62E9\u5E26 Git \u6807\u8BB0\u7684\u76EE\u5F55\u3002",
   "project.chooseRepo": "\u9009\u62E9 Git \u5B50\u9879\u76EE",
   "project.refreshProjects": "\u5237\u65B0\u76EE\u5F55",
+  "project.newFile": "\u65B0\u5EFA\u6587\u4EF6\u2026",
+  "project.newDir": "\u65B0\u5EFA\u76EE\u5F55\u2026",
+  "project.nameLabel": "\u540D\u79F0",
+  "project.templateLabel": "\u6A21\u677F",
+  "project.create": "\u521B\u5EFA",
+  "project.cut": "\u526A\u5207",
+  "project.copy": "\u590D\u5236",
+  "project.paste": "\u7C98\u8D34",
+  "project.duplicate": "\u521B\u5EFA\u526F\u672C",
+  "project.delete": "\u5220\u9664",
+  "project.rename": "\u91CD\u547D\u540D",
+  "project.copyPath": "\u590D\u5236\u8DEF\u5F84/\u5F15\u7528",
+  "project.expandAll": "\u5C55\u5F00\u5168\u90E8",
+  "project.collapseAll": "\u6298\u53E0\u5168\u90E8",
+  "project.synchronize": "\u4E0E\u78C1\u76D8\u540C\u6B65",
+  "project.synchronized": "\u6587\u4EF6\u6811\u5DF2\u540C\u6B65",
+  "project.addFavorite": "\u6DFB\u52A0\u5230\u6536\u85CF\u5939",
+  "project.removeFavorite": "\u4ECE\u6536\u85CF\u5939\u79FB\u9664",
+  "project.favorites": "\u6536\u85CF\u5939",
+  "project.openTerminal": "\u5728\u7EC8\u7AEF\u4E2D\u6253\u5F00",
+  "project.moveTitle": "\u79FB\u52A8",
+  "project.moveTarget": "\u76EE\u6807\u76EE\u5F55",
+  "project.movePlaceholder": "\u7EDD\u5BF9\u8DEF\u5F84\uFF0C\u6216\u9879\u76EE\u5185\u7684\u76F8\u5BF9\u8DEF\u5F84",
+  "project.move": "\u79FB\u52A8",
+  "project.deleteTitle": "\u5220\u9664",
+  "project.deleteOne": "\u5220\u9664\u8BE5\u9879\uFF1F",
+  "project.deleteMany": "\u5220\u9664\u8FD9\u4E9B\u9879\uFF1F",
+  "project.deleteDirty": "\u6253\u5F00\u7684\u6587\u4EF6\u4E2D\u672A\u4FDD\u5B58\u7684\u4FEE\u6539\u5C06\u4E22\u5931\u3002",
+  "project.tplPlain": "\u7A7A\u6587\u4EF6",
+  "project.tplJava": "Java \u7C7B",
+  "project.tplKotlin": "Kotlin \u7C7B",
+  "project.tplTs": "TypeScript \u6587\u4EF6",
+  "project.tplJs": "JavaScript \u6587\u4EF6",
+  "project.tplPython": "Python \u6587\u4EF6",
+  "project.tplMarkdown": "Markdown \u6587\u4EF6",
+  "project.tplJson": "JSON \u6587\u4EF6",
+  "project.tplHtml": "HTML \u6587\u4EF6",
+  "project.tplCss": "\u6837\u5F0F\u8868",
+  "project.tplShell": "Shell \u811A\u672C",
+  "project.tplGitignore": ".gitignore",
+  "git.add": "\u6DFB\u52A0\u5230\u6682\u5B58\u533A",
+  "git.showDiff": "\u663E\u793A\u5DEE\u5F02",
+  "git.showHistory": "\u67E5\u770B\u5386\u53F2",
+  "git.clearPath": "\u6E05\u9664\u8DEF\u5F84\u8FC7\u6EE4",
+  "git.openFull": "\u6253\u5F00\u5B8C\u6574\u5DEE\u5F02",
+  "git.detailHint": "\u53CC\u51FB\u63D0\u4EA4\u67E5\u770B\u5B8C\u6574\u5DEE\u5F02",
+  "git.compare": "\u6BD4\u8F83",
+  "git.compareHint": "Ctrl+\u70B9\u51FB\u4E24\u4E2A\u63D0\u4EA4\u540E\u6BD4\u8F83",
+  "git.clearCompare": "\u6E05\u9664\u6BD4\u8F83",
+  "git.compareWithHead": "\u4E0E HEAD \u6BD4\u8F83",
+  "diff.collapsedLines": "\u884C\u672A\u6539\u52A8 \xB7 \u70B9\u51FB\u5C55\u5F00",
+  "commit.wordLevel": "\u5355\u8BCD\u7EA7\u5DEE\u5F02",
   "commit.title": "Commit",
   "commit.staged": "\u5DF2\u6682\u5B58\u7684\u6539\u52A8",
   "commit.unstaged": "\u672A\u6682\u5B58\u7684\u6539\u52A8",
@@ -676,6 +841,33 @@ var zh = {
   "commit.unified": "\u7EDF\u4E00",
   "commit.selectFile": "\u9009\u62E9\u4E00\u4E2A\u6587\u4EF6\u67E5\u770B\u5DEE\u5F02",
   "commit.failed": "\u64CD\u4F5C\u5931\u8D25",
+  "commit.changes": "\u6539\u52A8",
+  "commit.unversioned": "\u672A\u7248\u672C\u63A7\u5236\u7684\u6587\u4EF6",
+  "commit.noChangesGroup": "\u6CA1\u6709\u6539\u52A8",
+  "commit.noUnversioned": "\u6CA1\u6709\u672A\u7248\u672C\u63A7\u5236\u7684\u6587\u4EF6",
+  "commit.groupByDirectoryHint": "\u6309\u76EE\u5F55\u5206\u7EC4\u663E\u793A\u6539\u52A8\u6587\u4EF6",
+  "commit.changelist": "\u53D8\u66F4\u5217\u8868",
+  "commit.newChangelist": "\u65B0\u5EFA\u53D8\u66F4\u5217\u8868\u2026",
+  "commit.changelistName": "\u53D8\u66F4\u5217\u8868\u540D\u79F0",
+  "commit.moveToChangelist": "\u79FB\u52A8\u5230\u53D8\u66F4\u5217\u8868",
+  "commit.rollback": "\u56DE\u6EDA",
+  "commit.rollbackTitle": "\u56DE\u6EDA\u6539\u52A8\uFF1F",
+  "commit.showDiff": "\u663E\u793A\u5DEE\u5F02",
+  "commit.jumpToSource": "\u8DF3\u8F6C\u5230\u6E90\u7801",
+  "commit.addToIgnore": "\u6DFB\u52A0\u5230 .gitignore",
+  "commit.checkAll": "\u5168\u90E8\u7EB3\u5165\u63D0\u4EA4",
+  "commit.uncheckAll": "\u5168\u90E8\u6392\u9664\u63D0\u4EA4",
+  "commit.check": "\u7EB3\u5165\u672C\u6B21\u63D0\u4EA4",
+  "commit.revert": "\u8FD8\u539F",
+  "commit.workingTree": "\u5DE5\u4F5C\u533A",
+  "commit.lastRevision": "\u4E0A\u6B21\u4FEE\u8BA2",
+  "commit.latest": "\u6700\u65B0",
+  "commit.showDiffWith": "\u6BD4\u8F83\u5BF9\u8C61",
+  "commit.noDiff": "\u6CA1\u6709\u53EF\u663E\u793A\u7684\u5DEE\u5F02",
+  "commit.taskTests": "\u8FD0\u884C\u6D4B\u8BD5",
+  "commit.taskOptimize": "\u4F18\u5316\u5BFC\u5165",
+  "commit.taskCleanup": "\u4EE3\u7801\u6E05\u7406",
+  "commit.taskFailed": "\u63D0\u4EA4\u524D\u4EFB\u52A1\u5931\u8D25",
   "git.title": "Git",
   "git.history": "\u63D0\u4EA4\u5386\u53F2",
   "git.branchFilter": "\u5206\u652F",
@@ -942,6 +1134,85 @@ function isMarkdownFile(name2) {
   return /\.(md|markdown|mdx)$/i.test(String(name2 ?? ""));
 }
 
+// src/client/commit-model.js
+var DEFAULT_CHANGELIST = "Default";
+function parentDirOf(rel) {
+  const index = rel.lastIndexOf("/");
+  return index < 0 ? "" : rel.slice(0, index);
+}
+function splitCommitGroups(entries, buckets2 = {}) {
+  const changes = [];
+  const unversioned = [];
+  for (const entry of Array.isArray(entries) ? entries : []) {
+    if (entry === null || typeof entry !== "object") continue;
+    if (entry.ignored === true) continue;
+    const isUntracked = entry.untracked === true || buckets2[entry.path] === "untracked";
+    if (isUntracked) unversioned.push(entry);
+    else changes.push(entry);
+  }
+  return { changes, unversioned };
+}
+function isEntryChecked(entry, { checked, unchecked } = {}) {
+  const path2 = entry?.path;
+  if (typeof path2 !== "string") return false;
+  if (unchecked !== void 0 && unchecked !== null && unchecked.has(path2)) return false;
+  if (checked !== void 0 && checked !== null && checked.has(path2)) return true;
+  return entry.staged === true;
+}
+function checkedPathsOf(entries, state) {
+  const set = /* @__PURE__ */ new Set();
+  for (const entry of Array.isArray(entries) ? entries : []) {
+    if (isEntryChecked(entry, state)) set.add(entry.path);
+  }
+  return set;
+}
+function headerState(entries, checkedPaths) {
+  const list = Array.isArray(entries) ? entries : [];
+  if (list.length === 0) return "none";
+  const selected = list.filter((entry) => checkedPaths.has(entry.path)).length;
+  if (selected === 0) return "none";
+  return selected === list.length ? "all" : "some";
+}
+function groupByDirectory(entries) {
+  const map = /* @__PURE__ */ new Map();
+  for (const entry of Array.isArray(entries) ? entries : []) {
+    const dir = parentDirOf(entry.path);
+    const list = map.get(dir);
+    if (list === void 0) map.set(dir, [entry]);
+    else list.push(entry);
+  }
+  return [...map.entries()].sort((left, right) => left[0].localeCompare(right[0])).map(([dir, list]) => ({ dir, entries: list }));
+}
+function changelistOf(path2, lists = {}) {
+  for (const [name2, paths] of Object.entries(lists)) {
+    if (Array.isArray(paths) && paths.includes(path2)) return name2;
+  }
+  return DEFAULT_CHANGELIST;
+}
+function groupByChangelist(entries, lists = {}) {
+  const groups = /* @__PURE__ */ new Map([[DEFAULT_CHANGELIST, []]]);
+  for (const name2 of Object.keys(lists)) {
+    if (name2 !== DEFAULT_CHANGELIST) groups.set(name2, []);
+  }
+  for (const entry of Array.isArray(entries) ? entries : []) {
+    const name2 = changelistOf(entry.path, lists);
+    const list = groups.get(name2);
+    if (list === void 0) groups.set(name2, [entry]);
+    else list.push(entry);
+  }
+  return [...groups.entries()].filter(([, list]) => list.length > 0).map(([name2, list]) => ({ name: name2, entries: list }));
+}
+function assignChangelist(lists, paths, target) {
+  const next = {};
+  for (const [name2, list] of Object.entries(lists ?? {})) {
+    next[name2] = (Array.isArray(list) ? list : []).filter((path2) => !paths.includes(path2));
+  }
+  if (target !== void 0) {
+    next[target] = [.../* @__PURE__ */ new Set([...next[target] ?? [], ...paths])];
+  }
+  return next;
+}
+
 // src/client/util.js
 function keyToken(event) {
   const key = event.key;
@@ -1024,6 +1295,9 @@ function joinPath(root, rel) {
   const separator = root.includes("\\") ? "\\" : "/";
   return `${root.replace(/[\\/]$/, "")}${separator}${String(rel).split("/").join(separator)}`;
 }
+function errorMessage(error) {
+  return error instanceof Error ? error.message : String(error);
+}
 function initialState() {
   return {
     phase: "booting",
@@ -1047,6 +1321,9 @@ function initialState() {
     dirs: /* @__PURE__ */ new Map(),
     expanded: /* @__PURE__ */ new Set(),
     selectedPath: "",
+    selectedPaths: /* @__PURE__ */ new Set(),
+    anchorPath: "",
+    clipboard: null,
     filter: "",
     tabs: [],
     activeId: null,
@@ -1057,7 +1334,16 @@ function initialState() {
       messagesLoading: false,
       committing: false,
       error: null,
-      mode: "side"
+      mode: "side",
+      /** Explicitly checked / unchecked paths (checkbox = include in commit). */
+      checked: /* @__PURE__ */ new Set(),
+      unchecked: /* @__PURE__ */ new Set(),
+      /** Paths that stay in the Unversioned group after `git add`. */
+      buckets: {},
+      /** Selected row for the Change View double-click. */
+      selectedPath: "",
+      /** Pre-commit tasks the user enabled (only shown when configured). */
+      tasks: { tests: false, optimize: false, cleanup: false }
     },
     git: {
       commits: [],
@@ -1065,9 +1351,11 @@ function initialState() {
       hasMore: true,
       loading: false,
       error: null,
-      filters: { branch: "", author: "", query: "" },
+      filters: { branch: "", author: "", query: "", path: "" },
       branches: [],
       selectedHash: null,
+      /** Commits picked with Ctrl+click for Compare (max 2). */
+      compare: [],
       detail: null,
       detailLoading: false
     },
@@ -1080,6 +1368,8 @@ function initialState() {
     rootPicker: false,
     confirm: null,
     toast: null,
+    /** Cursor position of the active text editor ({ line, col }), for the status bar. */
+    cursor: null,
     localeTick: 0
   };
 }
@@ -1531,7 +1821,8 @@ var WorkbenchStore = class {
     this.persist();
   }
   setSelectedPath(path2) {
-    this.set({ selectedPath: path2 });
+    const selection = typeof path2 === "string" && path2 !== "" ? /* @__PURE__ */ new Set([path2]) : /* @__PURE__ */ new Set();
+    this.set({ selectedPath: path2, selectedPaths: selection, anchorPath: path2 });
     const expanded = new Set(this.state.expanded);
     let parent = parentPath(path2);
     let guard = 0;
@@ -1549,6 +1840,268 @@ var WorkbenchStore = class {
   }
   setFilter(filter) {
     this.set({ filter });
+  }
+  // ── selection (JetBrains: select first, act second) ──────────────────
+  /** Replace the selection; `anchor` is the pivot for Shift range selection. */
+  setSelection(paths, anchor) {
+    const list = (Array.isArray(paths) ? paths : []).filter((path2) => typeof path2 === "string" && path2 !== "");
+    const focus = typeof anchor === "string" && anchor !== "" ? anchor : list[list.length - 1] ?? "";
+    this.set({ selectedPaths: new Set(list), selectedPath: focus, anchorPath: focus });
+  }
+  /** Ctrl+click toggle. */
+  toggleSelection(path2) {
+    const next = new Set(this.state.selectedPaths);
+    if (next.has(path2)) next.delete(path2);
+    else next.add(path2);
+    const focus = next.has(path2) ? path2 : [...next][next.size - 1] ?? "";
+    this.set({ selectedPaths: next, selectedPath: focus, anchorPath: path2 });
+  }
+  /** Shift+click range over the currently visible row order. */
+  selectRange(path2, orderedPaths) {
+    const anchor = this.state.anchorPath === "" ? path2 : this.state.anchorPath;
+    const from = orderedPaths.indexOf(anchor);
+    const to = orderedPaths.indexOf(path2);
+    if (from < 0 || to < 0) {
+      this.setSelection([path2], path2);
+      return;
+    }
+    const [start, end] = from <= to ? [from, to] : [to, from];
+    this.set({ selectedPaths: new Set(orderedPaths.slice(start, end + 1)), selectedPath: path2, anchorPath: anchor });
+  }
+  clearSelection() {
+    this.set({ selectedPaths: /* @__PURE__ */ new Set(), selectedPath: "", anchorPath: "" });
+  }
+  /** Absolute path for one project-relative path. */
+  #absoluteOf(rel) {
+    return joinPath(this.state.root, rel);
+  }
+  /** Project-relative path for one absolute path. */
+  relOf(path2) {
+    const root = String(this.state.root ?? "").replace(/[\\/]+$/, "");
+    const wide = String(path2 ?? "").replace(/\\/g, "/");
+    const base2 = root.replace(/\\/g, "/");
+    if (base2 === "" || wide === base2) return "";
+    return wide.startsWith(`${base2}/`) ? wide.slice(base2.length + 1) : wide;
+  }
+  // ── file operations (JetBrains tree) ──────────────────────────────────
+  setFileClipboard(paths, cut) {
+    const list = (Array.isArray(paths) ? paths : []).filter((path2) => typeof path2 === "string" && path2 !== "");
+    this.set({ clipboard: list.length === 0 ? null : { paths: list, cut: cut === true } });
+    if (list.length > 0) this.toast("success", this.t(cut === true ? "project.cut" : "project.copy"), `${list.length}`);
+  }
+  async pasteEntries(target) {
+    const clipboard = this.state.clipboard;
+    if (clipboard === null || clipboard === void 0) return;
+    const moved = clipboard.cut === true;
+    await this.moveEntries(clipboard.paths, target, !moved);
+    if (moved) this.set({ clipboard: null });
+  }
+  async createEntry(parent, options = {}) {
+    const name2 = String(options.name ?? "").trim();
+    if (name2 === "") return;
+    try {
+      const result = await call("fs.create", {
+        root: this.state.root,
+        parent,
+        name: name2,
+        isDir: options.isDir === true,
+        content: typeof options.content === "string" ? options.content : ""
+      });
+      await this.loadDir(parent, { force: true });
+      await this.refreshStatus();
+      const absolute = this.#absoluteOf(result.path);
+      this.setSelection([absolute], absolute);
+      if (result.isDir !== true) this.openFile(absolute, { rel: result.path, preview: false });
+      this.persist();
+    } catch (error) {
+      this.toast("error", this.t("common.error"), errorMessage(error));
+    }
+  }
+  async renameEntry(path2, name2) {
+    const next = String(name2 ?? "").trim();
+    if (next === "" || next === baseName(path2)) return;
+    try {
+      const result = await call("fs.rename", { root: this.state.root, path: path2, name: next });
+      this.#applyPathMapping([[path2, this.#absoluteOf(result.target)]]);
+      await this.loadDir(parentPath(path2), { force: true });
+      await this.refreshStatus();
+      this.persist();
+    } catch (error) {
+      this.toast("error", this.t("common.error"), errorMessage(error));
+    }
+  }
+  async duplicateEntries(paths) {
+    const list = Array.isArray(paths) ? paths : [];
+    if (list.length === 0) return;
+    let last2;
+    for (const path2 of list) {
+      try {
+        last2 = await call("fs.duplicate", { root: this.state.root, path: path2 });
+        await this.loadDir(parentPath(path2), { force: true });
+      } catch (error) {
+        this.toast("error", this.t("common.error"), errorMessage(error));
+      }
+    }
+    if (last2 !== void 0) {
+      const absolute = this.#absoluteOf(last2.target);
+      this.setSelectedPath(absolute);
+    }
+    await this.refreshStatus();
+    this.persist();
+  }
+  /**
+   * Move or copy entries into a directory. Name conflicts auto-rename
+   * (`name-copy`), matching JetBrains' duplicate behaviour.
+   */
+  async moveEntries(paths, target, copy = false) {
+    const list = Array.isArray(paths) ? paths.filter((path2) => typeof path2 === "string") : [];
+    if (list.length === 0 || typeof target !== "string" || target === "") return;
+    try {
+      const result = await call("fs.move", {
+        root: this.state.root,
+        paths: list,
+        target,
+        copy,
+        conflict: "rename"
+      });
+      const done = result.results.filter((item) => item.ok === true);
+      const failed = result.results.filter((item) => item.ok !== true && item.skipped !== true);
+      if (done.length > 0) {
+        const mapping = done.map((item) => [this.#absoluteOf(item.path), this.#absoluteOf(item.target)]);
+        this.#applyPathMapping(mapping);
+        const dirs = /* @__PURE__ */ new Set([...list.map(parentPath), target, ...done.map((item) => parentPath(this.#absoluteOf(item.target)))]);
+        for (const dir of dirs) {
+          try {
+            await this.loadDir(dir, { force: true });
+          } catch {
+          }
+        }
+        const first = this.#absoluteOf(done[0].target);
+        this.setSelectedPath(first);
+        await this.refreshStatus();
+      }
+      if (failed.length > 0) {
+        this.toast("error", this.t("common.error"), failed.map((item) => `${item.path}: ${item.message ?? item.code}`).join("\n"));
+      } else {
+        this.toast("success", this.t("common.success"), `${done.length}`);
+      }
+      this.persist();
+    } catch (error) {
+      this.toast("error", this.t("common.error"), errorMessage(error));
+    }
+  }
+  /** Confirmation then deletion (recycle bin when enabled). */
+  requestDelete(paths) {
+    const list = [...new Set((Array.isArray(paths) ? paths : []).filter((path2) => typeof path2 === "string" && path2 !== ""))];
+    if (list.length === 0) return;
+    const dirty = this.state.tabs.filter((tab3) => tab3.kind === "file" && tab3.dirty === true && list.some((path2) => tab3.path === path2 || tab3.path.startsWith(`${path2}\\`) || tab3.path.startsWith(`${path2}/`)));
+    const names = list.map((path2) => baseName(path2)).slice(0, 8).join(", ");
+    const extra = dirty.length > 0 ? `
+${this.t("project.deleteDirty")}` : "";
+    this.askConfirm(
+      this.t("project.deleteTitle"),
+      `${list.length === 1 ? this.t("project.deleteOne") : `${list.length} ${this.t("project.deleteMany")}`}
+${names}${extra}`,
+      this.t("project.delete"),
+      () => {
+        void this.deleteEntries(list);
+      }
+    );
+  }
+  async deleteEntries(paths) {
+    const list = Array.isArray(paths) ? paths : [];
+    if (list.length === 0) return;
+    try {
+      const result = await call("fs.delete", { root: this.state.root, paths: list });
+      const done = result.results.filter((item) => item.ok === true);
+      const failed = result.results.filter((item) => item.ok !== true);
+      if (done.length > 0) {
+        const removed = done.map((item) => this.#absoluteOf(item.path));
+        this.#closeTabsUnder(removed);
+        const dirs = new Set(list.map(parentPath));
+        for (const dir of dirs) {
+          try {
+            await this.loadDir(dir, { force: true });
+          } catch {
+          }
+        }
+        this.clearSelection();
+        await this.refreshStatus();
+      }
+      if (failed.length > 0) this.toast("error", this.t("common.error"), failed.map((item) => item.message ?? item.code).join("\n"));
+      else this.toast("success", this.t("common.success"), `${done.length}`);
+      this.persist();
+    } catch (error) {
+      this.toast("error", this.t("common.error"), errorMessage(error));
+    }
+  }
+  /** Star / unstar absolute paths in Favorites. */
+  async toggleFavorite(paths) {
+    const list = (Array.isArray(paths) ? paths : []).filter((path2) => typeof path2 === "string" && path2 !== "");
+    if (list.length === 0) return;
+    const favorites = Array.isArray(this.state.settings?.favorites) ? [...this.state.settings.favorites] : [];
+    for (const path2 of list) {
+      const index = favorites.indexOf(path2);
+      if (index >= 0) favorites.splice(index, 1);
+      else favorites.push(path2);
+    }
+    await this.updateSettings({ favorites });
+  }
+  /** Synchronize: re-read the tree and the git snapshot, keep expansion. */
+  async sync() {
+    await this.reloadTree();
+    await this.refreshStatus({ initial: true });
+    this.toast("success", this.t("project.synchronized"), "");
+  }
+  /** Expand every folder (bounded so a huge repo cannot lock the UI). */
+  async expandAll(limit = 400) {
+    const expanded = new Set(this.state.expanded);
+    const queue = [this.state.root];
+    let visited = 0;
+    while (queue.length > 0 && visited < limit) {
+      const dir = queue.shift();
+      visited += 1;
+      expanded.add(dir);
+      if (this.state.dirs.get(dir)?.entries === void 0) await this.loadDir(dir);
+      const entries = this.state.dirs.get(dir)?.entries ?? [];
+      for (const entry of entries) if (entry.isDir) queue.push(entry.path);
+    }
+    this.set({ expanded });
+    this.persist();
+  }
+  /** Re-key open file tabs (and the active id) after a rename/move. */
+  #applyPathMapping(pairs) {
+    if (!Array.isArray(pairs) || pairs.length === 0) return;
+    const mapPath = (path2) => {
+      for (const [from, to] of pairs) {
+        if (path2 === from) return to;
+        if (path2.startsWith(`${from}\\`) || path2.startsWith(`${from}/`)) return to + path2.slice(from.length);
+      }
+      return path2;
+    };
+    const wasActive = this.state.activeId;
+    let nextActive = wasActive;
+    const tabs = this.state.tabs.map((tab3) => {
+      if (tab3.kind !== "file" || typeof tab3.path !== "string") return tab3;
+      const next = mapPath(tab3.path);
+      if (next === tab3.path) return tab3;
+      if (wasActive === tab3.id) nextActive = `file:${next}`;
+      return { ...tab3, id: `file:${next}`, path: next, name: baseName(next), rel: this.relOf(next) };
+    });
+    const selectedPath = mapPath(this.state.selectedPath);
+    this.set({
+      tabs,
+      activeId: nextActive,
+      selectedPath,
+      selectedPaths: new Set(selectedPath === "" ? [] : [selectedPath]),
+      anchorPath: selectedPath
+    });
+  }
+  /** Close file tabs whose path is gone. */
+  #closeTabsUnder(roots) {
+    const tabs = this.state.tabs.filter((tab3) => tab3.kind !== "file" || !roots.some((root) => tab3.path === root || tab3.path.startsWith(`${root}\\`) || tab3.path.startsWith(`${root}/`)));
+    const activeId = tabs.some((tab3) => tab3.id === this.state.activeId) ? this.state.activeId : tabs[tabs.length - 1]?.id ?? null;
+    this.set({ tabs, activeId });
   }
   /** Reveal one path in the native file manager. */
   async reveal(path2) {
@@ -1572,7 +2125,7 @@ var WorkbenchStore = class {
    */
   openFile(path2, options = {}) {
     if (typeof path2 !== "string" || path2 === "") return;
-    const rel = options.rel ?? path2;
+    const rel = options.rel ?? this.relOf(path2);
     const existing = this.state.tabs.find((tab4) => tab4.kind === "file" && tab4.path === path2);
     if (existing !== void 0) {
       const tabs2 = this.state.tabs.map((tab4) => tab4 === existing ? { ...tab4, preview: tab4.preview && options.preview === true } : tab4);
@@ -1649,7 +2202,7 @@ var WorkbenchStore = class {
           ...keepDraft ? {} : { draft: text, dirty: false }
         });
       } else if (tab3.kind === "diff") {
-        const result = await call("git.diff", {
+        const result = tab3.compare !== void 0 ? await call("git.diff-refs", { root: this.state.root, a: tab3.compare.a, b: tab3.compare.b }) : tab3.commitHash !== void 0 ? await call("git.commit-file-diff", { root: this.state.root, hash: tab3.commitHash, path: tab3.rel }) : tab3.against === "head" || tab3.against === "latest" ? await call("git.diff-rev", { root: this.state.root, path: tab3.rel, rev: tab3.against }) : await call("git.diff", {
           root: this.state.root,
           path: tab3.rel,
           staged: tab3.staged === true,
@@ -1789,9 +2342,10 @@ var WorkbenchStore = class {
     }
   }
   /** Open the diff of one changed file (Commit / Git windows). */
-  openDiff({ path: path2, staged = false, untracked = false }) {
+  openDiff({ path: path2, staged = false, untracked = false, against = null }) {
     if (typeof path2 !== "string" || path2 === "") return;
-    const id2 = `diff:${untracked ? "untracked" : staged ? "staged" : "worktree"}:${path2}`;
+    const variant = against ?? (untracked ? "untracked" : staged ? "staged" : "worktree");
+    const id2 = `diff:${variant}:${path2}`;
     const existing = this.state.tabs.find((tab4) => tab4.id === id2);
     if (existing !== void 0) {
       this.set({ activeId: id2 });
@@ -1806,6 +2360,74 @@ var WorkbenchStore = class {
       rel: path2,
       staged,
       untracked,
+      against,
+      preview: false,
+      pinned: true,
+      loading: false,
+      error: null,
+      scrollTop: 0,
+      mode: this.state.commit.mode
+    };
+    this.set({ tabs: [...this.state.tabs, tab3], activeId: id2 });
+    void this.ensureTabContent(id2);
+  }
+  /** Open one file's diff inside a commit (bottom details pane). */
+  openCommitFile(hash3, path2) {
+    if (typeof hash3 !== "string" || typeof path2 !== "string" || path2 === "") return;
+    const id2 = `diff:commit:${hash3}:${path2}`;
+    const existing = this.state.tabs.find((tab4) => tab4.id === id2);
+    if (existing !== void 0) {
+      this.set({ activeId: id2 });
+      void this.ensureTabContent(id2, { force: true });
+      return;
+    }
+    const tab3 = {
+      id: id2,
+      kind: "diff",
+      commitHash: hash3,
+      path: path2,
+      name: baseName(path2),
+      rel: path2,
+      preview: false,
+      pinned: true,
+      loading: false,
+      error: null,
+      scrollTop: 0,
+      mode: this.state.commit.mode
+    };
+    this.set({ tabs: [...this.state.tabs, tab3], activeId: id2 });
+    void this.ensureTabContent(id2);
+  }
+  /** Ctrl+click in the log: pick up to two commits for Compare. */
+  toggleCompare(hash3) {
+    if (typeof hash3 !== "string" || hash3 === "") return;
+    const current = this.state.git.compare ?? [];
+    const next = current.includes(hash3) ? current.filter((item) => item !== hash3) : [...current, hash3].slice(-2);
+    this.patch("git", { compare: next });
+  }
+  /** Open the selected pair as a two-ended diff tab. */
+  compareSelected() {
+    const [a2, b2] = this.state.git.compare ?? [];
+    this.openCompare(a2, b2);
+  }
+  /** Open any two refs (commit/branch/HEAD) as a read-only diff tab. */
+  openCompare(a2, b2) {
+    if (typeof a2 !== "string" || typeof b2 !== "string" || a2 === "" || b2 === "" || a2 === b2) return;
+    const id2 = `diff:range:${a2}..${b2}`;
+    const existing = this.state.tabs.find((tab4) => tab4.id === id2);
+    if (existing !== void 0) {
+      this.set({ activeId: id2 });
+      void this.ensureTabContent(id2, { force: true });
+      return;
+    }
+    const tab3 = {
+      id: id2,
+      kind: "diff",
+      compare: { a: a2, b: b2 },
+      readOnly: true,
+      path: `${a2.slice(0, 7)}..${b2.slice(0, 7)}`,
+      rel: `${a2.slice(0, 7)}..${b2.slice(0, 7)}`,
+      name: `${a2.slice(0, 7)}..${b2.slice(0, 7)}`,
       preview: false,
       pinned: true,
       loading: false,
@@ -1847,22 +2469,152 @@ var WorkbenchStore = class {
   }
   // ── commit window ─────────────────────────────────────────────────────
   get groups() {
-    const entries = this.state.status.entries ?? [];
+    const entries = this.changedEntries;
     return {
       staged: entries.filter((entry) => entry.staged === true),
       unstaged: entries.filter((entry) => entry.unstaged === true),
       untracked: entries.filter((entry) => entry.untracked === true)
     };
   }
+  get changedEntries() {
+    return (this.state.status.entries ?? []).filter((entry) => entry.ignored !== true);
+  }
+  /** V2 two-group model: Changes / Unversioned (checkbox never moves a row). */
+  get commitGroups() {
+    return splitCommitGroups(this.changedEntries, this.state.commit.buckets ?? {});
+  }
+  /** Whether one entry is included in the next commit. */
+  isCommitChecked(entry) {
+    return isEntryChecked(entry, this.state.commit);
+  }
+  get checkedCommitPaths() {
+    return checkedPathsOf(this.changedEntries, this.state.commit);
+  }
   get changeCount() {
-    const groups = this.groups;
-    return groups.unstaged.length + groups.untracked.length;
+    return this.changedEntries.length;
+  }
+  /** Check / uncheck one file and keep the git index in sync immediately. */
+  async toggleCommitEntry(entry) {
+    await this.setCommitChecked([entry], this.isCommitChecked(entry) !== true);
+  }
+  /**
+   * Check / uncheck a batch. Checking stages, unchecking restages; an
+   * untracked file that gets added stays in the Unversioned group (bucket).
+   */
+  async setCommitChecked(entries, checked) {
+    const list = (Array.isArray(entries) ? entries : []).filter((entry) => entry !== null && entry !== void 0 && entry.conflict !== true);
+    if (list.length === 0) return;
+    const commit = this.state.commit;
+    const checkedSet = new Set(commit.checked);
+    const uncheckedSet = new Set(commit.unchecked);
+    const buckets2 = { ...commit.buckets ?? {} };
+    const toStage = [];
+    const toUnstage = [];
+    for (const entry of list) {
+      const currently = this.isCommitChecked(entry);
+      if (currently === checked) continue;
+      if (checked) {
+        checkedSet.add(entry.path);
+        uncheckedSet.delete(entry.path);
+        if (entry.untracked === true || buckets2[entry.path] === "untracked") buckets2[entry.path] = "untracked";
+        if (entry.staged !== true) toStage.push(entry.path);
+      } else {
+        checkedSet.delete(entry.path);
+        uncheckedSet.add(entry.path);
+        if (entry.staged === true) toUnstage.push(entry.path);
+      }
+    }
+    this.patch("commit", { checked: checkedSet, unchecked: uncheckedSet, buckets: buckets2, selectedPath: commit.selectedPath });
+    if (toStage.length > 0) await this.stage(toStage);
+    if (toUnstage.length > 0) await this.unstage(toUnstage);
+  }
+  // ── changelists (client-side grouping only) ───────────────────────────
+  #changelistDoc() {
+    const all = this.state.settings?.changelists ?? {};
+    const current = all[this.state.workspaceRoot];
+    return {
+      active: typeof current?.active === "string" ? current.active : DEFAULT_CHANGELIST,
+      lists: current?.lists !== null && typeof current?.lists === "object" ? current.lists : {}
+    };
+  }
+  get changelists() {
+    return this.#changelistDoc();
+  }
+  changelistOf(path2) {
+    return changelistOf(path2, this.#changelistDoc().lists);
+  }
+  async #saveChangelists(lists, active) {
+    const all = { ...this.state.settings?.changelists ?? {} };
+    all[this.state.workspaceRoot] = { active: active ?? this.#changelistDoc().active, lists };
+    await this.updateSettings({ changelists: all });
+  }
+  /** Move paths into `target` (created on demand). */
+  async moveToChangelist(paths, target) {
+    const list = (Array.isArray(paths) ? paths : []).filter((path2) => typeof path2 === "string" && path2 !== "");
+    if (list.length === 0 || typeof target !== "string" || target.trim() === "") return;
+    const name2 = target.trim();
+    const lists = assignChangelist(this.#changelistDoc().lists, list, name2);
+    await this.#saveChangelists(lists, name2);
+  }
+  /** Destructive changelist rename is out of V2; creating one is enough. */
+  async createChangelist(name2, paths = []) {
+    const value = String(name2 ?? "").trim();
+    if (value === "") return;
+    await this.moveToChangelist(paths, value);
+  }
+  async setActiveChangelist(name2) {
+    const value = String(name2 ?? "").trim();
+    if (value === "") return;
+    await this.#saveChangelists(this.#changelistDoc().lists, value);
+  }
+  async setGroupByDirectory(value) {
+    await this.updateSettings({ commit: { ...this.state.settings?.commit ?? {}, groupByDirectory: value === true } });
+  }
+  /** Append one changed path to the repository's .gitignore. */
+  async ignoreEntry(path2) {
+    if (typeof path2 !== "string" || path2 === "") return;
+    try {
+      await call("git.ignore", {
+        root: this.state.root,
+        path: path2,
+        repoRoot: this.state.status.repoRoot ?? void 0
+      });
+      await this.refreshStatus({ initial: true });
+      this.toast("success", this.t("common.success"), path2);
+    } catch (error) {
+      this.toast("error", this.t("common.error"), errorMessage(error));
+    }
+  }
+  /** Open a file in the editor (Change View "Jump to Source"). */
+  jumpToSource(path2) {
+    if (typeof path2 !== "string" || path2 === "") return;
+    const absolute = /^([a-zA-Z]:[\\/]|[\\/])/.test(path2) ? path2 : this.#absoluteOf(path2);
+    this.openFile(absolute, { rel: this.relOf(absolute), preview: false });
+  }
+  /** Revert one changed file after confirmation (Change View "Revert"). */
+  revertChange(entry) {
+    if (entry === void 0) return;
+    const name2 = entry.path.split(/[\\/]/).pop();
+    this.askConfirm(
+      this.t("commit.discardTitle"),
+      `${this.t("commit.discardBody")}
+${name2}`,
+      this.t("commit.discard"),
+      () => {
+        void this.discardEntries([entry]);
+      }
+    );
   }
   setCommitMessage(message) {
     this.patch("commit", { message, error: null });
   }
   setAmend(amend) {
     this.patch("commit", { amend });
+  }
+  /** Toggle one pre-commit task (Run Tests / Optimize Imports / Code Cleanup). */
+  setCommitTask(name2, enabled) {
+    const tasks = { ...this.state.commit.tasks ?? {}, [name2]: enabled === true };
+    this.patch("commit", { tasks });
   }
   async loadCommitMessages() {
     if (this.state.root === "") return;
@@ -1932,8 +2684,35 @@ var WorkbenchStore = class {
     }
     this.patch("commit", { committing: true, error: null });
     try {
+      const tasks = state.tasks ?? {};
+      const configured = [
+        ["tests", this.state.settings?.commit?.testCommand, "commit.taskTests"],
+        ["optimize", this.state.settings?.commit?.optimizeImportsCommand, "commit.taskOptimize"],
+        ["cleanup", this.state.settings?.commit?.cleanupCommand, "commit.taskCleanup"]
+      ];
+      for (const [key, command2, labelKey] of configured) {
+        if (tasks[key] !== true || typeof command2 !== "string" || command2.trim() === "") continue;
+        const outcome = await call("run.command", { root: this.state.root, command: command2 });
+        if (outcome.code !== 0) {
+          const text = `${this.t(labelKey)} \xB7 exit ${outcome.code}
+${outcome.output ?? ""}`.trim();
+          this.patch("commit", { committing: false, error: text });
+          this.toast("error", this.t("commit.taskFailed"), this.t(labelKey));
+          return;
+        }
+      }
       const result = await call("git.commit", { root: this.state.root, message, amend });
-      this.patch("commit", { committing: false, message: "", amend: false, error: null });
+      this.patch("commit", {
+        committing: false,
+        message: "",
+        amend: false,
+        error: null,
+        checked: /* @__PURE__ */ new Set(),
+        unchecked: /* @__PURE__ */ new Set(),
+        buckets: {},
+        selectedPath: "",
+        tasks: { tests: false, optimize: false, cleanup: false }
+      });
       this.toast("success", this.t("commit.committed"), result.hash ?? "");
       await this.refreshStatus({ initial: false });
       void this.loadCommitMessages();
@@ -1960,6 +2739,14 @@ var WorkbenchStore = class {
   setGitFilters(patch) {
     this.patch("git", { filters: { ...this.state.git.filters, ...patch } });
     void this.loadLog(true);
+  }
+  /** Project → Git | Show History: scope the log to one file or folder. */
+  showHistory(rel) {
+    const value = typeof rel === "string" ? rel.replace(/[\\/]+$/, "") : "";
+    this.patch("git", { filters: { ...this.state.git.filters, path: value }, selectedHash: null, detail: null });
+    this.set({ layout: { ...this.state.layout, bottom: "git" } });
+    void this.loadLog(true);
+    this.persist();
   }
   async loadBranches() {
     if (this.state.root === "") return;
@@ -2009,7 +2796,6 @@ var WorkbenchStore = class {
       const detail = await call("git.detail", { root: this.state.root, hash: hash3 });
       if (this.state.git.selectedHash !== hash3) return;
       this.patch("git", { detail, detailLoading: false });
-      void this.openCommit(hash3);
     } catch (error) {
       this.patch("git", { detailLoading: false, detail: null, error: error instanceof Error ? error.message : String(error) });
     }
@@ -2141,6 +2927,36 @@ var WorkbenchStore = class {
     this.set({ layout: { ...this.state.layout, ...patch } });
     this.persist();
   }
+  /** Hide all tool windows (Ctrl+Shift+F12); a second call restores them. */
+  toggleHideAll() {
+    const layout = this.state.layout;
+    const visible = layout.left !== null && layout.left !== void 0 || layout.bottom !== null && layout.bottom !== void 0;
+    if (visible) {
+      this.hiddenLayout = { left: layout.left ?? null, bottom: layout.bottom ?? null };
+      this.set({ layout: { ...layout, left: null, bottom: null } });
+    } else {
+      const saved = this.hiddenLayout ?? { left: "project", bottom: null };
+      this.set({ layout: { ...layout, ...saved } });
+    }
+    this.persist();
+  }
+  /** Cursor position from the code editor (status bar Ln:Col). */
+  setCursor(cursor) {
+    const current = this.state.cursor;
+    if (current !== null && cursor !== null && current.line === cursor.line && current.col === cursor.col) return;
+    this.set({ cursor });
+  }
+  /** Browser full screen (View | Enter Full Screen / F11). */
+  toggleFullscreen() {
+    const doc2 = globalThis.document;
+    if (doc2 === void 0 || doc2 === null) return;
+    if (doc2.fullscreenElement !== null && doc2.fullscreenElement !== void 0) {
+      void doc2.exitFullscreen?.();
+      return;
+    }
+    void doc2.documentElement?.requestFullscreen?.().catch(() => {
+    });
+  }
   #focusCommitLater() {
     this.patch("commit", { focusTick: (this.state.commit.focusTick ?? 0) + 1 });
   }
@@ -2180,7 +2996,7 @@ var WorkbenchStore = class {
     if (status.isRepo !== true) return { branch: void 0, changes: 0, ahead: void 0, behind: void 0 };
     return {
       branch: status.branch,
-      changes: (status.entries ?? []).length,
+      changes: (status.entries ?? []).filter((entry) => entry.ignored !== true).length,
       ahead: status.ahead,
       behind: status.behind
     };
@@ -2317,22 +3133,22 @@ var FILE_TINTS = {
   go: "#39b9c6",
   rust: "#e0956a",
   json: "#d7c15a",
-  markdown: "#6aa8e8",
+  markdown: "#4f9cf9",
   html: "#e07a52",
   css: "#c678dd",
   sql: "#e0a458",
   shell: "#7fbf6a",
-  config: "#b9a54a",
+  config: "#b07ae8",
   image: "#7cae6f",
-  svg: "#d7a24a",
+  svg: "#b07ae8",
   pdf: "#e2686f",
   archive: "#b58b6a",
-  lock: "#d7a24a",
-  git: "#e2686f",
+  lock: "#57a86b",
+  git: "#d97a9a",
   docker: "#4f9cf9",
   env: "#b58b6a",
   build: "#8fbc8f",
-  c: "#7f9bd6",
+  c: "#5c9fd6",
   cpp: "#8b7bff",
   csharp: "#7cae6f",
   ruby: "#dd5d5d",
@@ -2499,18 +3315,10 @@ function FileTypeIcon(props = {}) {
   if (props.isDir === true) return import_react2.default.createElement(IconFolder, { open: props.open === true, size: props.size ?? 15 });
   const kind = fileTypeOf(name2);
   const tint = FILE_TINTS[kind] ?? FILE_TINTS.file;
+  const size = props.size ?? 15;
   return svg([
-    import_react2.default.createElement("path", {
-      key: "page",
-      d: "M3.6 1.8h5.1l3.7 3.7v8.7H3.6z",
-      fill: "none",
-      stroke: tint,
-      strokeWidth: 1.3,
-      strokeLinejoin: "round"
-    }),
-    import_react2.default.createElement("path", { key: "fold", d: "M8.7 1.8v3.7h3.7", fill: "none", stroke: tint, strokeWidth: 1.3 }),
-    ...typeGlyph(kind, tint)
-  ], { width: props.size ?? 15, height: props.size ?? 15 });
+    import_react2.default.createElement("g", { key: "glyph", transform: "translate(-4.96 -9.2) scale(1.6)" }, ...typeGlyph(kind, tint))
+  ], { width: size, height: size });
 }
 function IconLock(props = {}) {
   return svg([
@@ -2582,9 +3390,12 @@ var import_react4 = __toESM(require("react"), 1);
 
 // src/client/ui.jsx
 var import_react3 = __toESM(require("react"), 1);
-function ContextMenu({ x, y, items, onClose }) {
+function ContextMenu({ x, y, items, onClose, depth = 0 }) {
   const ref = (0, import_react3.useRef)(null);
+  const [openIndex, setOpenIndex] = (0, import_react3.useState)(-1);
+  const [subAnchor, setSubAnchor] = (0, import_react3.useState)(null);
   (0, import_react3.useEffect)(() => {
+    if (depth !== 0) return void 0;
     const onDown = (event) => {
       if (ref.current !== null && !ref.current.contains(event.target)) onClose();
     };
@@ -2599,30 +3410,91 @@ function ContextMenu({ x, y, items, onClose }) {
       window.removeEventListener("keydown", onKey, true);
       window.removeEventListener("blur", onClose);
     };
-  }, [onClose]);
-  const width = 210;
-  const height = items.length * 28 + 12;
-  const left = Math.min(x, (window.innerWidth ?? 1200) - width - 8);
-  const top2 = Math.min(y, (window.innerHeight ?? 800) - height - 8);
+  }, [onClose, depth]);
+  const width = 264;
+  const estimated = items.reduce((total, item) => {
+    if (item === null) return total + 9;
+    if (item.label !== void 0 && item.action === void 0) return total + 22;
+    return total + 26;
+  }, 10);
+  const hasWindow = typeof window !== "undefined";
+  const viewportWidth = hasWindow ? window.innerWidth : 1200;
+  const viewportHeight = hasWindow ? window.innerHeight : 800;
+  const anchoredLeft = depth === 0 ? Math.max(6, Math.min(x, viewportWidth - width - 8)) : x;
+  const anchoredTop = depth === 0 ? Math.max(6, Math.min(y, viewportHeight - estimated - 8)) : y;
+  const [position, setPosition] = (0, import_react3.useState)({ left: anchoredLeft, top: anchoredTop });
+  (0, import_react3.useEffect)(() => {
+    setPosition({ left: anchoredLeft, top: anchoredTop });
+  }, [anchoredLeft, anchoredTop]);
+  (0, import_react3.useEffect)(() => {
+    if (!hasWindow || ref.current === null) return;
+    const rect = ref.current.getBoundingClientRect();
+    const nextLeft = Math.max(6, Math.min(position.left, viewportWidth - rect.width - 6));
+    const nextTop = Math.max(6, Math.min(position.top, viewportHeight - rect.height - 6));
+    if (Math.round(nextLeft) !== Math.round(position.left) || Math.round(nextTop) !== Math.round(position.top)) {
+      setPosition({ left: nextLeft, top: nextTop });
+    }
+  }, [position.left, position.top, viewportWidth, viewportHeight, hasWindow]);
   return import_react3.default.createElement("div", {
     ref,
-    className: "itw-menu",
-    style: { left: `${Math.max(6, left)}px`, top: `${Math.max(6, top2)}px` },
+    className: `itw-menu ${depth === 0 ? "itw-menu-root" : "itw-menu-sub"}`,
+    style: { left: `${position.left}px`, top: `${position.top}px`, minWidth: `${width}px` },
     onContextMenu: (event) => event.preventDefault()
   }, items.map((item, index) => {
     if (item === null) return import_react3.default.createElement("div", { key: `sep-${index}`, className: "itw-menu-sep" });
     if (item.label !== void 0 && item.action === void 0) {
       return import_react3.default.createElement("div", { key: `label-${index}`, className: "itw-menu-label" }, item.label);
     }
-    return import_react3.default.createElement("button", {
-      key: item.key ?? `item-${index}`,
-      type: "button",
-      disabled: item.disabled === true,
-      onClick: () => {
-        onClose();
-        item.action?.();
-      }
-    }, item.icon ?? null, item.text);
+    const hasSubmenu = Array.isArray(item.submenu) && item.submenu.length > 0;
+    const open = hasSubmenu && openIndex === index;
+    const row = import_react3.default.createElement(
+      "button",
+      {
+        key: item.key ?? `item-${index}`,
+        type: "button",
+        className: `itw-menu-item ${item.danger === true ? "itw-menu-danger" : ""}`,
+        disabled: item.disabled === true,
+        "aria-haspopup": hasSubmenu ? "menu" : void 0,
+        "aria-expanded": hasSubmenu ? open : void 0,
+        onClick: () => {
+          if (hasSubmenu) {
+            setOpenIndex(open ? -1 : index);
+            return;
+          }
+          onClose();
+          item.action?.();
+        },
+        onMouseEnter: (event) => {
+          if (hasSubmenu) {
+            const rect = event.currentTarget.getBoundingClientRect();
+            const viewportWidth2 = typeof window !== "undefined" ? window.innerWidth : 1200;
+            const left = rect.right + 2 + width > viewportWidth2 ? Math.max(6, rect.left - width - 2) : rect.right + 2;
+            setSubAnchor({ x: left, y: rect.top - 5 });
+            setOpenIndex(index);
+          } else {
+            setOpenIndex(-1);
+          }
+        }
+      },
+      import_react3.default.createElement("span", { className: "itw-menu-check" }, item.checked === true ? "\u2713" : ""),
+      import_react3.default.createElement("span", { className: "itw-menu-icon" }, item.icon ?? null),
+      import_react3.default.createElement("span", { className: "itw-menu-text" }, item.text),
+      import_react3.default.createElement("span", { className: "itw-menu-shortcut" }, item.shortcut ?? ""),
+      import_react3.default.createElement("span", { className: "itw-menu-arrow" }, hasSubmenu ? "\u25B8" : "")
+    );
+    if (!hasSubmenu || !open || subAnchor === null) return row;
+    return import_react3.default.createElement(
+      import_react3.default.Fragment,
+      { key: `group-${index}` },
+      row,
+      import_react3.default.createElement(ContextMenu, {
+        x: subAnchor.x,
+        y: subAnchor.y,
+        items: item.submenu,
+        onClose,
+        depth: depth + 1
+      })
+    );
   }));
 }
 function ConfirmModal({ dialog, onClose }) {
@@ -2727,26 +3599,102 @@ function ChevronDown({ size = 12 }) {
   );
 }
 
+// src/client/git-colors.js
+var RANK = { conflict: 4, modified: 3, added: 2, untracked: 1 };
+function fileStatusKind(entry) {
+  if (entry === void 0 || entry === null) return null;
+  if (entry.ignored === true) return "ignored";
+  if (entry.conflict === true) return "conflict";
+  if (entry.untracked === true) return "untracked";
+  const xy = typeof entry.xy === "string" ? entry.xy : "";
+  if (xy[0] === "D" || xy[1] === "D") return "deleted";
+  if (xy[0] === "A") return "added";
+  if (xy === "" || xy === "..") return null;
+  return "modified";
+}
+function statusClass(kind) {
+  switch (kind) {
+    case "untracked":
+      return "itw-git-untracked";
+    case "added":
+      return "itw-git-added";
+    case "modified":
+      return "itw-git-modified";
+    case "conflict":
+      return "itw-git-conflict";
+    case "deleted":
+      return "itw-git-deleted";
+    case "ignored":
+      return "itw-git-ignored";
+    default:
+      return "";
+  }
+}
+function ancestorsOf(rel) {
+  const parts = String(rel).split("/");
+  const output = [];
+  for (let index = 1; index < parts.length; index += 1) output.push(parts.slice(0, index).join("/"));
+  return output;
+}
+function aggregateStatus(entries) {
+  const dirs = /* @__PURE__ */ new Map();
+  const files = /* @__PURE__ */ new Map();
+  const ignored = /* @__PURE__ */ new Set();
+  const conflictDirs = /* @__PURE__ */ new Set();
+  for (const entry of Array.isArray(entries) ? entries : []) {
+    if (entry === null || typeof entry !== "object" || typeof entry.path !== "string") continue;
+    const kind = fileStatusKind(entry);
+    if (kind === null) continue;
+    if (kind === "ignored") {
+      ignored.add(entry.path);
+      continue;
+    }
+    files.set(entry.path, kind);
+    const rank = RANK[kind] ?? 0;
+    for (const dir of ancestorsOf(entry.path)) {
+      const previous = dirs.get(dir);
+      if (previous === void 0 || (RANK[previous] ?? 0) < rank) dirs.set(dir, kind);
+      if (kind === "conflict") conflictDirs.add(dir);
+    }
+  }
+  return { dirs, files, ignored, conflictDirs };
+}
+
 // src/client/ProjectPanel.jsx
 var ROW_HEIGHT = 22;
-function gitStateOf(status, rel, enabled) {
-  if (enabled !== true || status?.isRepo !== true) return null;
-  const entry = status.entries.find((item) => item.path === rel);
-  if (entry === void 0) return null;
-  const xy = entry.xy ?? "";
-  if (entry.untracked) return { className: "itw-git-add", badge: "U" };
-  if (entry.conflict || xy.includes("U")) return { className: "itw-git-conflict", badge: "!" };
-  if (xy[0] === "A") return { className: "itw-git-add", badge: "A" };
-  if (xy.includes("D")) return { className: "itw-git-del", badge: "D" };
-  return { className: "itw-git-mod", badge: "M" };
+var SHORTCUT_FALLBACK = {
+  rename: "F2",
+  delete: "Delete",
+  duplicate: "F5",
+  move: "F6",
+  synchronize: "Ctrl+Alt+Y",
+  favorite: "Alt+Shift+F",
+  compare: "Ctrl+D",
+  findInFiles: "Ctrl+Shift+F",
+  openEntry: "Enter"
+};
+function parentOf(path2) {
+  const index = Math.max(path2.lastIndexOf("/"), path2.lastIndexOf("\\"));
+  return index <= 0 ? path2 : path2.slice(0, index);
 }
-function flatten(state, filter) {
+function isExcluded(rel, patterns) {
+  if (!Array.isArray(patterns) || patterns.length === 0) return false;
+  for (const raw of patterns) {
+    if (typeof raw !== "string" || raw.trim() === "") continue;
+    const pattern = raw.trim().replace(/\\/g, "/").replace(/^\/+|\/+$/g, "");
+    if (pattern === "") continue;
+    if (rel === pattern || rel.startsWith(`${pattern}/`)) return true;
+  }
+  return false;
+}
+function flatten(state, filter, showIgnored, ignored) {
   const rows = [];
   const dirs = state.dirs;
   const normalized = filter.trim().toLowerCase();
   const root = state.root;
   if (root === "") return rows;
   const isExpanded = (path2) => state.expanded.has(path2) || normalized !== "";
+  const visible = (entry) => showIgnored || !ignored.has(entry.rel);
   const walk = (path2, depth) => {
     const dir = dirs.get(path2);
     if (dir === void 0 || dir.entries === void 0) {
@@ -2757,8 +3705,8 @@ function flatten(state, filter) {
       rows.push({ kind: "error", key: `error:${path2}`, depth, message: dir.error });
       return;
     }
-    if (dir.entries === void 0) return;
     for (const entry of dir.entries) {
+      if (!visible(entry)) continue;
       if (entry.isDir) {
         const open = isExpanded(entry.path);
         rows.push({ kind: "dir", key: entry.path, entry, depth, open });
@@ -2774,6 +3722,7 @@ function flatten(state, filter) {
     }
   };
   for (const entry of dirs.get(root)?.entries ?? []) {
+    if (!visible(entry)) continue;
     if (entry.isDir) {
       const open = isExpanded(entry.path);
       rows.push({ kind: "dir", key: entry.path, entry, depth: 0, open });
@@ -2785,15 +3734,87 @@ function flatten(state, filter) {
   }
   return rows;
 }
+function templateContent(templateId, name2) {
+  const stem = name2.replace(/\.[^.]+$/, "") || name2;
+  const pascal = stem.replace(/(^|[-_.\s]+)([a-zA-Z0-9])/g, (_2, __, ch) => ch.toUpperCase()).replace(/[^a-zA-Z0-9]/g, "");
+  const camel = pascal.charAt(0).toLowerCase() + pascal.slice(1);
+  const title = stem.replace(/[-_]+/g, " ");
+  switch (templateId) {
+    case "java":
+      return `public class ${pascal === "" ? "Main" : pascal} {
+
+}
+`;
+    case "kotlin":
+      return `class ${pascal === "" ? "Main" : pascal} {
+
+}
+`;
+    case "ts":
+      return `export function ${camel === "" ? "main" : camel}(): void {
+
+}
+`;
+    case "js":
+      return `function ${camel === "" ? "main" : camel}() {
+
+}
+`;
+    case "python":
+      return 'def main() -> None:\n    pass\n\n\nif __name__ == "__main__":\n    main()\n';
+    case "markdown":
+      return `# ${title}
+
+`;
+    case "json":
+      return "{\n  \n}\n";
+    case "html":
+      return '<!doctype html>\n<html lang="en">\n<head>\n  <meta charset="utf-8">\n  <title></title>\n</head>\n<body>\n\n</body>\n</html>\n';
+    case "css":
+      return "/* styles */\n";
+    case "shell":
+      return "#!/usr/bin/env bash\nset -euo pipefail\n";
+    case "gitignore":
+      return "# ignore rules\n";
+    default:
+      return "";
+  }
+}
+var NEW_TEMPLATES = [
+  { id: "plain", labelKey: "project.tplPlain" },
+  { id: "java", labelKey: "project.tplJava", ext: ".java" },
+  { id: "kotlin", labelKey: "project.tplKotlin", ext: ".kt" },
+  { id: "ts", labelKey: "project.tplTs", ext: ".ts" },
+  { id: "js", labelKey: "project.tplJs", ext: ".js" },
+  { id: "python", labelKey: "project.tplPython", ext: ".py" },
+  { id: "markdown", labelKey: "project.tplMarkdown", ext: ".md" },
+  { id: "json", labelKey: "project.tplJson", ext: ".json" },
+  { id: "html", labelKey: "project.tplHtml", ext: ".html" },
+  { id: "css", labelKey: "project.tplCss", ext: ".css" },
+  { id: "shell", labelKey: "project.tplShell", ext: ".sh" },
+  { id: "gitignore", labelKey: "project.tplGitignore", ext: "" }
+];
 function ProjectPanel({ store, state }) {
   const t2 = store.t;
   const [filterOpen, setFilterOpen] = (0, import_react4.useState)(false);
   const [menu, setMenu] = (0, import_react4.useState)(null);
   const [scrollTop, setScrollTop] = (0, import_react4.useState)(0);
   const [viewport, setViewport] = (0, import_react4.useState)(600);
+  const [renaming, setRenaming] = (0, import_react4.useState)(null);
+  const [dialog, setDialog] = (0, import_react4.useState)(null);
+  const [favoritesOpen, setFavoritesOpen] = (0, import_react4.useState)(false);
+  const [dropTarget, setDropTarget] = (0, import_react4.useState)(null);
   const scrollRef = (0, import_react4.useRef)(null);
-  const rows = (0, import_react4.useMemo)(() => flatten(state, state.filter), [state, state.filter]);
-  const gitEnabled = state.settings?.git?.colors !== false;
+  const treeRef = (0, import_react4.useRef)(null);
+  const dragRef = (0, import_react4.useRef)(null);
+  const shortcuts = state.settings?.shortcuts ?? {};
+  const shortcutFor = (key) => shortcuts[key] ?? SHORTCUT_FALLBACK[key] ?? "";
+  const showIgnored = state.settings?.project?.showIgnored === true;
+  const singleClickOpen = state.settings?.project?.singleClickOpen === true;
+  const status = (0, import_react4.useMemo)(() => aggregateStatus(state.status.entries ?? []), [state.status]);
+  const rows = (0, import_react4.useMemo)(() => flatten(state, state.filter, showIgnored, status.ignored), [state, state.filter, showIgnored, status]);
+  const rowPaths = (0, import_react4.useMemo)(() => rows.filter((row) => row.entry !== void 0).map((row) => row.entry.path), [rows]);
+  const excluded = state.settings?.project?.excluded ?? [];
   (0, import_react4.useEffect)(() => {
     if (scrollRef.current === null) return void 0;
     const element = scrollRef.current;
@@ -2815,9 +3836,13 @@ function ProjectPanel({ store, state }) {
   const start = Math.max(0, Math.floor(scrollTop / ROW_HEIGHT) - 6);
   const end = Math.min(rows.length, Math.ceil((scrollTop + viewport) / ROW_HEIGHT) + 6);
   const visible = rows.slice(start, end);
+  const selection = state.selectedPaths instanceof Set ? state.selectedPaths : new Set(state.selectedPath === "" ? [] : [state.selectedPath]);
+  const selectedEntries = rows.filter((row) => selection.has(row.entry?.path)).map((row) => row.entry);
   const openMenu = (event, row) => {
     event.preventDefault();
     event.stopPropagation();
+    const entry = row?.entry;
+    if (entry !== void 0 && !selection.has(entry.path)) store.setSelection([entry.path], entry.path);
     setMenu({ x: event.clientX, y: event.clientY, row });
   };
   const copy = async (text) => {
@@ -2825,33 +3850,286 @@ function ProjectPanel({ store, state }) {
       await navigator.clipboard.writeText(text);
       store.toast("success", t2("common.copied"), text);
     } catch {
-      store.toast("error", t2("common.error"), text);
+      store.toast("error", t2("common.error"), String(text));
     }
   };
+  const beginRename = (entry) => {
+    if (entry === void 0) return;
+    setRenaming({ path: entry.path, value: entry.name });
+  };
+  const beginNew = (parentPath2, isDir) => {
+    setDialog({
+      kind: "new",
+      parent: parentPath2,
+      isDir,
+      name: "",
+      template: isDir ? "plain" : "plain"
+    });
+  };
+  const beginMove = (entries) => {
+    setDialog({ kind: "move", paths: entries.map((entry) => entry.path), target: "" });
+  };
+  const currentEntries = selectedEntries.length > 0 ? selectedEntries : menu?.row?.entry !== void 0 ? [menu.row.entry] : [];
+  const currentEntry = currentEntries[0];
+  const currentRel = currentEntry?.rel ?? "";
+  const currentPaths = currentEntries.map((entry) => entry.path);
+  const currentRels = currentEntries.map((entry) => entry.rel);
   const menuItems = (0, import_react4.useMemo)(() => {
     if (menu === null) return [];
-    const entry = menu.row.entry;
-    if (entry === void 0) return [];
-    const parent = entry.isDir ? entry.path : entry.path.slice(0, Math.max(0, entry.path.length - entry.name.length - 1));
-    return [
-      { key: "rel", text: t2("project.copyRelative"), action: () => {
-        void copy(entry.rel);
+    const entry = menu.row?.entry;
+    const isDir = entry?.isDir === true;
+    const parentDir = entry === void 0 ? state.root : isDir ? entry.path : parentOf(entry.path);
+    const pasteTarget = isDir ? entry.path : entry === void 0 ? state.root : parentOf(entry.path);
+    const shortcut = shortcutFor;
+    const items = [
+      { key: "new-file", text: t2("project.newFile"), shortcut: "Alt+Insert", action: () => beginNew(parentDir, false) },
+      { key: "new-dir", text: t2("project.newDir"), shortcut: "Alt+Insert", action: () => beginNew(parentDir, true) },
+      null,
+      { key: "cut", text: t2("project.cut"), shortcut: shortcut("cut") || "Ctrl+X", disabled: currentPaths.length === 0, action: () => store.setFileClipboard(currentPaths, true) },
+      { key: "copy", text: t2("project.copy"), shortcut: shortcut("copy") || "Ctrl+C", disabled: currentPaths.length === 0, action: () => store.setFileClipboard(currentPaths, false) },
+      { key: "paste", text: t2("project.paste"), shortcut: shortcut("paste") || "Ctrl+V", disabled: store.state.clipboard === null, action: () => store.pasteEntries(pasteTarget) },
+      null,
+      { key: "duplicate", text: t2("project.duplicate"), shortcut: shortcut("duplicate"), disabled: currentPaths.length === 0, action: () => {
+        void store.duplicateEntries(currentPaths);
       } },
-      { key: "abs", text: t2("project.copyAbsolute"), action: () => {
-        void copy(entry.path);
+      { key: "delete", text: t2("project.delete"), shortcut: shortcut("delete"), danger: true, disabled: currentPaths.length === 0, action: () => store.requestDelete(currentPaths) },
+      { key: "rename", text: t2("project.rename"), shortcut: shortcut("rename"), disabled: currentEntries.length !== 1, action: () => beginRename(currentEntry) },
+      null,
+      {
+        key: "copy-path",
+        text: t2("project.copyPath"),
+        shortcut: "Ctrl+Alt+Shift+C",
+        disabled: entry === void 0,
+        submenu: [
+          { key: "abs", text: t2("project.copyAbsolute"), action: () => {
+            if (entry !== void 0) void copy(entry.path);
+          } },
+          { key: "rel", text: t2("project.copyRelative"), action: () => {
+            if (entry !== void 0) void copy(entry.rel);
+          } },
+          { key: "name", text: t2("project.copyName"), action: () => {
+            if (entry !== void 0) void copy(entry.name);
+          } }
+        ]
+      },
+      null,
+      { key: "expand", text: t2("project.expandAll"), action: () => {
+        void store.expandAll();
       } },
-      { key: "name", text: t2("project.copyName"), action: () => {
-        void copy(entry.name);
+      { key: "collapse", text: t2("project.collapseAll"), action: () => store.collapseAll() },
+      { key: "sync", text: t2("project.synchronize"), shortcut: shortcut("synchronize"), action: () => {
+        void store.sync();
       } },
       null,
-      { key: "reveal", text: t2("project.reveal"), icon: import_react4.default.createElement(IconExternal, { width: 13, height: 13 }), action: () => {
-        void store.reveal(entry.path);
+      { key: "favorite", text: t2("project.addFavorite"), shortcut: shortcut("favorite"), disabled: currentPaths.length === 0, action: () => {
+        void store.toggleFavorite(currentPaths);
       } },
-      { key: "refresh", text: t2("common.refresh"), icon: import_react4.default.createElement(IconRefresh, { width: 13, height: 13 }), action: () => {
-        void store.loadDir(parent, { force: true });
+      { key: "terminal", text: t2("project.openTerminal"), action: () => {
+        store.addTerminal({ cwd: isDir ? entry.path : entry === void 0 ? state.root : parentDir });
+      } },
+      { key: "reveal", text: t2("project.reveal"), icon: import_react4.default.createElement(IconExternal, { width: 13, height: 13 }), disabled: entry === void 0, action: () => {
+        void store.reveal(entry.path);
       } }
     ];
-  }, [menu, t2]);
+    if (entry !== void 0 && state.status.isRepo === true) {
+      items.push(null, {
+        key: "git",
+        text: "Git",
+        submenu: [
+          { key: "git-add", text: t2("git.add"), disabled: currentRels.length === 0, action: () => {
+            void store.stage(currentRels);
+          } },
+          { key: "git-diff", text: t2("git.showDiff"), disabled: currentRels.length !== 1 || isDir, action: () => store.openDiff({ path: currentRel }) },
+          { key: "git-history", text: t2("git.showHistory"), disabled: currentRels.length !== 1, action: () => store.showHistory(currentRel) }
+        ]
+      });
+    }
+    return items;
+  }, [menu, currentPaths.join("|"), currentRels.join("|"), shortcuts, state.root, state.status.isRepo, state.clipboard]);
+  const onRowClick = (event, row) => {
+    const entry = row.entry;
+    if (entry === void 0) return;
+    if (event.ctrlKey || event.metaKey) {
+      store.toggleSelection(entry.path);
+      return;
+    }
+    if (event.shiftKey) {
+      store.selectRange(entry.path, rowPaths);
+      return;
+    }
+    store.setSelection([entry.path], entry.path);
+    if (!entry.isDir && singleClickOpen) store.openFile(entry.path, { rel: entry.rel, preview: true });
+  };
+  const onRowDoubleClick = (row) => {
+    const entry = row.entry;
+    if (entry === void 0) return;
+    if (entry.isDir) store.toggleDir(entry.path);
+    else store.openFile(entry.path, { rel: entry.rel, preview: false });
+  };
+  const onKeyDown = (event) => {
+    const target = event.target;
+    if (target instanceof HTMLElement && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable)) return;
+    const key = event.key;
+    const hit = (name2) => matchesShortcut(shortcutFor(name2), event);
+    if (hit("rename")) {
+      event.preventDefault();
+      beginRename(currentEntry);
+      return;
+    }
+    if (hit("delete")) {
+      event.preventDefault();
+      store.requestDelete(currentPaths);
+      return;
+    }
+    if (hit("duplicate")) {
+      event.preventDefault();
+      void store.duplicateEntries(currentPaths);
+      return;
+    }
+    if (hit("move")) {
+      event.preventDefault();
+      if (currentPaths.length > 0) beginMove(currentEntries);
+      return;
+    }
+    if (hit("synchronize")) {
+      event.preventDefault();
+      void store.sync();
+      return;
+    }
+    if (hit("favorite")) {
+      event.preventDefault();
+      void store.toggleFavorite(currentPaths);
+      return;
+    }
+    if (event.altKey && key === "Insert") {
+      event.preventDefault();
+      const row = rows.find((item) => item.entry?.path === state.selectedPath);
+      const parent = row === void 0 ? state.root : row.entry.isDir ? row.entry.path : parentOf(row.entry.path);
+      beginNew(parent, false);
+      return;
+    }
+    if (event.ctrlKey && event.altKey && event.shiftKey && (key === "c" || key === "C")) {
+      event.preventDefault();
+      if (currentEntry !== void 0) void copy(currentEntry.rel);
+      return;
+    }
+    if (key === "Enter") {
+      event.preventDefault();
+      const row = rows.find((item) => item.entry?.path === state.selectedPath);
+      if (row === void 0) return;
+      if (row.entry.isDir) store.toggleDir(row.entry.path);
+      else store.openFile(row.entry.path, { rel: row.entry.rel, preview: false });
+      return;
+    }
+    if (key === "ArrowDown" || key === "ArrowUp") {
+      event.preventDefault();
+      const index = rowPaths.indexOf(state.selectedPath);
+      const next = key === "ArrowDown" ? Math.min(rowPaths.length - 1, index + 1) : Math.max(0, index - 1);
+      const path2 = rowPaths[next];
+      if (path2 !== void 0) store.setSelection([path2], path2);
+      return;
+    }
+    if (key === "ArrowRight") {
+      event.preventDefault();
+      const row = rows.find((item) => item.entry?.path === state.selectedPath);
+      if (row?.entry?.isDir === true) {
+        if (!row.open) store.toggleDir(row.entry.path);
+        else {
+          const child = rowPaths[rowPaths.indexOf(row.entry.path) + 1];
+          if (child !== void 0) store.setSelection([child], child);
+        }
+      }
+      return;
+    }
+    if (key === "ArrowLeft") {
+      event.preventDefault();
+      const row = rows.find((item) => item.entry?.path === state.selectedPath);
+      if (row?.entry?.isDir === true && row.open) {
+        store.toggleDir(row.entry.path);
+        return;
+      }
+      const parent = parentOf(state.selectedPath);
+      if (parent !== state.root && rowPaths.includes(parent)) store.setSelection([parent], parent);
+      return;
+    }
+    if (key === "Escape") {
+      store.clearSelection();
+      return;
+    }
+    if ((event.ctrlKey || event.metaKey) && (key === "c" || key === "x" || key === "v")) {
+      event.preventDefault();
+      if (key === "v") {
+        const pasteTarget = currentEntry?.isDir === true ? currentEntry.path : state.selectedPath === "" ? state.root : parentOf(state.selectedPath);
+        void store.pasteEntries(pasteTarget);
+      } else {
+        store.setFileClipboard(currentPaths, key === "x");
+      }
+    }
+  };
+  const onDragStart = (event, row) => {
+    const entry = row.entry;
+    if (entry === void 0) return;
+    const paths = selection.has(entry.path) ? currentPaths : [entry.path];
+    dragRef.current = { paths, copy: false };
+    event.dataTransfer.effectAllowed = "copyMove";
+    event.dataTransfer.setData("application/x-itw-paths", JSON.stringify(paths));
+    event.dataTransfer.setData("text/plain", paths.join("\n"));
+  };
+  const onDragOver = (event, row) => {
+    if (dragRef.current === null) return;
+    event.stopPropagation();
+    const entry = row?.entry;
+    if (entry !== void 0 && !entry.isDir) return;
+    if (entry !== void 0 && dragRef.current.paths.includes(entry.path)) return;
+    event.preventDefault();
+    event.dataTransfer.dropEffect = event.ctrlKey ? "copy" : "move";
+    setDropTarget(entry?.path ?? state.root);
+  };
+  const onDrop = (event, row) => {
+    event.stopPropagation();
+    if (dragRef.current === null) return;
+    event.preventDefault();
+    const entry = row?.entry;
+    if (entry !== void 0 && !entry.isDir) {
+      setDropTarget(null);
+      return;
+    }
+    const target = entry?.path ?? state.root;
+    const paths = dragRef.current.paths;
+    const copy2 = event.ctrlKey;
+    dragRef.current = null;
+    setDropTarget(null);
+    void store.moveEntries(paths, target, copy2);
+  };
+  const onDragEnd = () => {
+    dragRef.current = null;
+    setDropTarget(null);
+  };
+  const commitRename = () => {
+    if (renaming === null) return;
+    const next = renaming.value.trim();
+    const current = baseName(renaming.path);
+    setRenaming(null);
+    if (next === "" || next === current) return;
+    void store.renameEntry(renaming.path, next);
+  };
+  const submitDialog = () => {
+    if (dialog === null) return;
+    if (dialog.kind === "new") {
+      const name2 = dialog.name.trim();
+      if (name2 === "") return;
+      const content2 = dialog.isDir ? "" : templateContent(dialog.template, name2);
+      setDialog(null);
+      void store.createEntry(dialog.parent, { name: name2, isDir: dialog.isDir, content: content2 });
+      return;
+    }
+    if (dialog.kind === "move") {
+      const target = dialog.target.trim();
+      if (target === "") return;
+      setDialog(null);
+      void store.moveEntries(dialog.paths, target, false);
+    }
+  };
   const rootRow = state.root === "" ? import_react4.default.createElement(
     "div",
     { className: "itw-empty" },
@@ -2873,21 +4151,35 @@ function ProjectPanel({ store, state }) {
         return import_react4.default.createElement("div", { key: row.key, className: "itw-tree-msg", style: { ...style, position: "absolute", left: 0, right: 0 } }, row.message);
       }
       const entry = row.entry;
-      const git = gitStateOf(state.status, entry.rel, gitEnabled);
-      const selected = state.selectedPath === entry.path;
+      const selected = selection.has(entry.path);
+      const kind = row.kind === "dir" ? status.dirs.get(entry.rel) : status.files.get(entry.rel);
+      const ignoredFile = status.ignored.has(entry.rel);
+      const excludedEntry = isExcluded(entry.rel, excluded);
+      const classes = [
+        "itw-vlist-row",
+        "itw-tree-row",
+        selected ? "itw-selected" : "",
+        kind !== void 0 ? statusClass(kind) : "",
+        ignoredFile ? "itw-git-ignored" : "",
+        excludedEntry ? "itw-excluded" : "",
+        dropTarget === entry.path ? "itw-drop-target" : ""
+      ].filter(Boolean).join(" ");
       if (row.kind === "dir") {
         return import_react4.default.createElement(
           "div",
           {
             key: row.key,
-            className: `itw-vlist-row itw-tree-row ${selected ? "itw-selected" : ""} ${git?.className ?? ""}`,
+            className: classes,
             style,
             title: entry.rel,
-            onClick: () => {
-              store.setSelectedPath(entry.path);
-              store.toggleDir(entry.path);
-            },
-            onContextMenu: (event) => openMenu(event, row)
+            draggable: true,
+            onClick: (event) => onRowClick(event, row),
+            onDoubleClick: () => onRowDoubleClick(row),
+            onContextMenu: (event) => openMenu(event, row),
+            onDragStart: (event) => onDragStart(event, row),
+            onDragOver: (event) => onDragOver(event, row),
+            onDrop: (event) => onDrop(event, row),
+            onDragEnd
           },
           import_react4.default.createElement("span", { className: "itw-tree-twisty" }, row.open ? import_react4.default.createElement(ChevronDown, null) : import_react4.default.createElement(ChevronRight, null)),
           import_react4.default.createElement(FileTypeIcon, { name: entry.name, isDir: true, open: row.open, size: 15 }),
@@ -2895,24 +4187,75 @@ function ProjectPanel({ store, state }) {
         );
       }
       const active = state.tabs.find((tab3) => tab3.kind === "file" && tab3.path === entry.path && tab3.id === state.activeId);
+      const editing = renaming !== null && renaming.path === entry.path;
       return import_react4.default.createElement(
         "div",
         {
           key: row.key,
-          className: `itw-vlist-row itw-tree-row ${selected ? "itw-selected" : ""} ${active !== void 0 ? "itw-selected" : ""} ${git?.className ?? ""}`,
+          className: `${classes} ${active !== void 0 ? "itw-selected" : ""}`,
           style,
           title: entry.rel,
-          onClick: () => store.openFile(entry.path, { rel: entry.rel, preview: true }),
-          onDoubleClick: () => store.openFile(entry.path, { rel: entry.rel, preview: false }),
-          onContextMenu: (event) => openMenu(event, row)
+          draggable: !editing,
+          onClick: (event) => onRowClick(event, row),
+          onDoubleClick: () => onRowDoubleClick(row),
+          onContextMenu: (event) => openMenu(event, row),
+          onDragStart: (event) => onDragStart(event, row),
+          onDragOver: (event) => onDragOver(event, row),
+          onDrop: (event) => onDrop(event, row),
+          onDragEnd
         },
         import_react4.default.createElement("span", { className: "itw-tree-twisty" }),
         import_react4.default.createElement(FileTypeIcon, { name: entry.name, size: 15 }),
-        import_react4.default.createElement("span", { className: "itw-tree-name" }, entry.name),
-        git !== null ? import_react4.default.createElement("span", { style: { marginLeft: "auto", fontSize: 10, opacity: 0.8 } }, git.badge) : null
+        editing ? import_react4.default.createElement("input", {
+          className: "itw-rename-input",
+          autoFocus: true,
+          value: renaming.value,
+          onChange: (event) => setRenaming({ ...renaming, value: event.target.value }),
+          onKeyDown: (event) => {
+            event.stopPropagation();
+            if (event.key === "Enter") {
+              event.preventDefault();
+              commitRename();
+            }
+            if (event.key === "Escape") {
+              event.preventDefault();
+              setRenaming(null);
+            }
+          },
+          onBlur: commitRename,
+          onClick: (event) => event.stopPropagation(),
+          onDoubleClick: (event) => event.stopPropagation()
+        }) : import_react4.default.createElement("span", { className: "itw-tree-name" }, entry.name)
       );
     })
   );
+  const favorites = state.settings?.favorites ?? [];
+  const favoritesPanel = favoritesOpen && favorites.length > 0 ? import_react4.default.createElement(
+    "div",
+    { className: "itw-favorites" },
+    favorites.map((path2) => import_react4.default.createElement(
+      "div",
+      {
+        key: path2,
+        className: "itw-favorite-row",
+        title: path2,
+        onClick: () => {
+          void store.openFile(path2, { rel: path2, preview: false });
+        }
+      },
+      import_react4.default.createElement("span", { className: "itw-favorite-star" }, "\u2605"),
+      import_react4.default.createElement("span", { className: "itw-favorite-name" }, baseName(path2)),
+      import_react4.default.createElement("button", {
+        type: "button",
+        className: "itw-iconbtn itw-favorite-remove",
+        title: t2("project.removeFavorite"),
+        onClick: (event) => {
+          event.stopPropagation();
+          void store.toggleFavorite([path2]);
+        }
+      }, "\xD7")
+    ))
+  ) : null;
   return import_react4.default.createElement(
     import_react4.default.Fragment,
     null,
@@ -2934,6 +4277,12 @@ function ProjectPanel({ store, state }) {
       import_react4.default.createElement("span", { className: "itw-spacer" }),
       import_react4.default.createElement("button", {
         type: "button",
+        className: `itw-iconbtn ${favoritesOpen ? "itw-on" : ""}`,
+        title: t2("project.favorites"),
+        onClick: () => setFavoritesOpen(!favoritesOpen)
+      }, "\u2605"),
+      import_react4.default.createElement("button", {
+        type: "button",
         className: `itw-iconbtn ${filterOpen ? "itw-on" : ""}`,
         title: t2("project.filter"),
         onClick: () => {
@@ -2944,13 +4293,19 @@ function ProjectPanel({ store, state }) {
       import_react4.default.createElement("button", {
         type: "button",
         className: "itw-iconbtn",
+        title: t2("project.newFile"),
+        onClick: () => beginNew(state.root, false)
+      }, "+"),
+      import_react4.default.createElement("button", {
+        type: "button",
+        className: "itw-iconbtn",
         title: t2("common.refresh"),
         onClick: () => {
-          void store.reloadTree();
-          void store.refreshStatus({ initial: true });
+          void store.sync();
         }
       }, import_react4.default.createElement(IconRefresh, { width: 14, height: 14 }))
     ),
+    favoritesPanel,
     filterOpen || state.filter !== "" ? import_react4.default.createElement(
       "div",
       { className: "itw-filter" },
@@ -2971,252 +4326,103 @@ function ProjectPanel({ store, state }) {
     import_react4.default.createElement("div", {
       className: "itw-panel-body itw-tree",
       ref: scrollRef,
-      onScroll: (event) => setScrollTop(event.currentTarget.scrollTop)
+      tabIndex: 0,
+      onKeyDown,
+      onScroll: (event) => setScrollTop(event.currentTarget.scrollTop),
+      onDragOver: (event) => onDragOver(event, null),
+      onDrop: (event) => onDrop(event, null),
+      onContextMenu: (event) => {
+        if (event.target === event.currentTarget) openMenu(event, { entry: void 0 });
+      }
     }, rootRow),
-    menu !== null ? import_react4.default.createElement(ContextMenu, { x: menu.x, y: menu.y, items: menuItems, onClose: () => setMenu(null) }) : null
+    menu !== null ? import_react4.default.createElement(ContextMenu, { x: menu.x, y: menu.y, items: menuItems, onClose: () => setMenu(null) }) : null,
+    dialog !== null && dialog.kind === "new" ? import_react4.default.createElement(
+      "div",
+      { className: "itw-modal-backdrop", onMouseDown: (event) => {
+        if (event.target === event.currentTarget) setDialog(null);
+      } },
+      import_react4.default.createElement(
+        "div",
+        { className: "itw-modal", role: "dialog", "aria-modal": "true" },
+        import_react4.default.createElement("h2", null, dialog.isDir ? t2("project.newDir") : t2("project.newFile")),
+        import_react4.default.createElement(
+          "label",
+          { className: "itw-field" },
+          import_react4.default.createElement("span", null, t2("project.nameLabel")),
+          import_react4.default.createElement("input", {
+            autoFocus: true,
+            value: dialog.name,
+            onChange: (event) => setDialog({ ...dialog, name: event.target.value }),
+            onKeyDown: (event) => {
+              if (event.key === "Enter") {
+                event.preventDefault();
+                submitDialog();
+              }
+            }
+          })
+        ),
+        !dialog.isDir ? import_react4.default.createElement(
+          "label",
+          { className: "itw-field" },
+          import_react4.default.createElement("span", null, t2("project.templateLabel")),
+          import_react4.default.createElement("select", {
+            value: dialog.template,
+            onChange: (event) => {
+              const template = NEW_TEMPLATES.find((item) => item.id === event.target.value);
+              const ext = template?.ext ?? "";
+              const name2 = dialog.name.includes(".") ? dialog.name : `${dialog.name}${ext}`;
+              setDialog({ ...dialog, template: event.target.value, name: name2 });
+            }
+          }, NEW_TEMPLATES.map((template) => import_react4.default.createElement("option", { key: template.id, value: template.id }, t2(template.labelKey))))
+        ) : null,
+        import_react4.default.createElement(
+          "div",
+          { className: "itw-modal-actions" },
+          import_react4.default.createElement("button", { type: "button", className: "itw-textbtn", onClick: () => setDialog(null) }, t2("common.cancel")),
+          import_react4.default.createElement("button", { type: "button", className: "itw-textbtn itw-primary", onClick: submitDialog }, t2("project.create"))
+        )
+      )
+    ) : null,
+    dialog !== null && dialog.kind === "move" ? import_react4.default.createElement(
+      "div",
+      { className: "itw-modal-backdrop", onMouseDown: (event) => {
+        if (event.target === event.currentTarget) setDialog(null);
+      } },
+      import_react4.default.createElement(
+        "div",
+        { className: "itw-modal", role: "dialog", "aria-modal": "true" },
+        import_react4.default.createElement("h2", null, t2("project.moveTitle")),
+        import_react4.default.createElement("p", null, dialog.paths.map((path2) => baseName(path2)).join(", ")),
+        import_react4.default.createElement(
+          "label",
+          { className: "itw-field" },
+          import_react4.default.createElement("span", null, t2("project.moveTarget")),
+          import_react4.default.createElement("input", {
+            autoFocus: true,
+            value: dialog.target,
+            placeholder: t2("project.movePlaceholder"),
+            onChange: (event) => setDialog({ ...dialog, target: event.target.value }),
+            onKeyDown: (event) => {
+              if (event.key === "Enter") {
+                event.preventDefault();
+                submitDialog();
+              }
+            }
+          })
+        ),
+        import_react4.default.createElement(
+          "div",
+          { className: "itw-modal-actions" },
+          import_react4.default.createElement("button", { type: "button", className: "itw-textbtn", onClick: () => setDialog(null) }, t2("common.cancel")),
+          import_react4.default.createElement("button", { type: "button", className: "itw-textbtn itw-primary", onClick: submitDialog }, t2("project.move"))
+        )
+      )
+    ) : null
   );
 }
 
 // src/client/CommitPanel.jsx
 var import_react5 = __toESM(require("react"), 1);
-
-// src/client/diff.js
-function parseUnifiedDiff(text) {
-  const raw = typeof text === "string" ? text : "";
-  const files = [];
-  let current = null;
-  let hunk = null;
-  let lineIndex = 0;
-  const lines = raw.split("\n");
-  const flushFile = () => {
-    if (current !== null) files.push(current);
-    current = null;
-    hunk = null;
-  };
-  for (const line of lines) {
-    if (line.startsWith("diff --git ")) {
-      flushFile();
-      current = {
-        header: [line],
-        oldPath: "",
-        newPath: "",
-        isNew: false,
-        isDeleted: false,
-        isBinary: false,
-        hunks: [],
-        additions: 0,
-        deletions: 0
-      };
-      continue;
-    }
-    if (current === null) continue;
-    if (line.startsWith("--- ")) {
-      current.header.push(line);
-      const path2 = line.slice(4).trim();
-      current.oldPath = path2 === "/dev/null" ? "" : path2.replace(/^[ab]\//, "");
-      if (path2 === "/dev/null") current.isNew = true;
-      continue;
-    }
-    if (line.startsWith("+++ ")) {
-      current.header.push(line);
-      const path2 = line.slice(4).trim();
-      current.newPath = path2 === "/dev/null" ? "" : path2.replace(/^[ab]\//, "");
-      if (path2 === "/dev/null") current.isDeleted = true;
-      continue;
-    }
-    if (line.startsWith("@@")) {
-      const match = /^@@ -(\d+)(?:,(\d+))? \+(\d+)(?:,(\d+))? @@(.*)$/.exec(line);
-      if (match === null) continue;
-      hunk = {
-        header: line,
-        oldStart: Number(match[1]),
-        oldCount: match[2] === void 0 ? 1 : Number(match[2]),
-        newStart: Number(match[3]),
-        newCount: match[4] === void 0 ? 1 : Number(match[4]),
-        heading: match[5] ?? "",
-        lines: []
-      };
-      current.hunks.push(hunk);
-      continue;
-    }
-    if (line.startsWith("Binary files ") || line.startsWith("GIT binary patch")) {
-      current.isBinary = true;
-      continue;
-    }
-    if (hunk !== null) {
-      const marker = line.charAt(0);
-      if (marker === " " || marker === "+" || marker === "-" || marker === "\\") {
-        const type = marker === "\\" ? "note" : marker;
-        const entry = {
-          type,
-          text: line.slice(1),
-          index: lineIndex,
-          oldNo: null,
-          newNo: null
-        };
-        lineIndex += 1;
-        hunk.lines.push(entry);
-        if (type === "+") {
-          current.additions += 1;
-        }
-        if (type === "-") {
-          current.deletions += 1;
-        }
-        continue;
-      }
-      hunk = null;
-    }
-    if (line !== "") current.header.push(line);
-  }
-  flushFile();
-  for (const file of files) {
-    for (const item of file.hunks) {
-      let oldNo = item.oldStart;
-      let newNo = item.newStart;
-      for (const entry of item.lines) {
-        if (entry.type === " ") {
-          entry.oldNo = oldNo;
-          entry.newNo = newNo;
-          oldNo += 1;
-          newNo += 1;
-        } else if (entry.type === "-") {
-          entry.oldNo = oldNo;
-          oldNo += 1;
-        } else if (entry.type === "+") {
-          entry.newNo = newNo;
-          newNo += 1;
-        }
-      }
-    }
-  }
-  return { files, raw };
-}
-function firstFile(parsed) {
-  return parsed.files.length > 0 ? parsed.files[0] : null;
-}
-function unifiedRows(file) {
-  const rows = [];
-  if (file === null) return rows;
-  for (const hunk of file.hunks) {
-    rows.push({ kind: "hunk", text: hunk.header, hunk, hunkIndex: file.hunks.indexOf(hunk) });
-    for (const entry of hunk.lines) {
-      if (entry.type === "note") continue;
-      rows.push({
-        kind: entry.type === " " ? "context" : entry.type === "+" ? "add" : "del",
-        text: entry.text,
-        oldNo: entry.oldNo,
-        newNo: entry.newNo,
-        index: entry.index,
-        hunkIndex: file.hunks.indexOf(hunk)
-      });
-    }
-  }
-  return rows;
-}
-function sideBySideRows(file) {
-  const rows = [];
-  if (file === null) return rows;
-  for (let hunkIndex = 0; hunkIndex < file.hunks.length; hunkIndex += 1) {
-    const hunk = file.hunks[hunkIndex];
-    rows.push({ kind: "hunk", text: hunk.header, hunk, hunkIndex });
-    let pendingDels = [];
-    let pendingAdds = [];
-    const flush = () => {
-      const count2 = Math.max(pendingDels.length, pendingAdds.length);
-      for (let index = 0; index < count2; index += 1) {
-        const left = pendingDels[index];
-        const right = pendingAdds[index];
-        rows.push({
-          kind: "change",
-          left: left === void 0 ? null : { text: left.text, no: left.oldNo, index: left.index },
-          right: right === void 0 ? null : { text: right.text, no: right.newNo, index: right.index },
-          hunkIndex
-        });
-      }
-      pendingDels = [];
-      pendingAdds = [];
-    };
-    for (const entry of hunk.lines) {
-      if (entry.type === "note") continue;
-      if (entry.type === "-") {
-        if (pendingAdds.length > 0) flush();
-        pendingDels.push(entry);
-      } else if (entry.type === "+") {
-        pendingAdds.push(entry);
-      } else {
-        flush();
-        rows.push({
-          kind: "context",
-          left: { text: entry.text, no: entry.oldNo, index: entry.index },
-          right: { text: entry.text, no: entry.newNo, index: entry.index },
-          hunkIndex
-        });
-      }
-    }
-    flush();
-  }
-  return rows;
-}
-function hunkChangeIndexes(file, hunkIndex) {
-  const hunk = file?.hunks[hunkIndex];
-  if (hunk === void 0) return [];
-  return hunk.lines.filter((entry) => entry.type === "+" || entry.type === "-").map((entry) => entry.index);
-}
-function buildPatch(file, selection) {
-  if (file === null || selection.size === 0) return "";
-  const output = [...file.header];
-  let changedHunks = 0;
-  for (const hunk of file.hunks) {
-    const body = [];
-    let oldCount = 0;
-    let newCount = 0;
-    let changed = false;
-    for (const entry of hunk.lines) {
-      if (entry.type === " ") {
-        body.push(` ${entry.text}`);
-        oldCount += 1;
-        newCount += 1;
-      } else if (entry.type === "-") {
-        oldCount += 1;
-        if (selection.has(entry.index)) {
-          body.push(`-${entry.text}`);
-          changed = true;
-        } else {
-          body.push(` ${entry.text}`);
-          newCount += 1;
-        }
-      } else if (entry.type === "+") {
-        if (selection.has(entry.index)) {
-          body.push(`+${entry.text}`);
-          newCount += 1;
-          changed = true;
-        }
-      }
-    }
-    if (!changed) continue;
-    changedHunks += 1;
-    const newStart = hunk.oldStart === 0 ? 1 : hunk.oldStart;
-    output.push(`@@ -${hunk.oldStart},${oldCount} +${newStart},${newCount} @@${hunk.heading}`);
-    output.push(...body);
-  }
-  if (changedHunks === 0) return "";
-  return `${output.join("\n")}
-`;
-}
-function changeLabel(xy) {
-  if (typeof xy !== "string" || xy.length < 2) return "";
-  const x = xy[0];
-  const y = xy[1];
-  if (xy === "??") return "untracked";
-  if (xy === "!!") return "ignored";
-  if (xy[0] === "U" || xy[1] === "U" || x === "A" && y === "A" || x === "D" && y === "D") return "conflict";
-  if (x === "R") return "renamed";
-  if (x === "D" || y === "D") return "deleted";
-  if (x === "A") return "added";
-  return "modified";
-}
-
-// src/client/CommitPanel.jsx
 function LineStats({ stats }) {
   if (stats === void 0 || stats === null) return null;
   if (stats.binary === true) return import_react5.default.createElement("span", { className: "itw-file-stat" }, "bin");
@@ -3227,101 +4433,90 @@ function LineStats({ stats }) {
     import_react5.default.createElement("span", { className: "itw-deletions" }, `-${stats.deletions}`)
   );
 }
-function FileRow({ store, state, entry, staged, untracked }) {
-  const t2 = store.t;
-  const active = state.activeId === `diff:${untracked ? "untracked" : staged ? "staged" : "worktree"}:${entry.path}`;
+function FileRow({ store, state, entry, checked, onOpen, onMenu }) {
+  const selected = state.commit.selectedPath === entry.path;
   const name2 = entry.path.split(/[\\/]/).pop();
   const parent = dirName(entry.path);
-  const stats = staged ? entry.stagedLines : entry.unstagedLines;
-  const label = changeLabel(entry.xy);
+  const stats = entry.staged ? entry.stagedLines : entry.unstagedLines;
+  const letter = entry.conflict === true ? "!" : entry.untracked === true ? "U" : (entry.xy ?? "").replace(/\./g, "");
   return import_react5.default.createElement(
     "div",
     {
-      className: `itw-file-row ${active ? "itw-active" : ""}`,
-      title: `${entry.path}${label !== "" ? ` \xB7 ${label}` : ""}`,
-      onClick: () => store.openDiff({ path: entry.path, staged, untracked })
+      className: `itw-file-row ${selected ? "itw-selected" : ""}`,
+      title: entry.path,
+      onClick: () => store.patch("commit", { selectedPath: entry.path }),
+      onDoubleClick: () => onOpen(entry),
+      onContextMenu: (event) => onMenu(event, entry)
     },
     import_react5.default.createElement("input", {
       type: "checkbox",
-      checked: staged === true,
+      checked,
       disabled: entry.conflict === true,
+      title: store.t("commit.check"),
       style: { accentColor: "var(--itw-accent)", margin: 0 },
       onClick: (event) => event.stopPropagation(),
-      onChange: (event) => {
-        if (event.target.checked) void store.stage([entry.path], { refreshDiff: true });
-        else void store.unstage([entry.path], { refreshDiff: true });
+      onChange: () => {
+        void store.toggleCommitEntry(entry);
       }
     }),
     import_react5.default.createElement(FileTypeIcon, { name: name2, size: 14 }),
-    import_react5.default.createElement(
-      "span",
-      { className: "itw-file-name", style: entry.conflict === true ? { color: "var(--itw-error)" } : void 0 },
-      name2
-    ),
+    import_react5.default.createElement("span", { className: "itw-file-name", style: entry.conflict === true ? { color: "var(--itw-error)" } : void 0 }, name2),
     parent !== "" ? import_react5.default.createElement("span", { className: "itw-file-dir" }, parent) : null,
-    import_react5.default.createElement(LineStats, { stats }),
-    import_react5.default.createElement(
-      "span",
-      { className: "itw-row-actions" },
-      entry.conflict !== true ? import_react5.default.createElement("button", {
-        type: "button",
-        className: "itw-textbtn itw-small itw-danger",
-        title: t2("commit.discard"),
-        onClick: (event) => {
-          event.stopPropagation();
-          store.askConfirm(
-            t2("commit.discardTitle"),
-            `${t2("commit.discardBody")}
-
-${entry.path}`,
-            t2("commit.discard"),
-            () => {
-              void store.discardEntries([entry]);
-            }
-          );
-        }
-      }, t2("commit.discard")) : null
-    )
+    import_react5.default.createElement("span", { className: "itw-file-status" }, letter),
+    import_react5.default.createElement(LineStats, { stats })
   );
 }
-function Group({ store, state, title, entries, staged, untracked, emptyText }) {
-  const t2 = store.t;
-  const allStaged = staged === true;
+function GroupHeader({ store, title, entries, checkedPaths }) {
+  const ref = (0, import_react5.useRef)(null);
+  const tri = headerState(entries, checkedPaths);
+  (0, import_react5.useEffect)(() => {
+    if (ref.current !== null) ref.current.indeterminate = tri === "some";
+  }, [tri]);
   return import_react5.default.createElement(
     "div",
-    { className: "itw-group" },
-    import_react5.default.createElement(
-      "div",
-      { className: "itw-group-header" },
-      import_react5.default.createElement("span", null, title),
-      import_react5.default.createElement("span", { className: "itw-count" }, entries.length),
-      import_react5.default.createElement("span", { className: "itw-spacer" }),
-      entries.length > 0 ? import_react5.default.createElement("button", {
-        type: "button",
-        className: "itw-textbtn itw-small",
-        onClick: () => {
-          const paths = entries.filter((entry) => entry.conflict !== true).map((entry) => entry.path);
-          if (allStaged) void store.unstage(paths, { refreshDiff: true });
-          else void store.stage(paths, { refreshDiff: true });
-        }
-      }, allStaged ? t2("commit.unstageAll") : t2("commit.stageAll")) : null
-    ),
-    entries.length === 0 ? import_react5.default.createElement("div", { className: "itw-empty", style: { padding: "10px 12px", alignItems: "flex-start", textAlign: "left" } }, emptyText) : entries.map((entry) => import_react5.default.createElement(FileRow, {
-      key: `${staged ? "s" : untracked ? "u" : "w"}:${entry.path}`,
+    { className: "itw-group-header" },
+    import_react5.default.createElement("input", {
+      ref,
+      type: "checkbox",
+      checked: tri === "all",
+      disabled: entries.length === 0,
+      title: tri === "all" ? store.t("commit.uncheckAll") : store.t("commit.checkAll"),
+      style: { accentColor: "var(--itw-accent)", margin: 0 },
+      onChange: () => {
+        void store.setCommitChecked(entries, tri !== "all");
+      }
+    }),
+    import_react5.default.createElement("span", null, title),
+    import_react5.default.createElement("span", { className: "itw-count" }, entries.length)
+  );
+}
+function DirectorySection({ store, state, dir, entries, checkedPaths, onOpen, onMenu }) {
+  return import_react5.default.createElement(
+    "div",
+    { className: "itw-dir-section" },
+    import_react5.default.createElement("div", { className: "itw-dir-heading" }, dir === "" ? store.t("common.root") : dir),
+    entries.map((entry) => import_react5.default.createElement(FileRow, {
+      key: entry.path,
       store,
       state,
       entry,
-      staged,
-      untracked
+      checked: checkedPaths.has(entry.path),
+      onOpen,
+      onMenu
     }))
   );
 }
 function CommitPanel({ store, state }) {
   const t2 = store.t;
-  const groups = store.groups;
+  const groups = store.commitGroups;
   const commit = state.commit;
+  const checkedPaths = store.checkedCommitPaths;
+  const changelists = store.changelists;
+  const groupByDir = state.settings?.commit?.groupByDirectory === true;
   const textareaRef = (0, import_react5.useRef)(null);
   const initial = state.status.oid === void 0;
+  const [menu, setMenu] = (0, import_react5.useState)(null);
+  const [dialog, setDialog] = (0, import_react5.useState)(null);
   const history2 = (0, import_react5.useMemo)(() => commit.messages.map((message) => ({
     value: message,
     label: message.split("\n")[0].slice(0, 70)
@@ -3337,7 +4532,100 @@ function CommitPanel({ store, state }) {
       }, 30);
     }
   }, [commit.focusTick]);
-  const canCommit = commit.committing !== true && (groups.staged.length > 0 || commit.amend === true);
+  const canCommit = commit.committing !== true && (checkedPaths.size > 0 || commit.amend === true);
+  const commitSettings = state.settings?.commit ?? {};
+  const taskDefs = [
+    ["tests", t2("commit.taskTests"), commitSettings.testCommand],
+    ["optimize", t2("commit.taskOptimize"), commitSettings.optimizeImportsCommand],
+    ["cleanup", t2("commit.taskCleanup"), commitSettings.cleanupCommand]
+  ].filter(([, , command2]) => typeof command2 === "string" && command2.trim() !== "");
+  const customLists = Object.keys(changelists.lists).filter((name2) => name2 !== DEFAULT_CHANGELIST);
+  const openChange = (entry) => {
+    if (entry.untracked === true) store.openDiff({ path: entry.path, untracked: true });
+    else store.openDiff({ path: entry.path, against: "head" });
+  };
+  const openMenuFor = (event, entry) => {
+    event.preventDefault();
+    event.stopPropagation();
+    store.patch("commit", { selectedPath: entry.path });
+    setMenu({ x: event.clientX, y: event.clientY, entry });
+  };
+  const rollback = () => {
+    const selected = store.changedEntries.filter((entry) => entry.path === state.commit.selectedPath);
+    const entries = selected.length > 0 ? selected : store.changedEntries.filter((entry) => checkedPaths.has(entry.path));
+    if (entries.length === 0) return;
+    store.askConfirm(
+      t2("commit.rollbackTitle"),
+      `${t2("commit.discardBody")}
+${entries.length}`,
+      t2("commit.rollback"),
+      () => {
+        void store.discardEntries(entries);
+      }
+    );
+  };
+  const menuItems = (0, import_react5.useMemo)(() => {
+    if (menu === null) return [];
+    const entry = menu.entry;
+    const patchEntry = { path: entry.path, untracked: entry.untracked === true };
+    const items = [
+      { key: "show", text: t2("commit.showDiff"), action: () => openChange(entry) },
+      { key: "jump", text: t2("commit.jumpToSource"), shortcut: store.state.settings?.shortcuts?.jumpToSource ?? "F4", action: () => store.jumpToSource(entry.path) },
+      null,
+      {
+        key: "changelist",
+        text: t2("commit.moveToChangelist"),
+        submenu: [
+          ...customLists.map((name2) => ({ key: `cl-${name2}`, text: name2, action: () => {
+            void store.moveToChangelist([entry.path], name2);
+          } })),
+          { key: "cl-default", text: DEFAULT_CHANGELIST, action: () => {
+            void store.moveToChangelist([entry.path], DEFAULT_CHANGELIST);
+          } },
+          { key: "cl-new", text: t2("commit.newChangelist"), action: () => setDialog({ kind: "changelist", name: "", paths: [entry.path] }) }
+        ]
+      },
+      entry.untracked === true ? { key: "ignore", text: t2("commit.addToIgnore"), action: () => {
+        void store.ignoreEntry(entry.path);
+      } } : null,
+      null,
+      { key: "revert", text: t2("commit.revert"), danger: true, action: () => store.revertChange(patchEntry) }
+    ];
+    return items;
+  }, [menu, customLists.join("|"), t2, state.settings?.shortcuts]);
+  const renderEntries = (entries) => {
+    if (entries.length === 0) return null;
+    if (!groupByDir) {
+      return entries.map((entry) => import_react5.default.createElement(FileRow, {
+        key: entry.path,
+        store,
+        state,
+        entry,
+        checked: checkedPaths.has(entry.path),
+        onOpen: openChange,
+        onMenu: openMenuFor
+      }));
+    }
+    return groupByDirectory(entries).map((section) => import_react5.default.createElement(DirectorySection, {
+      key: section.dir,
+      store,
+      state,
+      dir: section.dir,
+      entries: section.entries,
+      checkedPaths,
+      onOpen: openChange,
+      onMenu: openMenuFor
+    }));
+  };
+  const changesBody = groups.changes.length === 0 ? import_react5.default.createElement("div", { className: "itw-group-empty" }, t2("commit.noChangesGroup")) : customLists.length > 0 || changelists.active !== DEFAULT_CHANGELIST ? groupByChangelist(groups.changes, changelists.lists).map((section) => import_react5.default.createElement(
+    "div",
+    {
+      key: section.name,
+      className: "itw-changelist"
+    },
+    import_react5.default.createElement("div", { className: "itw-changelist-head" }, section.name, import_react5.default.createElement("span", { className: "itw-count" }, section.entries.length)),
+    renderEntries(section.entries)
+  )) : renderEntries(groups.changes);
   return import_react5.default.createElement(
     "div",
     { className: "itw-commit" },
@@ -3347,6 +4635,14 @@ function CommitPanel({ store, state }) {
       import_react5.default.createElement("span", { className: "itw-panel-title" }, t2("commit.title")),
       state.status.isRepo === true ? import_react5.default.createElement("span", { className: "itw-panel-sub" }, state.status.detached === true ? t2("git.detached") : state.status.branch ?? "") : import_react5.default.createElement("span", { className: "itw-panel-sub" }, t2("welcome.noRepo")),
       import_react5.default.createElement("span", { className: "itw-spacer" }),
+      import_react5.default.createElement("button", {
+        type: "button",
+        className: `itw-iconbtn ${groupByDir ? "itw-on" : ""}`,
+        title: t2("commit.groupByDirectoryHint"),
+        onClick: () => {
+          void store.setGroupByDirectory(!groupByDir);
+        }
+      }, "\u25A4"),
       import_react5.default.createElement("button", {
         type: "button",
         className: "itw-iconbtn",
@@ -3430,39 +4726,119 @@ function CommitPanel({ store, state }) {
           }
         }, t2("commit.commitAndPush"))
       ),
+      taskDefs.length > 0 ? import_react5.default.createElement(
+        "div",
+        { className: "itw-commit-tasks" },
+        taskDefs.map(([key, label, command2]) => import_react5.default.createElement(
+          "label",
+          {
+            key,
+            className: "itw-check",
+            title: command2
+          },
+          import_react5.default.createElement("input", {
+            type: "checkbox",
+            checked: commit.tasks?.[key] === true,
+            onChange: (event) => store.setCommitTask(key, event.target.checked)
+          }),
+          label
+        ))
+      ) : null,
       commit.error !== null && commit.error !== void 0 ? import_react5.default.createElement("div", { className: "itw-error-box", style: { margin: "8px 0 0" } }, commit.error) : null
     ),
     import_react5.default.createElement(
       "div",
+      { className: "itw-commit-toolbar" },
+      import_react5.default.createElement(
+        "select",
+        {
+          className: "itw-select",
+          value: changelists.active,
+          title: t2("commit.changelist"),
+          onChange: (event) => {
+            void store.setActiveChangelist(event.target.value);
+          }
+        },
+        import_react5.default.createElement("option", { value: DEFAULT_CHANGELIST }, DEFAULT_CHANGELIST),
+        customLists.map((name2) => import_react5.default.createElement("option", { key: name2, value: name2 }, name2))
+      ),
+      import_react5.default.createElement("button", {
+        type: "button",
+        className: "itw-textbtn itw-small",
+        title: t2("commit.newChangelist"),
+        onClick: () => setDialog({ kind: "changelist", name: "", paths: [] })
+      }, "+"),
+      import_react5.default.createElement("span", { className: "itw-spacer" }),
+      import_react5.default.createElement("button", {
+        type: "button",
+        className: "itw-textbtn itw-small itw-danger",
+        title: t2("commit.rollback"),
+        disabled: checkedPaths.size === 0 && state.commit.selectedPath === "",
+        onClick: rollback
+      }, t2("commit.rollback"))
+    ),
+    import_react5.default.createElement(
+      "div",
       { className: "itw-groups" },
-      import_react5.default.createElement(Group, {
-        store,
-        state,
-        title: t2("commit.staged"),
-        entries: groups.staged,
-        staged: true,
-        untracked: false,
-        emptyText: t2("commit.noStaged")
-      }),
-      import_react5.default.createElement(Group, {
-        store,
-        state,
-        title: t2("commit.unstaged"),
-        entries: groups.unstaged,
-        staged: false,
-        untracked: false,
-        emptyText: t2("commit.noUnstaged")
-      }),
-      import_react5.default.createElement(Group, {
-        store,
-        state,
-        title: t2("commit.untracked"),
-        entries: groups.untracked,
-        staged: false,
-        untracked: true,
-        emptyText: t2("commit.noUntracked")
-      })
-    )
+      import_react5.default.createElement(
+        "div",
+        { className: "itw-group" },
+        import_react5.default.createElement(GroupHeader, { store, title: t2("commit.changes"), entries: groups.changes, checkedPaths }),
+        changesBody
+      ),
+      import_react5.default.createElement(
+        "div",
+        { className: "itw-group" },
+        import_react5.default.createElement(GroupHeader, { store, title: t2("commit.unversioned"), entries: groups.unversioned, checkedPaths }),
+        groups.unversioned.length === 0 ? import_react5.default.createElement("div", { className: "itw-group-empty" }, t2("commit.noUnversioned")) : renderEntries(groups.unversioned)
+      )
+    ),
+    menu !== null ? import_react5.default.createElement(ContextMenu, { x: menu.x, y: menu.y, items: menuItems, onClose: () => setMenu(null) }) : null,
+    dialog !== null ? import_react5.default.createElement(
+      "div",
+      { className: "itw-modal-backdrop", onMouseDown: (event) => {
+        if (event.target === event.currentTarget) setDialog(null);
+      } },
+      import_react5.default.createElement(
+        "div",
+        { className: "itw-modal", role: "dialog", "aria-modal": "true" },
+        import_react5.default.createElement("h2", null, t2("commit.newChangelist")),
+        import_react5.default.createElement(
+          "label",
+          { className: "itw-field" },
+          import_react5.default.createElement("span", null, t2("commit.changelistName")),
+          import_react5.default.createElement("input", {
+            autoFocus: true,
+            value: dialog.name,
+            onChange: (event) => setDialog({ ...dialog, name: event.target.value }),
+            onKeyDown: (event) => {
+              event.stopPropagation();
+              if (event.key === "Enter") {
+                event.preventDefault();
+                const name2 = dialog.name.trim();
+                setDialog(null);
+                if (name2 !== "") void store.createChangelist(name2, dialog.paths);
+              }
+              if (event.key === "Escape") setDialog(null);
+            }
+          })
+        ),
+        import_react5.default.createElement(
+          "div",
+          { className: "itw-modal-actions" },
+          import_react5.default.createElement("button", { type: "button", className: "itw-textbtn", onClick: () => setDialog(null) }, t2("common.cancel")),
+          import_react5.default.createElement("button", {
+            type: "button",
+            className: "itw-textbtn itw-primary",
+            onClick: () => {
+              const name2 = dialog.name.trim();
+              setDialog(null);
+              if (name2 !== "") void store.createChangelist(name2, dialog.paths);
+            }
+          }, t2("project.create"))
+        )
+      )
+    ) : null
   );
 }
 
@@ -3666,6 +5042,74 @@ function RefChip({ value }) {
     }
   }, value);
 }
+function CommitDetailPane({ store, state }) {
+  const t2 = store.t;
+  const detail = state.git.detail;
+  if (detail === void 0 || detail === null) return null;
+  const lines = String(detail.diff ?? "").split("\n");
+  const additions = lines.filter((line) => line.startsWith("+") && !line.startsWith("+++")).length;
+  const deletions = lines.filter((line) => line.startsWith("-") && !line.startsWith("---")).length;
+  return import_react6.default.createElement(
+    "div",
+    { className: "itw-git-detail" },
+    import_react6.default.createElement(
+      "div",
+      { className: "itw-git-detail-head" },
+      import_react6.default.createElement("span", { className: "itw-git-detail-subject", title: detail.subject }, detail.subject),
+      import_react6.default.createElement("span", { className: "itw-spacer" }),
+      import_react6.default.createElement("button", {
+        type: "button",
+        className: "itw-textbtn itw-small",
+        onClick: () => {
+          void store.openCommit(detail.hash);
+        }
+      }, t2("git.openFull")),
+      import_react6.default.createElement("button", {
+        type: "button",
+        className: "itw-iconbtn",
+        title: t2("common.close"),
+        onClick: () => store.patch("git", { selectedHash: null, detail: null })
+      }, "\xD7")
+    ),
+    import_react6.default.createElement(
+      "div",
+      { className: "itw-git-detail-meta" },
+      import_react6.default.createElement("span", { className: "itw-git-detail-sha" }, detail.shortHash),
+      import_react6.default.createElement("span", null, detail.author),
+      detail.email !== "" ? import_react6.default.createElement("span", { className: "itw-git-detail-dim" }, detail.email) : null,
+      import_react6.default.createElement("span", null, detail.date),
+      ...(detail.refs ?? []).map((ref) => import_react6.default.createElement("span", { key: ref, className: "itw-ref-chip" }, ref))
+    ),
+    detail.body !== "" ? import_react6.default.createElement("pre", { className: "itw-git-detail-body" }, detail.body) : null,
+    (() => {
+      const files = [...String(detail.diff ?? "").matchAll(/^diff --git a\/(.+?) b\/(.+)$/gm)].map((match) => match[2]);
+      if (files.length === 0) return null;
+      return import_react6.default.createElement(
+        "div",
+        { className: "itw-git-files" },
+        files.map((path2) => import_react6.default.createElement(
+          "button",
+          {
+            key: path2,
+            type: "button",
+            className: "itw-git-file",
+            title: path2,
+            onClick: () => store.openCommitFile(detail.hash, path2)
+          },
+          import_react6.default.createElement("span", { className: "itw-git-file-name" }, path2.split("/").pop()),
+          import_react6.default.createElement("span", { className: "itw-git-file-dir" }, path2.includes("/") ? path2.slice(0, path2.lastIndexOf("/")) : "")
+        ))
+      );
+    })(),
+    import_react6.default.createElement(
+      "div",
+      { className: "itw-git-detail-foot" },
+      import_react6.default.createElement("span", { className: "itw-additions" }, `+${additions}`),
+      import_react6.default.createElement("span", { className: "itw-deletions" }, `-${deletions}`),
+      import_react6.default.createElement("span", { className: "itw-git-detail-hint" }, t2("git.detailHint"))
+    )
+  );
+}
 function GitPanel({ store, state }) {
   const t2 = store.t;
   const git = state.git;
@@ -3726,6 +5170,7 @@ function GitPanel({ store, state }) {
       { key: "copy", text: t2("git.copySha"), action: () => {
         void copy(commit.hash);
       } },
+      { key: "compare-head", text: t2("git.compareWithHead"), action: () => store.openCompare(commit.hash, "HEAD") },
       null,
       {
         key: "checkout",
@@ -3778,6 +5223,22 @@ ${commit.shortHash} ${commit.subject}`, t2("git.revert"), () => {
         state.status.detached === true ? import_react6.default.createElement("option", { value: "" }, t2("git.detached")) : null,
         git.branches.map((name2) => import_react6.default.createElement("option", { key: name2, value: name2 }, name2))
       ),
+      (git.compare ?? []).length > 0 ? import_react6.default.createElement(
+        "span",
+        { className: "itw-compare-chip", title: t2("git.compareHint") },
+        (git.compare ?? []).map((hash3) => hash3.slice(0, 7)).join(" \u2194 "),
+        import_react6.default.createElement("button", {
+          type: "button",
+          className: "itw-path-chip-clear",
+          title: t2("git.clearCompare"),
+          onClick: () => store.patch("git", { compare: [] })
+        }, "\xD7")
+      ) : null,
+      (git.compare ?? []).length === 2 ? import_react6.default.createElement("button", {
+        type: "button",
+        className: "itw-textbtn itw-small itw-primary",
+        onClick: () => store.compareSelected()
+      }, t2("git.compare")) : null,
       import_react6.default.createElement(
         "select",
         {
@@ -3811,6 +5272,17 @@ ${commit.shortHash} ${commit.subject}`, t2("git.revert"), () => {
           queryTimer.current = setTimeout(() => store.setGitFilters({ query: value }), 350);
         }
       }),
+      git.filters.path !== void 0 && git.filters.path !== "" ? import_react6.default.createElement(
+        "span",
+        { className: "itw-path-chip", title: git.filters.path },
+        import_react6.default.createElement("span", { className: "itw-path-chip-text" }, git.filters.path),
+        import_react6.default.createElement("button", {
+          type: "button",
+          className: "itw-path-chip-clear",
+          title: t2("git.clearPath"),
+          onClick: () => store.setGitFilters({ path: "" })
+        }, "\xD7")
+      ) : null,
       import_react6.default.createElement("button", {
         type: "button",
         className: "itw-iconbtn",
@@ -3864,14 +5336,16 @@ ${commit.shortHash} ${commit.subject}`, t2("git.revert"), () => {
             const commit = row.commit;
             const top2 = (start + index) * ROW_HEIGHT2;
             const selected = git.selectedHash === commit.hash;
+            const inCompare = (git.compare ?? []).includes(commit.hash);
             return import_react6.default.createElement(
               "div",
               {
                 key: `${commit.hash}:${start + index}`,
-                className: `itw-git-row ${selected ? "itw-selected" : ""}`,
+                className: `itw-git-row ${selected ? "itw-selected" : ""} ${inCompare ? "itw-compare" : ""}`,
                 style: { top: `${top2}px` },
-                onClick: () => {
-                  void store.selectCommit(commit.hash);
+                onClick: (event) => {
+                  if (event.ctrlKey || event.metaKey) store.toggleCompare(commit.hash);
+                  else void store.selectCommit(commit.hash);
                 },
                 onDoubleClick: () => {
                   void store.openCommit(commit.hash);
@@ -3903,6 +5377,7 @@ ${commit.shortHash} ${commit.subject}`, t2("git.revert"), () => {
         )
       )
     ),
+    import_react6.default.createElement(CommitDetailPane, { store, state }),
     menu !== null ? import_react6.default.createElement(ContextMenu, { x: menu.x, y: menu.y, items: menuItems, onClose: () => setMenu(null) }) : null
   );
 }
@@ -44234,12 +45709,14 @@ var THEME = EditorView.theme({
   ".cm-panels": { backgroundColor: "var(--itw-panel)", color: "var(--itw-fg)" },
   ".cm-tooltip": { backgroundColor: "var(--itw-overlay)", border: "1px solid var(--itw-border-strong)" }
 }, { dark: true });
-function CodeEditor({ value, path: path2, fontSize = 13, resetToken = 0, onChange, onSave }) {
+function CodeEditor({ value, path: path2, fontSize = 13, resetToken = 0, onChange, onSave, onCursor }) {
   const hostRef = (0, import_react9.useRef)(null);
   const onChangeRef = (0, import_react9.useRef)(onChange);
   const onSaveRef = (0, import_react9.useRef)(onSave);
+  const onCursorRef = (0, import_react9.useRef)(onCursor);
   onChangeRef.current = onChange;
   onSaveRef.current = onSave;
+  onCursorRef.current = onCursor;
   (0, import_react9.useEffect)(() => {
     const host = hostRef.current;
     if (host === null) return void 0;
@@ -44274,6 +45751,11 @@ function CodeEditor({ value, path: path2, fontSize = 13, resetToken = 0, onChang
       ...Array.isArray(language2) ? language2 : [language2],
       EditorView.updateListener.of((update) => {
         if (update.docChanged) onChangeRef.current(update.state.doc.toString());
+        if (update.selectionSet || update.docChanged) {
+          const head = update.state.selection.main.head;
+          const line = update.state.doc.lineAt(head);
+          onCursorRef.current?.({ line: line.number, col: head - line.from + 1 });
+        }
       })
     ];
     const view = new EditorView({
@@ -44524,6 +46006,284 @@ function MarkdownView({ text, outlineOpen, onToggleOutline, labels = {} }) {
 
 // src/client/DiffView.jsx
 var import_react11 = __toESM(require("react"), 1);
+
+// src/client/diff.js
+function parseUnifiedDiff(text) {
+  const raw = typeof text === "string" ? text : "";
+  const files = [];
+  let current = null;
+  let hunk = null;
+  let lineIndex = 0;
+  const lines = raw.split("\n");
+  const flushFile = () => {
+    if (current !== null) files.push(current);
+    current = null;
+    hunk = null;
+  };
+  for (const line of lines) {
+    if (line.startsWith("diff --git ")) {
+      flushFile();
+      current = {
+        header: [line],
+        oldPath: "",
+        newPath: "",
+        isNew: false,
+        isDeleted: false,
+        isBinary: false,
+        hunks: [],
+        additions: 0,
+        deletions: 0
+      };
+      continue;
+    }
+    if (current === null) continue;
+    if (line.startsWith("--- ")) {
+      current.header.push(line);
+      const path2 = line.slice(4).trim();
+      current.oldPath = path2 === "/dev/null" ? "" : path2.replace(/^[ab]\//, "");
+      if (path2 === "/dev/null") current.isNew = true;
+      continue;
+    }
+    if (line.startsWith("+++ ")) {
+      current.header.push(line);
+      const path2 = line.slice(4).trim();
+      current.newPath = path2 === "/dev/null" ? "" : path2.replace(/^[ab]\//, "");
+      if (path2 === "/dev/null") current.isDeleted = true;
+      continue;
+    }
+    if (line.startsWith("@@")) {
+      const match = /^@@ -(\d+)(?:,(\d+))? \+(\d+)(?:,(\d+))? @@(.*)$/.exec(line);
+      if (match === null) continue;
+      hunk = {
+        header: line,
+        oldStart: Number(match[1]),
+        oldCount: match[2] === void 0 ? 1 : Number(match[2]),
+        newStart: Number(match[3]),
+        newCount: match[4] === void 0 ? 1 : Number(match[4]),
+        heading: match[5] ?? "",
+        lines: []
+      };
+      current.hunks.push(hunk);
+      continue;
+    }
+    if (line.startsWith("Binary files ") || line.startsWith("GIT binary patch")) {
+      current.isBinary = true;
+      continue;
+    }
+    if (hunk !== null) {
+      const marker = line.charAt(0);
+      if (marker === " " || marker === "+" || marker === "-" || marker === "\\") {
+        const type = marker === "\\" ? "note" : marker;
+        const entry = {
+          type,
+          text: line.slice(1),
+          index: lineIndex,
+          oldNo: null,
+          newNo: null
+        };
+        lineIndex += 1;
+        hunk.lines.push(entry);
+        if (type === "+") {
+          current.additions += 1;
+        }
+        if (type === "-") {
+          current.deletions += 1;
+        }
+        continue;
+      }
+      hunk = null;
+    }
+    if (line !== "") current.header.push(line);
+  }
+  flushFile();
+  for (const file of files) {
+    for (const item of file.hunks) {
+      let oldNo = item.oldStart;
+      let newNo = item.newStart;
+      for (const entry of item.lines) {
+        if (entry.type === " ") {
+          entry.oldNo = oldNo;
+          entry.newNo = newNo;
+          oldNo += 1;
+          newNo += 1;
+        } else if (entry.type === "-") {
+          entry.oldNo = oldNo;
+          oldNo += 1;
+        } else if (entry.type === "+") {
+          entry.newNo = newNo;
+          newNo += 1;
+        }
+      }
+    }
+  }
+  return { files, raw };
+}
+function firstFile(parsed) {
+  return parsed.files.length > 0 ? parsed.files[0] : null;
+}
+function unifiedRows(file) {
+  const rows = [];
+  if (file === null) return rows;
+  for (const hunk of file.hunks) {
+    rows.push({ kind: "hunk", text: hunk.header, hunk, hunkIndex: file.hunks.indexOf(hunk) });
+    for (const entry of hunk.lines) {
+      if (entry.type === "note") continue;
+      rows.push({
+        kind: entry.type === " " ? "context" : entry.type === "+" ? "add" : "del",
+        text: entry.text,
+        oldNo: entry.oldNo,
+        newNo: entry.newNo,
+        index: entry.index,
+        hunkIndex: file.hunks.indexOf(hunk)
+      });
+    }
+  }
+  return rows;
+}
+function sideBySideRows(file) {
+  const rows = [];
+  if (file === null) return rows;
+  for (let hunkIndex = 0; hunkIndex < file.hunks.length; hunkIndex += 1) {
+    const hunk = file.hunks[hunkIndex];
+    rows.push({ kind: "hunk", text: hunk.header, hunk, hunkIndex });
+    let pendingDels = [];
+    let pendingAdds = [];
+    const flush = () => {
+      const count2 = Math.max(pendingDels.length, pendingAdds.length);
+      for (let index = 0; index < count2; index += 1) {
+        const left = pendingDels[index];
+        const right = pendingAdds[index];
+        rows.push({
+          kind: "change",
+          left: left === void 0 ? null : { text: left.text, no: left.oldNo, index: left.index },
+          right: right === void 0 ? null : { text: right.text, no: right.newNo, index: right.index },
+          hunkIndex
+        });
+      }
+      pendingDels = [];
+      pendingAdds = [];
+    };
+    for (const entry of hunk.lines) {
+      if (entry.type === "note") continue;
+      if (entry.type === "-") {
+        if (pendingAdds.length > 0) flush();
+        pendingDels.push(entry);
+      } else if (entry.type === "+") {
+        pendingAdds.push(entry);
+      } else {
+        flush();
+        rows.push({
+          kind: "context",
+          left: { text: entry.text, no: entry.oldNo, index: entry.index },
+          right: { text: entry.text, no: entry.newNo, index: entry.index },
+          hunkIndex
+        });
+      }
+    }
+    flush();
+  }
+  return rows;
+}
+function wordSegments(leftText, rightText) {
+  const tokenize2 = (text) => String(text ?? "").match(/\s+|[A-Za-z0-9_]+|[^\sA-Za-z0-9_]/gu) ?? [];
+  const a2 = tokenize2(leftText);
+  const b2 = tokenize2(rightText);
+  if (a2.length === 0 && b2.length === 0) return { left: [], right: [] };
+  if (a2.length > 200 || b2.length > 200) {
+    return {
+      left: a2.length === 0 ? [] : [{ text: leftText, changed: true }],
+      right: b2.length === 0 ? [] : [{ text: rightText, changed: true }]
+    };
+  }
+  const n = a2.length;
+  const m = b2.length;
+  const table = Array.from({ length: n + 1 }, () => new Uint16Array(m + 1));
+  for (let i3 = n - 1; i3 >= 0; i3 -= 1) {
+    for (let j3 = m - 1; j3 >= 0; j3 -= 1) {
+      table[i3][j3] = a2[i3] === b2[j3] ? table[i3 + 1][j3 + 1] + 1 : Math.max(table[i3 + 1][j3], table[i3][j3 + 1]);
+    }
+  }
+  const left = [];
+  const right = [];
+  const push = (list, token2, changed) => {
+    const last2 = list[list.length - 1];
+    if (last2 !== void 0 && last2.changed === changed) last2.text += token2;
+    else list.push({ text: token2, changed });
+  };
+  let i2 = 0;
+  let j2 = 0;
+  while (i2 < n && j2 < m) {
+    if (a2[i2] === b2[j2]) {
+      push(left, a2[i2], false);
+      push(right, b2[j2], false);
+      i2 += 1;
+      j2 += 1;
+    } else if (table[i2 + 1][j2] >= table[i2][j2 + 1]) {
+      push(left, a2[i2], true);
+      i2 += 1;
+    } else {
+      push(right, b2[j2], true);
+      j2 += 1;
+    }
+  }
+  while (i2 < n) {
+    push(left, a2[i2], true);
+    i2 += 1;
+  }
+  while (j2 < m) {
+    push(right, b2[j2], true);
+    j2 += 1;
+  }
+  return { left, right };
+}
+function hunkChangeIndexes(file, hunkIndex) {
+  const hunk = file?.hunks[hunkIndex];
+  if (hunk === void 0) return [];
+  return hunk.lines.filter((entry) => entry.type === "+" || entry.type === "-").map((entry) => entry.index);
+}
+function buildPatch(file, selection) {
+  if (file === null || selection.size === 0) return "";
+  const output = [...file.header];
+  let changedHunks = 0;
+  for (const hunk of file.hunks) {
+    const body = [];
+    let oldCount = 0;
+    let newCount = 0;
+    let changed = false;
+    for (const entry of hunk.lines) {
+      if (entry.type === " ") {
+        body.push(` ${entry.text}`);
+        oldCount += 1;
+        newCount += 1;
+      } else if (entry.type === "-") {
+        oldCount += 1;
+        if (selection.has(entry.index)) {
+          body.push(`-${entry.text}`);
+          changed = true;
+        } else {
+          body.push(` ${entry.text}`);
+          newCount += 1;
+        }
+      } else if (entry.type === "+") {
+        if (selection.has(entry.index)) {
+          body.push(`+${entry.text}`);
+          newCount += 1;
+          changed = true;
+        }
+      }
+    }
+    if (!changed) continue;
+    changedHunks += 1;
+    const newStart = hunk.oldStart === 0 ? 1 : hunk.oldStart;
+    output.push(`@@ -${hunk.oldStart},${oldCount} +${newStart},${newCount} @@${hunk.heading}`);
+    output.push(...body);
+  }
+  if (changedHunks === 0) return "";
+  return `${output.join("\n")}
+`;
+}
+
+// src/client/DiffView.jsx
 var LINE_HEIGHT = 20;
 function syntheticAddDiff(rel, content2) {
   const text = String(content2 ?? "").replace(/\r\n/g, "\n");
@@ -44543,12 +46303,13 @@ function diffSource(tab3) {
     return { text: tab3.detail?.diff ?? "", staged: false, stageable: false, path: tab3.detail?.subject ?? tab3.hash };
   }
   const payload = tab3.payload;
-  if (payload === void 0 || payload === null) return { text: "", staged: tab3.staged === true, stageable: true, path: tab3.rel };
+  const stageable = tab3.commitHash === void 0 && tab3.readOnly !== true;
+  if (payload === void 0 || payload === null) return { text: "", staged: tab3.staged === true, stageable, path: tab3.rel };
   if (payload.untracked === true) {
-    if (payload.kind === "text") return { text: syntheticAddDiff(tab3.rel, payload.content), staged: false, stageable: true, path: tab3.rel };
-    return { text: "", staged: false, stageable: true, path: tab3.rel, binary: true };
+    if (payload.kind === "text") return { text: syntheticAddDiff(tab3.rel, payload.content), staged: false, stageable, path: tab3.rel };
+    return { text: "", staged: false, stageable, path: tab3.rel, binary: true };
   }
-  return { text: payload.diff ?? "", staged: tab3.staged === true, stageable: true, path: tab3.rel };
+  return { text: payload.diff ?? "", staged: tab3.staged === true, stageable, path: tab3.rel };
 }
 function DiffView({ store, state, tab: tab3 }) {
   const t2 = store.t;
@@ -44559,6 +46320,8 @@ function DiffView({ store, state, tab: tab3 }) {
   const [scrollTop, setScrollTop] = (0, import_react11.useState)(0);
   const [viewport, setViewport] = (0, import_react11.useState)(400);
   const [applying, setApplying] = (0, import_react11.useState)(false);
+  const [openBlocks, setOpenBlocks] = (0, import_react11.useState)(() => /* @__PURE__ */ new Set());
+  const [wordLevel, setWordLevel] = (0, import_react11.useState)(false);
   const scrollRef = (0, import_react11.useRef)(null);
   const selecting = (0, import_react11.useRef)(false);
   (0, import_react11.useEffect)(() => {
@@ -44601,8 +46364,34 @@ function DiffView({ store, state, tab: tab3 }) {
     }
     return output;
   }, [files, mode, t2]);
+  const viewRows = (0, import_react11.useMemo)(() => {
+    if (source.stageable) return rows;
+    const output = [];
+    let run = [];
+    let key = "";
+    const flush = () => {
+      if (run.length === 0) return;
+      if (run.length > 12 && !openBlocks.has(key)) {
+        output.push({ kind: "collapsed", count: run.length, blockKey: key, file: run[0].file });
+      } else {
+        output.push(...run);
+      }
+      run = [];
+    };
+    rows.forEach((row, index) => {
+      if (row.kind === "context") {
+        if (run.length === 0) key = `block-${index}`;
+        run.push(row);
+        return;
+      }
+      flush();
+      output.push(row);
+    });
+    flush();
+    return output;
+  }, [rows, source.stageable, openBlocks]);
   const start = Math.max(0, Math.floor(scrollTop / LINE_HEIGHT) - 8);
-  const end = Math.min(rows.length, Math.ceil((scrollTop + viewport) / LINE_HEIGHT) + 8);
+  const end = Math.min(viewRows.length, Math.ceil((scrollTop + viewport) / LINE_HEIGHT) + 8);
   const addIndex = (index) => {
     if (typeof index !== "number") return;
     setSelection((previous) => {
@@ -44709,7 +46498,7 @@ function DiffView({ store, state, tab: tab3 }) {
       import_react11.default.createElement("span", { className: "itw-diff-text" }, row.text === "" ? "\xA0" : row.text)
     );
   };
-  const renderSideCell = (side, isLeft) => {
+  const renderSideCell = (side, isLeft, segments) => {
     if (side === null || side === void 0) {
       return import_react11.default.createElement(
         "div",
@@ -44734,16 +46523,21 @@ function DiffView({ store, state, tab: tab3 }) {
         }
       }, isLeft ? "\u2212" : "+"),
       import_react11.default.createElement("span", { className: "itw-diff-num" }, side.no ?? ""),
-      import_react11.default.createElement("span", { className: "itw-diff-text" }, side.text === "" ? "\xA0" : side.text)
+      import_react11.default.createElement(
+        "span",
+        { className: "itw-diff-text" },
+        segments === null || segments === void 0 ? side.text === "" ? "\xA0" : side.text : segments.map((segment, index) => segment.changed ? import_react11.default.createElement("span", { key: index, className: isLeft ? "itw-word-del" : "itw-word-add" }, segment.text) : segment.text)
+      )
     );
   };
   const renderSideRow = (row, offset) => {
     if (row.kind === "file" || row.kind === "binary" || row.kind === "hunk") return renderChromeRow(row, offset);
+    const segments = wordLevel && row.kind === "change" ? wordSegments(row.left?.text ?? "", row.right?.text ?? "") : null;
     return import_react11.default.createElement("div", {
       key: `side:${row.left?.index ?? "x"}:${row.right?.index ?? "y"}`,
       className: "itw-diff-side",
       style: { ...rowStyle(offset), display: "grid" }
-    }, renderSideCell(row.left, true), renderSideCell(row.right, false));
+    }, renderSideCell(row.left, true, segments?.left), renderSideCell(row.right, false, segments?.right));
   };
   const toolbar = import_react11.default.createElement(
     "div",
@@ -44767,6 +46561,12 @@ function DiffView({ store, state, tab: tab3 }) {
         onClick: () => store.setDiffMode("unified")
       }, t2("commit.unified"))
     ) : null,
+    import_react11.default.createElement("button", {
+      type: "button",
+      className: `itw-textbtn itw-small ${wordLevel ? "itw-primary" : ""}`,
+      title: t2("commit.wordLevel"),
+      onClick: () => setWordLevel((value) => !value)
+    }, "Aa"),
     source.stageable && selection.size > 0 ? import_react11.default.createElement("button", {
       type: "button",
       className: "itw-textbtn itw-primary itw-small",
@@ -44790,38 +46590,22 @@ function DiffView({ store, state, tab: tab3 }) {
       ref: scrollRef,
       onScroll: (event) => setScrollTop(event.currentTarget.scrollTop)
     },
-    rows.length === 0 ? import_react11.default.createElement("div", { className: "itw-empty" }, t2("commit.selectFile")) : import_react11.default.createElement(
+    viewRows.length === 0 ? import_react11.default.createElement("div", { className: "itw-empty" }, t2("commit.selectFile")) : import_react11.default.createElement(
       "div",
-      { className: "itw-diff-inner", style: { height: `${rows.length * LINE_HEIGHT}px` } },
-      rows.slice(start, end).map((row, index) => {
+      { className: "itw-diff-inner", style: { height: `${viewRows.length * LINE_HEIGHT}px` } },
+      viewRows.slice(start, end).map((row, index) => {
         const offset = start + index;
+        if (row.kind === "collapsed") {
+          return import_react11.default.createElement("div", {
+            key: row.blockKey,
+            className: "itw-diff-collapsed",
+            onClick: () => setOpenBlocks((previous) => /* @__PURE__ */ new Set([...previous, row.blockKey]))
+          }, `\u22EF ${row.count} ${t2("diff.collapsedLines")}`);
+        }
         return mode === "side" ? renderSideRow(row, offset) : renderUnifiedRow(row, offset);
       })
     )
   );
-  if (tab3.kind === "commit" && tab3.detail !== null && tab3.detail !== void 0) {
-    const detail = tab3.detail;
-    return import_react11.default.createElement(
-      "div",
-      { className: "itw-diff" },
-      import_react11.default.createElement(
-        "div",
-        { style: { padding: "10px 12px", borderBottom: "1px solid var(--itw-border)" } },
-        import_react11.default.createElement("div", { style: { fontWeight: 700, fontSize: 13, marginBottom: 4 } }, detail.subject),
-        import_react11.default.createElement(
-          "div",
-          { style: { color: "var(--itw-muted)", fontSize: 11.5, display: "flex", gap: 12, flexWrap: "wrap" } },
-          import_react11.default.createElement("span", { style: { fontFamily: "var(--itw-mono)" } }, detail.shortHash),
-          import_react11.default.createElement("span", null, detail.author),
-          import_react11.default.createElement("span", null, detail.date),
-          detail.refs.length > 0 ? import_react11.default.createElement("span", null, detail.refs.join(", ")) : null
-        ),
-        detail.body !== "" ? import_react11.default.createElement("pre", { style: { margin: "8px 0 0", whiteSpace: "pre-wrap", color: "var(--itw-muted)", fontSize: 11.5, fontFamily: "var(--itw-font)" } }, detail.body) : null
-      ),
-      toolbar,
-      body
-    );
-  }
   return import_react11.default.createElement("div", { className: "itw-diff" }, toolbar, body);
 }
 
@@ -44930,7 +46714,8 @@ function FilePreview({ store, state, tab: tab3 }) {
       onChange: (value) => store.updateDraft(tab3.id, value),
       onSave: () => {
         void store.saveTab(tab3.id);
-      }
+      },
+      onCursor: (position) => store.setCursor(position)
     });
   }
   if (isMarkdownPath(tab3.path) && (tab3.view ?? "preview") === "preview") {
@@ -45041,22 +46826,61 @@ function TabBar({ store, state }) {
 }
 function EditorToolbar({ store, state, tab: tab3 }) {
   const t2 = store.t;
+  const [diffMenu, setDiffMenu] = (0, import_react12.useState)(null);
   if (tab3.kind === "diff") {
-    const staged = tab3.staged === true ? t2("commit.staged") : tab3.untracked === true ? t2("commit.untracked") : t2("commit.unstaged");
+    const variant = tab3.compare !== void 0 ? `${tab3.compare.a.slice(0, 7)} \u2194 ${tab3.compare.b.slice(0, 7)}` : tab3.against === "head" ? t2("commit.lastRevision") : tab3.against === "latest" ? t2("commit.latest") : tab3.staged === true ? t2("commit.staged") : tab3.untracked === true ? t2("commit.untracked") : t2("commit.workingTree");
+    const readOnly2 = tab3.readOnly === true;
+    const anchor = (event) => {
+      const rect = event.currentTarget.getBoundingClientRect();
+      setDiffMenu({ x: rect.left - 120, y: rect.bottom + 4 });
+    };
     return import_react12.default.createElement(
-      "div",
-      { className: "itw-editor-toolbar" },
+      import_react12.default.Fragment,
+      null,
       import_react12.default.createElement(
         "div",
-        { className: "itw-breadcrumb" },
-        import_react12.default.createElement("span", null, t2("commit.title")),
-        import_react12.default.createElement("span", { className: "itw-sep" }, "\u203A"),
-        import_react12.default.createElement("b", null, staged),
-        import_react12.default.createElement("span", { className: "itw-sep" }, "\u203A"),
-        import_react12.default.createElement("b", null, baseName(tab3.rel))
+        { className: "itw-editor-toolbar" },
+        import_react12.default.createElement(
+          "div",
+          { className: "itw-breadcrumb" },
+          import_react12.default.createElement("span", null, t2("commit.title")),
+          import_react12.default.createElement("span", { className: "itw-sep" }, "\u203A"),
+          import_react12.default.createElement("b", null, variant),
+          import_react12.default.createElement("span", { className: "itw-sep" }, "\u203A"),
+          import_react12.default.createElement("b", null, baseName(tab3.rel))
+        ),
+        import_react12.default.createElement("div", { className: "itw-spacer" }),
+        readOnly2 ? null : import_react12.default.createElement(
+          import_react12.default.Fragment,
+          null,
+          import_react12.default.createElement("button", {
+            type: "button",
+            className: "itw-textbtn itw-small",
+            onClick: anchor
+          }, t2("commit.showDiffWith"), " \u25BE"),
+          import_react12.default.createElement("button", {
+            type: "button",
+            className: "itw-textbtn itw-small",
+            title: t2("commit.jumpToSource"),
+            onClick: () => store.jumpToSource(tab3.rel)
+          }, t2("commit.jumpToSource")),
+          import_react12.default.createElement("button", {
+            type: "button",
+            className: "itw-textbtn itw-small itw-danger",
+            onClick: () => store.revertChange({ path: tab3.rel, untracked: tab3.untracked === true })
+          }, t2("commit.revert"))
+        )
       ),
-      import_react12.default.createElement("div", { className: "itw-spacer" }),
-      import_react12.default.createElement("span", null, tab3.preview ? t2("common.preview") : "")
+      diffMenu !== null && !readOnly2 ? import_react12.default.createElement(ContextMenu, {
+        x: diffMenu.x,
+        y: diffMenu.y,
+        items: [
+          { key: "worktree", text: t2("commit.workingTree"), checked: tab3.against === null && tab3.staged !== true && tab3.untracked !== true, action: () => store.openDiff({ path: tab3.rel }) },
+          { key: "head", text: t2("commit.lastRevision"), checked: tab3.against === "head", action: () => store.openDiff({ path: tab3.rel, against: "head" }) },
+          { key: "latest", text: t2("commit.latest"), checked: tab3.against === "latest", action: () => store.openDiff({ path: tab3.rel, against: "latest" }) }
+        ],
+        onClose: () => setDiffMenu(null)
+      }) : null
     );
   }
   if (tab3.kind === "commit") {
@@ -45250,6 +47074,9 @@ function SettingsForm({ store, state, compact }) {
       git: { ...draft.git, ...patch.git ?? {} },
       terminal: { ...draft.terminal, ...patch.terminal ?? {} },
       project: { ...draft.project, ...patch.project ?? {} },
+      commit: { ...draft.commit, ...patch.commit ?? {} },
+      delete: { ...draft.delete, ...patch.delete ?? {} },
+      layout: { ...draft.layout, ...patch.layout ?? {} },
       editor: { ...draft.editor, ...patch.editor ?? {} },
       shortcuts: { ...draft.shortcuts, ...patch.shortcuts ?? {} }
     };
@@ -45358,6 +47185,42 @@ function SettingsForm({ store, state, compact }) {
           checked: draft.project?.showHidden !== false,
           onChange: (event) => update({ project: { showHidden: event.target.checked } })
         })
+      ),
+      import_react13.default.createElement(
+        Row,
+        { label: t2("settings.singleClickOpen"), hint: t2("settings.singleClickOpenHint") },
+        import_react13.default.createElement("input", {
+          type: "checkbox",
+          checked: draft.project?.singleClickOpen === true,
+          onChange: (event) => update({ project: { singleClickOpen: event.target.checked } })
+        })
+      ),
+      import_react13.default.createElement(
+        Row,
+        { label: t2("settings.showIgnored"), hint: t2("settings.showIgnoredHint") },
+        import_react13.default.createElement("input", {
+          type: "checkbox",
+          checked: draft.project?.showIgnored === true,
+          onChange: (event) => update({ project: { showIgnored: event.target.checked } })
+        })
+      ),
+      import_react13.default.createElement(
+        Row,
+        { label: t2("settings.groupByDirectory"), hint: t2("settings.groupByDirectoryHint") },
+        import_react13.default.createElement("input", {
+          type: "checkbox",
+          checked: draft.commit?.groupByDirectory === true,
+          onChange: (event) => update({ commit: { groupByDirectory: event.target.checked } })
+        })
+      ),
+      import_react13.default.createElement(
+        Row,
+        { label: t2("settings.useRecycleBin"), hint: t2("settings.useRecycleBinHint") },
+        import_react13.default.createElement("input", {
+          type: "checkbox",
+          checked: draft.delete?.useRecycleBin !== false,
+          onChange: (event) => update({ delete: { useRecycleBin: event.target.checked } })
+        })
       )
     ),
     import_react13.default.createElement(
@@ -45405,6 +47268,42 @@ function SettingsForm({ store, state, compact }) {
           style: { minWidth: 240 },
           value: draft.git?.commitTemplate ?? "",
           onChange: (event) => update({ git: { commitTemplate: event.target.value } })
+        })
+      )
+    ),
+    import_react13.default.createElement(
+      "div",
+      { className: "itw-settings-group" },
+      import_react13.default.createElement("h3", null, t2("settings.commitGroup")),
+      import_react13.default.createElement(
+        Row,
+        { label: t2("settings.testCommand"), hint: t2("settings.testCommandHint") },
+        import_react13.default.createElement("input", {
+          type: "text",
+          style: { minWidth: 240 },
+          placeholder: "npm test",
+          value: draft.commit?.testCommand ?? "",
+          onChange: (event) => update({ commit: { testCommand: event.target.value } })
+        })
+      ),
+      import_react13.default.createElement(
+        Row,
+        { label: t2("settings.optimizeCommand"), hint: t2("settings.optimizeCommandHint") },
+        import_react13.default.createElement("input", {
+          type: "text",
+          style: { minWidth: 240 },
+          value: draft.commit?.optimizeImportsCommand ?? "",
+          onChange: (event) => update({ commit: { optimizeImportsCommand: event.target.value } })
+        })
+      ),
+      import_react13.default.createElement(
+        Row,
+        { label: t2("settings.cleanupCommand"), hint: t2("settings.cleanupCommandHint") },
+        import_react13.default.createElement("input", {
+          type: "text",
+          style: { minWidth: 240 },
+          value: draft.commit?.cleanupCommand ?? "",
+          onChange: (event) => update({ commit: { cleanupCommand: event.target.value } })
         })
       )
     ),
@@ -45511,6 +47410,18 @@ function TopBar({ store, state, onOpenSettings }) {
     import_react14.default.createElement("button", {
       type: "button",
       className: "itw-iconbtn",
+      title: t2("layout.hideAll"),
+      onClick: () => store.toggleHideAll()
+    }, "\u229F"),
+    import_react14.default.createElement("button", {
+      type: "button",
+      className: "itw-iconbtn",
+      title: t2("layout.fullscreen"),
+      onClick: () => store.toggleFullscreen()
+    }, "\u26F6"),
+    import_react14.default.createElement("button", {
+      type: "button",
+      className: "itw-iconbtn",
       title: t2("common.refresh"),
       onClick: () => {
         void store.reloadTree();
@@ -45548,43 +47459,45 @@ function TopBar({ store, state, onOpenSettings }) {
 function Stripe({ store, state }) {
   const t2 = store.t;
   const sessions = state.terminal.sessions.length;
+  const button = (tool, active, children) => import_react14.default.createElement("button", {
+    type: "button",
+    className: `itw-stripe-btn ${active ? "itw-on" : ""}`,
+    title: `${t2(`${tool}.title`)} (${state.settings?.shortcuts?.[tool] ?? ""})`,
+    onClick: () => store.toggleTool(tool)
+  }, children);
   return import_react14.default.createElement(
     "div",
     { className: "itw-stripe" },
-    import_react14.default.createElement("button", {
-      type: "button",
-      className: `itw-stripe-btn ${state.layout.left === "project" ? "itw-on" : ""}`,
-      title: `${t2("project.title")} (${state.settings?.shortcuts?.project ?? "Alt+1"})`,
-      onClick: () => store.toggleTool("project")
-    }, import_react14.default.createElement(StripeIcon, { tool: "project", size: 20 })),
-    import_react14.default.createElement(
-      "button",
-      {
-        type: "button",
-        className: `itw-stripe-btn ${state.layout.left === "commit" ? "itw-on" : ""}`,
-        title: `${t2("commit.title")} (${state.settings?.shortcuts?.commit ?? "Alt+0"})`,
-        onClick: () => store.toggleTool("commit")
-      },
-      import_react14.default.createElement(StripeIcon, { tool: "commit", size: 20 }),
-      state.changeCount > 0 ? import_react14.default.createElement("span", { className: "itw-badge" }, state.changeCount > 99 ? "99+" : state.changeCount) : null
+    button(
+      "project",
+      state.layout.left === "project",
+      import_react14.default.createElement(StripeIcon, { tool: "project", size: 20 })
+    ),
+    button(
+      "commit",
+      state.layout.left === "commit",
+      import_react14.default.createElement(
+        "span",
+        null,
+        import_react14.default.createElement(StripeIcon, { tool: "commit", size: 20 }),
+        state.changeCount > 0 ? import_react14.default.createElement("span", { className: "itw-badge" }, state.changeCount > 99 ? "99+" : state.changeCount) : null
+      )
     ),
     import_react14.default.createElement("div", { className: "itw-stripe-spacer" }),
-    import_react14.default.createElement("button", {
-      type: "button",
-      className: `itw-stripe-btn ${state.layout.bottom === "git" ? "itw-on" : ""}`,
-      title: `${t2("git.title")} (${state.settings?.shortcuts?.git ?? "Alt+9"})`,
-      onClick: () => store.toggleTool("git")
-    }, import_react14.default.createElement(StripeIcon, { tool: "git", size: 20 })),
-    import_react14.default.createElement(
-      "button",
-      {
-        type: "button",
-        className: `itw-stripe-btn ${state.layout.bottom === "terminal" ? "itw-on" : ""}`,
-        title: `${t2("terminal.title")} (${state.settings?.shortcuts?.terminal ?? "Alt+F12"})`,
-        onClick: () => store.toggleTool("terminal")
-      },
-      import_react14.default.createElement(StripeIcon, { tool: "terminal", size: 20 }),
-      sessions > 0 ? import_react14.default.createElement("span", { className: "itw-badge itw-badge-dirty" }, sessions) : null
+    button(
+      "git",
+      state.layout.bottom === "git",
+      import_react14.default.createElement(StripeIcon, { tool: "git", size: 20 })
+    ),
+    button(
+      "terminal",
+      state.layout.bottom === "terminal",
+      import_react14.default.createElement(
+        "span",
+        null,
+        import_react14.default.createElement(StripeIcon, { tool: "terminal", size: 20 }),
+        sessions > 0 ? import_react14.default.createElement("span", { className: "itw-badge itw-badge-dirty" }, sessions) : null
+      )
     )
   );
 }
@@ -45623,7 +47536,11 @@ function StatusBar({ store, state }) {
   const t2 = store.t;
   const summary = store.summary();
   const active = state.tabs.find((tab3) => tab3.id === state.activeId);
-  const lines = active?.payload?.kind === "text" && typeof active.payload.content === "string" ? active.payload.content.split("\n").length : void 0;
+  const text = active?.payload?.kind === "text" ? active.payload : void 0;
+  const lines = text !== void 0 && typeof text.content === "string" ? text.content.split("\n").length : void 0;
+  const encoding = text === void 0 ? void 0 : text.encoding === "utf-8-bom" ? "UTF-8 BOM" : text.encoding === "utf-16le" ? "UTF-16 LE" : text.encoding === "utf-16be" ? "UTF-16 BE" : "UTF-8";
+  const eol2 = text === void 0 ? void 0 : text.eol === "\r\n" ? "CRLF" : "LF";
+  const cursor = state.cursor !== null && state.cursor !== void 0 && active?.editing === true ? state.cursor : null;
   return import_react14.default.createElement(
     "div",
     { className: "itw-statusbar" },
@@ -45633,10 +47550,12 @@ function StatusBar({ store, state }) {
       import_react14.default.createElement("span", { className: `itw-status-dot ${state.statusError !== null ? "itw-busy" : ""}` }),
       state.status.isRepo === true ? t2("status.ready") : t2("welcome.noRepo")
     ),
-    summary.branch !== void 0 ? import_react14.default.createElement("span", { className: "itw-status-item" }, summary.branch) : null,
-    summary.changes > 0 ? import_react14.default.createElement("span", { className: "itw-status-item" }, `${summary.changes} ${t2("status.changes")}`) : null,
+    summary.branch !== void 0 ? import_react14.default.createElement("span", { className: "itw-status-item", style: { cursor: "pointer" }, onClick: () => store.showTool("git") }, summary.branch) : null,
+    summary.changes > 0 ? import_react14.default.createElement("span", { className: "itw-status-item", style: { cursor: "pointer" }, onClick: () => store.showTool("commit") }, `${summary.changes} ${t2("status.changes")}`) : null,
     import_react14.default.createElement("div", { className: "itw-spacer" }),
+    cursor !== null ? import_react14.default.createElement("span", { className: "itw-status-item" }, `${t2("editor.line")} ${cursor.line}:${cursor.col}`) : null,
     lines !== void 0 ? import_react14.default.createElement("span", { className: "itw-status-item" }, `${lines} ${t2("editor.lines")}`) : null,
+    encoding !== void 0 ? import_react14.default.createElement("span", { className: "itw-status-item" }, `${encoding} ${eol2}`) : null,
     import_react14.default.createElement(
       "span",
       { className: "itw-status-item" },
@@ -45870,7 +47789,10 @@ function Workbench({ store }) {
   }
   const bottom = state.layout.bottom !== null && state.layout.bottom !== void 0 ? import_react14.default.createElement(
     "div",
-    { className: "itw-bottom", style: { height: `${state.layout.bottomHeight}px` } },
+    {
+      className: "itw-bottom",
+      style: { height: `${state.layout.bottomHeight}px` }
+    },
     import_react14.default.createElement("div", { className: "itw-bottom-resizer", onPointerDown: startBottomResize }),
     import_react14.default.createElement(BottomTabs, { store, state }),
     import_react14.default.createElement(
@@ -45947,6 +47869,14 @@ var CSS = `
   --itw-add: #4fb477;
   --itw-del: #e2686f;
   --itw-conflict: #e2686f;
+  /* JetBrains default VCS highlights (IntelliJ Light / Darcula semantics). */
+  --itw-git-untracked: #e2686f;
+  --itw-git-added: #4fb477;
+  --itw-git-modified: #4c9aff;
+  --itw-git-deleted: #e2686f;
+  --itw-git-conflict: #f14c4c;
+  --itw-git-ignored: #b08b4f;
+  --itw-excluded-bg: rgba(176, 139, 79, .16);
   --itw-font: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei UI", "PingFang SC", sans-serif;
   --itw-mono: "JetBrains Mono", "Cascadia Code", "SF Mono", Consolas, "Courier New", monospace;
   position: relative;
@@ -46216,14 +48146,26 @@ var CSS = `
 }
 .itw-tree-row:hover { background: rgba(127, 127, 127, .1); }
 .itw-tree-row.itw-selected { background: rgba(76, 154, 255, .18); }
-.itw-tree-row.itw-selected::left { content: ''; }
+.itw-tree:focus { outline: none; }
+.itw-tree:focus-visible { outline: 1px solid rgba(76, 154, 255, .35); outline-offset: -1px; }
 .itw-tree-twisty { width: 16px; flex: 0 0 16px; display: inline-flex; align-items: center; justify-content: center; color: var(--itw-muted); }
 .itw-tree-name { overflow: hidden; text-overflow: ellipsis; }
 .itw-tree-name.itw-dir { font-weight: 500; }
-.itw-tree-row.itw-git-mod .itw-tree-name { color: var(--itw-mod); }
-.itw-tree-row.itw-git-add .itw-tree-name { color: var(--itw-add); }
-.itw-tree-row.itw-git-conflict .itw-tree-name { color: var(--itw-conflict); }
-.itw-tree-row.itw-git-del .itw-tree-name { color: var(--itw-del); text-decoration: line-through; }
+.itw-tree-row.itw-git-untracked .itw-tree-name { color: var(--itw-git-untracked); }
+.itw-tree-row.itw-git-added .itw-tree-name { color: var(--itw-git-added); }
+.itw-tree-row.itw-git-modified .itw-tree-name { color: var(--itw-git-modified); }
+.itw-tree-row.itw-git-conflict .itw-tree-name { color: var(--itw-git-conflict); font-weight: 600; }
+.itw-tree-row.itw-git-conflict .itw-tree-name::after { content: ' !'; color: var(--itw-git-conflict); font-weight: 700; }
+.itw-tree-row.itw-git-deleted .itw-tree-name { color: var(--itw-git-deleted); text-decoration: line-through; }
+.itw-tree-row.itw-git-ignored .itw-tree-name { color: var(--itw-git-ignored); }
+.itw-tree-row.itw-git-ignored { opacity: .65; }
+.itw-tree-row.itw-excluded { background: var(--itw-excluded-bg); }
+.itw-tree-row.itw-excluded .itw-tree-name { color: var(--itw-git-ignored); }
+.itw-tree-row.itw-drop-target { outline: 1px solid var(--itw-accent); outline-offset: -1px; background: rgba(76, 154, 255, .12); }
+.itw-rename-input {
+  flex: 1; min-width: 0; height: 18px; padding: 0 4px; border: 1px solid var(--itw-accent); border-radius: 3px;
+  background: var(--itw-panel-2); color: var(--itw-fg); font-size: 12px; outline: none;
+}
 .itw-tree-msg { color: var(--itw-muted); font-style: italic; padding: 2px 8px 2px 30px; font-size: 11.5px; }
 .itw-vlist { position: relative; }
 .itw-vlist-row { position: absolute; left: 0; right: 0; height: 22px; }
@@ -46240,18 +48182,39 @@ var CSS = `
 .itw-error-box { margin: 8px; padding: 8px 10px; border: 1px solid rgba(226, 104, 111, .4); border-radius: 6px; background: rgba(226, 104, 111, .08); color: var(--itw-error); font-size: 11.5px; white-space: pre-wrap; word-break: break-word; user-select: text; }
 
 .itw-menu {
-  position: fixed; z-index: 40; min-width: 190px; padding: 4px; border-radius: 8px;
+  position: fixed; z-index: 40; padding: 4px; border-radius: 8px;
   border: 1px solid var(--itw-border-strong); background: var(--itw-overlay);
   box-shadow: 0 12px 32px rgba(0, 0, 0, .38);
+  max-height: calc(100vh - 12px); overflow-y: auto; overflow-x: hidden;
 }
-.itw-menu button {
-  display: flex; align-items: center; gap: 8px; width: 100%; padding: 6px 8px; border-radius: 5px;
-  text-align: left; font-size: 12px; color: var(--itw-fg);
+.itw-menu-sub { z-index: 41; }
+.itw-menu .itw-menu-item {
+  display: flex; align-items: center; gap: 6px; width: 100%; padding: 5px 6px 5px 4px; border-radius: 5px;
+  text-align: left; font-size: 12px; color: var(--itw-fg); white-space: nowrap;
 }
-.itw-menu button:hover { background: rgba(127, 127, 127, .16); }
-.itw-menu button:disabled { opacity: .4; }
+.itw-menu .itw-menu-item:hover:not(:disabled) { background: rgba(127, 127, 127, .16); }
+.itw-menu .itw-menu-item:disabled { opacity: .4; }
+.itw-menu .itw-menu-item.itw-menu-danger { color: var(--itw-error); }
+.itw-menu-check { width: 12px; flex: 0 0 12px; text-align: center; color: var(--itw-accent); }
+.itw-menu-icon { width: 14px; flex: 0 0 14px; display: inline-flex; align-items: center; justify-content: center; }
+.itw-menu-text { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.itw-menu-shortcut { flex: 0 0 auto; margin-left: 22px; color: var(--itw-muted); font-size: 10.5px; font-family: var(--itw-font); letter-spacing: .01em; }
+.itw-menu-arrow { width: 10px; flex: 0 0 10px; text-align: right; color: var(--itw-muted); }
 .itw-menu .itw-menu-sep { height: 1px; margin: 4px 2px; background: var(--itw-border); }
 .itw-menu .itw-menu-label { padding: 5px 8px; color: var(--itw-muted); font-size: 10.5px; text-transform: uppercase; letter-spacing: .06em; }
+
+.itw-favorites { max-height: 160px; overflow: auto; border-bottom: 1px solid var(--itw-border); padding: 4px 6px; }
+.itw-favorite-row { display: flex; align-items: center; gap: 6px; height: 22px; padding: 0 4px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+.itw-favorite-row:hover { background: rgba(127, 127, 127, .1); }
+.itw-favorite-star { color: var(--itw-warn); }
+.itw-favorite-name { flex: 1; overflow: hidden; text-overflow: ellipsis; }
+.itw-favorite-remove { width: 18px; height: 18px; opacity: .6; }
+.itw-field { display: flex; flex-direction: column; gap: 5px; margin: 10px 0; font-size: 12px; color: var(--itw-muted); }
+.itw-field input, .itw-field select {
+  height: 30px; padding: 0 9px; border-radius: 6px; border: 1px solid var(--itw-border);
+  background: var(--itw-panel-2); color: var(--itw-fg); font-size: 12.5px; outline: none;
+}
+.itw-field input:focus, .itw-field select:focus { border-color: var(--itw-accent); }
 
 .itw-commit { display: flex; flex-direction: column; min-height: 0; height: 100%; }
 .itw-commit-message { padding: 8px; border-bottom: 1px solid var(--itw-border); }
@@ -46263,6 +48226,7 @@ var CSS = `
 .itw-commit-message textarea:focus { border-color: var(--itw-accent); }
 .itw-commit-actions { display: flex; align-items: center; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
 .itw-commit-actions .itw-spacer { flex: 1; }
+.itw-commit-tasks { display: flex; align-items: center; gap: 14px; margin-top: 6px; flex-wrap: wrap; }
 .itw-check { display: inline-flex; align-items: center; gap: 5px; color: var(--itw-muted); font-size: 12px; cursor: pointer; }
 .itw-check input { accent-color: var(--itw-accent); }
 .itw-groups { flex: 1; min-height: 0; overflow: auto; padding-bottom: 8px; }
@@ -46282,8 +48246,15 @@ var CSS = `
 }
 .itw-file-row:hover { background: rgba(127, 127, 127, .1); }
 .itw-file-row.itw-active { background: rgba(76, 154, 255, .16); }
+.itw-file-row.itw-selected { background: rgba(76, 154, 255, .16); }
 .itw-file-row .itw-file-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .itw-file-row .itw-file-dir { color: var(--itw-muted); font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.itw-file-row .itw-file-status { color: var(--itw-muted); font-size: 10px; width: 12px; text-align: center; font-family: var(--itw-mono); }
+.itw-group-empty { padding: 8px 12px; color: var(--itw-muted); font-size: 11.5px; font-style: italic; }
+.itw-commit-toolbar { display: flex; align-items: center; gap: 6px; padding: 6px 8px; border-top: 1px solid var(--itw-border); border-bottom: 1px solid var(--itw-border); }
+.itw-changelist-head { height: 24px; display: flex; align-items: center; gap: 6px; padding: 0 10px; color: var(--itw-muted); font-size: 11px; background: rgba(127, 127, 127, .06); }
+.itw-changelist-head .itw-count { font-size: 10px; }
+.itw-dir-heading { height: 22px; display: flex; align-items: center; padding: 0 10px 0 22px; color: var(--itw-muted); font-size: 11px; }
 .itw-file-row .itw-file-stat { margin-left: auto; display: flex; gap: 5px; font-size: 10.5px; font-variant-numeric: tabular-nums; }
 .itw-additions { color: var(--itw-add); }
 .itw-deletions { color: var(--itw-del); }
@@ -46310,7 +48281,15 @@ var CSS = `
 .itw-diff-sign { width: 16px; flex: 0 0 16px; text-align: center; user-select: none; color: var(--itw-muted); }
 .itw-diff-text { flex: 1; padding-right: 24px; }
 .itw-diff-row.itw-selected { outline: 1px solid rgba(76, 154, 255, .55); background: rgba(76, 154, 255, .22) !important; }
+.itw-word-add { background: rgba(79, 180, 119, .38); border-radius: 2px; }
+.itw-word-del { background: rgba(226, 104, 111, .38); border-radius: 2px; }
 .itw-diff-hunk { display: flex; align-items: center; height: 22px; background: rgba(127, 127, 127, .09); color: var(--itw-muted); font-size: 11.5px; }
+.itw-diff-collapsed {
+  display: flex; align-items: center; justify-content: center; height: 20px; cursor: pointer;
+  color: var(--itw-muted); font-size: 11px; background: rgba(127, 127, 127, .07);
+  border-top: 1px dashed var(--itw-border); border-bottom: 1px dashed var(--itw-border);
+}
+.itw-diff-collapsed:hover { color: var(--itw-fg); background: rgba(127, 127, 127, .14); }
 .itw-diff-hunk .itw-hunk-text { padding: 0 12px; flex: 1; overflow: hidden; text-overflow: ellipsis; }
 .itw-diff-hunk .itw-hunk-actions { display: none; padding-right: 6px; }
 .itw-diff-hunk:hover .itw-hunk-actions { display: flex; }
@@ -46331,6 +48310,14 @@ var CSS = `
 
 .itw-git { display: flex; flex-direction: column; height: 100%; min-height: 0; }
 .itw-git-filters { display: flex; align-items: center; gap: 6px; padding: 6px 8px; border-bottom: 1px solid var(--itw-border); flex-wrap: wrap; }
+.itw-path-chip {
+  display: inline-flex; align-items: center; gap: 4px; max-width: 260px; height: 22px; padding: 0 4px 0 8px;
+  border: 1px solid var(--itw-border-strong); border-radius: 999px; background: var(--itw-panel-2);
+  color: var(--itw-fg); font-size: 11px;
+}
+.itw-path-chip-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--itw-mono); }
+.itw-path-chip-clear { width: 16px; height: 16px; border-radius: 50%; color: var(--itw-muted); font-size: 13px; line-height: 1; }
+.itw-path-chip-clear:hover { background: rgba(127, 127, 127, .2); color: var(--itw-fg); }
 .itw-select, .itw-input {
   height: 24px; border-radius: 5px; border: 1px solid var(--itw-border); background: var(--itw-panel-2);
   padding: 0 7px; font-size: 11.5px; outline: none; color: var(--itw-fg);
@@ -46356,11 +48343,37 @@ var CSS = `
 .itw-git-row { position: absolute; left: 0; right: 0; cursor: pointer; font-size: 12px; }
 .itw-git-row:hover { background: rgba(127, 127, 127, .09); }
 .itw-git-row.itw-selected { background: rgba(76, 154, 255, .16); }
+.itw-git-row.itw-compare { box-shadow: inset 2px 0 0 var(--itw-warn); background: rgba(215, 162, 74, .12); }
+.itw-compare-chip {
+  display: inline-flex; align-items: center; gap: 4px; height: 22px; padding: 0 4px 0 8px;
+  border: 1px solid var(--itw-warn); border-radius: 999px; color: var(--itw-warn); font-size: 11px;
+  font-family: var(--itw-mono);
+}
 .itw-git-row .itw-sha { font-family: var(--itw-mono); color: var(--itw-accent); font-size: 11.5px; }
 .itw-git-row .itw-subject { font-size: 12.5px; }
 .itw-git-row .itw-author, .itw-git-row .itw-date { color: var(--itw-muted); font-size: 11px; }
 .itw-git-graph { height: 100%; display: flex; align-items: center; }
 .itw-git-empty { padding: 24px; text-align: center; color: var(--itw-muted); }
+.itw-git-detail {
+  flex: 0 0 auto; max-height: 42%; overflow: auto; border-top: 1px solid var(--itw-border);
+  background: var(--itw-panel); padding: 6px 10px 8px;
+}
+.itw-git-detail-head { display: flex; align-items: center; gap: 6px; }
+.itw-git-detail-subject { font-weight: 600; font-size: 12.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.itw-git-detail-meta { display: flex; gap: 10px; flex-wrap: wrap; color: var(--itw-muted); font-size: 11px; margin-top: 3px; }
+.itw-git-detail-sha { font-family: var(--itw-mono); color: var(--itw-accent); }
+.itw-git-detail-dim { opacity: .75; }
+.itw-git-detail-body { margin: 6px 0 0; white-space: pre-wrap; color: var(--itw-muted); font-size: 11.5px; font-family: var(--itw-font); }
+.itw-git-detail-foot { display: flex; align-items: center; gap: 10px; margin-top: 6px; font-size: 11px; }
+.itw-git-detail-hint { color: var(--itw-muted); margin-left: auto; }
+.itw-git-files { display: flex; flex-direction: column; gap: 1px; margin-top: 6px; max-height: 120px; overflow: auto; }
+.itw-git-file {
+  display: flex; align-items: center; gap: 6px; width: 100%; text-align: left; padding: 2px 6px; border-radius: 4px;
+  font-size: 11.5px; color: var(--itw-fg);
+}
+.itw-git-file:hover { background: rgba(127, 127, 127, .14); }
+.itw-git-file-name { font-family: var(--itw-mono); }
+.itw-git-file-dir { color: var(--itw-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 .itw-term { display: flex; flex-direction: column; height: 100%; min-height: 0; }
 .itw-term-tabs { display: flex; align-items: center; gap: 2px; padding: 3px 6px; border-bottom: 1px solid var(--itw-border); overflow-x: auto; }
@@ -46551,6 +48564,15 @@ ${CSS}`;
         event.stopPropagation();
         runShortcut(store, action);
         return;
+      }
+      if (event.key === "F11") {
+        event.preventDefault();
+        store.toggleFullscreen();
+        return;
+      }
+      if (matchesShortcut(shortcuts.hideAll ?? "Ctrl+Shift+F12", event)) {
+        event.preventDefault();
+        store.toggleHideAll();
       }
     };
     document.addEventListener("keydown", onKeyDown, true);

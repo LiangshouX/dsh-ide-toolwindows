@@ -5,10 +5,20 @@
  */
 import React, { useEffect, useRef, useState } from 'react'
 
-/** One floating context menu anchored at a viewport point. */
-export function ContextMenu({ x, y, items, onClose }) {
+/**
+ * One floating context menu anchored at a viewport point.
+ *
+ * Items: `null` for a separator, `{ label }` for a section label, or
+ * `{ key, text, shortcut, icon, action, disabled, danger, checked, submenu }`.
+ * Shortcut strings are rendered right-aligned in grey — the single most
+ * visible JetBrains/VS Code difference in a menu.
+ */
+export function ContextMenu({ x, y, items, onClose, depth = 0 }) {
   const ref = useRef(null)
+  const [openIndex, setOpenIndex] = useState(-1)
+  const [subAnchor, setSubAnchor] = useState(null)
   useEffect(() => {
+    if (depth !== 0) return undefined
     const onDown = (event) => {
       if (ref.current !== null && !ref.current.contains(event.target)) onClose()
     }
@@ -21,27 +31,84 @@ export function ContextMenu({ x, y, items, onClose }) {
       window.removeEventListener('keydown', onKey, true)
       window.removeEventListener('blur', onClose)
     }
-  }, [onClose])
-  const width = 210
-  const height = items.length * 28 + 12
-  const left = Math.min(x, (window.innerWidth ?? 1200) - width - 8)
-  const top = Math.min(y, (window.innerHeight ?? 800) - height - 8)
+  }, [onClose, depth])
+  const width = 264
+  const estimated = items.reduce((total, item) => {
+    if (item === null) return total + 9
+    if (item.label !== undefined && item.action === undefined) return total + 22
+    return total + 26
+  }, 10)
+  const hasWindow = typeof window !== 'undefined'
+  const viewportWidth = hasWindow ? window.innerWidth : 1200
+  const viewportHeight = hasWindow ? window.innerHeight : 800
+  const anchoredLeft = depth === 0 ? Math.max(6, Math.min(x, viewportWidth - width - 8)) : x
+  const anchoredTop = depth === 0 ? Math.max(6, Math.min(y, viewportHeight - estimated - 8)) : y
+  const [position, setPosition] = useState({ left: anchoredLeft, top: anchoredTop })
+  // The estimate above cannot know the real rendered height (fonts, icons,
+  // separators). Re-measure after mount and pull the menu fully on screen.
+  useEffect(() => {
+    setPosition({ left: anchoredLeft, top: anchoredTop })
+  }, [anchoredLeft, anchoredTop])
+  useEffect(() => {
+    if (!hasWindow || ref.current === null) return
+    const rect = ref.current.getBoundingClientRect()
+    const nextLeft = Math.max(6, Math.min(position.left, viewportWidth - rect.width - 6))
+    const nextTop = Math.max(6, Math.min(position.top, viewportHeight - rect.height - 6))
+    if (Math.round(nextLeft) !== Math.round(position.left) || Math.round(nextTop) !== Math.round(position.top)) {
+      setPosition({ left: nextLeft, top: nextTop })
+    }
+  }, [position.left, position.top, viewportWidth, viewportHeight, hasWindow])
   return React.createElement('div', {
     ref,
-    className: 'itw-menu',
-    style: { left: `${Math.max(6, left)}px`, top: `${Math.max(6, top)}px` },
+    className: `itw-menu ${depth === 0 ? 'itw-menu-root' : 'itw-menu-sub'}`,
+    style: { left: `${position.left}px`, top: `${position.top}px`, minWidth: `${width}px` },
     onContextMenu: event => event.preventDefault(),
   }, items.map((item, index) => {
     if (item === null) return React.createElement('div', { key: `sep-${index}`, className: 'itw-menu-sep' })
     if (item.label !== undefined && item.action === undefined) {
       return React.createElement('div', { key: `label-${index}`, className: 'itw-menu-label' }, item.label)
     }
-    return React.createElement('button', {
+    const hasSubmenu = Array.isArray(item.submenu) && item.submenu.length > 0
+    const open = hasSubmenu && openIndex === index
+    const row = React.createElement('button', {
       key: item.key ?? `item-${index}`,
       type: 'button',
+      className: `itw-menu-item ${item.danger === true ? 'itw-menu-danger' : ''}`,
       disabled: item.disabled === true,
-      onClick: () => { onClose(); item.action?.() },
-    }, item.icon ?? null, item.text)
+      'aria-haspopup': hasSubmenu ? 'menu' : undefined,
+      'aria-expanded': hasSubmenu ? open : undefined,
+      onClick: () => {
+        if (hasSubmenu) { setOpenIndex(open ? -1 : index); return }
+        onClose()
+        item.action?.()
+      },
+      onMouseEnter: (event) => {
+        if (hasSubmenu) {
+          const rect = event.currentTarget.getBoundingClientRect()
+          const viewportWidth = typeof window !== 'undefined' ? window.innerWidth : 1200
+          const left = rect.right + 2 + width > viewportWidth
+            ? Math.max(6, rect.left - width - 2)
+            : rect.right + 2
+          setSubAnchor({ x: left, y: rect.top - 5 })
+          setOpenIndex(index)
+        } else {
+          setOpenIndex(-1)
+        }
+      },
+    },
+      React.createElement('span', { className: 'itw-menu-check' }, item.checked === true ? '✓' : ''),
+      React.createElement('span', { className: 'itw-menu-icon' }, item.icon ?? null),
+      React.createElement('span', { className: 'itw-menu-text' }, item.text),
+      React.createElement('span', { className: 'itw-menu-shortcut' }, item.shortcut ?? ''),
+      React.createElement('span', { className: 'itw-menu-arrow' }, hasSubmenu ? '▸' : ''),
+    )
+    if (!hasSubmenu || !open || subAnchor === null) return row
+    return React.createElement(React.Fragment, { key: `group-${index}` },
+      row,
+      React.createElement(ContextMenu, {
+        x: subAnchor.x, y: subAnchor.y, items: item.submenu, onClose, depth: depth + 1,
+      }),
+    )
   }))
 }
 

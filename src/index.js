@@ -17,12 +17,15 @@ import { randomUUID } from 'node:crypto'
 import { stat, unlink } from 'node:fs/promises'
 import { relative, sep } from 'node:path'
 import { WebSocketServer, WebSocket } from 'ws'
-import { runGit, repoRootOf, status as gitStatus, diff as gitDiff, stage as gitStage, unstage as gitUnstage, discard as gitDiscard, applyPatch as gitApplyPatch, commit as gitCommit, push as gitPush, log as gitLog, branches as gitBranches, checkout as gitCheckout, revert as gitRevert, commitDetail, showFile, recentMessages } from './host/git.js'
+import { runGit, repoRootOf, status as gitStatus, diff as gitDiff, diffRev as gitDiffRev, diffRefs as gitDiffRefs, stage as gitStage, unstage as gitUnstage, discard as gitDiscard, applyPatch as gitApplyPatch, commit as gitCommit, push as gitPush, log as gitLog, branches as gitBranches, checkout as gitCheckout, revert as gitRevert, commitDetail, commitFileDiff, showFile, recentMessages } from './host/git.js'
 import { SettingsStore, settingsFile } from './host/settings-store.js'
 import {
   canonicalRoot, listDirectory, listProjectCandidates, readFileForPreview, resolveInside,
-  revealInExplorer, shellArgv, shellCandidates, terminalEnv, toRelative, writeFileText,
+  revealInExplorer, runCommand, shellArgv, shellCandidates, terminalEnv, toRelative, writeFileText,
 } from './host/workspace.js'
+import {
+  appendIgnore, createEntry, deleteEntries, duplicateEntry, moveEntries, renameEntry,
+} from './host/fileops.js'
 import {
   ApiError, optionalBoolean, optionalInteger, readJsonBody, requireString, stringArray,
   writeError, writeOk,
@@ -154,10 +157,63 @@ export function apply(ctx) {
       return { revealed: revealInExplorer(absolute), path: toRelative(root, absolute) }
     },
 
+    'fs.create': async (payload) => {
+      const root = await canonicalRoot(payload.root)
+      return createEntry(root, {
+        parent: requireString(payload, 'parent'),
+        name: requireString(payload, 'name'),
+        isDir: optionalBoolean(payload, 'isDir', false),
+        content: typeof payload.content === 'string' ? payload.content : '',
+      })
+    },
+
+    'fs.rename': async (payload) => {
+      const root = await canonicalRoot(payload.root)
+      return renameEntry(root, {
+        path: requireString(payload, 'path'),
+        name: requireString(payload, 'name'),
+      })
+    },
+
+    'fs.duplicate': async (payload) => {
+      const root = await canonicalRoot(payload.root)
+      return duplicateEntry(root, { path: requireString(payload, 'path') })
+    },
+
+    'fs.move': async (payload) => {
+      const root = await canonicalRoot(payload.root)
+      const conflict = ['error', 'skip', 'rename', 'overwrite'].includes(payload.conflict)
+        ? payload.conflict
+        : 'error'
+      return moveEntries(root, {
+        paths: stringArray(payload, 'paths'),
+        target: requireString(payload, 'target'),
+        copy: optionalBoolean(payload, 'copy', false),
+        conflict,
+      })
+    },
+
+    'fs.delete': async (payload) => {
+      const root = await canonicalRoot(payload.root)
+      const current = await settings.get()
+      return deleteEntries(root, {
+        paths: stringArray(payload, 'paths'),
+        trash: optionalBoolean(payload, 'trash', current.delete?.useRecycleBin !== false),
+      })
+    },
+
+    'git.ignore': async (payload) => {
+      const root = await canonicalRoot(payload.root)
+      const repoRoot = typeof payload.repoRoot === 'string' ? payload.repoRoot : undefined
+      return appendIgnore(root, { path: requireString(payload, 'path'), repoRoot })
+    },
+
     // ── git ──────────────────────────────────────────────────────────────
     'git.status': async (payload) => {
       const env = await repoEnv(payload)
-      const snapshot = await gitStatus(env)
+      // Always list ignored entries: the client hides them by default and can
+      // toggle them without a second status round-trip.
+      const snapshot = await gitStatus(env, { ignored: true })
       return {
         ...snapshot,
         root: env.workspaceRoot,
@@ -178,6 +234,20 @@ export function apply(ctx) {
         return { untracked: true, ...file }
       }
       return { untracked: false, diff: await gitDiff(env, toRepoPath(env, path), staged) }
+    },
+
+    'git.diff-refs': async (payload) => {
+      const env = await repoEnv(payload)
+      const a = requireString(payload, 'a')
+      const b = requireString(payload, 'b')
+      return { diff: await gitDiffRefs(env, a, b) }
+    },
+
+    'git.commit-file-diff': async (payload) => {
+      const env = await repoEnv(payload)
+      const hash = requireString(payload, 'hash')
+      const path = toRepoPath(env, requireString(payload, 'path'))
+      return { diff: await commitFileDiff(env, hash, path) }
     },
 
     'git.stage': async (payload) => {
@@ -210,6 +280,20 @@ export function apply(ctx) {
       return { ok: true }
     },
 
+    'git.diff-rev': async (payload) => {
+      const env = await repoEnv(payload)
+      const path = toRepoPath(env, requireString(payload, 'path'))
+      const rev = requireString(payload, 'rev')
+      return { diff: await gitDiffRev(env, path, rev) }
+    },
+
+    'run.command': async (payload) => {
+      const root = await canonicalRoot(payload.root)
+      const command = requireString(payload, 'command')
+      const timeoutMs = optionalInteger(payload, 'timeoutMs', 600_000)
+      return runCommand(root, command, { timeoutMs })
+    },
+
     'git.commit': async (payload) => {
       const env = await repoEnv(payload)
       return gitCommit(env, requireString(payload, 'message'), optionalBoolean(payload, 'amend', false))
@@ -222,12 +306,14 @@ export function apply(ctx) {
 
     'git.log': async (payload) => {
       const env = await repoEnv(payload)
+      const path = typeof payload.path === 'string' && payload.path !== '' ? toRepoPath(env, payload.path) : undefined
       const commits = await gitLog(env, {
         skip: optionalInteger(payload, 'skip', 0),
         count: optionalInteger(payload, 'count', 200),
         branch: typeof payload.branch === 'string' ? payload.branch : undefined,
         author: typeof payload.author === 'string' ? payload.author : undefined,
         query: typeof payload.query === 'string' ? payload.query : undefined,
+        path,
       })
       return { commits, hasMore: commits.length > 0 }
     },

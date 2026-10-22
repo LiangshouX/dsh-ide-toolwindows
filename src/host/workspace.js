@@ -342,7 +342,13 @@ export function revealInExplorer(absolute) {
     args = [dirname(absolute)]
   }
   try {
-    const child = spawn(command, args, { detached: true, stdio: 'ignore', windowsHide: true })
+    // `windowsHide` must stay off on Windows: with CREATE_NO_WINDOW,
+    // explorer.exe accepts `/select` and silently opens nothing.
+    const child = spawn(command, args, {
+      detached: true,
+      stdio: 'ignore',
+      windowsHide: platform !== 'win32',
+    })
     child.unref()
     return true
   } catch {
@@ -393,9 +399,58 @@ export function shellArgv(id, path) {
   return [path, '-l']
 }
 
+/**
+ * Run one user-configured command in the project root (pre-commit tasks:
+ * tests / cleanup / import optimisation). The command string is trusted
+ * configuration edited in Settings, and its combined output is returned for
+ * the inline error panel. Never used for git itself.
+ * @param {string} root absolute working directory
+ * @param {string} command shell command line
+ * @param {{ timeoutMs?: number }} [options]
+ * @returns {Promise<{ code: number, output: string }>}
+ */
+export function runCommand(root, command, options = {}) {
+  const timeoutMs = options.timeoutMs ?? 600_000
+  return new Promise((resolve) => {
+    let output = ''
+    let settled = false
+    const finish = (code) => {
+      if (settled) return
+      settled = true
+      resolve({ code, output: output.slice(0, 200_000) })
+    }
+    let child
+    try {
+      child = spawn(command, {
+        cwd: root,
+        shell: true,
+        windowsHide: true,
+        env: { ...process.env, FORCE_COLOR: '0', NO_COLOR: '1' },
+      })
+    } catch (error) {
+      resolve({ code: -1, output: error instanceof Error ? error.message : String(error) })
+      return
+    }
+    const timer = setTimeout(() => {
+      try { child.kill() } catch { /* already gone */ }
+      finish(124)
+    }, timeoutMs)
+    child.stdout?.on('data', (chunk) => { output += chunk })
+    child.stderr?.on('data', (chunk) => { output += chunk })
+    child.on('error', (error) => {
+      clearTimeout(timer)
+      output += `\n${error instanceof Error ? error.message : String(error)}`
+      finish(-1)
+    })
+    child.on('close', (code) => {
+      clearTimeout(timer)
+      finish(code ?? -1)
+    })
+  })
+}
+
 /** Environment for an interactive terminal (UTF-8 everywhere). */
-export function terminalEnv() {
-  const env = {}
+export function terminalEnv() {  const env = {}
   for (const [key, value] of Object.entries(process.env)) {
     if (typeof value === 'string') env[key] = value
   }

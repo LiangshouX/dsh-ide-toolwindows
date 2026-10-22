@@ -150,6 +150,15 @@ export function apply(ctx) {
         runShortcut(store, action)
         return
       }
+      if (event.key === 'F11') {
+        event.preventDefault()
+        store.toggleFullscreen()
+        return
+      }
+      if (matchesShortcut(shortcuts.hideAll ?? 'Ctrl+Shift+F12', event)) {
+        event.preventDefault()
+        store.toggleHideAll()
+      }
     }
     document.addEventListener('keydown', onKeyDown, true)
     return () => document.removeEventListener('keydown', onKeyDown, true)

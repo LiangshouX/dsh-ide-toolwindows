@@ -108,6 +108,7 @@ function FilePreview({ store, state, tab }) {
       resetToken: tab.resetToken ?? 0,
       onChange: value => store.updateDraft(tab.id, value),
       onSave: () => { void store.saveTab(tab.id) },
+      onCursor: position => store.setCursor(position),
     })
   }
   if (isMarkdownPath(tab.path) && (tab.view ?? 'preview') === 'preview') {
@@ -200,18 +201,62 @@ function TabBar({ store, state }) {
 
 function EditorToolbar({ store, state, tab }) {
   const t = store.t
+  const [diffMenu, setDiffMenu] = useState(null)
   if (tab.kind === 'diff') {
-    const staged = tab.staged === true ? t('commit.staged') : tab.untracked === true ? t('commit.untracked') : t('commit.unstaged')
-    return React.createElement('div', { className: 'itw-editor-toolbar' },
-      React.createElement('div', { className: 'itw-breadcrumb' },
-        React.createElement('span', null, t('commit.title')),
-        React.createElement('span', { className: 'itw-sep' }, '›'),
-        React.createElement('b', null, staged),
-        React.createElement('span', { className: 'itw-sep' }, '›'),
-        React.createElement('b', null, baseName(tab.rel)),
+    const variant = tab.compare !== undefined
+      ? `${tab.compare.a.slice(0, 7)} \u2194 ${tab.compare.b.slice(0, 7)}`
+      : tab.against === 'head'
+        ? t('commit.lastRevision')
+        : tab.against === 'latest'
+          ? t('commit.latest')
+          : tab.staged === true
+            ? t('commit.staged')
+            : tab.untracked === true
+              ? t('commit.untracked')
+              : t('commit.workingTree')
+    const readOnly = tab.readOnly === true
+    const anchor = (event) => {
+      const rect = event.currentTarget.getBoundingClientRect()
+      setDiffMenu({ x: rect.left - 120, y: rect.bottom + 4 })
+    }
+    return React.createElement(React.Fragment, null,
+      React.createElement('div', { className: 'itw-editor-toolbar' },
+        React.createElement('div', { className: 'itw-breadcrumb' },
+          React.createElement('span', null, t('commit.title')),
+          React.createElement('span', { className: 'itw-sep' }, '›'),
+          React.createElement('b', null, variant),
+          React.createElement('span', { className: 'itw-sep' }, '›'),
+          React.createElement('b', null, baseName(tab.rel)),
+        ),
+        React.createElement('div', { className: 'itw-spacer' }),
+        readOnly
+          ? null
+          : React.createElement(React.Fragment, null,
+              React.createElement('button', {
+                type: 'button', className: 'itw-textbtn itw-small',
+                onClick: anchor,
+              }, t('commit.showDiffWith'), ' ▾'),
+              React.createElement('button', {
+                type: 'button', className: 'itw-textbtn itw-small', title: t('commit.jumpToSource'),
+                onClick: () => store.jumpToSource(tab.rel),
+              }, t('commit.jumpToSource')),
+              React.createElement('button', {
+                type: 'button', className: 'itw-textbtn itw-small itw-danger',
+                onClick: () => store.revertChange({ path: tab.rel, untracked: tab.untracked === true }),
+              }, t('commit.revert')),
+            ),
       ),
-      React.createElement('div', { className: 'itw-spacer' }),
-      React.createElement('span', null, tab.preview ? t('common.preview') : ''),
+      diffMenu !== null && !readOnly
+        ? React.createElement(ContextMenu, {
+            x: diffMenu.x, y: diffMenu.y,
+            items: [
+              { key: 'worktree', text: t('commit.workingTree'), checked: tab.against === null && tab.staged !== true && tab.untracked !== true, action: () => store.openDiff({ path: tab.rel }) },
+              { key: 'head', text: t('commit.lastRevision'), checked: tab.against === 'head', action: () => store.openDiff({ path: tab.rel, against: 'head' }) },
+              { key: 'latest', text: t('commit.latest'), checked: tab.against === 'latest', action: () => store.openDiff({ path: tab.rel, against: 'latest' }) },
+            ],
+            onClose: () => setDiffMenu(null),
+          })
+        : null,
     )
   }
   if (tab.kind === 'commit') {

@@ -5,16 +5,32 @@
 model, around an editor area this plugin owns (so Preview / Pinned tabs behave
 exactly like an IDE).
 
+## What's new in 0.3 (JetBrains pass)
+
+- **Project**: click selects, double click opens/expands; multi-select; inline rename (F2),
+  delete (Delete), duplicate (F5), move (F6), cut/copy/paste, drag & drop (Ctrl = copy),
+  New File/Directory, Favorites, JetBrains status colors with recursive folder tinting,
+  ignored/excluded files, glyph-only brand file icons.
+- **Commit**: two groups (`Changes` / `Unversioned`), checkbox = include in commit without
+  moving rows, changelists, group by directory, Change View with *Show Diff with*, and
+  optional pre-commit commands (tests / cleanup / import optimization).
+- **Git**: details in a bottom pane (single click) while the editor only shows the diff;
+  file list per commit; path-scoped history from the Project tree; two-commit Compare
+  (Ctrl+click); collapsed unchanged blocks; word-level highlighting; read-only commit diffs.
+- **Layout/status bar**: click to show/hide tool windows (Project and Commit are mutually
+  exclusive), Hide All, full screen, cursor position and encoding/EOL in the status bar.
+- Specs: [V2 PRD](docs/PRD-v2.md) · [V1 PRD (archive)](docs/PRD-v1.md).
+
 ## What you get
 
 | Tool window | Shortcut | Behavior |
 |---|---|---|
-| **Project** | `Alt+1` | Lazy file tree with Git status coloring (blue modified, green added/untracked, red conflict) and **per-type icons** (Java coffee cup, JS/TS, Python, Markdown, JSON, SQL, shell, images…). The project-name dropdown selects the **IDE project root**: the workspace root or any **first-level folder**, with a Git badge for folders that own a repository. Single click opens a **preview tab** (italic, reused by every further click); double click **pins** it. Right-click: copy relative/absolute name, reveal in Explorer, refresh. |
+| **Project** | `Alt+1` | Lazy file tree with JetBrains status colors (red unversioned, green added, blue modified, recursive folder tinting) and **glyph-only brand icons**. The project-name dropdown selects the **IDE project root**. Single click selects, double click opens/expands; Ctrl/Shift multi-select; F2 rename, Delete, F5 duplicate, F6 move, Ctrl+X/C/V, drag & drop (Ctrl = copy), New File/Directory, Favorites. Right-click menus show shortcut hints. |
 | **Editor** | — | Files open **read-only by default**. Text tabs toggle between read-only and **edit** (CodeMirror 6 with syntax highlighting); `Ctrl+S` saves, restore discards, a dot marks unsaved changes, and closing a dirty tab asks first. |
 | **Markdown** | — | Markdown opens **rendered with the harness's own `MarkdownText`** (same typography/tables/task lists/code cards as DSH chat), with a **document outline** button for heading navigation. A Preview / Source switch flips to the raw document. |
-| **Commit** | `Alt+0` | `Staged Changes` / `Unstaged Changes` / `Unversioned Files` with per-file stage / unstage / discard, unified or side-by-side diff, **line-level and hunk-level staging**, recent-message dropdown, `Amend`, `Commit` and `Commit and Push`. The sidebar stripe badge is the unstaged file count. |
+| **Commit** | `Alt+0` | `Changes` / `Unversioned Files`; the checkbox means "include in this commit" and never moves a row. Changelists, group by directory, Change View (Working Tree / Last Revision / Latest) with Jump to Source and Revert, line/hunk staging, optional pre-commit commands, recent messages, `Amend`, `Commit` / `Commit and Push`. |
 | **Terminal** | `Alt+F12` | Real PTY sessions over a WebSocket, rendered with xterm.js. New / rename / close (with a running-task confirmation), shell profiles, UTF-8 environment, copy-on-select, `Ctrl+Shift+V` paste. |
-| **Git** | `Alt+9` | Lazily paged commit table (200 rows per page) with a lane **commit graph**, branch / author / message filters, full commit detail and diff, copy SHA, checkout (detached with confirmation), revert commit. |
+| **Git** | `Alt+9` | Lazily paged commit table with a lane **commit graph**; branch / author / message / path filters; details in the bottom pane (metadata, message, changed files — click a file for its diff) while the editor shows only the full diff; two-commit Compare via Ctrl+click; collapsed unchanged blocks and word-level highlighting; copy SHA, checkout, revert, per-commit file diffs. |
 | **Commit message** | `Ctrl+K` | Opens Commit and focuses the message box (IDEA parity). |
 | **Push** | `Ctrl+Shift+K` | Pushes the current branch from inside the workbench. |
 

@@ -99,14 +99,17 @@ const THEME = EditorView.theme({
 /**
  * One editable buffer.
  * @param {{ value: string, path: string, fontSize?: number, resetToken?: number,
- *   onChange: (text: string) => void, onSave: () => void }} props
+ *   onChange: (text: string) => void, onSave: () => void,
+ *   onCursor?: (position: { line: number, col: number }) => void }} props
  */
-export function CodeEditor({ value, path, fontSize = 13, resetToken = 0, onChange, onSave }) {
+export function CodeEditor({ value, path, fontSize = 13, resetToken = 0, onChange, onSave, onCursor }) {
   const hostRef = useRef(null)
   const onChangeRef = useRef(onChange)
   const onSaveRef = useRef(onSave)
+  const onCursorRef = useRef(onCursor)
   onChangeRef.current = onChange
   onSaveRef.current = onSave
+  onCursorRef.current = onCursor
 
   useEffect(() => {
     const host = hostRef.current
@@ -139,6 +142,11 @@ export function CodeEditor({ value, path, fontSize = 13, resetToken = 0, onChang
       ...(Array.isArray(language) ? language : [language]),
       EditorView.updateListener.of((update) => {
         if (update.docChanged) onChangeRef.current(update.state.doc.toString())
+        if (update.selectionSet || update.docChanged) {
+          const head = update.state.selection.main.head
+          const line = update.state.doc.lineAt(head)
+          onCursorRef.current?.({ line: line.number, col: head - line.from + 1 })
+        }
       }),
     ]
     const view = new EditorView({

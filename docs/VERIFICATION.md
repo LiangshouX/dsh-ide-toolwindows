@@ -86,3 +86,10 @@ cd dsh-ide-toolwindows && npm test
 - 本插件测试用的临时仓库、演示文件、截图与 `.render-tmp` 均已清理；`settings.json` 的 `lastRoot`
   为 `D:\Code\Node\DSH-IDE-TOOLWINDOWS-ROOT`，`projectRoots` 保留本次验证选中的
   `dsh-ide-toolwindows` 子目录，`workspaceState` 清空。
+
+## V2（0.3.0）验收记录（2026-10-22）
+
+- 自动化：65 项测试通过（新增 commit-model / fileops / git-colors / run-command）。
+- 实机：Project 选中模型/双击打开/多选/文件操作/拖拽/右键菜单（快捷键列）、IDEA 着色与目录递归上色、忽略文件、品牌图标；Commit 两组勾选与 index 一致、变更列表、按目录分组、Change View、提交前任务；Git 详情底部面板、文件列表与单文件提交 diff、路径历史、双提交 Compare、未变更块折叠、单词级高亮；布局点击开合（Project/Commit 互斥）、收起全部、全屏、状态栏行列与编码。
+- 移入 V3：Local History、分支 Compare、Cherry-pick、Create Branch/Tag、Annotate、Floating/Split。
+

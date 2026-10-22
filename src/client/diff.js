@@ -200,6 +200,64 @@ export function sideBySideRows(file) {
   return rows
 }
 
+/**
+ * Token-level diff between one deleted and one added line (word-level
+ * highlighting). Tokens are words, whitespace runs and single punctuation
+ * marks; very long lines fall back to whole-line changes.
+ * @param {string} leftText
+ * @param {string} rightText
+ * @returns {{ left: Array<{text: string, changed: boolean}>,
+ *   right: Array<{text: string, changed: boolean}> }}
+ */
+export function wordSegments(leftText, rightText) {
+  const tokenize = text => String(text ?? '').match(/\s+|[A-Za-z0-9_]+|[^\sA-Za-z0-9_]/gu) ?? []
+  const a = tokenize(leftText)
+  const b = tokenize(rightText)
+  if (a.length === 0 && b.length === 0) return { left: [], right: [] }
+  if (a.length > 200 || b.length > 200) {
+    return {
+      left: a.length === 0 ? [] : [{ text: leftText, changed: true }],
+      right: b.length === 0 ? [] : [{ text: rightText, changed: true }],
+    }
+  }
+  const n = a.length
+  const m = b.length
+  const table = Array.from({ length: n + 1 }, () => new Uint16Array(m + 1))
+  for (let i = n - 1; i >= 0; i -= 1) {
+    for (let j = m - 1; j >= 0; j -= 1) {
+      table[i][j] = a[i] === b[j]
+        ? table[i + 1][j + 1] + 1
+        : Math.max(table[i + 1][j], table[i][j + 1])
+    }
+  }
+  const left = []
+  const right = []
+  const push = (list, token, changed) => {
+    const last = list[list.length - 1]
+    if (last !== undefined && last.changed === changed) last.text += token
+    else list.push({ text: token, changed })
+  }
+  let i = 0
+  let j = 0
+  while (i < n && j < m) {
+    if (a[i] === b[j]) {
+      push(left, a[i], false)
+      push(right, b[j], false)
+      i += 1
+      j += 1
+    } else if (table[i + 1][j] >= table[i][j + 1]) {
+      push(left, a[i], true)
+      i += 1
+    } else {
+      push(right, b[j], true)
+      j += 1
+    }
+  }
+  while (i < n) { push(left, a[i], true); i += 1 }
+  while (j < m) { push(right, b[j], true); j += 1 }
+  return { left, right }
+}
+
 /** Every change (add or delete) index of one hunk. */
 export function hunkChangeIndexes(file, hunkIndex) {
   const hunk = file?.hunks[hunkIndex]

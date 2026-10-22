@@ -169,22 +169,22 @@ const FILE_TINTS = {
   go: '#39b9c6',
   rust: '#e0956a',
   json: '#d7c15a',
-  markdown: '#6aa8e8',
+  markdown: '#4f9cf9',
   html: '#e07a52',
   css: '#c678dd',
   sql: '#e0a458',
   shell: '#7fbf6a',
-  config: '#b9a54a',
+  config: '#b07ae8',
   image: '#7cae6f',
-  svg: '#d7a24a',
+  svg: '#b07ae8',
   pdf: '#e2686f',
   archive: '#b58b6a',
-  lock: '#d7a24a',
-  git: '#e2686f',
+  lock: '#57a86b',
+  git: '#d97a9a',
   docker: '#4f9cf9',
   env: '#b58b6a',
   build: '#8fbc8f',
-  c: '#7f9bd6',
+  c: '#5c9fd6',
   cpp: '#8b7bff',
   csharp: '#7cae6f',
   ruby: '#dd5d5d',
@@ -356,18 +356,12 @@ export function FileTypeIcon(props = {}) {
   if (props.isDir === true) return React.createElement(IconFolder, { open: props.open === true, size: props.size ?? 15 })
   const kind = fileTypeOf(name)
   const tint = FILE_TINTS[kind] ?? FILE_TINTS.file
+  const size = props.size ?? 15
+  // Glyph-only mark (no page frame), scaled to fill the row height — the same
+  // visual weight as the DSH sidebar's file badges.
   return svg([
-    React.createElement('path', {
-      key: 'page',
-      d: 'M3.6 1.8h5.1l3.7 3.7v8.7H3.6z',
-      fill: 'none',
-      stroke: tint,
-      strokeWidth: 1.3,
-      strokeLinejoin: 'round',
-    }),
-    React.createElement('path', { key: 'fold', d: 'M8.7 1.8v3.7h3.7', fill: 'none', stroke: tint, strokeWidth: 1.3 }),
-    ...typeGlyph(kind, tint),
-  ], { width: props.size ?? 15, height: props.size ?? 15 })
+    React.createElement('g', { key: 'glyph', transform: 'translate(-4.96 -9.2) scale(1.6)' }, ...typeGlyph(kind, tint)),
+  ], { width: size, height: size })
 }
 
 export function IconLock(props = {}) {

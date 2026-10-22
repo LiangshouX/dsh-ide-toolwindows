@@ -8,6 +8,9 @@
  */
 import { call } from './api.js'
 import { isMarkdownFile } from './file-types.js'
+import {
+  DEFAULT_CHANGELIST, assignChangelist, changelistOf, isEntryChecked, splitCommitGroups, checkedPathsOf,
+} from './commit-model.js'
 import { baseName, debounce, dirName, formatGitDate } from './util.js'
 
 let sequence = 0
@@ -40,6 +43,11 @@ function joinPath(root, rel) {
   return `${root.replace(/[\\/]$/, '')}${separator}${String(rel).split('/').join(separator)}`
 }
 
+/** Human-readable message of any thrown value. */
+function errorMessage(error) {
+  return error instanceof Error ? error.message : String(error)
+}
+
 /** The initial state, also the shape persisted UI is merged into. */
 function initialState() {
   return {
@@ -64,6 +72,9 @@ function initialState() {
     dirs: new Map(),
     expanded: new Set(),
     selectedPath: '',
+    selectedPaths: new Set(),
+    anchorPath: '',
+    clipboard: null,
     filter: '',
     tabs: [],
     activeId: null,
@@ -75,6 +86,15 @@ function initialState() {
       committing: false,
       error: null,
       mode: 'side',
+      /** Explicitly checked / unchecked paths (checkbox = include in commit). */
+      checked: new Set(),
+      unchecked: new Set(),
+      /** Paths that stay in the Unversioned group after `git add`. */
+      buckets: {},
+      /** Selected row for the Change View double-click. */
+      selectedPath: '',
+      /** Pre-commit tasks the user enabled (only shown when configured). */
+      tasks: { tests: false, optimize: false, cleanup: false },
     },
     git: {
       commits: [],
@@ -82,9 +102,11 @@ function initialState() {
       hasMore: true,
       loading: false,
       error: null,
-      filters: { branch: '', author: '', query: '' },
+      filters: { branch: '', author: '', query: '', path: '' },
       branches: [],
       selectedHash: null,
+      /** Commits picked with Ctrl+click for Compare (max 2). */
+      compare: [],
       detail: null,
       detailLoading: false,
     },
@@ -97,6 +119,8 @@ function initialState() {
     rootPicker: false,
     confirm: null,
     toast: null,
+    /** Cursor position of the active text editor ({ line, col }), for the status bar. */
+    cursor: null,
     localeTick: 0,
   }
 }
@@ -598,7 +622,8 @@ export class WorkbenchStore {
   }
 
   setSelectedPath(path) {
-    this.set({ selectedPath: path })
+    const selection = typeof path === 'string' && path !== '' ? new Set([path]) : new Set()
+    this.set({ selectedPath: path, selectedPaths: selection, anchorPath: path })
     const expanded = new Set(this.state.expanded)
     let parent = parentPath(path)
     let guard = 0
@@ -617,6 +642,272 @@ export class WorkbenchStore {
 
   setFilter(filter) {
     this.set({ filter })
+  }
+
+  // ── selection (JetBrains: select first, act second) ──────────────────
+  /** Replace the selection; `anchor` is the pivot for Shift range selection. */
+  setSelection(paths, anchor) {
+    const list = (Array.isArray(paths) ? paths : []).filter(path => typeof path === 'string' && path !== '')
+    const focus = typeof anchor === 'string' && anchor !== '' ? anchor : (list[list.length - 1] ?? '')
+    this.set({ selectedPaths: new Set(list), selectedPath: focus, anchorPath: focus })
+  }
+
+  /** Ctrl+click toggle. */
+  toggleSelection(path) {
+    const next = new Set(this.state.selectedPaths)
+    if (next.has(path)) next.delete(path)
+    else next.add(path)
+    const focus = next.has(path) ? path : ([...next][next.size - 1] ?? '')
+    this.set({ selectedPaths: next, selectedPath: focus, anchorPath: path })
+  }
+
+  /** Shift+click range over the currently visible row order. */
+  selectRange(path, orderedPaths) {
+    const anchor = this.state.anchorPath === '' ? path : this.state.anchorPath
+    const from = orderedPaths.indexOf(anchor)
+    const to = orderedPaths.indexOf(path)
+    if (from < 0 || to < 0) { this.setSelection([path], path); return }
+    const [start, end] = from <= to ? [from, to] : [to, from]
+    this.set({ selectedPaths: new Set(orderedPaths.slice(start, end + 1)), selectedPath: path, anchorPath: anchor })
+  }
+
+  clearSelection() {
+    this.set({ selectedPaths: new Set(), selectedPath: '', anchorPath: '' })
+  }
+
+  /** Absolute path for one project-relative path. */
+  #absoluteOf(rel) {
+    return joinPath(this.state.root, rel)
+  }
+
+  /** Project-relative path for one absolute path. */
+  relOf(path) {
+    const root = String(this.state.root ?? '').replace(/[\\/]+$/, '')
+    const wide = String(path ?? '').replace(/\\/g, '/')
+    const base = root.replace(/\\/g, '/')
+    if (base === '' || wide === base) return ''
+    return wide.startsWith(`${base}/`) ? wide.slice(base.length + 1) : wide
+  }
+
+  // ── file operations (JetBrains tree) ──────────────────────────────────
+  setFileClipboard(paths, cut) {
+    const list = (Array.isArray(paths) ? paths : []).filter(path => typeof path === 'string' && path !== '')
+    this.set({ clipboard: list.length === 0 ? null : { paths: list, cut: cut === true } })
+    if (list.length > 0) this.toast('success', this.t(cut === true ? 'project.cut' : 'project.copy'), `${list.length}`)
+  }
+
+  async pasteEntries(target) {
+    const clipboard = this.state.clipboard
+    if (clipboard === null || clipboard === undefined) return
+    const moved = clipboard.cut === true
+    await this.moveEntries(clipboard.paths, target, !moved)
+    if (moved) this.set({ clipboard: null })
+  }
+
+  async createEntry(parent, options = {}) {
+    const name = String(options.name ?? '').trim()
+    if (name === '') return
+    try {
+      const result = await call('fs.create', {
+        root: this.state.root,
+        parent,
+        name,
+        isDir: options.isDir === true,
+        content: typeof options.content === 'string' ? options.content : '',
+      })
+      await this.loadDir(parent, { force: true })
+      await this.refreshStatus()
+      const absolute = this.#absoluteOf(result.path)
+      this.setSelection([absolute], absolute)
+      if (result.isDir !== true) this.openFile(absolute, { rel: result.path, preview: false })
+      this.persist()
+    } catch (error) {
+      this.toast('error', this.t('common.error'), errorMessage(error))
+    }
+  }
+
+  async renameEntry(path, name) {
+    const next = String(name ?? '').trim()
+    if (next === '' || next === baseName(path)) return
+    try {
+      const result = await call('fs.rename', { root: this.state.root, path, name: next })
+      this.#applyPathMapping([[path, this.#absoluteOf(result.target)]])
+      await this.loadDir(parentPath(path), { force: true })
+      await this.refreshStatus()
+      this.persist()
+    } catch (error) {
+      this.toast('error', this.t('common.error'), errorMessage(error))
+    }
+  }
+
+  async duplicateEntries(paths) {
+    const list = Array.isArray(paths) ? paths : []
+    if (list.length === 0) return
+    let last
+    for (const path of list) {
+      try {
+        last = await call('fs.duplicate', { root: this.state.root, path })
+        await this.loadDir(parentPath(path), { force: true })
+      } catch (error) {
+        this.toast('error', this.t('common.error'), errorMessage(error))
+      }
+    }
+    if (last !== undefined) {
+      const absolute = this.#absoluteOf(last.target)
+      this.setSelectedPath(absolute)
+    }
+    await this.refreshStatus()
+    this.persist()
+  }
+
+  /**
+   * Move or copy entries into a directory. Name conflicts auto-rename
+   * (`name-copy`), matching JetBrains' duplicate behaviour.
+   */
+  async moveEntries(paths, target, copy = false) {
+    const list = Array.isArray(paths) ? paths.filter(path => typeof path === 'string') : []
+    if (list.length === 0 || typeof target !== 'string' || target === '') return
+    try {
+      const result = await call('fs.move', {
+        root: this.state.root, paths: list, target, copy, conflict: 'rename',
+      })
+      const done = result.results.filter(item => item.ok === true)
+      const failed = result.results.filter(item => item.ok !== true && item.skipped !== true)
+      if (done.length > 0) {
+        const mapping = done.map(item => [this.#absoluteOf(item.path), this.#absoluteOf(item.target)])
+        this.#applyPathMapping(mapping)
+        const dirs = new Set([...list.map(parentPath), target, ...done.map(item => parentPath(this.#absoluteOf(item.target)))])
+        for (const dir of dirs) {
+          try { await this.loadDir(dir, { force: true }) } catch { /* the folder may be gone */ }
+        }
+        const first = this.#absoluteOf(done[0].target)
+        this.setSelectedPath(first)
+        await this.refreshStatus()
+      }
+      if (failed.length > 0) {
+        this.toast('error', this.t('common.error'), failed.map(item => `${item.path}: ${item.message ?? item.code}`).join('\n'))
+      } else {
+        this.toast('success', this.t('common.success'), `${done.length}`)
+      }
+      this.persist()
+    } catch (error) {
+      this.toast('error', this.t('common.error'), errorMessage(error))
+    }
+  }
+
+  /** Confirmation then deletion (recycle bin when enabled). */
+  requestDelete(paths) {
+    const list = [...new Set((Array.isArray(paths) ? paths : []).filter(path => typeof path === 'string' && path !== ''))]
+    if (list.length === 0) return
+    const dirty = this.state.tabs.filter(tab => tab.kind === 'file' && tab.dirty === true
+      && list.some(path => tab.path === path || tab.path.startsWith(`${path}\\`) || tab.path.startsWith(`${path}/`)))
+    const names = list.map(path => baseName(path)).slice(0, 8).join(', ')
+    const extra = dirty.length > 0 ? `\n${this.t('project.deleteDirty')}` : ''
+    this.askConfirm(
+      this.t('project.deleteTitle'),
+      `${list.length === 1 ? this.t('project.deleteOne') : `${list.length} ${this.t('project.deleteMany')}`}\n${names}${extra}`,
+      this.t('project.delete'),
+      () => { void this.deleteEntries(list) },
+    )
+  }
+
+  async deleteEntries(paths) {
+    const list = Array.isArray(paths) ? paths : []
+    if (list.length === 0) return
+    try {
+      const result = await call('fs.delete', { root: this.state.root, paths: list })
+      const done = result.results.filter(item => item.ok === true)
+      const failed = result.results.filter(item => item.ok !== true)
+      if (done.length > 0) {
+        const removed = done.map(item => this.#absoluteOf(item.path))
+        this.#closeTabsUnder(removed)
+        const dirs = new Set(list.map(parentPath))
+        for (const dir of dirs) {
+          try { await this.loadDir(dir, { force: true }) } catch { /* gone */ }
+        }
+        this.clearSelection()
+        await this.refreshStatus()
+      }
+      if (failed.length > 0) this.toast('error', this.t('common.error'), failed.map(item => item.message ?? item.code).join('\n'))
+      else this.toast('success', this.t('common.success'), `${done.length}`)
+      this.persist()
+    } catch (error) {
+      this.toast('error', this.t('common.error'), errorMessage(error))
+    }
+  }
+
+  /** Star / unstar absolute paths in Favorites. */
+  async toggleFavorite(paths) {
+    const list = (Array.isArray(paths) ? paths : []).filter(path => typeof path === 'string' && path !== '')
+    if (list.length === 0) return
+    const favorites = Array.isArray(this.state.settings?.favorites) ? [...this.state.settings.favorites] : []
+    for (const path of list) {
+      const index = favorites.indexOf(path)
+      if (index >= 0) favorites.splice(index, 1)
+      else favorites.push(path)
+    }
+    await this.updateSettings({ favorites })
+  }
+
+  /** Synchronize: re-read the tree and the git snapshot, keep expansion. */
+  async sync() {
+    await this.reloadTree()
+    await this.refreshStatus({ initial: true })
+    this.toast('success', this.t('project.synchronized'), '')
+  }
+
+  /** Expand every folder (bounded so a huge repo cannot lock the UI). */
+  async expandAll(limit = 400) {
+    const expanded = new Set(this.state.expanded)
+    const queue = [this.state.root]
+    let visited = 0
+    while (queue.length > 0 && visited < limit) {
+      const dir = queue.shift()
+      visited += 1
+      expanded.add(dir)
+      if (this.state.dirs.get(dir)?.entries === undefined) await this.loadDir(dir)
+      const entries = this.state.dirs.get(dir)?.entries ?? []
+      for (const entry of entries) if (entry.isDir) queue.push(entry.path)
+    }
+    this.set({ expanded })
+    this.persist()
+  }
+
+  /** Re-key open file tabs (and the active id) after a rename/move. */
+  #applyPathMapping(pairs) {
+    if (!Array.isArray(pairs) || pairs.length === 0) return
+    const mapPath = (path) => {
+      for (const [from, to] of pairs) {
+        if (path === from) return to
+        if (path.startsWith(`${from}\\`) || path.startsWith(`${from}/`)) return to + path.slice(from.length)
+      }
+      return path
+    }
+    const wasActive = this.state.activeId
+    let nextActive = wasActive
+    const tabs = this.state.tabs.map((tab) => {
+      if (tab.kind !== 'file' || typeof tab.path !== 'string') return tab
+      const next = mapPath(tab.path)
+      if (next === tab.path) return tab
+      if (wasActive === tab.id) nextActive = `file:${next}`
+      return { ...tab, id: `file:${next}`, path: next, name: baseName(next), rel: this.relOf(next) }
+    })
+    const selectedPath = mapPath(this.state.selectedPath)
+    this.set({
+      tabs,
+      activeId: nextActive,
+      selectedPath,
+      selectedPaths: new Set(selectedPath === '' ? [] : [selectedPath]),
+      anchorPath: selectedPath,
+    })
+  }
+
+  /** Close file tabs whose path is gone. */
+  #closeTabsUnder(roots) {
+    const tabs = this.state.tabs.filter(tab => tab.kind !== 'file'
+      || !roots.some(root => tab.path === root || tab.path.startsWith(`${root}\\`) || tab.path.startsWith(`${root}/`)))
+    const activeId = tabs.some(tab => tab.id === this.state.activeId) ? this.state.activeId : (tabs[tabs.length - 1]?.id ?? null)
+    this.set({ tabs, activeId })
   }
 
   /** Reveal one path in the native file manager. */
@@ -643,7 +934,7 @@ export class WorkbenchStore {
    */
   openFile(path, options = {}) {
     if (typeof path !== 'string' || path === '') return
-    const rel = options.rel ?? path
+    const rel = options.rel ?? this.relOf(path)
     const existing = this.state.tabs.find(tab => tab.kind === 'file' && tab.path === path)
     if (existing !== undefined) {
       const tabs = this.state.tabs.map(tab => (tab === existing ? { ...tab, preview: tab.preview && options.preview === true } : tab))
@@ -723,12 +1014,18 @@ export class WorkbenchStore {
           ...(keepDraft ? {} : { draft: text, dirty: false }),
         })
       } else if (tab.kind === 'diff') {
-        const result = await call('git.diff', {
-          root: this.state.root,
-          path: tab.rel,
-          staged: tab.staged === true,
-          untracked: tab.untracked === true,
-        })
+        const result = tab.compare !== undefined
+          ? await call('git.diff-refs', { root: this.state.root, a: tab.compare.a, b: tab.compare.b })
+          : tab.commitHash !== undefined
+            ? await call('git.commit-file-diff', { root: this.state.root, hash: tab.commitHash, path: tab.rel })
+            : (tab.against === 'head' || tab.against === 'latest')
+              ? await call('git.diff-rev', { root: this.state.root, path: tab.rel, rev: tab.against })
+              : await call('git.diff', {
+                  root: this.state.root,
+                  path: tab.rel,
+                  staged: tab.staged === true,
+                  untracked: tab.untracked === true,
+                })
         this.#updateTab(id, { loading: false, payload: result })
       } else if (tab.kind === 'commit') {
         const detail = await call('git.detail', { root: this.state.root, hash: tab.hash })
@@ -875,9 +1172,10 @@ export class WorkbenchStore {
   }
 
   /** Open the diff of one changed file (Commit / Git windows). */
-  openDiff({ path, staged = false, untracked = false }) {
+  openDiff({ path, staged = false, untracked = false, against = null }) {
     if (typeof path !== 'string' || path === '') return
-    const id = `diff:${untracked ? 'untracked' : staged ? 'staged' : 'worktree'}:${path}`
+    const variant = against ?? (untracked ? 'untracked' : staged ? 'staged' : 'worktree')
+    const id = `diff:${variant}:${path}`
     const existing = this.state.tabs.find(tab => tab.id === id)
     if (existing !== undefined) {
       this.set({ activeId: id })
@@ -892,6 +1190,78 @@ export class WorkbenchStore {
       rel: path,
       staged,
       untracked,
+      against,
+      preview: false,
+      pinned: true,
+      loading: false,
+      error: null,
+      scrollTop: 0,
+      mode: this.state.commit.mode,
+    }
+    this.set({ tabs: [...this.state.tabs, tab], activeId: id })
+    void this.ensureTabContent(id)
+  }
+
+  /** Open one file's diff inside a commit (bottom details pane). */
+  openCommitFile(hash, path) {
+    if (typeof hash !== 'string' || typeof path !== 'string' || path === '') return
+    const id = `diff:commit:${hash}:${path}`
+    const existing = this.state.tabs.find(tab => tab.id === id)
+    if (existing !== undefined) {
+      this.set({ activeId: id })
+      void this.ensureTabContent(id, { force: true })
+      return
+    }
+    const tab = {
+      id,
+      kind: 'diff',
+      commitHash: hash,
+      path,
+      name: baseName(path),
+      rel: path,
+      preview: false,
+      pinned: true,
+      loading: false,
+      error: null,
+      scrollTop: 0,
+      mode: this.state.commit.mode,
+    }
+    this.set({ tabs: [...this.state.tabs, tab], activeId: id })
+    void this.ensureTabContent(id)
+  }
+
+  /** Ctrl+click in the log: pick up to two commits for Compare. */
+  toggleCompare(hash) {
+    if (typeof hash !== 'string' || hash === '') return
+    const current = this.state.git.compare ?? []
+    const next = current.includes(hash) ? current.filter(item => item !== hash) : [...current, hash].slice(-2)
+    this.patch('git', { compare: next })
+  }
+
+  /** Open the selected pair as a two-ended diff tab. */
+  compareSelected() {
+    const [a, b] = this.state.git.compare ?? []
+    this.openCompare(a, b)
+  }
+
+  /** Open any two refs (commit/branch/HEAD) as a read-only diff tab. */
+  openCompare(a, b) {
+    if (typeof a !== 'string' || typeof b !== 'string' || a === '' || b === '' || a === b) return
+    const id = `diff:range:${a}..${b}`
+    const existing = this.state.tabs.find(tab => tab.id === id)
+    if (existing !== undefined) {
+      this.set({ activeId: id })
+      void this.ensureTabContent(id, { force: true })
+      return
+    }
+    const tab = {
+      id,
+      kind: 'diff',
+      compare: { a, b },
+      readOnly: true,
+      path: `${a.slice(0, 7)}..${b.slice(0, 7)}`,
+      rel: `${a.slice(0, 7)}..${b.slice(0, 7)}`,
+      name: `${a.slice(0, 7)}..${b.slice(0, 7)}`,
       preview: false,
       pinned: true,
       loading: false,
@@ -936,7 +1306,7 @@ export class WorkbenchStore {
 
   // ── commit window ─────────────────────────────────────────────────────
   get groups() {
-    const entries = this.state.status.entries ?? []
+    const entries = this.changedEntries
     return {
       staged: entries.filter(entry => entry.staged === true),
       unstaged: entries.filter(entry => entry.unstaged === true),
@@ -944,9 +1314,148 @@ export class WorkbenchStore {
     }
   }
 
+  get changedEntries() {
+    return (this.state.status.entries ?? []).filter(entry => entry.ignored !== true)
+  }
+
+  /** V2 two-group model: Changes / Unversioned (checkbox never moves a row). */
+  get commitGroups() {
+    return splitCommitGroups(this.changedEntries, this.state.commit.buckets ?? {})
+  }
+
+  /** Whether one entry is included in the next commit. */
+  isCommitChecked(entry) {
+    return isEntryChecked(entry, this.state.commit)
+  }
+
+  get checkedCommitPaths() {
+    return checkedPathsOf(this.changedEntries, this.state.commit)
+  }
+
   get changeCount() {
-    const groups = this.groups
-    return groups.unstaged.length + groups.untracked.length
+    return this.changedEntries.length
+  }
+
+  /** Check / uncheck one file and keep the git index in sync immediately. */
+  async toggleCommitEntry(entry) {
+    await this.setCommitChecked([entry], this.isCommitChecked(entry) !== true)
+  }
+
+  /**
+   * Check / uncheck a batch. Checking stages, unchecking restages; an
+   * untracked file that gets added stays in the Unversioned group (bucket).
+   */
+  async setCommitChecked(entries, checked) {
+    const list = (Array.isArray(entries) ? entries : []).filter(entry => entry !== null && entry !== undefined && entry.conflict !== true)
+    if (list.length === 0) return
+    const commit = this.state.commit
+    const checkedSet = new Set(commit.checked)
+    const uncheckedSet = new Set(commit.unchecked)
+    const buckets = { ...(commit.buckets ?? {}) }
+    const toStage = []
+    const toUnstage = []
+    for (const entry of list) {
+      const currently = this.isCommitChecked(entry)
+      if (currently === checked) continue
+      if (checked) {
+        checkedSet.add(entry.path)
+        uncheckedSet.delete(entry.path)
+        if (entry.untracked === true || buckets[entry.path] === 'untracked') buckets[entry.path] = 'untracked'
+        if (entry.staged !== true) toStage.push(entry.path)
+      } else {
+        checkedSet.delete(entry.path)
+        uncheckedSet.add(entry.path)
+        if (entry.staged === true) toUnstage.push(entry.path)
+      }
+    }
+    this.patch('commit', { checked: checkedSet, unchecked: uncheckedSet, buckets, selectedPath: commit.selectedPath })
+    if (toStage.length > 0) await this.stage(toStage)
+    if (toUnstage.length > 0) await this.unstage(toUnstage)
+  }
+
+  // ── changelists (client-side grouping only) ───────────────────────────
+  #changelistDoc() {
+    const all = this.state.settings?.changelists ?? {}
+    const current = all[this.state.workspaceRoot]
+    return {
+      active: typeof current?.active === 'string' ? current.active : DEFAULT_CHANGELIST,
+      lists: current?.lists !== null && typeof current?.lists === 'object' ? current.lists : {},
+    }
+  }
+
+  get changelists() {
+    return this.#changelistDoc()
+  }
+
+  changelistOf(path) {
+    return changelistOf(path, this.#changelistDoc().lists)
+  }
+
+  async #saveChangelists(lists, active) {
+    const all = { ...(this.state.settings?.changelists ?? {}) }
+    all[this.state.workspaceRoot] = { active: active ?? this.#changelistDoc().active, lists }
+    await this.updateSettings({ changelists: all })
+  }
+
+  /** Move paths into `target` (created on demand). */
+  async moveToChangelist(paths, target) {
+    const list = (Array.isArray(paths) ? paths : []).filter(path => typeof path === 'string' && path !== '')
+    if (list.length === 0 || typeof target !== 'string' || target.trim() === '') return
+    const name = target.trim()
+    const lists = assignChangelist(this.#changelistDoc().lists, list, name)
+    await this.#saveChangelists(lists, name)
+  }
+
+  /** Destructive changelist rename is out of V2; creating one is enough. */
+  async createChangelist(name, paths = []) {
+    const value = String(name ?? '').trim()
+    if (value === '') return
+    await this.moveToChangelist(paths, value)
+  }
+
+  async setActiveChangelist(name) {
+    const value = String(name ?? '').trim()
+    if (value === '') return
+    await this.#saveChangelists(this.#changelistDoc().lists, value)
+  }
+
+  async setGroupByDirectory(value) {
+    await this.updateSettings({ commit: { ...(this.state.settings?.commit ?? {}), groupByDirectory: value === true } })
+  }
+
+  /** Append one changed path to the repository's .gitignore. */
+  async ignoreEntry(path) {
+    if (typeof path !== 'string' || path === '') return
+    try {
+      await call('git.ignore', {
+        root: this.state.root,
+        path,
+        repoRoot: this.state.status.repoRoot ?? undefined,
+      })
+      await this.refreshStatus({ initial: true })
+      this.toast('success', this.t('common.success'), path)
+    } catch (error) {
+      this.toast('error', this.t('common.error'), errorMessage(error))
+    }
+  }
+
+  /** Open a file in the editor (Change View "Jump to Source"). */
+  jumpToSource(path) {
+    if (typeof path !== 'string' || path === '') return
+    const absolute = /^([a-zA-Z]:[\\/]|[\\/])/.test(path) ? path : this.#absoluteOf(path)
+    this.openFile(absolute, { rel: this.relOf(absolute), preview: false })
+  }
+
+  /** Revert one changed file after confirmation (Change View "Revert"). */
+  revertChange(entry) {
+    if (entry === undefined) return
+    const name = entry.path.split(/[\\/]/).pop()
+    this.askConfirm(
+      this.t('commit.discardTitle'),
+      `${this.t('commit.discardBody')}\n${name}`,
+      this.t('commit.discard'),
+      () => { void this.discardEntries([entry]) },
+    )
   }
 
   setCommitMessage(message) {
@@ -955,6 +1464,12 @@ export class WorkbenchStore {
 
   setAmend(amend) {
     this.patch('commit', { amend })
+  }
+
+  /** Toggle one pre-commit task (Run Tests / Optimize Imports / Code Cleanup). */
+  setCommitTask(name, enabled) {
+    const tasks = { ...(this.state.commit.tasks ?? {}), [name]: enabled === true }
+    this.patch('commit', { tasks })
   }
 
   async loadCommitMessages() {
@@ -1031,8 +1546,36 @@ export class WorkbenchStore {
     }
     this.patch('commit', { committing: true, error: null })
     try {
+      // Pre-commit tasks run before the commit; a failure aborts it and keeps
+      // the message plus the index untouched.
+      const tasks = state.tasks ?? {}
+      const configured = [
+        ['tests', this.state.settings?.commit?.testCommand, 'commit.taskTests'],
+        ['optimize', this.state.settings?.commit?.optimizeImportsCommand, 'commit.taskOptimize'],
+        ['cleanup', this.state.settings?.commit?.cleanupCommand, 'commit.taskCleanup'],
+      ]
+      for (const [key, command, labelKey] of configured) {
+        if (tasks[key] !== true || typeof command !== 'string' || command.trim() === '') continue
+        const outcome = await call('run.command', { root: this.state.root, command })
+        if (outcome.code !== 0) {
+          const text = `${this.t(labelKey)} · exit ${outcome.code}\n${outcome.output ?? ''}`.trim()
+          this.patch('commit', { committing: false, error: text })
+          this.toast('error', this.t('commit.taskFailed'), this.t(labelKey))
+          return
+        }
+      }
       const result = await call('git.commit', { root: this.state.root, message, amend })
-      this.patch('commit', { committing: false, message: '', amend: false, error: null })
+      this.patch('commit', {
+        committing: false,
+        message: '',
+        amend: false,
+        error: null,
+        checked: new Set(),
+        unchecked: new Set(),
+        buckets: {},
+        selectedPath: '',
+        tasks: { tests: false, optimize: false, cleanup: false },
+      })
       this.toast('success', this.t('commit.committed'), result.hash ?? '')
       await this.refreshStatus({ initial: false })
       void this.loadCommitMessages()
@@ -1061,6 +1604,15 @@ export class WorkbenchStore {
   setGitFilters(patch) {
     this.patch('git', { filters: { ...this.state.git.filters, ...patch } })
     void this.loadLog(true)
+  }
+
+  /** Project → Git | Show History: scope the log to one file or folder. */
+  showHistory(rel) {
+    const value = typeof rel === 'string' ? rel.replace(/[\\/]+$/, '') : ''
+    this.patch('git', { filters: { ...this.state.git.filters, path: value }, selectedHash: null, detail: null })
+    this.set({ layout: { ...this.state.layout, bottom: 'git' } })
+    void this.loadLog(true)
+    this.persist()
   }
 
   async loadBranches() {
@@ -1114,8 +1666,9 @@ export class WorkbenchStore {
     try {
       const detail = await call('git.detail', { root: this.state.root, hash })
       if (this.state.git.selectedHash !== hash) return
+      // Single click fills the in-panel details; double click opens the full
+      // diff tab (openCommit), so the editor stays free of detail markup.
       this.patch('git', { detail, detailLoading: false })
-      void this.openCommit(hash)
     } catch (error) {
       this.patch('git', { detailLoading: false, detail: null, error: error instanceof Error ? error.message : String(error) })
     }
@@ -1260,6 +1813,39 @@ export class WorkbenchStore {
     this.persist()
   }
 
+  /** Hide all tool windows (Ctrl+Shift+F12); a second call restores them. */
+  toggleHideAll() {
+    const layout = this.state.layout
+    const visible = (layout.left !== null && layout.left !== undefined)
+      || (layout.bottom !== null && layout.bottom !== undefined)
+    if (visible) {
+      this.hiddenLayout = { left: layout.left ?? null, bottom: layout.bottom ?? null }
+      this.set({ layout: { ...layout, left: null, bottom: null } })
+    } else {
+      const saved = this.hiddenLayout ?? { left: 'project', bottom: null }
+      this.set({ layout: { ...layout, ...saved } })
+    }
+    this.persist()
+  }
+
+  /** Cursor position from the code editor (status bar Ln:Col). */
+  setCursor(cursor) {
+    const current = this.state.cursor
+    if (current !== null && cursor !== null && current.line === cursor.line && current.col === cursor.col) return
+    this.set({ cursor })
+  }
+
+  /** Browser full screen (View | Enter Full Screen / F11). */
+  toggleFullscreen() {
+    const doc = globalThis.document
+    if (doc === undefined || doc === null) return
+    if (doc.fullscreenElement !== null && doc.fullscreenElement !== undefined) {
+      void doc.exitFullscreen?.()
+      return
+    }
+    void doc.documentElement?.requestFullscreen?.().catch(() => {})
+  }
+
   #focusCommitLater() {
     // The Commit panel focuses its textarea when this counter changes.
     this.patch('commit', { focusTick: (this.state.commit.focusTick ?? 0) + 1 })
@@ -1308,7 +1894,7 @@ export class WorkbenchStore {
     if (status.isRepo !== true) return { branch: undefined, changes: 0, ahead: undefined, behind: undefined }
     return {
       branch: status.branch,
-      changes: (status.entries ?? []).length,
+      changes: (status.entries ?? []).filter(entry => entry.ignored !== true).length,
       ahead: status.ahead,
       behind: status.behind,
     }
