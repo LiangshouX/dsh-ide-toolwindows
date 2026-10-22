@@ -41,7 +41,8 @@ DSH 工作区经常只是一个「容器」：根目录本身不是 Git 仓库�
 
 ## 与 DSH 的集成方式
 
-- 一个 `sidebar.panellist` 图标 + 一个 `main` 面板承载整个工作台；四个工具窗在工作台内锚定（左侧条 Project/Commit，底部 Terminal/Git，可拖拽调整尺寸）。
+- 在聊天顶部点击 **IDE 工具窗口** 图标，或在右侧边栏添加页面中选择 **IDE 工具窗口**；工作台作为 `sidebar.right.pane.tab` 标签与聊天并排展示。需要先选中一个会话。
+- 快捷键会打开右侧边栏。窄栏中项目树与编辑区上下排列；拉宽后恢复左右分栏。可通过 DSH 原生标签条拆分、浮动或全屏。每个会话的工作台独立，隐藏时暂停刷新。
 - Git 直接调用系统 CLI（argv 数组，绝不拼 shell 字符串），因此凭据管理器、hook 与你的 git 配置全部生效；解析使用 `status --porcelain=v2 -z`、`diff --numstat -z` 与自定义 `log` 流。
 - 文件读写走带路径围栏的 `fs` API；保存为原子写入，并保留原文件的编码（UTF-8/BOM/UTF-16）与换行符。所有 HTTP/WebSocket 路由与 `/api` 使用同一 Connection 准入校验。
 - 设置（快捷键、Shell、git 路径、界面几何、每个工作区的展开目录与打开的标签）持久化在 DSH 主目录的 `ide-toolwindows/settings.json`（`$DSH_HOME` / `~/.dsh`；宿主导出 `DSH_PROFILE_DIR` 时为 profile 目录）。

@@ -55,9 +55,12 @@ any of them:
 
 ## How it fits the harness
 
-- One `sidebar.panellist` icon and one `main` panel page host the whole
-  workbench; the four tool windows are docked inside it (left stripe for
-  Project/Commit, bottom dock for Terminal/Git, resizable).
+- Click **IDE Tool Windows** in the conversation header, or select it from the
+  right sidebar's add-page guide. The workbench is a native
+  `sidebar.right.pane.tab` beside the conversation; a selected session is required.
+- Shortcuts open the sidebar. Narrow panes stack Project/Commit above the editor;
+  wider panes restore the side-by-side layout. Native tab controls support splitting,
+  floating and fullscreen. Each session has its own workbench; hidden tabs pause refresh.
 - Git is the **system CLI** (argv arrays, never shell strings), so credential
   managers, hooks and your git config all work. Paths are parsed from
   `status --porcelain=v2 -z`, `diff --numstat -z`, and a `log` record stream.

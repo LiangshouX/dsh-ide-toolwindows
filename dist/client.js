@@ -47749,16 +47749,17 @@ function SettingsModal({ store, state, onClose }) {
     )
   );
 }
-function Workbench({ store }) {
+function Workbench({ store, visible = true }) {
   const state = useWorkbench(store);
   const [settingsOpen, setSettingsOpen] = (0, import_react14.useState)(false);
   const leftRef = (0, import_react14.useRef)(null);
   (0, import_react14.useEffect)(() => {
+    if (!visible) return;
     store.activate();
     return () => {
       store.deactivate();
     };
-  }, [store]);
+  }, [store, visible]);
   const startLeftResize = (event) => {
     event.preventDefault();
     const startX = event.clientX;
@@ -47865,6 +47866,8 @@ function Workbench({ store }) {
 // src/client/styles.js
 var CSS = `
 .itw-root {
+  container-type: inline-size;
+  container-name: ide-workbench;
   --itw-bg: var(--dsw-alias-bg-base, #15171c);
   --itw-panel: var(--dsw-alias-bg-layer-1, #1b1e24);
   --itw-panel-2: var(--dsw-alias-bg-layer-2, #22262e);
@@ -48465,53 +48468,78 @@ var CSS = `
 .itw-project-repo-badge { font-size: 9.5px; color: var(--itw-git-add, #57a86b); border: 1px solid currentColor; border-radius: 999px; padding: 1px 6px; flex: 0 0 auto; }
 .itw-project-current-badge { font-size: 9.5px; color: var(--itw-accent); border: 1px solid currentColor; border-radius: 999px; padding: 1px 6px; flex: 0 0 auto; }
 .itw-project-empty { padding: 10px 8px; color: var(--itw-muted); font-size: 11.5px; }
+.itw-sidebar-open {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; border: 0; border-radius: 8px; padding: 0;
+  color: var(--dsw-alias-label-secondary); background: transparent; cursor: pointer;
+}
+.itw-sidebar-open:hover { color: var(--dsw-alias-label-primary); background: var(--dsw-alias-bg-layer-2); }
+.itw-sidebar-open:focus-visible { outline: 2px solid var(--dsw-alias-brand-primary); outline-offset: 2px; }
+.itw-center { min-height: 0; }
+@container ide-workbench (max-width: 760px) {
+  .itw-topbar { gap: 4px; padding: 0 6px; }
+  .itw-project-select { flex: 1; padding: 0 3px; }
+  .itw-project-path, .itw-top-spacer { display: none; }
+  .itw-branch-chip { max-width: 100px; padding: 0 4px; }
+  .itw-topbar > button { flex-shrink: 0; }
+  .itw-body { flex-direction: column; }
+  .itw-stripe { width: 100%; flex: 0 0 38px; flex-direction: row; padding: 2px 6px; border-right: 0; border-bottom: 1px solid var(--itw-border); }
+  .itw-stripe-spacer { flex: 1; }
+  .itw-stripe-btn { width: 30px; height: 30px; }
+  .itw-stripe-btn.itw-on::before { left: 6px; right: 6px; top: auto; bottom: -3px; width: auto; height: 2px; }
+  .itw-left { width: 100% !important; min-width: 0; max-width: none; flex: 0 1 38%; min-height: 120px; border-right: 0; border-bottom: 1px solid var(--itw-border); }
+  .itw-left-resizer { display: none; }
+  .itw-center { min-height: 140px; }
+  .itw-bottom { max-height: 65%; min-height: 100px; }
+  .itw-statusbar { overflow-x: auto; white-space: nowrap; }
+  .itw-status-item { flex-shrink: 0; }
+  .itw-editor-toolbar { overflow-x: auto; flex-shrink: 0; }
+  .itw-modal { max-width: calc(100% - 16px); }
+}
 `;
 
 // src/client/index.jsx
-var inject = ["slots", "locale", "layout"];
+var inject = ["slots", "locale", "sidebarRight", "sidebarRightTabs"];
 var PANEL_ID = "ide-toolwindows";
-function PanelIcon({ size = 20, active = false }) {
-  const color = active ? "currentColor" : "currentColor";
+function PanelIcon({ size = 20 }) {
   return import_react15.default.createElement(
-    "span",
+    "svg",
     {
-      style: { display: "inline-flex", alignItems: "center", justifyContent: "center", width: size, height: size, color },
+      viewBox: "0 0 20 20",
+      width: size,
+      height: size,
+      fill: "none",
+      stroke: "currentColor",
+      strokeWidth: 1.3,
+      strokeLinejoin: "round",
       "aria-hidden": true
     },
-    import_react15.default.createElement(
-      "svg",
-      { viewBox: "0 0 20 20", width: size, height: size, fill: "none", stroke: color, strokeWidth: 1.3, strokeLinejoin: "round" },
-      import_react15.default.createElement("rect", { x: 2, y: 2.5, width: 16, height: 15, rx: 2 }),
-      import_react15.default.createElement("line", { x1: 7.4, y1: 2.5, x2: 7.4, y2: 17.5 }),
-      import_react15.default.createElement("line", { x1: 7.4, y1: 11.5, x2: 18, y2: 11.5 }),
-      import_react15.default.createElement("line", { x1: 9.8, y1: 5.6, x2: 12.2, y2: 5.6 }),
-      import_react15.default.createElement("line", { x1: 14, y1: 5.6, x2: 16.6, y2: 5.6 }),
-      import_react15.default.createElement("polyline", { points: "9.6 14.2 11 15.4 13.6 13.6" }),
-      import_react15.default.createElement("line", { x1: 14.6, y1: 14.2, x2: 16.6, y2: 14.6 })
-    )
+    import_react15.default.createElement("rect", { x: 2, y: 2.5, width: 16, height: 15, rx: 2 }),
+    import_react15.default.createElement("line", { x1: 7.4, y1: 2.5, x2: 7.4, y2: 17.5 }),
+    import_react15.default.createElement("line", { x1: 7.4, y1: 11.5, x2: 18, y2: 11.5 }),
+    import_react15.default.createElement("polyline", { points: "9.6 14.2 11 15.4 13.6 13.6" })
   );
 }
-function BoundWorkbench({ store }) {
-  const state = useWorkbench(store);
-  return import_react15.default.createElement(Workbench, { store, state });
+function BoundWorkbench({ getStore, sessionId, useTabInfo }) {
+  const { tab: tab3 } = useTabInfo();
+  const store = getStore(sessionId, tab3.id);
+  (0, import_react15.useEffect)(() => {
+    void store.init();
+  }, [store]);
+  return import_react15.default.createElement(Workbench, { store, visible: tab3.visible });
 }
 function BoundSettings({ store, close }) {
   const state = useWorkbench(store);
   return import_react15.default.createElement(SettingsSection, { store, state, close });
 }
-function runShortcut(store, action) {
-  if (action === "push") {
-    if (store.state.active === true && store.state.status.isRepo === true) void store.push();
-    return;
-  }
-  const wasActive = store.state.active === true;
-  store.ctx.layout.selectPanel(PANEL_ID);
-  if (action === "focusCommit") {
-    store.focusCommit();
-    return;
-  }
-  if (wasActive) store.toggleTool(action);
-  else store.showTool(action);
+function OpenButton({ open, t: t2 }) {
+  return import_react15.default.createElement("button", {
+    type: "button",
+    title: t2("panelLabel"),
+    "aria-label": t2("panelLabel"),
+    className: "itw-sidebar-open",
+    onClick: open
+  }, import_react15.default.createElement(PanelIcon, { size: 18 }));
 }
 function apply(ctx) {
   const t2 = ctx.locale.bind(NS);
@@ -48523,43 +48551,70 @@ function apply(ctx) {
       offEn();
     };
   }, "dsh-ide-toolwindows: dictionaries");
-  ctx.effect(() => {
-    const style = document.createElement("style");
-    style.setAttribute("data-dsh-ide-toolwindows", "");
-    style.textContent = `${xterm_default}
-${CSS}`;
-    document.head.appendChild(style);
-    return () => {
-      style.remove();
-    };
-  }, "dsh-ide-toolwindows: stylesheet");
-  const store = new WorkbenchStore(ctx, t2);
-  void store.init();
+  const Styles = () => import_react15.default.createElement("style", { "data-dsh-ide-toolwindows": "" }, `${xterm_default}
+${CSS}`);
+  const stores = /* @__PURE__ */ new Map();
+  const getStore = (sessionId, tabId) => {
+    const key = `${sessionId}:${tabId}`;
+    if (!stores.has(key)) stores.set(key, new WorkbenchStore(ctx, t2));
+    return stores.get(key);
+  };
+  const activeStore = () => {
+    const sessionId = ctx.sidebarRight.mounted.getSnapshot();
+    const tab3 = ctx.sidebarRight.active();
+    return tab3?.kind === PANEL_ID ? stores.get(`${sessionId}:${tab3.id}`) : void 0;
+  };
+  const open = () => ctx.sidebarRight.openTab(PANEL_ID);
   const modules = ctx.get("modules");
-  if (modules !== void 0 && modules !== null && typeof modules.import === "function") {
+  if (modules != null && typeof modules.import === "function") {
     setPrimitivesLoader(() => modules.import("@deepseek-ai/dsh-client-ui-primitives"));
   }
-  ctx.effect(() => ctx.slots.inject("sidebar.panellist", () => ctx.slots.register({
-    name: "sidebar.panellist",
+  ctx.effect(() => ctx.sidebarRightTabs.register({
+    id: "dsh-ide-toolwindows",
+    kind: PANEL_ID,
+    title: () => t2("panelLabel"),
+    keepMounted: true,
+    guide: [{ id: PANEL_ID, title: () => t2("panelLabel"), icon: PanelIcon, order: 35 }]
+  }), "dsh-ide-toolwindows: sidebar tab type");
+  ctx.effect(() => ctx.slots.inject("sidebar.right.pane.tab", () => ctx.slots.register({
+    name: "sidebar.right.pane.tab",
+    key: "dsh-ide-toolwindows"
+  }, (props) => import_react15.default.createElement(
+    import_react15.default.Fragment,
+    null,
+    import_react15.default.createElement(Styles),
+    import_react15.default.createElement(BoundWorkbench, { ...props, getStore })
+  ))), "dsh-ide-toolwindows: sidebar body");
+  ctx.effect(() => ctx.slots.inject("conversation.session.header.utilities", () => ctx.slots.register({
+    name: "conversation.session.header.utilities",
     id: PANEL_ID,
-    order: 35,
+    order: 30,
     label: () => t2("panelLabel")
-  }, PanelIcon)), "dsh-ide-toolwindows: sidebar icon");
-  ctx.effect(() => ctx.slots.inject("main", () => ctx.slots.register({
-    name: "main",
-    key: PANEL_ID
-  }, () => import_react15.default.createElement(BoundWorkbench, { store }))), "dsh-ide-toolwindows: main panel");
+  }, () => import_react15.default.createElement(
+    import_react15.default.Fragment,
+    null,
+    import_react15.default.createElement(Styles),
+    import_react15.default.createElement(OpenButton, { open, t: t2 })
+  ))), "dsh-ide-toolwindows: sidebar entry");
+  const settingsStore = new WorkbenchStore(ctx, t2);
+  void settingsStore.init();
   ctx.effect(() => ctx.slots.inject("settings.section", () => ctx.slots.register({
     name: "settings.section",
     id: PANEL_ID,
     order: 60,
     label: () => t2("settings.nav")
-  }, (props) => import_react15.default.createElement(BoundSettings, { store, close: props?.close }))), "dsh-ide-toolwindows: settings section");
+  }, (props) => import_react15.default.createElement(
+    import_react15.default.Fragment,
+    null,
+    import_react15.default.createElement(Styles),
+    import_react15.default.createElement(BoundSettings, { store: settingsStore, close: props?.close })
+  ))), "dsh-ide-toolwindows: settings section");
   ctx.effect(() => {
     const onKeyDown = (event) => {
-      if (event.repeat) return;
-      const shortcuts = store.state.settings?.shortcuts;
-      if (shortcuts === void 0 || shortcuts === null) return;
+      if (event.repeat || ctx.sidebarRight.mounted.getSnapshot() === void 0) return;
+      const store = activeStore();
+      const shortcuts = (store ?? settingsStore).state.settings?.shortcuts;
+      if (shortcuts == null) return;
       const inTerminal = isTerminalTarget(event.target);
       const pairs = [
         ["project", shortcuts.project],
@@ -48570,20 +48625,33 @@ ${CSS}`;
         ["push", shortcuts.push]
       ];
       for (const [action, shortcut] of pairs) {
-        if (shortcut === void 0 || shortcut === "") continue;
-        if (!matchesShortcut(shortcut, event)) continue;
+        if (!shortcut || !matchesShortcut(shortcut, event)) continue;
         if (inTerminal && (action === "focusCommit" || action === "push")) continue;
+        if (action === "push") {
+          if (store?.state.active !== true || store.state.status.isRepo !== true) return;
+          event.preventDefault();
+          event.stopPropagation();
+          void store.push();
+          return;
+        }
         event.preventDefault();
         event.stopPropagation();
-        runShortcut(store, action);
+        const wasActive = store?.state.active === true;
+        open();
+        requestAnimationFrame(() => {
+          const target = activeStore();
+          if (target === void 0) return;
+          if (action === "focusCommit") target.focusCommit();
+          else if (wasActive) target.toggleTool(action);
+          else target.showTool(action);
+        });
         return;
       }
+      if (store?.state.active !== true) return;
       if (event.key === "F11") {
         event.preventDefault();
         store.toggleFullscreen();
-        return;
-      }
-      if (matchesShortcut(shortcuts.hideAll ?? "Ctrl+Shift+F12", event)) {
+      } else if (matchesShortcut(shortcuts.hideAll ?? "Ctrl+Shift+F12", event)) {
         event.preventDefault();
         store.toggleHideAll();
       }
@@ -48592,7 +48660,11 @@ ${CSS}`;
     return () => document.removeEventListener("keydown", onKeyDown, true);
   }, "dsh-ide-toolwindows: shortcuts");
   ctx.effect(() => () => {
-    void store.persistNow();
+    for (const store of [...stores.values(), settingsStore]) {
+      store.deactivate();
+      for (const unsubscribe of store.unsubscribers.splice(0)) unsubscribe();
+    }
+    stores.clear();
   }, "dsh-ide-toolwindows: store teardown");
 }
 

@@ -6,6 +6,8 @@
  */
 export const CSS = `
 .itw-root {
+  container-type: inline-size;
+  container-name: ide-workbench;
   --itw-bg: var(--dsw-alias-bg-base, #15171c);
   --itw-panel: var(--dsw-alias-bg-layer-1, #1b1e24);
   --itw-panel-2: var(--dsw-alias-bg-layer-2, #22262e);
@@ -606,4 +608,32 @@ export const CSS = `
 .itw-project-repo-badge { font-size: 9.5px; color: var(--itw-git-add, #57a86b); border: 1px solid currentColor; border-radius: 999px; padding: 1px 6px; flex: 0 0 auto; }
 .itw-project-current-badge { font-size: 9.5px; color: var(--itw-accent); border: 1px solid currentColor; border-radius: 999px; padding: 1px 6px; flex: 0 0 auto; }
 .itw-project-empty { padding: 10px 8px; color: var(--itw-muted); font-size: 11.5px; }
+.itw-sidebar-open {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; border: 0; border-radius: 8px; padding: 0;
+  color: var(--dsw-alias-label-secondary); background: transparent; cursor: pointer;
+}
+.itw-sidebar-open:hover { color: var(--dsw-alias-label-primary); background: var(--dsw-alias-bg-layer-2); }
+.itw-sidebar-open:focus-visible { outline: 2px solid var(--dsw-alias-brand-primary); outline-offset: 2px; }
+.itw-center { min-height: 0; }
+@container ide-workbench (max-width: 760px) {
+  .itw-topbar { gap: 4px; padding: 0 6px; }
+  .itw-project-select { flex: 1; padding: 0 3px; }
+  .itw-project-path, .itw-top-spacer { display: none; }
+  .itw-branch-chip { max-width: 100px; padding: 0 4px; }
+  .itw-topbar > button { flex-shrink: 0; }
+  .itw-body { flex-direction: column; }
+  .itw-stripe { width: 100%; flex: 0 0 38px; flex-direction: row; padding: 2px 6px; border-right: 0; border-bottom: 1px solid var(--itw-border); }
+  .itw-stripe-spacer { flex: 1; }
+  .itw-stripe-btn { width: 30px; height: 30px; }
+  .itw-stripe-btn.itw-on::before { left: 6px; right: 6px; top: auto; bottom: -3px; width: auto; height: 2px; }
+  .itw-left { width: 100% !important; min-width: 0; max-width: none; flex: 0 1 38%; min-height: 120px; border-right: 0; border-bottom: 1px solid var(--itw-border); }
+  .itw-left-resizer { display: none; }
+  .itw-center { min-height: 140px; }
+  .itw-bottom { max-height: 65%; min-height: 100px; }
+  .itw-statusbar { overflow-x: auto; white-space: nowrap; }
+  .itw-status-item { flex-shrink: 0; }
+  .itw-editor-toolbar { overflow-x: auto; flex-shrink: 0; }
+  .itw-modal { max-width: calc(100% - 16px); }
+}
 `

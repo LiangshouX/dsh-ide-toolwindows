@@ -8,6 +8,7 @@ import { renderToStaticMarkup } from 'react-dom/server'
 import { WorkbenchStore } from '../src/client/store.js'
 import { Workbench } from '../src/client/Workbench.jsx'
 import { DiffView } from '../src/client/DiffView.jsx'
+export { apply as applyClient, inject as clientInject } from '../src/client/index.jsx'
 
 const t = (key) => key
 

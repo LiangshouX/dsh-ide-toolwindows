@@ -69,6 +69,7 @@ async function loadModule() {
       target: ['node20'],
       external: ['react', 'react-dom', 'react-dom/server', '@deepseek-ai/dsh-client-ui-primitives'],
       alias: {
+        '@xterm/xterm/css/xterm.css': join(root, 'node_modules/@xterm/xterm/css/xterm.css'),
         '@xterm/xterm': join(root, 'tests/stubs/xterm.js'),
         '@xterm/addon-fit': join(root, 'tests/stubs/addon-fit.js'),
       },
@@ -167,4 +168,61 @@ test('edit mode renders save/restore and the dirty marker', async () => {
   assert.match(html, /editor\.save/)
   assert.match(html, /editor\.restore/)
   assert.match(html, /editor\.dirty/)
+})
+
+test('client opens a native sidebar tab without registering a central page', async () => {
+  const mod = await loadModule()
+  const entries = []
+  const types = []
+  const disposers = []
+  const opened = []
+  let subscriptions = 0
+  const ctx = {
+    locale: {
+      bind: () => key => key,
+      register: () => () => {},
+      subscribe: () => { subscriptions++; return () => { subscriptions-- } },
+    },
+    sidebarRight: {
+      openTab: kind => opened.push(kind),
+      mounted: { getSnapshot: () => 'session-1' },
+      active: () => undefined,
+    },
+    sidebarRightTabs: { register: type => {
+      types.push(type)
+      return () => types.splice(types.indexOf(type), 1)
+    } },
+    slots: {
+      inject: (_name, register) => register(),
+      register: (options, component) => {
+        const entry = { ...options, component }
+        entries.push(entry)
+        return () => entries.splice(entries.indexOf(entry), 1)
+      },
+    },
+    effect: callback => { disposers.push(callback()) },
+    get: () => undefined,
+  }
+  const originalFetch = globalThis.fetch
+  globalThis.fetch = async () => { throw new Error('offline fixture') }
+  try {
+    mod.applyClient(ctx)
+    await new Promise(resolve => setImmediate(resolve))
+    assert.ok(mod.clientInject.includes('sidebarRightTabs'))
+    assert.equal(types[0].kind, 'ide-toolwindows')
+    assert.equal(types[0].guide[0].title(), 'panelLabel')
+    assert.ok(entries.some(entry => entry.name === 'sidebar.right.pane.tab'))
+    assert.ok(!entries.some(entry => entry.name === 'main' || entry.name === 'sidebar.panellist'))
+    const header = entries.find(entry => entry.name === 'conversation.session.header.utilities')
+    const fragment = header.component()
+    const buttonComponent = fragment.props.children[1]
+    buttonComponent.type(buttonComponent.props).props.onClick()
+    assert.deepEqual(opened, ['ide-toolwindows'])
+  } finally {
+    for (const dispose of disposers.reverse()) dispose?.()
+    globalThis.fetch = originalFetch
+  }
+  assert.equal(types.length, 0)
+  assert.equal(entries.length, 0)
+  assert.equal(subscriptions, 0)
 })

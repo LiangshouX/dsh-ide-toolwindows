@@ -305,15 +305,16 @@ function SettingsModal({ store, state, onClose }) {
   )
 }
 
-export function Workbench({ store }) {
+export function Workbench({ store, visible = true }) {
   const state = useWorkbench(store)
   const [settingsOpen, setSettingsOpen] = useState(false)
   const leftRef = useRef(null)
 
   useEffect(() => {
+    if (!visible) return
     store.activate()
     return () => { store.deactivate() }
-  }, [store])
+  }, [store, visible])
 
   const startLeftResize = (event) => {
     event.preventDefault()
