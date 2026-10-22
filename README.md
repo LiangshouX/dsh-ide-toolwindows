@@ -36,12 +36,12 @@ exactly like an IDE).
 
 Every shortcut can be rebound in **Settings → IDE Tool Windows**.
 
-### IDE fullscreen and IntelliJ IDEA integration
+### IDE fullscreen and external IDE integration
 
 - The workbench fullscreen button and `F11` switch its sidebar panel between fullscreen and the previous docked presentation, retaining the open tabs and split layout.
-- Right-click a file in Project or an editor file tab and choose **Open in IntelliJ IDEA**. The launcher receives both the selected **IDE project root** and the file path, including spaces and Unicode names.
-- **Settings → IDE Tool Windows → IntelliJ IDEA** accepts an executable path; empty enables auto-detection. On Windows select `bin/idea64.exe` from your IDEA installation.
-- IDEA opens the saved file on disk. Save pending workbench edits first. Launch failures show their reason; success means the launch request was accepted.
+- Right-click a file in Project or an editor file tab, hover **Open in IDE**, and choose **IntelliJ IDEA**, **WebStorm**, or **Visual Studio Code**. The launcher opens both the selected **IDE project root** and file, including spaces and Unicode names.
+- **Settings → IDE Tool Windows → External IDEs** accepts separate executable paths; empty enables auto-detection. On Windows select `idea64.exe`, `webstorm64.exe`, or `Code.exe`.
+- External IDEs open the saved file on disk. Save pending workbench edits first. Launch failures show their reason; success means the launch request was accepted.
 
 ### Workspace vs. IDE project root
 

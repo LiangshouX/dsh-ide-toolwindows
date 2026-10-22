@@ -4,7 +4,7 @@ import { EventEmitter } from 'node:events'
 import { mkdtemp, mkdir, writeFile, rm, realpath, symlink } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { openInIdea, resolveIdeaExecutable } from '../src/host/idea.js'
+import { openInIdea, resolveIdeaExecutable, openInIde, resolveIdeExecutable } from '../src/host/idea.js'
 import { DEFAULT_SETTINGS, SettingsStore } from '../src/host/settings-store.js'
 
 const missing = async () => { throw new Error('missing') }
@@ -117,9 +117,62 @@ test('a symlink or junction escaping the project is rejected before launching', 
   }), error => error.code === 'forbidden')
 })
 
-test('IDEA settings default to auto-detection and reject malformed path patches', async () => {
-  assert.deepEqual(DEFAULT_SETTINGS.idea, { path: '' })
-  for (const idea of [null, { path: 42 }, { path: 'invalid\0path' }]) {
-    await assert.rejects(() => new SettingsStore().update({ idea }), error => error.code === 'bad-request')
+test('all IDE settings default to auto-detection and reject malformed path patches', async () => {
+  for (const ide of ['idea', 'webstorm', 'vscode']) {
+    assert.deepEqual(DEFAULT_SETTINGS[ide], { path: '' })
+    for (const config of [null, { path: 42 }, { path: 'invalid\0path' }]) {
+      await assert.rejects(() => new SettingsStore().update({ [ide]: config }), error => error.code === 'bad-request')
+    }
+  }
+})
+
+for (const ide of ['webstorm', 'vscode']) {
+  test(`${ide} opens the selected project and file with its own CLI arguments`, async t => {
+    const { project, selected } = await fixture(t)
+    const calls = []
+    const result = await openInIde({ ide, root: project, path: selected }, 'configured', {
+      resolveExecutable: async configured => { assert.equal(configured, 'configured'); return `${ide}.exe` },
+      spawn: spawnFixture(calls),
+    })
+    const root = await realpath(project)
+    const file = await realpath(selected)
+    assert.deepEqual(calls[0].argv, ide === 'vscode' ? ['--new-window', root, '--goto', file] : [root, file])
+    assert.equal(calls[0].options.shell, false)
+    assert.equal(result.ide, ide)
+    assert.equal(result.accepted, true)
+  })
+}
+
+test('WebStorm is discovered in JetBrains installations and VS Code in user installations', async () => {
+  const webstorm = 'C:\\Program Files\\JetBrains\\WebStorm 2025.2\\bin\\webstorm64.exe'
+  assert.equal(await resolveIdeExecutable('webstorm', '', {
+    platform: 'win32', env: {}, access,
+    stat: async path => path === webstorm ? file : missing(),
+    readdir: async () => [{ name: 'WebStorm 2025.2', isDirectory: () => true }],
+  }), webstorm)
+  const vscode = 'C:\\Users\\user\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe'
+  assert.equal(await resolveIdeExecutable('vscode', '', {
+    platform: 'win32', env: { LOCALAPPDATA: 'C:\\Users\\user\\AppData\\Local' }, access,
+    stat: async path => path === vscode ? file : missing(),
+  }), vscode)
+})
+
+test('new IDE choices support macOS bundles and Linux launchers', async () => {
+  for (const [ide, app, binary] of [['webstorm', 'WebStorm', 'webstorm'], ['vscode', 'Visual Studio Code', 'Electron']]) {
+    assert.equal(await resolveIdeExecutable(ide, `/Applications/${app}.app`, {
+      platform: 'darwin', stat: async () => file, access,
+    }), `/Applications/${app}.app/Contents/MacOS/${binary}`)
+    const name = ide === 'vscode' ? 'code' : 'webstorm'
+    assert.equal(await resolveIdeExecutable(ide, '', {
+      platform: 'linux', env: { PATH: '/usr/local/bin' }, stat: async () => file, access,
+    }), `/usr/local/bin/${name}`)
+  }
+})
+
+test('unsupported IDE values are rejected before resolving or spawning', async () => {
+  for (const ide of ['unknown', '__proto__', 'constructor']) {
+    await assert.rejects(() => openInIde({ ide }, '', {
+      resolveExecutable: () => assert.fail('unsupported IDE must not resolve a launcher'),
+    }), error => error.code === 'bad-request')
   }
 })

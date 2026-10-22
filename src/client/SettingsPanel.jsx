@@ -5,6 +5,7 @@
  */
 import React, { useEffect, useRef, useState } from 'react'
 import { ShortcutCapture } from './ui.jsx'
+import { IDE_OPTIONS } from './ide-menu.js'
 
 const SHORTCUT_FIELDS = [
   ['project', 'projectShortcut'],
@@ -52,6 +53,8 @@ export function SettingsForm({ store, state, compact }) {
       ...patch,
       git: { ...draft.git, ...(patch.git ?? {}) },
       idea: { ...draft.idea, ...(patch.idea ?? {}) },
+      webstorm: { ...draft.webstorm, ...(patch.webstorm ?? {}) },
+      vscode: { ...draft.vscode, ...(patch.vscode ?? {}) },
       terminal: { ...draft.terminal, ...(patch.terminal ?? {}) },
       project: { ...draft.project, ...(patch.project ?? {}) },
       commit: { ...draft.commit, ...(patch.commit ?? {}) },
@@ -168,15 +171,15 @@ export function SettingsForm({ store, state, compact }) {
       ),
     ),
     React.createElement('div', { className: 'itw-settings-group' },
-      React.createElement('h3', null, t('settings.ideaGroup')),
-      React.createElement(Row, { label: t('settings.ideaPath'), hint: t('settings.ideaPathHint') },
+      React.createElement('h3', null, t('settings.ideGroup')),
+      IDE_OPTIONS.map(ide => React.createElement(Row, { key: ide.id, label: ide.title, hint: t('settings.idePathHint') },
         React.createElement('input', {
-          type: 'text', className: 'itw-input',
-          value: draft.idea?.path ?? '',
-          placeholder: t('settings.ideaAuto'),
-          onChange: event => update({ idea: { path: event.target.value } }),
+          type: 'text', className: 'itw-input', 'aria-label': ide.title,
+          value: draft[ide.id]?.path ?? '',
+          placeholder: t('settings.ideAuto'),
+          onChange: event => update({ [ide.id]: { path: event.target.value } }),
         }),
-      ),
+      )),
     ),
     React.createElement('div', { className: 'itw-settings-group' },
       React.createElement('h3', null, t('settings.editorGroup')),
@@ -265,6 +268,8 @@ export function SettingsForm({ store, state, compact }) {
           const reset = {
             git: { path: '', colors: true, commitTemplate: '' },
             idea: { path: '' },
+            webstorm: { path: '' },
+            vscode: { path: '' },
             terminal: { shell: 'auto', copyOnSelect: false },
             project: { alwaysSelectOpened: true, showHidden: true },
             editor: { fontSize: 13, highlight: true, defaultReadOnly: true, markdownPreview: true },

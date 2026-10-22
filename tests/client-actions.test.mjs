@@ -52,9 +52,9 @@ test('IDEA request uses the selected IDE project and the exact clicked file', as
   try {
     assert.deepEqual(await store.openInIdea(path), { accepted: true })
     assert.equal(requests.length, 1)
-    assert.match(requests[0].url, /\/ide-toolwindows\/api\/fs\.openInIdea$/)
-    assert.deepEqual(requests[0].body, { root: store.state.root, path })
-    assert.deepEqual(toasts[0], ['success', 'project.ideaRequested'])
+    assert.match(requests[0].url, /\/ide-toolwindows\/api\/fs\.openInIde$/)
+    assert.deepEqual(requests[0].body, { ide: 'idea', root: store.state.root, path })
+    assert.deepEqual(toasts[0], ['success', 'project.ideRequested'])
   } finally {
     globalThis.fetch = previous
   }
@@ -71,7 +71,7 @@ test('IDEA launch errors are shown to the user without reporting success', async
   })
   try {
     assert.equal(await store.openInIdea('/workspace/a.ts'), undefined)
-    assert.deepEqual(toasts, [['error', 'project.ideaFailed', 'IDEA executable not found']])
+    assert.deepEqual(toasts, [['error', 'project.ideFailed', 'IDEA executable not found']])
   } finally {
     globalThis.fetch = previous
   }

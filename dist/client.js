@@ -370,13 +370,12 @@ var en = {
   "layout.hideAll": "Hide all tool windows (Ctrl+Shift+F12)",
   "layout.fullscreen": "Full screen IDE pane (F11)",
   "layout.exitFullscreen": "Restore IDE pane (F11)",
-  "project.openInIdea": "Open in IntelliJ IDEA",
-  "project.ideaRequested": "IntelliJ IDEA launch requested",
-  "project.ideaFailed": "Could not open in IntelliJ IDEA",
-  "settings.ideaGroup": "IntelliJ IDEA",
-  "settings.ideaPath": "IDEA executable path",
-  "settings.ideaPathHint": "Empty = auto-detect. Windows: choose idea64.exe, not a .cmd/.bat script. Opens the current IDE project and the saved file on disk.",
-  "settings.ideaAuto": "Auto-detect IntelliJ IDEA",
+  "project.openInIde": "Open in IDE",
+  "project.ideRequested": "IDE launch requested",
+  "project.ideFailed": "Could not open in IDE",
+  "settings.ideGroup": "External IDEs",
+  "settings.idePathHint": "Empty = auto-detect. Windows: choose idea64.exe, webstorm64.exe or Code.exe, not a .cmd/.bat script. Opens the current IDE project and saved file.",
+  "settings.ideAuto": "Auto-detect",
   "settings.gitGroup": "Git",
   "settings.gitPath": "git executable path",
   "settings.gitPathHint": "Empty = resolve from PATH",
@@ -688,13 +687,12 @@ var zh = {
   "layout.hideAll": "\u6536\u8D77\u5168\u90E8\u5DE5\u5177\u7A97\uFF08Ctrl+Shift+F12\uFF09",
   "layout.fullscreen": "IDE \u5DE5\u5177\u7A97\u53E3\u5168\u5C4F\uFF08F11\uFF09",
   "layout.exitFullscreen": "\u8FD8\u539F IDE \u5DE5\u5177\u7A97\u53E3\uFF08F11\uFF09",
-  "project.openInIdea": "\u5728 IntelliJ IDEA \u4E2D\u6253\u5F00",
-  "project.ideaRequested": "\u5DF2\u8BF7\u6C42 IntelliJ IDEA \u6253\u5F00\u9879\u76EE\u548C\u6587\u4EF6",
-  "project.ideaFailed": "\u65E0\u6CD5\u5728 IntelliJ IDEA \u4E2D\u6253\u5F00",
-  "settings.ideaGroup": "IntelliJ IDEA",
-  "settings.ideaPath": "IDEA \u53EF\u6267\u884C\u6587\u4EF6\u8DEF\u5F84",
-  "settings.ideaPathHint": "\u7559\u7A7A\u81EA\u52A8\u67E5\u627E\u3002Windows \u8BF7\u9009\u62E9 idea64.exe\uFF0C\u4E0D\u4F7F\u7528 .cmd/.bat \u811A\u672C\u3002\u6253\u5F00\u5F53\u524D IDE \u9879\u76EE\u548C\u78C1\u76D8\u4E0A\u5DF2\u4FDD\u5B58\u7684\u6587\u4EF6\u3002",
-  "settings.ideaAuto": "\u81EA\u52A8\u67E5\u627E IntelliJ IDEA",
+  "project.openInIde": "\u5728 IDE \u4E2D\u6253\u5F00",
+  "project.ideRequested": "\u5DF2\u8BF7\u6C42 IDE \u6253\u5F00\u9879\u76EE\u548C\u6587\u4EF6",
+  "project.ideFailed": "\u65E0\u6CD5\u5728 IDE \u4E2D\u6253\u5F00",
+  "settings.ideGroup": "\u5916\u90E8 IDE",
+  "settings.idePathHint": "\u7559\u7A7A\u81EA\u52A8\u67E5\u627E\u3002Windows \u8BF7\u9009\u62E9 idea64.exe\u3001webstorm64.exe \u6216 Code.exe\uFF0C\u4E0D\u4F7F\u7528 .cmd/.bat \u811A\u672C\u3002\u6253\u5F00\u5F53\u524D IDE \u9879\u76EE\u548C\u78C1\u76D8\u4E0A\u5DF2\u4FDD\u5B58\u7684\u6587\u4EF6\u3002",
+  "settings.ideAuto": "\u81EA\u52A8\u67E5\u627E",
   "settings.gitGroup": "Git",
   "settings.gitPath": "git \u53EF\u6267\u884C\u8DEF\u5F84",
   "settings.gitPathHint": "\u7559\u7A7A = \u4ECE PATH \u89E3\u6790",
@@ -2127,16 +2125,19 @@ ${names}${extra}`,
       this.toast("error", this.t("common.error"), error instanceof Error ? error.message : String(error));
     }
   }
-  /** Open the saved file in its current IntelliJ IDEA project. */
-  async openInIdea(path2) {
+  /** Open the saved file in the selected external IDE and current project. */
+  async openInIde(ide, path2) {
     try {
-      const result = await call("fs.openInIdea", { root: this.state.root, path: path2 });
-      this.toast("success", this.t("project.ideaRequested"));
+      const result = await call("fs.openInIde", { ide, root: this.state.root, path: path2 });
+      this.toast("success", this.t("project.ideRequested"));
       return result;
     } catch (error) {
-      this.toast("error", this.t("project.ideaFailed"), error instanceof Error ? error.message : String(error));
+      this.toast("error", this.t("project.ideFailed"), error instanceof Error ? error.message : String(error));
       return void 0;
     }
+  }
+  openInIdea(path2) {
+    return this.openInIde("idea", path2);
   }
   // ── editor tabs ───────────────────────────────────────────────────────
   get activeTab() {
@@ -3637,6 +3638,29 @@ function ChevronDown({ size = 12 }) {
   );
 }
 
+// src/client/ide-menu.js
+var IDE_OPTIONS = [
+  { id: "idea", title: "IntelliJ IDEA" },
+  { id: "webstorm", title: "WebStorm" },
+  { id: "vscode", title: "Visual Studio Code" }
+];
+function openInIdeMenu(store, path2, disabled = false) {
+  const unavailable = disabled || typeof path2 !== "string" || path2 === "";
+  return {
+    key: "open-in-ide",
+    text: store.t("project.openInIde"),
+    disabled: unavailable,
+    submenu: IDE_OPTIONS.map((ide) => ({
+      key: ide.id,
+      text: ide.title,
+      disabled: unavailable,
+      action: () => {
+        if (!unavailable) void store.openInIde(ide.id, path2);
+      }
+    }))
+  };
+}
+
 // src/client/git-colors.js
 var RANK = { conflict: 4, modified: 3, added: 2, untracked: 1 };
 function fileStatusKind(entry) {
@@ -3965,9 +3989,7 @@ function ProjectPanel({ store, state }) {
       { key: "terminal", text: t2("project.openTerminal"), action: () => {
         store.addTerminal({ cwd: isDir ? entry.path : entry === void 0 ? state.root : parentDir });
       } },
-      { key: "idea", text: t2("project.openInIdea"), icon: import_react4.default.createElement(IconExternal, { width: 13, height: 13 }), disabled: entry === void 0 || isDir, action: () => {
-        if (entry !== void 0 && !entry.isDir) void store.openInIdea(entry.path);
-      } },
+      { ...openInIdeMenu(store, entry?.path, isDir), icon: import_react4.default.createElement(IconExternal, { width: 13, height: 13 }) },
       { key: "reveal", text: t2("project.reveal"), icon: import_react4.default.createElement(IconExternal, { width: 13, height: 13 }), disabled: entry === void 0, action: () => {
         void store.reveal(entry.path);
       } }
@@ -46852,14 +46874,7 @@ function TabBar({ store, state }) {
           disabled: menu.tab.dirty !== true,
           action: () => store.discardDraft(menu.tab.id)
         },
-        {
-          key: "idea",
-          text: t2("project.openInIdea"),
-          disabled: menu.tab.kind !== "file",
-          action: () => {
-            if (menu.tab.kind === "file") void store.openInIdea(menu.tab.path);
-          }
-        },
+        openInIdeMenu(store, menu.tab.path, menu.tab.kind !== "file"),
         null,
         {
           key: "pin",
@@ -47122,6 +47137,8 @@ function SettingsForm({ store, state, compact }) {
       ...patch,
       git: { ...draft.git, ...patch.git ?? {} },
       idea: { ...draft.idea, ...patch.idea ?? {} },
+      webstorm: { ...draft.webstorm, ...patch.webstorm ?? {} },
+      vscode: { ...draft.vscode, ...patch.vscode ?? {} },
       terminal: { ...draft.terminal, ...patch.terminal ?? {} },
       project: { ...draft.project, ...patch.project ?? {} },
       commit: { ...draft.commit, ...patch.commit ?? {} },
@@ -47276,18 +47293,19 @@ function SettingsForm({ store, state, compact }) {
     import_react13.default.createElement(
       "div",
       { className: "itw-settings-group" },
-      import_react13.default.createElement("h3", null, t2("settings.ideaGroup")),
-      import_react13.default.createElement(
+      import_react13.default.createElement("h3", null, t2("settings.ideGroup")),
+      IDE_OPTIONS.map((ide) => import_react13.default.createElement(
         Row,
-        { label: t2("settings.ideaPath"), hint: t2("settings.ideaPathHint") },
+        { key: ide.id, label: ide.title, hint: t2("settings.idePathHint") },
         import_react13.default.createElement("input", {
           type: "text",
           className: "itw-input",
-          value: draft.idea?.path ?? "",
-          placeholder: t2("settings.ideaAuto"),
-          onChange: (event) => update({ idea: { path: event.target.value } })
+          "aria-label": ide.title,
+          value: draft[ide.id]?.path ?? "",
+          placeholder: t2("settings.ideAuto"),
+          onChange: (event) => update({ [ide.id]: { path: event.target.value } })
         })
-      )
+      ))
     ),
     import_react13.default.createElement(
       "div",
@@ -47403,6 +47421,8 @@ function SettingsForm({ store, state, compact }) {
           const reset = {
             git: { path: "", colors: true, commitTemplate: "" },
             idea: { path: "" },
+            webstorm: { path: "" },
+            vscode: { path: "" },
             terminal: { shell: "auto", copyOnSelect: false },
             project: { alwaysSelectOpened: true, showHidden: true },
             editor: { fontSize: 13, highlight: true, defaultReadOnly: true, markdownPreview: true },

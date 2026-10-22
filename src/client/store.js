@@ -919,16 +919,20 @@ export class WorkbenchStore {
     }
   }
 
-  /** Open the saved file in its current IntelliJ IDEA project. */
-  async openInIdea(path) {
+  /** Open the saved file in the selected external IDE and current project. */
+  async openInIde(ide, path) {
     try {
-      const result = await call('fs.openInIdea', { root: this.state.root, path })
-      this.toast('success', this.t('project.ideaRequested'))
+      const result = await call('fs.openInIde', { ide, root: this.state.root, path })
+      this.toast('success', this.t('project.ideRequested'))
       return result
     } catch (error) {
-      this.toast('error', this.t('project.ideaFailed'), error instanceof Error ? error.message : String(error))
+      this.toast('error', this.t('project.ideFailed'), error instanceof Error ? error.message : String(error))
       return undefined
     }
+  }
+
+  openInIdea(path) {
+    return this.openInIde('idea', path)
   }
 
   // ── editor tabs ───────────────────────────────────────────────────────
