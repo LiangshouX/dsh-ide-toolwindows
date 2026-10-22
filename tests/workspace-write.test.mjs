@@ -49,3 +49,19 @@ test('refuses a path outside the workspace and a missing file', async (t) => {
   await assert.rejects(() => writeFileText(root, join(root, 'missing.txt'), 'x'))
   await assert.rejects(() => writeFileText(root, root, 'x'))
 })
+
+test('an expected mtime turns a concurrent external edit into stale-file', async (t) => {
+  const root = await tempRoot(t)
+  const file = join(root, 'a.txt')
+  await writeFile(file, 'old\n', 'utf8')
+  const before = await readFile(file)
+  const { stat } = await import('node:fs/promises')
+  const mtimeMs = (await stat(file)).mtimeMs
+  await writeFile(file, 'external\n', 'utf8')
+  await assert.rejects(
+    () => writeFileText(root, file, 'mine\n', 'utf-8', { expectedMtimeMs: mtimeMs }),
+    error => error.code === 'stale-file',
+  )
+  assert.equal((await readFile(file)).toString('utf8'), 'external\n')
+  assert.notEqual(before.toString('utf8'), 'external\n')
+})

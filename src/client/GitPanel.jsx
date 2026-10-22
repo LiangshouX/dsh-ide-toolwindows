@@ -1,12 +1,17 @@
 /**
- * Git tool window: branch/sha chips, filterable lazily paged history, a lane
- * graph column, and JetBrains-style actions on one commit.
+ * Git tool window: branch/date filters, lazily paged history, a lane graph,
+ * and a right-hand commit Drawer.
+ *
+ * Selection follows the same rule as the Project tree: a single click only
+ * selects a row; double click / Enter opens the detail Drawer. The log keeps
+ * the full height while the Drawer is open.
  */
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { GRAPH_COLORS, layoutGraph, rowGeometry } from './graph.js'
 import { ContextMenu } from './ui.jsx'
-import { IconBranch, IconRefresh } from './icons.jsx'
+import { IconBranch, IconClose, IconCopy, IconRefresh } from './icons.jsx'
 import { formatGitDate } from './util.js'
+import { gitLayout, DRAWER_MIN } from './git-layout.js'
 
 const ROW_HEIGHT = 24
 const CELL = 14
@@ -79,51 +84,196 @@ function RefChip({ value }) {
   }, value)
 }
 
-function CommitDetailPane({ store, state }) {
+/** Split one full commit patch into per-file entries. */
+export function diffFiles(diff) {
+  const text = String(diff ?? '')
+  const output = []
+  for (const part of text.split(/^diff --git /m).slice(1)) {
+    const lines = part.split('\n')
+    const header = lines[0] ?? ''
+    const match = /^a\/(.+?) b\/(.+)$/.exec(header)
+    const path = match?.[2] ?? header
+    let additions = 0
+    let deletions = 0
+    for (const line of lines.slice(1)) {
+      if (line.startsWith('+') && !line.startsWith('+++')) additions += 1
+      else if (line.startsWith('-') && !line.startsWith('---')) deletions += 1
+    }
+    const status = lines.some(line => line.startsWith('new file mode'))
+      ? 'A'
+      : lines.some(line => line.startsWith('deleted file mode'))
+        ? 'D'
+        : lines.some(line => line.startsWith('rename from'))
+          ? 'R'
+          : 'M'
+    output.push({ path, status, additions, deletions, patch: `diff --git ${part}` })
+  }
+  return output
+}
+
+function InlinePatch({ text }) {
+  return React.createElement('div', { className: 'itw-git-inline-diff' },
+    String(text ?? '').split('\n').map((line, index) => React.createElement('div', {
+      key: index,
+      className: `itw-git-inline-line ${line.startsWith('+') && !line.startsWith('+++') ? 'itw-add' : ''} ${line.startsWith('-') && !line.startsWith('---') ? 'itw-del' : ''} ${line.startsWith('@@') ? 'itw-hunk' : ''}`,
+    }, line === '' ? '\u00a0' : line)),
+  )
+}
+
+function BranchPopover({ store, state, x, y, onClose }) {
   const t = store.t
-  const detail = state.git.detail
-  if (detail === undefined || detail === null) return null
-  const lines = String(detail.diff ?? '').split('\n')
-  const additions = lines.filter(line => line.startsWith('+') && !line.startsWith('+++')).length
-  const deletions = lines.filter(line => line.startsWith('-') && !line.startsWith('---')).length
-  return React.createElement('div', { className: 'itw-git-detail' },
-    React.createElement('div', { className: 'itw-git-detail-head' },
-      React.createElement('span', { className: 'itw-git-detail-subject', title: detail.subject }, detail.subject),
-      React.createElement('span', { className: 'itw-spacer' }),
-      React.createElement('button', {
-        type: 'button', className: 'itw-textbtn itw-small',
-        onClick: () => { void store.openCommit(detail.hash) },
-      }, t('git.openFull')),
-      React.createElement('button', {
-        type: 'button', className: 'itw-iconbtn', title: t('common.close'),
-        onClick: () => store.patch('git', { selectedHash: null, detail: null }),
-      }, '×'),
+  const [query, setQuery] = useState('')
+  const [index, setIndex] = useState(0)
+  const inputRef = useRef(null)
+  const names = useMemo(() => {
+    const value = query.trim().toLowerCase()
+    return state.git.branches.filter(name => value === '' || name.toLowerCase().includes(value))
+  }, [query, state.git.branches])
+  useEffect(() => { inputRef.current?.focus() }, [])
+  useEffect(() => { setIndex(0) }, [query])
+  const choose = (name) => { onClose(); store.requestCheckout(name) }
+  return React.createElement('div', {
+    className: 'itw-branch-popover',
+    style: { left: `${x}px`, top: `${y}px` },
+    onMouseDown: event => event.stopPropagation(),
+  },
+    React.createElement('input', {
+      ref: inputRef,
+      className: 'itw-input',
+      style: { width: '100%' },
+      placeholder: t('git.searchBranch'),
+      value: query,
+      onChange: event => setQuery(event.target.value),
+      onKeyDown: event => {
+        if (event.key === 'ArrowDown') { event.preventDefault(); setIndex(value => Math.min(names.length - 1, value + 1)) }
+        else if (event.key === 'ArrowUp') { event.preventDefault(); setIndex(value => Math.max(0, value - 1)) }
+        else if (event.key === 'Enter') { event.preventDefault(); if (names[index] !== undefined) choose(names[index]) }
+        else if (event.key === 'Escape') { event.preventDefault(); onClose() }
+      },
+    }),
+    React.createElement('div', { className: 'itw-branch-list' },
+      names.length === 0
+        ? React.createElement('div', { className: 'itw-quick-empty' }, t('quickOpen.empty'))
+        : names.map((name, position) => React.createElement('button', {
+            key: name,
+            type: 'button',
+            className: `itw-branch-row ${position === index ? 'itw-selected' : ''}`,
+            onMouseEnter: () => setIndex(position),
+            onClick: () => choose(name),
+          },
+            React.createElement('span', { className: 'itw-branch-check' }, name === state.status.branch ? '✓' : ''),
+            React.createElement('span', { className: 'itw-branch-name' }, name),
+          )),
     ),
-    React.createElement('div', { className: 'itw-git-detail-meta' },
-      React.createElement('span', { className: 'itw-git-detail-sha' }, detail.shortHash),
-      React.createElement('span', null, detail.author),
-      detail.email !== '' ? React.createElement('span', { className: 'itw-git-detail-dim' }, detail.email) : null,
-      React.createElement('span', null, detail.date),
-      ...(detail.refs ?? []).map(ref => React.createElement('span', { key: ref, className: 'itw-ref-chip' }, ref)),
-    ),
-    detail.body !== '' ? React.createElement('pre', { className: 'itw-git-detail-body' }, detail.body) : null,
-    (() => {
-      const files = [...String(detail.diff ?? '').matchAll(/^diff --git a\/(.+?) b\/(.+)$/gm)].map(match => match[2])
-      if (files.length === 0) return null
-      return React.createElement('div', { className: 'itw-git-files' },
-        files.map(path => React.createElement('button', {
-          key: path, type: 'button', className: 'itw-git-file', title: path,
-          onClick: () => store.openCommitFile(detail.hash, path),
-        },
-          React.createElement('span', { className: 'itw-git-file-name' }, path.split('/').pop()),
-          React.createElement('span', { className: 'itw-git-file-dir' }, path.includes('/') ? path.slice(0, path.lastIndexOf('/')) : ''),
-        )),
-      )
-    })(),
-    React.createElement('div', { className: 'itw-git-detail-foot' },
-      React.createElement('span', { className: 'itw-additions' }, `+${additions}`),
-      React.createElement('span', { className: 'itw-deletions' }, `-${deletions}`),
-      React.createElement('span', { className: 'itw-git-detail-hint' }, t('git.detailHint')),
+  )
+}
+
+function CommitDrawer({ store, state, narrow, width, onResizeStart, onClose }) {
+  const t = store.t
+  const git = state.git
+  const [selectedFile, setSelectedFile] = useState('')
+  const detail = git.detail
+  const closeRef = useRef(null)
+  const files = useMemo(() => diffFiles(detail?.diff), [detail?.diff])
+  const additions = files.reduce((sum, file) => sum + file.additions, 0)
+  const deletions = files.reduce((sum, file) => sum + file.deletions, 0)
+  const selected = files.find(file => file.path === selectedFile) ?? files[0]
+
+  useEffect(() => {
+    setSelectedFile('')
+    closeRef.current?.focus()
+  }, [detail?.hash])
+
+  const copy = async (text) => {
+    try {
+      await navigator.clipboard.writeText(text)
+      store.toast('success', t('common.copied'), text)
+    } catch {
+      store.toast('error', t('common.error'), text)
+    }
+  }
+
+  return React.createElement(React.Fragment, null,
+    narrow
+      ? React.createElement('div', { className: 'itw-git-drawer-backdrop', onMouseDown: onClose })
+      : null,
+    React.createElement('aside', {
+      className: `itw-git-drawer ${narrow ? 'itw-git-drawer-overlay' : ''}`,
+      style: narrow ? undefined : { width: `${width}px` },
+      role: 'complementary',
+      'aria-label': t('git.detailTitle'),
+    },
+      narrow ? null : React.createElement('div', { className: 'itw-git-drawer-resizer', onPointerDown: onResizeStart }),
+      React.createElement('div', { className: 'itw-git-drawer-head' },
+        React.createElement('span', { className: 'itw-git-drawer-title', title: detail?.subject ?? '' },
+          detail?.subject ?? (git.detailLoading ? t('common.loading') : '')),
+        React.createElement('span', { className: 'itw-spacer' }),
+        detail !== null
+          ? React.createElement('button', {
+              type: 'button', className: 'itw-iconbtn', title: t('git.copySha'),
+              onClick: () => { void copy(detail.hash) },
+            }, React.createElement(IconCopy, { width: 12, height: 12 }))
+          : null,
+        React.createElement('button', {
+          ref: closeRef,
+          type: 'button', className: 'itw-iconbtn', title: t('git.closeDetail'),
+          onClick: onClose,
+        }, React.createElement(IconClose, { width: 13, height: 13 })),
+      ),
+      detail === null && git.detailLoading === true
+        ? React.createElement('div', { className: 'itw-git-drawer-body' }, React.createElement('div', { className: 'itw-empty' }, t('common.loading')))
+        : (detail === null
+            ? React.createElement('div', { className: 'itw-git-drawer-body' }, React.createElement('div', { className: 'itw-empty' }, t('git.selectCommit')))
+            : React.createElement('div', { className: 'itw-git-drawer-body' },
+                React.createElement('div', { className: 'itw-git-drawer-meta' },
+                  React.createElement('span', { className: 'itw-git-drawer-sha', title: detail.hash }, detail.shortHash),
+                  React.createElement('span', null, detail.author),
+                  detail.email !== '' ? React.createElement('span', { className: 'itw-git-detail-dim' }, detail.email) : null,
+                  React.createElement('span', { className: 'itw-git-detail-dim' }, detail.date),
+                  ...(detail.refs ?? []).map(ref => React.createElement('span', { key: ref, className: 'itw-ref-chip' }, ref)),
+                  detail.parents?.length > 0
+                    ? React.createElement('span', { className: 'itw-git-detail-dim' }, `${t('git.parents')}: ${detail.parents.map(parent => parent.slice(0, 7)).join(', ')}`)
+                    : null,
+                ),
+                React.createElement('button', {
+                  type: 'button', className: 'itw-textbtn itw-small itw-git-open-full', title: t('git.openFull'),
+                  onClick: () => { void store.openCommit(detail.hash) },
+                }, t('git.openFull')),
+                detail.body !== ''
+                  ? React.createElement('pre', { className: 'itw-git-drawer-body-text' }, detail.body)
+                  : null,
+                React.createElement('div', { className: 'itw-git-drawer-section-title' },
+                  `${t('git.fileList')} · ${files.length}`,
+                  React.createElement('span', { className: 'itw-additions' }, ` +${additions}`),
+                  React.createElement('span', { className: 'itw-deletions' }, ` -${deletions}`),
+                ),
+                files.length === 0
+                  ? React.createElement('div', { className: 'itw-git-detail-dim' }, t('git.noFiles'))
+                  : React.createElement(React.Fragment, null,
+                      React.createElement('div', { className: 'itw-git-drawer-files' },
+                        files.map(file => React.createElement('button', {
+                          key: file.path,
+                          type: 'button',
+                          className: `itw-git-drawer-file ${selected?.path === file.path ? 'itw-selected' : ''}`,
+                          title: file.path,
+                          onClick: () => setSelectedFile(file.path),
+                          onDoubleClick: () => { void store.openCommitFile(detail.hash, file.path) },
+                        },
+                          React.createElement('span', { className: `itw-git-file-status itw-status-${file.status}` }, file.status),
+                          React.createElement('span', { className: 'itw-git-file-name' }, file.path.split('/').pop()),
+                          React.createElement('span', { className: 'itw-git-file-dir' }, file.path.includes('/') ? file.path.slice(0, file.path.lastIndexOf('/')) : ''),
+                          React.createElement('span', { className: 'itw-additions' }, `+${file.additions}`),
+                          React.createElement('span', { className: 'itw-deletions' }, `-${file.deletions}`),
+                        )),
+                      ),
+                      selected !== undefined
+                        ? React.createElement('div', { className: 'itw-git-drawer-inline' },
+                            React.createElement('div', { className: 'itw-git-drawer-section-title' }, selected.path),
+                            React.createElement(InlinePatch, { text: selected.patch }),
+                          )
+                        : null,
+                    ),
+              )),
     ),
   )
 }
@@ -135,10 +285,12 @@ export function GitPanel({ store, state }) {
   const [scrollTop, setScrollTop] = useState(0)
   const [viewport, setViewport] = useState(300)
   const [menu, setMenu] = useState(null)
-  const [narrow, setNarrow] = useState(false)
+  const [mainWidth, setMainWidth] = useState(0)
+  const [branchMenu, setBranchMenu] = useState(null)
   const scrollRef = useRef(null)
-  const tableRef = useRef(null)
+  const mainRef = useRef(null)
   const queryTimer = useRef(null)
+  const rowRefs = useRef(new Map())
 
   useEffect(() => {
     const element = scrollRef.current
@@ -150,13 +302,11 @@ export function GitPanel({ store, state }) {
   }, [])
 
   useEffect(() => {
-    const element = tableRef.current
+    const element = mainRef.current
     if (element === null) return undefined
-    // A bottom dock is often narrow: hide author/date before the subject
-    // becomes a three-character stub.
-    const observer = new ResizeObserver(() => setNarrow(element.clientWidth < 640))
+    const observer = new ResizeObserver(() => setMainWidth(element.clientWidth))
     observer.observe(element)
-    setNarrow(element.clientWidth < 640)
+    setMainWidth(element.clientWidth)
     return () => observer.disconnect()
   }, [])
 
@@ -171,6 +321,15 @@ export function GitPanel({ store, state }) {
   const rows = layout.rows
   const start = Math.max(0, Math.floor(scrollTop / ROW_HEIGHT) - 6)
   const end = Math.min(rows.length, Math.ceil((scrollTop + viewport) / ROW_HEIGHT) + 6)
+  const drawerOpen = git.detail !== null || git.detailLoading === true
+  const geometry = gitLayout({
+    mainWidth,
+    configuredWidth: state.layout.gitDrawerWidth ?? 420,
+    drawerOpen,
+  })
+  const drawerNarrow = geometry.drawerNarrow
+  const drawerWidth = geometry.drawerWidth
+  const tableNarrow = geometry.tableNarrow
 
   const onScroll = (event) => {
     const element = event.currentTarget
@@ -187,6 +346,50 @@ export function GitPanel({ store, state }) {
     }
   }
 
+  const openDetail = (hash) => { void store.openCommitDetail(hash) }
+
+  const closeDetail = () => {
+    const hash = git.detail?.hash ?? git.detailHash
+    store.closeCommitDetail()
+    if (hash !== null && hash !== undefined) {
+      window.setTimeout(() => rowRefs.current.get(hash)?.focus?.(), 0)
+    }
+  }
+
+  useEffect(() => {
+    if (drawerOpen !== true) return undefined
+    const onKey = (event) => {
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        event.stopPropagation()
+        closeDetail()
+      }
+    }
+    window.addEventListener('keydown', onKey, true)
+    return () => window.removeEventListener('keydown', onKey, true)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [drawerOpen, git.detail?.hash, git.detailHash])
+
+  const moveSelection = (delta) => {
+    const list = git.commits
+    const index = list.findIndex(commit => commit.hash === git.selectedHash)
+    const next = Math.max(0, Math.min(list.length - 1, index < 0 ? 0 : index + delta))
+    const commit = list[next]
+    if (commit !== undefined) {
+      store.selectCommit(commit.hash)
+      const row = rowRefs.current.get(commit.hash)
+      row?.scrollIntoView?.({ block: 'nearest' })
+      row?.focus?.()
+    }
+  }
+
+  const onRowKeyDown = (event, commit) => {
+    if (event.key === 'Enter') { event.preventDefault(); openDetail(commit.hash) }
+    else if (event.key === 'Escape' && drawerOpen) { event.preventDefault(); closeDetail() }
+    else if (event.key === 'ArrowDown') { event.preventDefault(); moveSelection(1) }
+    else if (event.key === 'ArrowUp') { event.preventDefault(); moveSelection(-1) }
+  }
+
   const onContextMenu = (event, commit) => {
     event.preventDefault()
     setMenu({ x: event.clientX, y: event.clientY, commit })
@@ -196,13 +399,12 @@ export function GitPanel({ store, state }) {
     if (menu === null) return []
     const commit = menu.commit
     return [
+      { key: 'open', text: t('git.openDetails'), action: () => openDetail(commit.hash) },
       { key: 'copy', text: t('git.copySha'), action: () => { void copy(commit.hash) } },
       { key: 'compare-head', text: t('git.compareWithHead'), action: () => store.openCompare(commit.hash, 'HEAD') },
       null,
       {
-        key: 'checkout', text: t('git.checkout'), action: () => {
-          store.askConfirm(t('git.checkout'), `${t('git.checkoutConfirm')}\n\n${commit.shortHash} ${commit.subject}`, t('git.checkout'), () => { void store.checkout(commit.hash) })
-        },
+        key: 'checkout', text: t('git.checkout'), action: () => store.requestCheckout(commit.hash),
       },
       {
         key: 'revert', text: t('git.revert'), action: () => {
@@ -212,24 +414,51 @@ export function GitPanel({ store, state }) {
     ]
   }, [menu, t])
 
+  useEffect(() => {
+    if (branchMenu === null) return undefined
+    const onDown = (event) => {
+      if (event.target instanceof Element && event.target.closest('.itw-branch-popover, .itw-branch-switch') !== null) return
+      setBranchMenu(null)
+    }
+    window.addEventListener('mousedown', onDown, true)
+    return () => window.removeEventListener('mousedown', onDown, true)
+  }, [branchMenu])
+
+  const startDrawerResize = (event) => {
+    event.preventDefault()
+    const startX = event.clientX
+    const startWidth = drawerWidth
+    const move = (moveEvent) => {
+      const next = Math.max(DRAWER_MIN, Math.min(startWidth + (startX - moveEvent.clientX), Math.max(DRAWER_MIN, mainWidth * 0.6)))
+      store.setLayout({ gitDrawerWidth: Math.round(next) })
+    }
+    const up = () => {
+      window.removeEventListener('pointermove', move)
+      window.removeEventListener('pointerup', up)
+    }
+    window.addEventListener('pointermove', move)
+    window.addEventListener('pointerup', up)
+  }
+
+  const dateOptions = [
+    ['', 'git.allTime'],
+    ['7 days ago', 'git.last7'],
+    ['30 days ago', 'git.last30'],
+    ['90 days ago', 'git.last90'],
+  ]
+
   return React.createElement('div', { className: 'itw-git' },
     React.createElement('div', { className: 'itw-git-filters' },
-      React.createElement(IconBranch, { width: 13, height: 13, style: { color: 'var(--itw-muted)' } }),
-      React.createElement('span', { style: { color: 'var(--itw-fg)', fontWeight: 600, fontSize: 12, marginRight: 4 } },
-        state.status.detached === true ? t('git.detached') : (state.status.branch ?? '—')),
-      React.createElement('select', {
-        className: 'itw-select', title: t('git.switchBranch'),
-        value: state.status.branch ?? '',
-        disabled: git.branches.length === 0,
-        onChange: event => {
-          const ref = event.target.value
-          if (ref !== '' && ref !== state.status.branch) void store.checkout(ref)
+      React.createElement('button', {
+        type: 'button', className: 'itw-branch-switch', title: t('git.switchBranchTitle'),
+        onClick: event => {
+          const rect = event.currentTarget.getBoundingClientRect()
+          setBranchMenu({ x: rect.left, y: rect.bottom + 4 })
         },
       },
-        state.status.detached === true
-          ? React.createElement('option', { value: '' }, t('git.detached'))
-          : null,
-        git.branches.map(name => React.createElement('option', { key: name, value: name }, name)),
+        React.createElement(IconBranch, { width: 13, height: 13 }),
+        React.createElement('span', null, state.status.detached === true ? t('git.detached') : (state.status.branch ?? '—')),
+        React.createElement('span', { className: 'itw-branch-caret' }, '▾'),
       ),
       (git.compare ?? []).length > 0
         ? React.createElement('span', { className: 'itw-compare-chip', title: t('git.compareHint') },
@@ -246,16 +475,21 @@ export function GitPanel({ store, state }) {
             onClick: () => store.compareSelected(),
           }, t('git.compare'))
         : null,
+      React.createElement('button', {
+        type: 'button',
+        className: `itw-textbtn itw-small ${git.filters.branch === '' ? 'itw-primary' : ''}`,
+        title: t('git.branchFilter'),
+        onClick: () => store.setGitFilters({ branch: git.filters.branch === '' ? (state.status.branch ?? '') : '' }),
+      }, git.filters.branch === '' ? t('git.allBranches') : t('git.currentBranchOnly')),
       React.createElement('select', {
-        className: 'itw-select', title: t('git.branchFilter'),
-        value: git.filters.branch,
-        onChange: event => store.setGitFilters({ branch: event.target.value }),
+        className: 'itw-select', title: t('git.dateFilter'),
+        value: git.filters.since ?? '',
+        onChange: event => store.setGitFilters({ since: event.target.value }),
       },
-        React.createElement('option', { value: '' }, t('git.allBranches')),
-        git.branches.map(name => React.createElement('option', { key: name, value: name }, name)),
+        dateOptions.map(([value, key]) => React.createElement('option', { key: value, value }, t(key))),
       ),
       React.createElement('input', {
-        className: 'itw-input', style: { width: 110 }, placeholder: t('git.authorFilter'),
+        className: 'itw-input', style: { width: 100 }, placeholder: t('git.authorFilter'),
         value: git.filters.author,
         onChange: event => {
           const value = event.target.value
@@ -264,7 +498,7 @@ export function GitPanel({ store, state }) {
         },
       }),
       React.createElement('input', {
-        className: 'itw-input', style: { flex: 1, minWidth: 120, width: 'auto' }, placeholder: t('git.queryFilter'),
+        className: 'itw-input', style: { flex: 1, minWidth: 100, width: 'auto' }, placeholder: t('git.queryFilter'),
         value: git.filters.query,
         onChange: event => {
           const value = event.target.value
@@ -281,81 +515,103 @@ export function GitPanel({ store, state }) {
             }, '×'),
           )
         : null,
+      git.selectedHash !== null && git.selectedHash !== undefined && !drawerOpen
+        ? React.createElement('button', {
+            type: 'button', className: 'itw-textbtn itw-small',
+            onClick: () => openDetail(git.selectedHash),
+          }, t('git.openDetails'))
+        : null,
       React.createElement('button', {
         type: 'button', className: 'itw-iconbtn', title: t('common.refresh'),
         onClick: () => { void store.loadLog(true); void store.loadBranches(); void store.refreshStatus({ initial: true }) },
       }, React.createElement(IconRefresh, { width: 14, height: 14 })),
     ),
-    React.createElement('div', {
-      className: `itw-git-table ${narrow ? 'itw-git-narrow' : ''}`,
-      ref: tableRef,
-      style: { '--itw-graph-w': `${graphWidth}px` },
-    },
-      React.createElement('div', { className: 'itw-git-head' },
-        React.createElement('span', null, ''),
-        React.createElement('span', null, 'SHA'),
-        React.createElement('span', null, t('git.message')),
-        React.createElement('span', null, t('git.author')),
-        React.createElement('span', null, t('git.date')),
-      ),
-      React.createElement('div', { className: 'itw-git-scroll', ref: scrollRef, onScroll },
-        rows.length === 0 && git.loading !== true
-          ? React.createElement('div', { className: 'itw-git-empty' },
-              React.createElement('div', null,
-                state.status.isRepo === true
-                  ? (git.error ?? t('git.noCommits'))
-                  : t('project.noRepoHint'),
-              ),
-              state.status.isRepo !== true
-                ? React.createElement('button', {
-                    type: 'button', className: 'itw-textbtn itw-primary itw-small', style: { marginTop: 10 },
-                    onClick: () => store.openProjectPicker(),
-                  }, repoProjects.length > 0 ? t('project.chooseRepo') : t('project.selectProject'))
-                : (git.error !== null && git.error !== undefined
-                    ? React.createElement('button', { type: 'button', className: 'itw-textbtn itw-small', style: { marginTop: 10 }, onClick: () => { void store.loadLog(true) } }, t('common.retry'))
-                    : null),
-            )
-          : React.createElement('div', { className: 'itw-git-rows', style: { height: `${rows.length * ROW_HEIGHT}px` } },
-              rows.slice(start, end).map((row, index) => {
-                const commit = row.commit
-                const top = (start + index) * ROW_HEIGHT
-                const selected = git.selectedHash === commit.hash
-                const inCompare = (git.compare ?? []).includes(commit.hash)
-                return React.createElement('div', {
-                  key: `${commit.hash}:${start + index}`,
-                  className: `itw-git-row ${selected ? 'itw-selected' : ''} ${inCompare ? 'itw-compare' : ''}`,
-                  style: { top: `${top}px` },
-                  onClick: event => {
-                    if (event.ctrlKey || event.metaKey) store.toggleCompare(commit.hash)
-                    else void store.selectCommit(commit.hash)
+    React.createElement('div', { className: `itw-git-main ${tableNarrow ? 'itw-git-narrow' : ''}`, ref: mainRef },
+      React.createElement('div', {
+        className: 'itw-git-table',
+        style: { '--itw-graph-w': `${graphWidth}px` },
+      },
+        React.createElement('div', { className: 'itw-git-head' },
+          React.createElement('span', null, ''),
+          React.createElement('span', null, 'SHA'),
+          React.createElement('span', null, t('git.message')),
+          React.createElement('span', null, t('git.author')),
+          React.createElement('span', null, t('git.date')),
+        ),
+        React.createElement('div', { className: 'itw-git-scroll', ref: scrollRef, onScroll },
+          rows.length === 0 && git.loading !== true
+            ? React.createElement('div', { className: 'itw-git-empty' },
+                React.createElement('div', null,
+                  state.status.isRepo === true
+                    ? (git.error ?? t('git.noCommits'))
+                    : t('project.noRepoHint'),
+                ),
+                state.status.isRepo !== true
+                  ? React.createElement('button', {
+                      type: 'button', className: 'itw-textbtn itw-primary itw-small', style: { marginTop: 10 },
+                      onClick: () => store.openProjectPicker(),
+                    }, repoProjects.length > 0 ? t('project.chooseRepo') : t('project.selectProject'))
+                  : (git.error !== null && git.error !== undefined
+                      ? React.createElement('button', { type: 'button', className: 'itw-textbtn itw-small', style: { marginTop: 10 }, onClick: () => { void store.loadLog(true) } }, t('common.retry'))
+                      : null),
+              )
+            : React.createElement('div', { className: 'itw-git-rows', style: { height: `${rows.length * ROW_HEIGHT}px` } },
+                rows.slice(start, end).map((row, index) => {
+                  const commit = row.commit
+                  const top = (start + index) * ROW_HEIGHT
+                  const selected = git.selectedHash === commit.hash
+                  const inCompare = (git.compare ?? []).includes(commit.hash)
+                  return React.createElement('div', {
+                    key: `${commit.hash}:${start + index}`,
+                    ref: element => {
+                      if (element === null) rowRefs.current.delete(commit.hash)
+                      else rowRefs.current.set(commit.hash, element)
+                    },
+                    className: `itw-git-row ${selected ? 'itw-selected' : ''} ${inCompare ? 'itw-compare' : ''}`,
+                    style: { top: `${top}px` },
+                    tabIndex: 0,
+                    onClick: event => {
+                      if (event.ctrlKey || event.metaKey) store.toggleCompare(commit.hash)
+                      else store.selectCommit(commit.hash)
+                    },
+                    onDoubleClick: () => openDetail(commit.hash),
+                    onKeyDown: event => onRowKeyDown(event, commit),
+                    onContextMenu: event => onContextMenu(event, commit),
                   },
-                  onDoubleClick: () => { void store.openCommit(commit.hash) },
-                  onContextMenu: event => onContextMenu(event, commit),
-                  title: `${commit.shortHash} ${commit.subject}`,
-                },
-                  React.createElement('div', { className: 'itw-git-graph' },
-                    React.createElement(GraphCell, { row, width: graphWidth, height: ROW_HEIGHT, offset: 0 }),
-                  ),
-                  React.createElement('span', { className: 'itw-sha' }, commit.shortHash),
-                  React.createElement('span', { className: 'itw-subject', style: { display: 'flex', alignItems: 'center', gap: 6, minWidth: 0 } },
-                    commit.refs.length > 0
-                      ? React.createElement('span', { style: { display: 'inline-flex', gap: 4, flex: '0 0 auto' } },
-                          commit.refs.slice(0, 2).map(ref => React.createElement(RefChip, { key: ref, value: ref })),
-                        )
-                      : null,
-                    React.createElement('span', { style: { overflow: 'hidden', textOverflow: 'ellipsis' } }, commit.subject),
-                  ),
-                  React.createElement('span', { className: 'itw-author', title: commit.email }, commit.author),
-                  React.createElement('span', { className: 'itw-date' }, formatGitDate(commit.date)),
-                )
-              }),
-              git.loading === true
-                ? React.createElement('div', { style: { position: 'absolute', left: 0, right: 0, bottom: -26, height: 26, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--itw-muted)', fontSize: 11 } }, t('common.loading'))
-                : null,
-            ),
+                    React.createElement('div', { className: 'itw-git-graph' },
+                      React.createElement(GraphCell, { row, width: graphWidth, height: ROW_HEIGHT, offset: 0 }),
+                    ),
+                    React.createElement('span', { className: 'itw-sha' }, commit.shortHash),
+                    React.createElement('span', { className: 'itw-subject', style: { display: 'flex', alignItems: 'center', gap: 6, minWidth: 0 } },
+                      commit.refs.length > 0
+                        ? React.createElement('span', { style: { display: 'inline-flex', gap: 4, flex: '0 0 auto' } },
+                            commit.refs.slice(0, 2).map(ref => React.createElement(RefChip, { key: ref, value: ref })),
+                          )
+                        : null,
+                      React.createElement('span', { style: { overflow: 'hidden', textOverflow: 'ellipsis' } }, commit.subject),
+                    ),
+                    React.createElement('span', { className: 'itw-author', title: commit.email }, commit.author),
+                    React.createElement('span', { className: 'itw-date' }, formatGitDate(commit.date, tableNarrow)),
+                  )
+                }),
+                git.loading === true
+                  ? React.createElement('div', { style: { position: 'absolute', left: 0, right: 0, bottom: -26, height: 26, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--itw-muted)', fontSize: 11 } }, t('common.loading'))
+                  : null,
+              ),
+        ),
       ),
+      drawerOpen
+        ? React.createElement(CommitDrawer, {
+            store, state, narrow: drawerNarrow, width: drawerWidth,
+            onResizeStart: startDrawerResize, onClose: closeDetail,
+          })
+        : null,
     ),
-    React.createElement(CommitDetailPane, { store, state }),
     menu !== null ? React.createElement(ContextMenu, { x: menu.x, y: menu.y, items: menuItems, onClose: () => setMenu(null) }) : null,
+    branchMenu !== null
+      ? React.createElement(BranchPopover, {
+          store, state, x: branchMenu.x, y: branchMenu.y, onClose: () => setBranchMenu(null),
+        })
+      : null,
   )
 }

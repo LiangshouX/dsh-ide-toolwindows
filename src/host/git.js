@@ -325,10 +325,12 @@ export async function unstage(env, paths) {
   await runGit(env, ['reset', '-q', 'HEAD', '--', ...paths])
 }
 
-/** Discard worktree changes of the given paths. */
+/** Discard worktree *and index* changes of the given paths (rollback). */
 export async function discard(env, paths) {
   if (paths.length === 0) throw new ApiError('bad-request', 'no paths')
-  await runGit(env, ['restore', '--worktree', '--', ...paths])
+  // `--worktree` alone leaves a staged modification in the index (the file
+  // then still shows as `M ` after a "rollback"). Restore both sides to HEAD.
+  await runGit(env, ['restore', '--source=HEAD', '--staged', '--worktree', '--', ...paths])
 }
 
 /**
@@ -395,7 +397,8 @@ function parseLog(stdout) {
 /**
  * One page of history.
  * @param {{ gitPath?: string, root: string }} env
- * @param {{ skip?: number, count?: number, branch?: string, author?: string, query?: string }} options
+ * @param {{ skip?: number, count?: number, branch?: string, author?: string, query?: string,
+ *   since?: string, regex?: boolean }} options
  */
 export async function log(env, options = {}) {
   const count = Math.min(Math.max(options.count ?? 200, 1), 500)
@@ -411,7 +414,13 @@ export async function log(env, options = {}) {
   if (options.branch && options.branch !== '') args.push(options.branch)
   else args.push('--all')
   if (options.author && options.author !== '') args.push(`--author=${options.author}`)
-  if (options.query && options.query !== '') args.push(`--grep=${options.query}`, '--regexp-ignore-case')
+  if (options.query && options.query !== '') {
+    // A literal query must not be interpreted as a regex: typing `[` in the
+    // filter used to exit 128 and blank the whole history.
+    if (options.regex !== true) args.push('--fixed-strings')
+    args.push(`--grep=${options.query}`, '--regexp-ignore-case')
+  }
+  if (options.since && options.since !== '') args.push(`--since=${options.since}`)
   if (options.path && options.path !== '') args.push('--', options.path)
   const { stdout } = await runGit(env, args)
   return parseLog(stdout)

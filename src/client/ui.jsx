@@ -114,19 +114,50 @@ export function ContextMenu({ x, y, items, onClose, depth = 0 }) {
 
 /** Confirmation modal (danger actions always go through this). */
 export function ConfirmModal({ dialog, onClose }) {
+  const cancelRef = useRef(null)
+  useEffect(() => {
+    if (dialog === null) return undefined
+    const onKey = (event) => {
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        event.stopPropagation()
+        onClose()
+      }
+    }
+    window.addEventListener('keydown', onKey, true)
+    return () => window.removeEventListener('keydown', onKey, true)
+  }, [dialog, onClose])
+  useEffect(() => {
+    // Focus Cancel, never the destructive action: a stray Enter must not
+    // delete a file or discard a buffer.
+    if (dialog !== null) cancelRef.current?.focus()
+  }, [dialog])
   if (dialog === null) return null
+  const actions = Array.isArray(dialog.actions) && dialog.actions.length > 0
+    ? dialog.actions
+    : [
+        { key: 'cancel', label: dialog.cancelLabel ?? 'Cancel', action: () => {} },
+        {
+          key: 'confirm',
+          label: dialog.confirmLabel ?? 'Confirm',
+          danger: dialog.danger !== false,
+          primary: dialog.danger === false,
+          action: () => dialog.onConfirm?.(),
+        },
+      ]
   return React.createElement('div', { className: 'itw-modal-backdrop', onMouseDown: event => { if (event.target === event.currentTarget) onClose() } },
-    React.createElement('div', { className: 'itw-modal', role: 'dialog', 'aria-modal': 'true' },
+    React.createElement('div', { className: 'itw-modal', role: 'dialog', 'aria-modal': 'true', 'aria-label': dialog.title },
       React.createElement('h2', null, dialog.title),
       React.createElement('p', null, dialog.body),
       React.createElement('div', { className: 'itw-modal-actions' },
-        React.createElement('button', { type: 'button', className: 'itw-textbtn', onClick: onClose }, dialog.cancelLabel ?? 'Cancel'),
-        React.createElement('button', {
+        actions.map((action, index) => React.createElement('button', {
+          key: action.key ?? index,
+          ref: index === 0 ? cancelRef : undefined,
           type: 'button',
-          className: `itw-textbtn ${dialog.danger === false ? 'itw-primary' : 'itw-danger-solid'}`,
-          autoFocus: true,
-          onClick: () => { onClose(); dialog.onConfirm?.() },
-        }, dialog.confirmLabel ?? 'Confirm'),
+          className: `itw-textbtn ${action.primary === true ? 'itw-primary' : ''} ${action.danger === true ? 'itw-danger-solid' : ''}`,
+          autoFocus: index === 0,
+          onClick: () => { onClose(); action.action?.() },
+        }, action.label)),
       ),
     ),
   )

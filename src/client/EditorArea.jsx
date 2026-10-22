@@ -8,10 +8,11 @@
  * with an optional document outline.
  */
 import React, { useEffect, useRef, useState } from 'react'
-import { CodeView } from './CodeView.jsx'
 import { CodeEditor } from './CodeEditor.jsx'
 import { MarkdownView } from './MarkdownView.jsx'
 import { DiffView } from './DiffView.jsx'
+import { FindBar } from './FindBar.jsx'
+import { SearchView } from './SearchView.jsx'
 import { ContextMenu, Kbd } from './ui.jsx'
 import {
   FileTypeIcon, IconClose, IconCode, IconEdit, IconEye, IconLock, IconMore, IconOutline,
@@ -64,7 +65,7 @@ function Welcome({ store, state }) {
   )
 }
 
-function FilePreview({ store, state, tab }) {
+function FilePreview({ store, state, tab, onEditorReady, onFindRequest, onFindInFiles }) {
   const t = store.t
   const scrollTimer = useRef(null)
   useEffect(() => () => { if (scrollTimer.current !== null) clearTimeout(scrollTimer.current) }, [])
@@ -107,6 +108,11 @@ function FilePreview({ store, state, tab }) {
       path: tab.path,
       fontSize: state.settings?.editor?.fontSize ?? 13,
       resetToken: tab.resetToken ?? 0,
+      revealLine: tab.revealLine,
+      readOnly: false,
+      onFindRequest,
+      onFindInFiles,
+      onReady: onEditorReady,
       onChange: value => store.updateDraft(tab.id, value),
       onSave: () => { void store.saveTab(tab.id) },
       onCursor: position => store.setCursor(position),
@@ -114,7 +120,9 @@ function FilePreview({ store, state, tab }) {
   }
   if (isMarkdownPath(tab.path) && (tab.view ?? 'preview') === 'preview') {
     return React.createElement(MarkdownView, {
+      key: tab.id,
       text,
+      t,
       outlineOpen: tab.outlineOpen === true,
       onToggleOutline: () => store.updateActiveTab({ outlineOpen: tab.outlineOpen !== true }),
       labels: {
@@ -129,13 +137,20 @@ function FilePreview({ store, state, tab }) {
       },
     })
   }
-  return React.createElement(CodeView, {
-    content: text,
+  // Read-only files use the same CodeMirror surface: native selection,
+  // Ctrl+A/Ctrl+C, FindBar and horizontal scrolling all come for free.
+  return React.createElement(CodeEditor, {
+    key: `${tab.id}:readonly:${tab.resetToken ?? 0}`,
+    value: text,
     path: tab.path,
     fontSize: state.settings?.editor?.fontSize ?? 13,
-    highlight: state.settings?.editor?.highlight !== false,
-    initialScrollTop: tab.scrollTop ?? 0,
-    onScrollTop,
+    resetToken: tab.resetToken ?? 0,
+    revealLine: tab.revealLine,
+    readOnly: true,
+    onFindRequest,
+    onFindInFiles,
+    onReady: onEditorReady,
+    onCursor: position => store.setCursor(position),
   })
 }
 
@@ -287,6 +302,19 @@ function EditorToolbar({ store, state, tab }) {
       )),
       React.createElement('b', null, segments[segments.length - 1]),
       dirty ? React.createElement('span', { className: 'itw-toolbar-dirty', title: t('editor.dirty') }, t('editor.dirty')) : null,
+      tab.conflict !== null && tab.conflict !== undefined
+        ? React.createElement('span', { className: 'itw-conflict-chip', title: tab.conflict.message ?? '' },
+            t('editor.externalChanged'),
+            React.createElement('button', {
+              type: 'button', className: 'itw-textbtn itw-small',
+              onClick: () => { void store.reloadTab(tab.id) },
+            }, t('editor.reloadFromDisk')),
+            React.createElement('button', {
+              type: 'button', className: 'itw-textbtn itw-small',
+              onClick: () => { void store.saveTab(tab.id, { force: true }) },
+            }, t('editor.overwriteDisk')),
+          )
+        : null,
     ),
     React.createElement('div', { className: 'itw-spacer' }),
     payload?.truncated === true ? React.createElement('span', { style: { color: 'var(--itw-warn)' } }, t('editor.truncated')) : null,
@@ -351,12 +379,68 @@ function EditorToolbar({ store, state, tab }) {
 
 export function EditorArea({ store, state }) {
   const active = state.tabs.find(tab => tab.id === state.activeId)
+  const [findOpen, setFindOpen] = useState(false)
+  const [editorApi, setEditorApi] = useState(null)
+  const findOpenRef = useRef(false)
+  findOpenRef.current = findOpen
+  const textTab = active?.kind === 'file' && active.payload?.kind === 'text' && active.payload?.truncated !== true
+    && !(isMarkdownPath(active.path) && (active.view ?? 'preview') === 'preview' && active.editing !== true)
+
+  useEffect(() => {
+    setFindOpen(false)
+    setEditorApi(null)
+  }, [active?.id])
+
+  useEffect(() => {
+    const onKeyDown = (event) => {
+      if (store.state.active !== true) return
+      const target = event.target
+      if (target instanceof HTMLElement && target.closest('.itw-search')) return
+      const mod = event.ctrlKey || event.metaKey
+      const key = event.key.toLowerCase()
+      if (mod && ((event.shiftKey && !event.altKey) || (event.altKey && !event.shiftKey)) && key === 'f') {
+        event.preventDefault()
+        event.stopPropagation()
+        store.openSearchTab()
+        return
+      }
+      if (mod && !event.altKey && !event.shiftKey && key === 'f' && textTab) {
+        event.preventDefault()
+        event.stopPropagation()
+        setFindOpen(true)
+        return
+      }
+      if ((event.key === 'F3' || (mod && key === 'g')) && textTab) {
+        event.preventDefault()
+        event.stopPropagation()
+        setFindOpen(true)
+        return
+      }
+      if (event.key === 'Escape' && findOpenRef.current) {
+        event.preventDefault()
+        findOpenRef.current = false
+        editorApi?.clear()
+        setFindOpen(false)
+      }
+    }
+    window.addEventListener('keydown', onKeyDown, true)
+    return () => window.removeEventListener('keydown', onKeyDown, true)
+  }, [store, textTab, editorApi])
+
   useEffect(() => {
     const onKeyDown = (event) => {
       if (!(event.ctrlKey || event.metaKey) || event.altKey) return
-      if (event.key.toLowerCase() !== 's') return
       const target = event.target
-      if (target instanceof HTMLElement && target.closest('.itw-commit, .itw-term, .itw-diff')) return
+      if (!(target instanceof Element) || target.closest('.itw-root') === null) return
+      if (target.closest('.itw-commit, .itw-term, .itw-term-host, .itw-diff, .itw-search') !== null) return
+      if (event.key.toLowerCase() === 'w' && !event.shiftKey) {
+        event.preventDefault()
+        event.stopPropagation()
+        const activeTab = store.state.tabs.find(item => item.id === store.state.activeId)
+        if (activeTab !== undefined) store.closeTab(activeTab.id)
+        return
+      }
+      if (event.key.toLowerCase() !== 's') return
       const tab = store.state.tabs.find(item => item.id === store.state.activeId)
       if (tab === undefined || tab.kind !== 'file' || tab.dirty !== true) return
       event.preventDefault()
@@ -366,14 +450,26 @@ export function EditorArea({ store, state }) {
     window.addEventListener('keydown', onKeyDown, true)
     return () => window.removeEventListener('keydown', onKeyDown, true)
   }, [store])
+
   if (active === undefined) {
     return React.createElement('div', { className: 'itw-editor' },
       React.createElement(TabBar, { store, state }),
       React.createElement(Welcome, { store, state }),
     )
   }
+  if (active.kind === 'search') {
+    return React.createElement('div', { className: 'itw-editor' },
+      React.createElement(TabBar, { store, state }),
+      React.createElement(SearchView, { store, state }),
+    )
+  }
   const content = active.kind === 'file'
-    ? React.createElement(FilePreview, { store, state, tab: active })
+    ? React.createElement(FilePreview, {
+        store, state, tab: active,
+        onEditorReady: setEditorApi,
+        onFindRequest: () => setFindOpen(true),
+        onFindInFiles: () => store.openSearchTab(),
+      })
     : (active.loading === true
         ? React.createElement('div', { className: 'itw-editor-empty' }, store.t('common.loading'))
         : (active.error !== null && active.error !== undefined
@@ -382,6 +478,14 @@ export function EditorArea({ store, state }) {
   return React.createElement('div', { className: 'itw-editor' },
     React.createElement(TabBar, { store, state }),
     React.createElement(EditorToolbar, { store, state, tab: active }),
+    findOpen === true && textTab && editorApi !== null
+      ? React.createElement(FindBar, {
+          store,
+          editor: editorApi,
+          readOnly: active.editing !== true,
+          onClose: () => setFindOpen(false),
+        })
+      : null,
     content,
   )
 }

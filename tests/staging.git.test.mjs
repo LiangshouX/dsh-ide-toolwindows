@@ -5,6 +5,7 @@ import { mkdtemp, writeFile, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { buildPatch, hunkChangeIndexes, parseUnifiedDiff } from '../src/client/diff.js'
+import { discard } from '../src/host/git.js'
 
 /**
  * Applies the plugin's rebuilt patches to a real git index. This is the
@@ -54,6 +55,33 @@ test('line and hunk staging round-trip against real git', async (t) => {
     const reverseAll = stagedFile.hunks.flatMap((_, index) => hunkChangeIndexes(stagedFile, index))
     gitIn(['apply', '--cached', '--unidiff-zero', '--recount', '-R'], buildPatch(stagedFile, new Set(reverseAll)))
     assert.equal(git('diff', '--cached', '--no-color', '--', 'a.txt'), '')
+  } finally {
+    await rm(dir, { recursive: true, force: true })
+  }
+})
+
+test('discard clears both the index and the worktree', async (t) => {
+  try {
+    execFileSync('git', ['--version'], { stdio: 'ignore' })
+  } catch {
+    t.skip('git is not installed')
+    return
+  }
+  const dir = await mkdtemp(join(tmpdir(), 'itw-discard-'))
+  const git = (...args) => execFileSync('git', args, { cwd: dir, encoding: 'utf8' })
+  try {
+    git('init', '-q', '-b', 'main')
+    git('config', 'user.name', 'IDE Test')
+    git('config', 'user.email', 'ide@test.local')
+    await writeFile(join(dir, 'a.txt'), 'base\n')
+    git('add', '-A')
+    git('commit', '-q', '-m', 'base')
+    await writeFile(join(dir, 'a.txt'), 'staged\n')
+    git('add', 'a.txt')
+    await writeFile(join(dir, 'a.txt'), 'worktree\n')
+    await discard({ root: dir, gitPath: '' }, ['a.txt'])
+    assert.equal(git('status', '--porcelain'), '')
+    assert.equal(git('show', 'HEAD:a.txt'), 'base\n')
   } finally {
     await rm(dir, { recursive: true, force: true })
   }

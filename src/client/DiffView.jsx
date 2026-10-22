@@ -8,6 +8,8 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { buildPatch, firstFile, hunkChangeIndexes, parseUnifiedDiff, sideBySideRows, unifiedRows, wordSegments } from './diff.js'
 import { IconRefresh } from './icons.jsx'
+import { FindBar } from './FindBar.jsx'
+import { buildFindRegExp } from './find.js'
 
 const LINE_HEIGHT = 20
 
@@ -47,8 +49,14 @@ export function DiffView({ store, state, tab }) {
   const [applying, setApplying] = useState(false)
   const [openBlocks, setOpenBlocks] = useState(() => new Set())
   const [wordLevel, setWordLevel] = useState(false)
+  const [findOpen, setFindOpen] = useState(false)
+  const [findRows, setFindRows] = useState(() => new Set())
+  const [findActiveRow, setFindActiveRow] = useState(-1)
   const scrollRef = useRef(null)
   const selecting = useRef(false)
+  const findRowsRef = useRef([])
+  const findActiveRef = useRef(-1)
+  const rowsRef = useRef([])
 
   useEffect(() => {
     setSelection(new Set())
@@ -125,6 +133,107 @@ export function DiffView({ store, state, tab }) {
 
   const start = Math.max(0, Math.floor(scrollTop / LINE_HEIGHT) - 8)
   const end = Math.min(viewRows.length, Math.ceil((scrollTop + viewport) / LINE_HEIGHT) + 8)
+  rowsRef.current = viewRows
+
+  useEffect(() => {
+    const onKey = (event) => {
+      if (!(event.ctrlKey || event.metaKey) || event.altKey || event.shiftKey) return
+      if (event.key.toLowerCase() !== 'f') return
+      const target = event.target
+      if (!(target instanceof Element) || target.closest('.itw-root') === null) return
+      event.preventDefault()
+      event.stopPropagation()
+      setFindOpen(true)
+    }
+    window.addEventListener('keydown', onKey, true)
+    return () => window.removeEventListener('keydown', onKey, true)
+  }, [])
+
+  useEffect(() => {
+    setFindOpen(false)
+    setFindRows(new Set())
+    setFindActiveRow(-1)
+    findRowsRef.current = []
+    findActiveRef.current = -1
+  }, [tab.id])
+
+  const findController = useMemo(() => {
+    const rowText = (row) => {
+      if (row === undefined) return ''
+      if (row.kind === 'side') return `${row.left?.text ?? ''}\n${row.right?.text ?? ''}`
+      return row.text ?? ''
+    }
+    const show = (index) => {
+      const rows = rowsRef.current
+      const target = rows[index]
+      if (target === undefined) return
+      findActiveRef.current = index
+      setFindActiveRow(index)
+      const container = scrollRef.current
+      if (container !== null) {
+        const top = Math.max(0, index * LINE_HEIGHT - container.clientHeight / 3)
+        container.scrollTop = top
+        setScrollTop(top)
+      }
+    }
+    return {
+      focus: () => scrollRef.current?.focus?.(),
+      find: (query, options = {}) => {
+        if (query === '') {
+          findRowsRef.current = []
+          findActiveRef.current = -1
+          setFindRows(new Set())
+          setFindActiveRow(-1)
+          return { total: 0, active: -1, error: null }
+        }
+        let pattern
+        try {
+          pattern = buildFindRegExp(query, options)
+        } catch (error) {
+          findRowsRef.current = []
+          findActiveRef.current = -1
+          setFindRows(new Set())
+          setFindActiveRow(-1)
+          return { total: 0, active: -1, error: error instanceof Error ? error.message : String(error) }
+        }
+        const matches = []
+        const rows = rowsRef.current
+        for (let index = 0; index < rows.length; index += 1) {
+          const text = rowText(rows[index])
+          pattern.lastIndex = 0
+          let match
+          while ((match = pattern.exec(text)) !== null) {
+            matches.push(index)
+            if (matches.length >= 5000) break
+            if (match[0] === '') pattern.lastIndex += 1
+          }
+          if (matches.length >= 5000) break
+        }
+        findRowsRef.current = matches
+        const active = matches.length > 0 ? 0 : -1
+        setFindRows(new Set(matches))
+        if (active >= 0) show(active)
+        else {
+          findActiveRef.current = -1
+          setFindActiveRow(-1)
+        }
+        return { total: matches.length, active, error: null }
+      },
+      go: (delta) => {
+        const matches = findRowsRef.current
+        if (matches.length === 0) return { total: 0, active: -1, error: null }
+        const next = (findActiveRef.current + delta + matches.length) % matches.length
+        show(next)
+        return { total: matches.length, active: next, error: null }
+      },
+      clear: () => {
+        findRowsRef.current = []
+        findActiveRef.current = -1
+        setFindRows(new Set())
+        setFindActiveRow(-1)
+      },
+    }
+  }, [])
 
   const addIndex = (index) => {
     if (typeof index !== 'number') return
@@ -208,7 +317,7 @@ export function DiffView({ store, state, tab }) {
     const cls = row.kind === 'add' ? 'itw-add' : row.kind === 'del' ? 'itw-del' : ''
     return React.createElement('div', {
       key: `line:${row.index}`,
-      className: `itw-diff-row ${cls} ${selected ? 'itw-selected' : ''}`,
+      className: `itw-diff-row ${cls} ${selected ? 'itw-selected' : ''} ${findRows.has(offset) ? 'itw-diff-find' : ''} ${findActiveRow === offset ? 'itw-diff-find-active' : ''}`,
       style: rowStyle(offset),
     },
       React.createElement('span', {
@@ -256,7 +365,7 @@ export function DiffView({ store, state, tab }) {
       : null
     return React.createElement('div', {
       key: `side:${row.left?.index ?? 'x'}:${row.right?.index ?? 'y'}`,
-      className: 'itw-diff-side',
+      className: `itw-diff-side ${findRows.has(offset) ? 'itw-diff-find' : ''} ${findActiveRow === offset ? 'itw-diff-find-active' : ''}`,
       style: { ...rowStyle(offset), display: 'grid' },
     }, renderSideCell(row.left, true, segments?.left), renderSideCell(row.right, false, segments?.right))
   }
@@ -321,5 +430,14 @@ export function DiffView({ store, state, tab }) {
 
   // The commit metadata lives in the Git tool window's bottom details pane;
   // the editor area only shows the full diff (no duplicated header block).
-  return React.createElement('div', { className: 'itw-diff' }, toolbar, body)
+  return React.createElement('div', { className: 'itw-diff' }, toolbar,
+    findOpen === true
+      ? React.createElement(FindBar, {
+          store,
+          editor: findController,
+          readOnly: true,
+          onClose: () => setFindOpen(false),
+        })
+      : null,
+    body)
 }

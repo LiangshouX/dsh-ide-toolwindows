@@ -17,7 +17,7 @@ function token(root, name, fallback) {
   return value === '' ? fallback : value
 }
 
-function TerminalView({ store, state, session, active }) {
+function TerminalView({ store, state, session, active, visible }) {
   const t = store.t
   const hostRef = useRef(null)
   const termRef = useRef(null)
@@ -155,7 +155,7 @@ function TerminalView({ store, state, session, active }) {
   }, [session.key])
 
   useEffect(() => {
-    if (active === true) {
+    if (active === true && visible !== false) {
       const terminal = termRef.current
       if (terminal !== null) {
         window.setTimeout(() => {
@@ -164,7 +164,7 @@ function TerminalView({ store, state, session, active }) {
         }, 30)
       }
     }
-  }, [active])
+  }, [active, visible])
 
   if (error !== null) {
     return React.createElement('div', { className: 'itw-term-pane' },
@@ -177,7 +177,7 @@ function TerminalView({ store, state, session, active }) {
   )
 }
 
-export function TerminalPanel({ store, state }) {
+export function TerminalPanel({ store, state, visible = true }) {
   const t = store.t
   const sessions = state.terminal.sessions
   const activeKey = state.terminal.activeKey ?? sessions[0]?.key ?? null
@@ -245,7 +245,7 @@ export function TerminalPanel({ store, state }) {
             React.createElement('button', { type: 'button', className: 'itw-textbtn itw-primary', onClick: () => store.addTerminal() }, t('terminal.new')),
           )
         : sessions.map(session => React.createElement(TerminalView, {
-            key: session.key, store, state, session, active: session.key === activeKey,
+            key: session.key, store, state, session, active: session.key === activeKey, visible,
           })),
     ),
   )

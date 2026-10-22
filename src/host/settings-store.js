@@ -53,7 +53,14 @@ export const DEFAULT_SETTINGS = {
     wordWrap: false,
     sideBySide: true,
     highlight: true,
-    /** Newly opened files start in the read-only viewer. */
+    /**
+     * 'auto' = editable up to editableMaxBytes, read-only above it.
+     * 'editable' / 'readonly' force one mode. `defaultReadOnly` is kept for
+     * documents written by 0.3.x (read-only when true, but 'auto' wins).
+     */
+    openMode: 'auto',
+    editableMaxBytes: 1 << 20,
+    /** @deprecated V2 behaviour; migrated by the client to openMode. */
     defaultReadOnly: true,
     /** Markdown files open rendered rather than as source. */
     markdownPreview: true,
@@ -93,6 +100,10 @@ export const DEFAULT_SETTINGS = {
     synchronize: 'Ctrl+Alt+Y',
     compare: 'Ctrl+D',
     findInFiles: 'Ctrl+Shift+F',
+    /** Fallback because some Electron shells reserve Ctrl+Shift+F. */
+    findInFilesAlt: 'Ctrl+Alt+F',
+    openCommitDetail: 'Ctrl+Alt+D',
+    quickOpen: 'Ctrl+Shift+N',
     rename: 'F2',
     renameRefs: 'Shift+F6',
     duplicate: 'F5',

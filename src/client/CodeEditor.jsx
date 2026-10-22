@@ -1,10 +1,12 @@
 /**
- * The editable code surface (CodeMirror 6).
+ * The code surface (CodeMirror 6), used for both editing and read-only
+ * viewing.
  *
- * Mounted only while a tab is in edit mode; the document is seeded from the
- * tab's draft and every change flows back through `onChange` (the store keeps
- * the dirty flag). Mod-s calls `onSave`. The theme reads the workbench CSS
- * variables, so light/dark skins need no remount.
+ * A read-only CodeMirror still supports native selection, Ctrl+A and Ctrl+C,
+ * which is exactly the baseline a code viewer must provide. The document is
+ * seeded from the tab's draft; every change flows back through `onChange`.
+ * The FindBar gets a small imperative controller instead of CodeMirror's
+ * English default panel.
  */
 import React, { useEffect, useRef } from 'react'
 import { EditorState } from '@codemirror/state'
@@ -13,7 +15,7 @@ import {
   drawSelection, dropCursor, rectangularSelection, crosshairCursor, highlightSpecialChars,
 } from '@codemirror/view'
 import { defaultKeymap, history, historyKeymap, indentWithTab } from '@codemirror/commands'
-import { searchKeymap, highlightSelectionMatches } from '@codemirror/search'
+import { SearchQuery, setSearchQuery, search } from '@codemirror/search'
 import { bracketMatching, indentOnInput, syntaxHighlighting, HighlightStyle } from '@codemirror/language'
 import { tags } from '@lezer/highlight'
 import { javascript } from '@codemirror/lang-javascript'
@@ -29,6 +31,7 @@ import { xml } from '@codemirror/lang-xml'
 import { cpp } from '@codemirror/lang-cpp'
 import { go } from '@codemirror/lang-go'
 import { rust } from '@codemirror/lang-rust'
+import { findMatches, replaceAllMatches } from './find.js'
 
 /** Language extension for one file path (empty = plain text). */
 export function languageForPath(path) {
@@ -83,6 +86,7 @@ const THEME = EditorView.theme({
     border: 'none',
     borderRight: '1px solid var(--itw-border)',
     paddingLeft: '6px',
+    userSelect: 'none',
   },
   '.cm-lineNumbers .cm-gutterElement': { minWidth: '34px', padding: '0 8px 0 4px' },
   '.cm-activeLine': { backgroundColor: 'rgba(127,127,127,.075)' },
@@ -90,26 +94,42 @@ const THEME = EditorView.theme({
   '.cm-selectionBackground, ::selection': { backgroundColor: 'rgba(76,154,255,.24) !important' },
   '.cm-matchingBracket': { backgroundColor: 'rgba(76,154,255,.25)', outline: '1px solid rgba(76,154,255,.5)' },
   '.cm-searchMatch': { backgroundColor: 'rgba(215,162,74,.28)' },
+  '.cm-searchMatch.cm-searchMatch-selected': { backgroundColor: 'rgba(76,154,255,.45)', outline: '1px solid var(--itw-accent)' },
   '.cm-cursor, .cm-dropCursor': { borderLeftColor: 'var(--itw-accent)' },
   '&.cm-focused': { outline: 'none' },
   '.cm-panels': { backgroundColor: 'var(--itw-panel)', color: 'var(--itw-fg)' },
   '.cm-tooltip': { backgroundColor: 'var(--itw-overlay)', border: '1px solid var(--itw-border-strong)' },
 }, { dark: true })
 
+function selectionOf(view, match) {
+  return { anchor: match.from, head: match.to }
+}
+
 /**
- * One editable buffer.
- * @param {{ value: string, path: string, fontSize?: number, resetToken?: number,
+ * One editable or read-only buffer.
+ * @param {{ value: string, path: string, fontSize?: number, resetToken?: number, readOnly?: boolean,
+ *   onFindRequest?: () => void, onReady?: (api: any) => void,
  *   onChange: (text: string) => void, onSave: () => void,
  *   onCursor?: (position: { line: number, col: number }) => void }} props
  */
-export function CodeEditor({ value, path, fontSize = 13, resetToken = 0, onChange, onSave, onCursor }) {
+export function CodeEditor({
+  value, path, fontSize = 13, resetToken = 0, readOnly = false, revealLine = null,
+  onFindRequest, onFindInFiles, onReady, onChange, onSave, onCursor,
+}) {
   const hostRef = useRef(null)
+  const viewRef = useRef(null)
   const onChangeRef = useRef(onChange)
   const onSaveRef = useRef(onSave)
   const onCursorRef = useRef(onCursor)
+  const onFindRef = useRef(onFindRequest)
+  const onFindInFilesRef = useRef(onFindInFiles)
+  const onReadyRef = useRef(onReady)
   onChangeRef.current = onChange
   onSaveRef.current = onSave
   onCursorRef.current = onCursor
+  onFindRef.current = onFindRequest
+  onFindInFilesRef.current = onFindInFiles
+  onReadyRef.current = onReady
 
   useEffect(() => {
     const host = hostRef.current
@@ -123,25 +143,31 @@ export function CodeEditor({ value, path, fontSize = 13, resetToken = 0, onChang
       drawSelection(),
       dropCursor(),
       EditorState.allowMultipleSelections.of(true),
+      EditorState.readOnly.of(readOnly === true),
+      EditorView.editable.of(readOnly !== true),
       indentOnInput(),
       bracketMatching(),
       rectangularSelection(),
       crosshairCursor(),
       highlightActiveLine(),
-      highlightSelectionMatches(),
       syntaxHighlighting(HIGHLIGHT),
       THEME,
       EditorView.theme({ '.cm-scroller': { fontSize: `${fontSize}px` } }),
+      // The extension supplies match highlighting; its default panel is never
+      // opened. FindBar drives the query through the controller below.
+      search({ top: false }),
       keymap.of([
-        { key: 'Mod-s', run: () => { onSaveRef.current(); return true } },
+        { key: 'Mod-s', run: () => { if (readOnly !== true) onSaveRef.current(); return true } },
+        { key: 'Mod-f', run: () => { onFindRef.current?.(); return true } },
+        { key: 'Mod-Shift-f', run: () => { onFindInFilesRef.current?.(); return true } },
+        { key: 'Mod-Alt-f', run: () => { onFindInFilesRef.current?.(); return true } },
         ...defaultKeymap,
         ...historyKeymap,
-        ...searchKeymap,
         indentWithTab,
       ]),
       ...(Array.isArray(language) ? language : [language]),
       EditorView.updateListener.of((update) => {
-        if (update.docChanged) onChangeRef.current(update.state.doc.toString())
+        if (update.docChanged) onChangeRef.current?.(update.state.doc.toString())
         if (update.selectionSet || update.docChanged) {
           const head = update.state.selection.main.head
           const line = update.state.doc.lineAt(head)
@@ -153,12 +179,108 @@ export function CodeEditor({ value, path, fontSize = 13, resetToken = 0, onChang
       state: EditorState.create({ doc: value ?? '', extensions }),
       parent: host,
     })
+    viewRef.current = view
     view.focus()
-    return () => { view.destroy() }
-    // The component is keyed by tab, so a path/reset change is the only reason
-    // to rebuild the document; keystrokes flow through onChange instead.
+    if (Number.isInteger(revealLine) && revealLine > 0) {
+      const line = view.state.doc.line(Math.min(revealLine, view.state.doc.lines))
+      view.dispatch({ selection: { anchor: line.from }, scrollIntoView: true })
+    }
+
+    let matches = []
+    let active = -1
+    const clearQueryEffect = () => {
+      try {
+        view.dispatch({ effects: setSearchQuery.of(new SearchQuery({ search: '' })) })
+      } catch { /* nothing to clear */ }
+    }
+    const setHighlight = (query, options) => {
+      try {
+        view.dispatch({
+          effects: setSearchQuery.of(new SearchQuery({
+            search: query,
+            caseSensitive: options.caseSensitive === true,
+            regexp: options.regexp === true,
+            wholeWord: options.wholeWord === true,
+          })),
+        })
+      } catch { /* an invalid regex is surfaced by findMatches */ }
+    }
+    const api = {
+      focus: () => view.focus(),
+      getText: () => view.state.doc.toString(),
+      getSelection: () => {
+        const range = view.state.selection.main
+        return view.state.sliceDoc(range.from, range.to)
+      },
+      /** Recompute matches and select the first one. */
+      find: (query, options = {}) => {
+        try {
+          matches = findMatches(view.state.doc.toString(), query, options)
+        } catch (error) {
+          matches = []
+          active = -1
+          clearQueryEffect()
+          return { total: 0, active: -1, error: error instanceof Error ? error.message : String(error) }
+        }
+        active = matches.length > 0 ? 0 : -1
+        if (active >= 0) {
+          setHighlight(query, options)
+          view.dispatch({ selection: selectionOf(view, matches[active]), scrollIntoView: true })
+        } else {
+          clearQueryEffect()
+        }
+        return { total: matches.length, active, error: null }
+      },
+      /** Move by `delta` (wraps), recomputing against the current document. */
+      go: (delta) => {
+        if (matches.length === 0) return { total: 0, active: -1, error: null }
+        active = (active + delta + matches.length) % matches.length
+        view.dispatch({ selection: selectionOf(view, matches[active]), scrollIntoView: true })
+        return { total: matches.length, active, error: null }
+      },
+      select: (index) => {
+        if (matches.length === 0) return -1
+        active = ((index % matches.length) + matches.length) % matches.length
+        view.dispatch({ selection: selectionOf(view, matches[active]), scrollIntoView: true })
+        return active
+      },
+      replaceCurrent: (replacement) => {
+        if (readOnly === true) return { total: matches.length, active, replaced: false }
+        if (active < 0 || matches[active] === undefined) return { total: matches.length, active, replaced: false }
+        const match = matches[active]
+        view.dispatch({ changes: { from: match.from, to: match.to, insert: String(replacement ?? '') } })
+        return { total: matches.length, active, replaced: true }
+      },
+      replaceAll: (replacement, query, options) => {
+        if (readOnly === true) return { count: 0 }
+        const result = replaceAllMatches(view.state.doc.toString(), query, options, replacement)
+        if (result.count > 0) view.dispatch({ changes: { from: 0, to: view.state.doc.length, insert: result.text } })
+        return result
+      },
+      clear: () => {
+        matches = []
+        active = -1
+        clearQueryEffect()
+      },
+      focusFind: () => view.focus(),
+    }
+    onReadyRef.current?.(api)
+    return () => {
+      onReadyRef.current?.(null)
+      viewRef.current = null
+      view.destroy()
+    }
+    // The component is keyed by tab, so a path/read-only/reset change is the
+    // only reason to rebuild the document; keystrokes flow through onChange.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [path, resetToken])
+  }, [path, resetToken, readOnly])
+
+  useEffect(() => {
+    const view = viewRef.current
+    if (view === null || !Number.isInteger(revealLine) || revealLine <= 0) return
+    const line = view.state.doc.line(Math.min(revealLine, view.state.doc.lines))
+    view.dispatch({ selection: { anchor: line.from }, scrollIntoView: true })
+  }, [revealLine])
 
   return React.createElement('div', { className: 'itw-codemirror', ref: hostRef })
 }

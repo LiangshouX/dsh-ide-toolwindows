@@ -68,7 +68,7 @@ function initialState() {
     status: { isRepo: false, entries: [], branch: undefined, detached: false, ahead: undefined, behind: undefined, root: null },
     statusError: null,
     statusAt: 0,
-    layout: { left: 'project', leftWidth: 300, bottom: null, bottomHeight: 270 },
+    layout: { left: 'project', leftWidth: 300, bottom: null, bottomHeight: 270, gitDrawerWidth: 420 },
     dirs: new Map(),
     expanded: new Set(),
     selectedPath: '',
@@ -76,8 +76,31 @@ function initialState() {
     anchorPath: '',
     clipboard: null,
     filter: '',
+    /** 'files' = whole-project quick locate; 'tree' = expanded-tree filter. */
+    filterMode: 'files',
+    /** Whole-project file index (workspace-relative, forward slashes). */
+    fileIndex: [],
+    fileIndexRoot: '',
+    fileIndexLoading: false,
+    fileIndexError: null,
+    /** Quick Open overlay. */
+    quickOpen: false,
+    quickOpenQuery: '',
+    quickOpenIndex: 0,
     tabs: [],
     activeId: null,
+    search: {
+      query: '',
+      caseSensitive: false,
+      wholeWord: false,
+      regexp: false,
+      loading: false,
+      error: null,
+      results: [],
+      tookMs: 0,
+      truncated: false,
+      token: 0,
+    },
     commit: {
       message: '',
       amend: false,
@@ -102,12 +125,15 @@ function initialState() {
       hasMore: true,
       loading: false,
       error: null,
-      filters: { branch: '', author: '', query: '', path: '' },
+      filters: { branch: '', author: '', query: '', path: '', since: '' },
       branches: [],
+      /** Set once the status tells us the current branch, so the log can default to it. */
+      branchInitialized: false,
       selectedHash: null,
       /** Commits picked with Ctrl+click for Compare (max 2). */
       compare: [],
       detail: null,
+      detailHash: null,
       detailLoading: false,
     },
     terminal: {
@@ -121,6 +147,8 @@ function initialState() {
     toast: null,
     /** Cursor position of the active text editor ({ line, col }), for the status bar. */
     cursor: null,
+    /** Bumped when Project should take keyboard focus (Alt+1). */
+    treeFocusTick: 0,
     localeTick: 0,
   }
 }
@@ -141,6 +169,9 @@ export class WorkbenchStore {
     this.toastTimer = null
     this.treeReloadToken = 0
     this.gitRequestToken = 0
+    this.gitDetailToken = 0
+    this.searchToken = 0
+    this.searchIndex = -1
     this.settingsFile = ''
     this.unsubscribers = []
   }
@@ -189,6 +220,23 @@ export class WorkbenchStore {
     })
   }
 
+  /**
+   * A dialog with an explicit action list (save / discard / cancel, etc.).
+   * The first action is focused, so `Enter` never triggers the destructive one.
+   * @param {string} title
+   * @param {string} body
+   * @param {Array<{key: string, label: string, action: Function, primary?: boolean, danger?: boolean}>} actions
+   */
+  askChoice(title, body, actions) {
+    this.set({
+      confirm: {
+        title,
+        body,
+        actions: Array.isArray(actions) ? actions : [],
+      },
+    })
+  }
+
   dismissConfirm() {
     this.set({ confirm: null })
   }
@@ -218,6 +266,7 @@ export class WorkbenchStore {
         const projectRoot = this.#projectRootFor(preferred)
         this.set({ root: projectRoot })
         this.#restoreWorkspace(projectRoot)
+        void this.loadDir(projectRoot)
         this.patch('commit', { mode: settings?.editor?.sideBySide === false ? 'unified' : 'side' })
         void this.refreshStatus({ initial: true })
         void this.refreshShells()
@@ -323,10 +372,14 @@ export class WorkbenchStore {
       expanded: new Set(),
       selectedPath: '',
       filter: '',
+      fileIndex: [],
+      fileIndexRoot: '',
+      quickOpen: false,
       tabs: [],
       activeId: null,
       status: initialState().status,
       git: { ...initialState().git },
+      search: initialState().search,
     })
     this.#rememberProjectRoot(projectRoot)
     this.#restoreWorkspace(projectRoot)
@@ -365,10 +418,14 @@ export class WorkbenchStore {
       expanded: new Set(),
       selectedPath: '',
       filter: '',
+      fileIndex: [],
+      fileIndexRoot: '',
+      quickOpen: false,
       tabs: [],
       activeId: null,
       status: initialState().status,
       git: { ...initialState().git },
+      search: initialState().search,
     })
     this.#rememberProjectRoot(projectRoot)
     this.#restoreWorkspace(projectRoot)
@@ -415,11 +472,13 @@ export class WorkbenchStore {
             content: null,
             error: null,
             scrollTop: typeof tab.scrollTop === 'number' ? tab.scrollTop : 0,
-            editing: this.state.settings?.editor?.defaultReadOnly === false,
+            editing: this.defaultEditing(undefined),
+            editingUserSet: false,
             view: isMarkdownPath(tab.path) && this.state.settings?.editor?.markdownPreview !== false ? 'preview' : 'code',
             draft: null,
             dirty: false,
             saving: false,
+            conflict: null,
           }))
       : []
     const activeId = typeof saved.activePath === 'string' && tabs.some(tab => tab.path === saved.activePath)
@@ -428,8 +487,9 @@ export class WorkbenchStore {
     const layout = {
       left: saved.layout?.left === undefined ? 'project' : saved.layout.left,
       leftWidth: typeof saved.layout?.leftWidth === 'number' ? saved.layout.leftWidth : 300,
-      bottom: saved.layout?.bottom === undefined ? null : saved.layout.bottom,
+      bottom: saved.layout?.bottom === 'terminal' ? null : (saved.layout?.bottom === undefined ? null : saved.layout.bottom),
       bottomHeight: typeof saved.layout?.bottomHeight === 'number' ? saved.layout.bottomHeight : 270,
+      gitDrawerWidth: typeof saved.layout?.gitDrawerWidth === 'number' ? saved.layout.gitDrawerWidth : 420,
     }
     this.set({ expanded, tabs, activeId, layout })
     for (const tab of tabs) void this.ensureTabContent(tab.id)
@@ -484,17 +544,14 @@ export class WorkbenchStore {
     }
     if (this.state.root !== '' && this.state.statusAt === 0) void this.refreshStatus({ initial: true })
     if (this.state.root !== '' && !this.state.dirs.has(this.state.root)) void this.loadDir(this.state.root)
-    // A restored dock with no session would just eat space: terminals die with
-    // the panel, so a bottom dock only makes sense once a session exists.
-    if (this.state.layout.bottom === 'terminal' && this.state.terminal.sessions.length === 0) {
-      this.set({ layout: { ...this.state.layout, bottom: null } })
-    }
+    // Sessions survive a trip to the Conversation: the terminal view is kept
+    // mounted by the sidebar, so only its visibility changes.
   }
 
   deactivate() {
-    // Terminal sockets are owned by the mounted views; leaving the panel
-    // closes them, so the session list goes with it.
-    this.set({ active: false, terminal: { ...this.state.terminal, sessions: [], activeKey: null } })
+    // Do not clear `terminal.sessions`: switching tabs must not kill the PTY
+    // or the xterm scrollback. Explicit close still terminates the session.
+    this.set({ active: false })
     if (this.pollTimer !== null) {
       clearInterval(this.pollTimer)
       this.pollTimer = null
@@ -506,6 +563,25 @@ export class WorkbenchStore {
     if (!this.state.active || this.state.root === '' || this.polling) return
     if (typeof document !== 'undefined' && document.visibilityState === 'hidden') return
     await this.refreshStatus({ silent: true })
+    void this.#checkActiveFileOnDisk()
+  }
+
+  /** Cheap mtime probe for the active file; never reads the whole buffer. */
+  async #checkActiveFileOnDisk() {
+    const active = this.state.tabs.find(tab => tab.id === this.state.activeId)
+    if (active === undefined || active.kind !== 'file' || active.loading === true) return
+    if (!Number.isFinite(active.payload?.mtimeMs)) return
+    try {
+      const info = await call('fs.stat', { root: this.state.root, path: active.path })
+      if (!Number.isFinite(info.mtimeMs) || Math.abs(info.mtimeMs - active.payload.mtimeMs) <= 0.5) return
+      if (active.dirty === true || active.editing === true) {
+        this.#updateTab(active.id, { conflict: { at: Date.now(), message: this.t('editor.conflictBody') } })
+      } else {
+        await this.ensureTabContent(active.id, { force: true })
+      }
+    } catch {
+      // The file may be mid-rename; the next poll retries.
+    }
   }
 
   async refreshStatus(options = {}) {
@@ -525,6 +601,14 @@ export class WorkbenchStore {
         statusError: null,
         statusAt: Date.now(),
       })
+      // Default the history to the current branch once; the user can then pick
+      // "All branches" or another branch without the poll resetting it.
+      if (!this.state.git.branchInitialized && status.isRepo === true && status.detached !== true && typeof status.branch === 'string' && status.branch !== '') {
+        this.patch('git', {
+          branchInitialized: true,
+          filters: { ...this.state.git.filters, branch: status.branch },
+        })
+      }
       if (changed || options.initial === true) {
         this.#invalidateChangedDirs(status)
         this.#refreshActiveFile(status)
@@ -562,12 +646,20 @@ export class WorkbenchStore {
   #refreshActiveFile(status) {
     const active = this.state.tabs.find(tab => tab.id === this.state.activeId)
     if (active === undefined || active.kind !== 'file') return
-    // Never yank the document out from under an open editor: a clean editor
-    // would otherwise keep showing stale text and overwrite the external
-    // change on the next keystroke.
-    if (active.editing === true) return
     const entry = status.entries.find(item => item.path === active.rel)
     if (entry === undefined) return
+    if (active.editing === true || active.dirty === true) {
+      // Do not yank the document from under the user; detect the divergence
+      // and let the toolbar offer Reload / Overwrite.
+      void call('fs.read', { root: this.state.root, path: active.path }).then((result) => {
+        const latest = this.state.tabs.find(tab => tab.id === active.id)
+        if (latest === undefined || result.kind !== 'text') return
+        if (result.content !== latest.payload?.content) {
+          this.#updateTab(active.id, { conflict: { at: Date.now(), message: this.t('editor.conflictBody') } })
+        }
+      }).catch(() => {})
+      return
+    }
     void this.ensureTabContent(active.id, { force: true })
   }
 
@@ -642,6 +734,132 @@ export class WorkbenchStore {
 
   setFilter(filter) {
     this.set({ filter })
+    if (filter !== '' && this.state.filterMode === 'files') void this.loadFileIndex()
+  }
+
+  setFilterMode(mode) {
+    const value = mode === 'tree' ? 'tree' : 'files'
+    this.set({ filterMode: value })
+    if (value === 'files' && this.state.filter !== '') void this.loadFileIndex()
+  }
+
+  /** Load the whole-project file index (cached per root). */
+  async loadFileIndex(force = false) {
+    if (this.state.root === '') return []
+    if (!force && this.state.fileIndexRoot === this.state.root && this.state.fileIndex.length > 0) {
+      return this.state.fileIndex
+    }
+    if (this.state.fileIndexLoading && !force) return this.state.fileIndex
+    this.set({ fileIndexLoading: true, fileIndexError: null })
+    try {
+      const result = await call('fs.files', { root: this.state.root })
+      const files = Array.isArray(result.files) ? result.files : []
+      this.set({ fileIndex: files, fileIndexRoot: this.state.root, fileIndexLoading: false })
+      return files
+    } catch (error) {
+      this.set({
+        fileIndexLoading: false,
+        fileIndexError: error instanceof Error ? error.message : String(error),
+      })
+      return []
+    }
+  }
+
+  // ── quick open / find in files ────────────────────────────────────────
+  openQuickOpen() {
+    this.set({ quickOpen: true, quickOpenQuery: '', quickOpenIndex: 0 })
+    void this.loadFileIndex()
+  }
+
+  closeQuickOpen() {
+    this.set({ quickOpen: false })
+  }
+
+  setQuickOpenQuery(query) {
+    this.set({ quickOpenQuery: query, quickOpenIndex: 0 })
+  }
+
+  moveQuickOpen(delta) {
+    this.set({ quickOpenIndex: Math.max(0, this.state.quickOpenIndex + delta) })
+  }
+
+  /** Open the file selected in the Quick Open overlay. */
+  openQuickOpenSelection(rel) {
+    const value = typeof rel === 'string' && rel !== '' ? rel : this.state.fileIndex[this.state.quickOpenIndex]
+    if (value === undefined) return
+    this.closeQuickOpen()
+    this.openFile(this.#absoluteOf(value), { rel: value, preview: false })
+  }
+
+  /** Cycle through Find in Files hits with F8 / Shift+F8. */
+  openNextSearchResult(delta = 1) {
+    const hits = []
+    for (const file of this.state.search.results ?? []) {
+      for (const match of file.matches ?? []) hits.push({ path: file.path, line: match.line })
+    }
+    if (hits.length === 0) return
+    this.searchIndex = (this.searchIndex + (delta >= 0 ? 1 : -1) + hits.length) % hits.length
+    const hit = hits[this.searchIndex]
+    this.openSearchResult(hit.path, hit.line)
+  }
+
+  /** Open one Find in Files hit at its line. */
+  openSearchResult(rel, line) {
+    if (typeof rel !== 'string' || rel === '') return
+    const absolute = this.#absoluteOf(rel)
+    this.openFile(absolute, { rel, preview: false, line: Number.isInteger(line) ? line : 1 })
+  }
+
+  /** Open (or focus) the Find in Files editor tab. */
+  openSearchTab(query = '') {
+    const id = 'search:in-files'
+    const existing = this.state.tabs.find(tab => tab.id === id)
+    if (existing !== undefined) {
+      this.set({ activeId: id })
+    } else {
+      this.set({
+        tabs: [...this.state.tabs, {
+          id, kind: 'search', name: this.t('search.title'), preview: false, pinned: true,
+          loading: false, error: null, scrollTop: 0,
+        }],
+        activeId: id,
+      })
+    }
+    if (typeof query === 'string' && query !== '') this.runSearch(query)
+  }
+
+  async runSearch(query, options = {}) {
+    const value = typeof query === 'string' ? query : this.state.search.query
+    const flags = {
+      caseSensitive: options.caseSensitive ?? this.state.search.caseSensitive,
+      wholeWord: options.wholeWord ?? this.state.search.wholeWord,
+      regexp: options.regexp ?? this.state.search.regexp,
+    }
+    const token = ++this.searchToken
+    this.searchIndex = -1
+    this.patch('search', {
+      query: value, ...flags, loading: value !== '', error: null,
+      results: value === '' ? [] : this.state.search.results,
+      token,
+    })
+    if (value === '') return
+    try {
+      const result = await call('fs.search', { root: this.state.root, query: value, ...flags })
+      if (token !== this.searchToken) return
+      this.patch('search', {
+        loading: false,
+        results: result.files ?? [],
+        tookMs: result.tookMs ?? 0,
+        truncated: result.truncated === true,
+        error: null,
+      })
+    } catch (error) {
+      if (token !== this.searchToken) return
+      this.patch('search', {
+        loading: false, results: [], tookMs: 0, truncated: false,
+        error: error instanceof Error ? error.message : String(error),
+      })
+    }
   }
 
   // ── selection (JetBrains: select first, act second) ──────────────────
@@ -803,19 +1021,28 @@ export class WorkbenchStore {
       && list.some(path => tab.path === path || tab.path.startsWith(`${path}\\`) || tab.path.startsWith(`${path}/`)))
     const names = list.map(path => baseName(path)).slice(0, 8).join(', ')
     const extra = dirty.length > 0 ? `\n${this.t('project.deleteDirty')}` : ''
+    const target = this.state.settings?.delete?.useRecycleBin !== false
+      ? this.t('project.deleteToTrash')
+      : this.t('project.deletePermanent')
     this.askConfirm(
       this.t('project.deleteTitle'),
-      `${list.length === 1 ? this.t('project.deleteOne') : `${list.length} ${this.t('project.deleteMany')}`}\n${names}${extra}`,
+      `${list.length === 1 ? this.t('project.deleteOne') : `${list.length} ${this.t('project.deleteMany')}`}\n${names}${extra}\n${target}`,
       this.t('project.delete'),
       () => { void this.deleteEntries(list) },
     )
   }
 
-  async deleteEntries(paths) {
+  async deleteEntries(paths, options = {}) {
     const list = Array.isArray(paths) ? paths : []
     if (list.length === 0) return
+    const trash = options.trash ?? this.state.settings?.delete?.useRecycleBin !== false
     try {
-      const result = await call('fs.delete', { root: this.state.root, paths: list })
+      const result = await call('fs.delete', {
+        root: this.state.root,
+        paths: list,
+        trash,
+        allowPermanent: trash !== true,
+      })
       const done = result.results.filter(item => item.ok === true)
       const failed = result.results.filter(item => item.ok !== true)
       if (done.length > 0) {
@@ -827,10 +1054,26 @@ export class WorkbenchStore {
         }
         this.clearSelection()
         await this.refreshStatus()
+        this.persist()
       }
-      if (failed.length > 0) this.toast('error', this.t('common.error'), failed.map(item => item.message ?? item.code).join('\n'))
-      else this.toast('success', this.t('common.success'), `${done.length}`)
-      this.persist()
+      const trashFailed = failed.filter(item => item.code === 'trash-failed')
+      if (trashFailed.length > 0) {
+        // Never fall through to a silent permanent delete: ask explicitly.
+        this.askChoice(
+          this.t('project.trashFailedTitle'),
+          this.t('project.trashFailedBody'),
+          [
+            { key: 'cancel', label: this.t('common.cancel'), action: () => {} },
+            {
+              key: 'permanent', label: this.t('project.deletePermanently'), danger: true,
+              action: () => { void this.deleteEntries(trashFailed.map(item => this.#absoluteOf(item.path)), { trash: false }) },
+            },
+          ],
+        )
+      }
+      const otherFailed = failed.filter(item => item.code !== 'trash-failed')
+      if (otherFailed.length > 0) this.toast('error', this.t('common.error'), otherFailed.map(item => item.message ?? item.code).join('\n'))
+      else if (trashFailed.length === 0 && done.length > 0) this.toast('success', this.t('common.success'), `${done.length}`)
     } catch (error) {
       this.toast('error', this.t('common.error'), errorMessage(error))
     }
@@ -940,6 +1183,28 @@ export class WorkbenchStore {
     return this.state.tabs.find(tab => tab.id === this.state.activeId) ?? null
   }
 
+  /** Effective editor open mode: explicit setting, else the legacy flag. */
+  editorOpenMode() {
+    const editor = this.state.settings?.editor
+    if (editor?.openMode === 'editable' || editor?.openMode === 'readonly' || editor?.openMode === 'auto') {
+      return editor.openMode
+    }
+    return editor?.defaultReadOnly === false ? 'editable' : 'auto'
+  }
+
+  editableMaxBytes() {
+    const value = Number(this.state.settings?.editor?.editableMaxBytes)
+    return Number.isFinite(value) && value > 0 ? value : 1 << 20
+  }
+
+  /** Whether a file of `size` bytes opens editable under the current mode. */
+  defaultEditing(size) {
+    const mode = this.editorOpenMode()
+    if (mode === 'readonly') return false
+    if (mode === 'editable') return true
+    return !Number.isFinite(size) || size <= this.editableMaxBytes()
+  }
+
   /**
    * Open a file with IDEA semantics:
    * - a pinned tab for the path is focused;
@@ -955,6 +1220,7 @@ export class WorkbenchStore {
     if (existing !== undefined) {
       const tabs = this.state.tabs.map(tab => (tab === existing ? { ...tab, preview: tab.preview && options.preview === true } : tab))
       this.set({ tabs, activeId: existing.id })
+      if (Number.isInteger(options.line)) this.#updateTab(existing.id, { revealLine: options.line })
       this.setSelectedPath(path)
       if (options.preview !== true) void this.pinTab(existing.id, { silent: true })
       void this.ensureTabContent(existing.id)
@@ -974,11 +1240,14 @@ export class WorkbenchStore {
       content: null,
       error: null,
       scrollTop: 0,
-      editing: this.state.settings?.editor?.defaultReadOnly === false,
+      editing: this.defaultEditing(undefined),
+      editingUserSet: false,
       view: isMarkdownPath(path) && this.state.settings?.editor?.markdownPreview !== false ? 'preview' : 'code',
       draft: null,
       dirty: false,
       saving: false,
+      conflict: null,
+      revealLine: Number.isInteger(options.line) ? options.line : null,
     }
     let tabs = this.state.tabs
     if (preview) {
@@ -1022,12 +1291,19 @@ export class WorkbenchStore {
         const text = result.kind === 'text' ? result.content : null
         const eol = typeof text === 'string' && text.includes('\r\n') ? '\r\n' : '\n'
         const keepDraft = latest?.dirty === true && options.force === true
+        const editable = result.kind === 'text' && result.truncated !== true
+          ? (latest?.editingUserSet === true ? latest.editing === true : this.defaultEditing(result.size))
+          : false
         this.#updateTab(id, {
           loading: false,
+          conflict: null,
           payload: { ...result, eol },
           content: text,
           // A forced refresh (external change) must not clobber unsaved edits.
           ...(keepDraft ? {} : { draft: text, dirty: false }),
+          // Decision C: a file above the editable threshold opens read-only
+          // even though the tab was created optimistically editable.
+          ...(result.kind === 'text' && result.truncated !== true && !editable ? { editing: false } : {}),
         })
       } else if (tab.kind === 'diff') {
         const result = tab.compare !== undefined
@@ -1048,6 +1324,12 @@ export class WorkbenchStore {
         this.#updateTab(id, { loading: false, detail })
       }
     } catch (error) {
+      if (tab.kind === 'file' && error?.code === 'not-found') {
+        // A restored tab whose file was deleted outside the IDE must not
+        // linger as a permanent error tab.
+        this.closeTab(id, { force: true })
+        return
+      }
       this.#updateTab(id, { loading: false, error: error instanceof Error ? error.message : String(error) })
     }
   }
@@ -1083,11 +1365,25 @@ export class WorkbenchStore {
     if (index < 0) return
     const tab = this.state.tabs[index]
     if (tab.dirty === true && options.force !== true) {
-      this.askConfirm(
+      this.askChoice(
         this.t('editor.unsavedTitle'),
         this.t('editor.unsavedClose'),
-        this.t('editor.discardChanges'),
-        () => this.closeTab(id, { force: true }),
+        [
+          { key: 'cancel', label: this.t('common.cancel'), action: () => {} },
+          {
+            key: 'discard', label: this.t('editor.discardChanges'), danger: true,
+            action: () => this.closeTab(id, { force: true }),
+          },
+          {
+            key: 'save', label: this.t('editor.saveAndClose'), primary: true,
+            action: () => {
+              void this.saveTab(id).then(() => {
+                const latest = this.state.tabs.find(item => item.id === id)
+                if (latest === undefined || latest.dirty !== true) this.closeTab(id, { force: true })
+              })
+            },
+          },
+        ],
       )
       return
     }
@@ -1101,8 +1397,14 @@ export class WorkbenchStore {
     this.persist()
   }
 
-  closeOtherTabs(id) {
-    this.set({ tabs: this.state.tabs.filter(tab => tab.id === id || tab.dirty === true), activeId: id })
+  async closeOtherTabs(id) {
+    const others = this.state.tabs.filter(tab => tab.id !== id && tab.dirty === true)
+    for (const tab of others) await this.saveTab(tab.id)
+    if (others.some(tab => this.state.tabs.find(item => item.id === tab.id)?.dirty === true)) {
+      this.toast('error', this.t('editor.saveFailed'), this.t('editor.unsavedClose'))
+      return
+    }
+    this.set({ tabs: this.state.tabs.filter(tab => tab.id === id), activeId: id })
     this.persist()
   }
 
@@ -1113,12 +1415,15 @@ export class WorkbenchStore {
     if (editing === true) {
       this.#updateTab(id, {
         editing: true,
+        editingUserSet: true,
         view: 'code',
+        conflict: null,
         draft: tab.draft ?? tab.payload.content ?? '',
       })
     } else {
       this.#updateTab(id, {
         editing: false,
+        editingUserSet: true,
         view: isMarkdownPath(tab.path) ? 'preview' : 'code',
       })
     }
@@ -1153,7 +1458,7 @@ export class WorkbenchStore {
   }
 
   /** Persist one edited file through the host's fenced writer. */
-  async saveTab(id) {
+  async saveTab(id, options = {}) {
     const tab = this.state.tabs.find(item => item.id === id)
     if (tab === undefined || tab.kind !== 'file' || tab.dirty !== true || tab.saving === true) return
     const text = tab.draft ?? ''
@@ -1168,11 +1473,13 @@ export class WorkbenchStore {
         path: tab.path,
         content: out,
         encoding: payload.encoding ?? 'utf-8',
+        expectedMtimeMs: options.force === true ? undefined : (Number.isFinite(payload.mtimeMs) ? payload.mtimeMs : undefined),
       })
       const latest = this.state.tabs.find(item => item.id === id)
       const latestDraft = latest?.draft ?? text
       this.#updateTab(id, {
         saving: false,
+        conflict: null,
         // Keystrokes typed while the write was in flight stay dirty.
         dirty: latestDraft !== text,
         content: text,
@@ -1183,8 +1490,37 @@ export class WorkbenchStore {
       void this.refreshStatus({ initial: false })
     } catch (error) {
       this.#updateTab(id, { saving: false })
+      if (error?.code === 'stale-file') {
+        this.#updateTab(id, { conflict: { at: Date.now(), message: error.message } })
+        this.askChoice(
+          this.t('editor.conflictTitle'),
+          this.t('editor.conflictBody'),
+          [
+            { key: 'cancel', label: this.t('common.cancel'), action: () => {} },
+            {
+              key: 'reload', label: this.t('editor.reloadFromDisk'), danger: true,
+              action: () => { void this.reloadTab(id) },
+            },
+            {
+              key: 'overwrite', label: this.t('editor.overwriteDisk'), primary: true,
+              action: () => { void this.saveTab(id, { force: true }) },
+            },
+          ],
+        )
+        return
+      }
       this.toast('error', this.t('editor.saveFailed'), error instanceof Error ? error.message : String(error))
     }
+  }
+
+  /** Reload one tab from disk, discarding the in-memory draft after confirm. */
+  async reloadTab(id) {
+    const tab = this.state.tabs.find(item => item.id === id)
+    if (tab === undefined || tab.kind !== 'file') return
+    this.#updateTab(id, { conflict: null })
+    await this.ensureTabContent(id, { force: true })
+    const latest = this.state.tabs.find(item => item.id === id)
+    if (latest !== undefined) this.#updateTab(id, { draft: latest.payload?.content ?? '', dirty: false })
   }
 
   /** Open the diff of one changed file (Commit / Git windows). */
@@ -1435,6 +1771,15 @@ export class WorkbenchStore {
     await this.#saveChangelists(this.#changelistDoc().lists, value)
   }
 
+  /** Delete one changelist; its paths fall back to Default. */
+  async deleteChangelist(name) {
+    const value = String(name ?? '').trim()
+    if (value === '' || value === DEFAULT_CHANGELIST) return
+    const lists = { ...this.#changelistDoc().lists }
+    delete lists[value]
+    await this.#saveChangelists(lists, DEFAULT_CHANGELIST)
+  }
+
   async setGroupByDirectory(value) {
     await this.updateSettings({ commit: { ...(this.state.settings?.commit ?? {}), groupByDirectory: value === true } })
   }
@@ -1537,8 +1882,17 @@ export class WorkbenchStore {
 
   async discardEntries(entries) {
     if (entries.length === 0) return
-    const untracked = entries.filter(entry => entry.untracked === true).map(entry => entry.path)
-    const tracked = entries.filter(entry => entry.untracked !== true).map(entry => entry.path)
+    // A newly added file has no HEAD version to restore: rollback means
+    // removing it (the same outcome as reverting an untracked file).
+    const added = entries.filter(entry => entry.untracked !== true && (entry.xy ?? '')[0] === 'A')
+    const untracked = [
+      ...entries.filter(entry => entry.untracked === true).map(entry => entry.path),
+      ...added.map(entry => entry.path),
+    ]
+    const addedPaths = new Set(added.map(entry => entry.path))
+    const tracked = entries
+      .filter(entry => entry.untracked !== true && !addedPaths.has(entry.path))
+      .map(entry => entry.path)
     try {
       await call('git.discard', { root: this.state.root, paths: tracked, untracked })
       await this.refreshStatus({ initial: false })
@@ -1618,7 +1972,13 @@ export class WorkbenchStore {
 
   // ── git window ────────────────────────────────────────────────────────
   setGitFilters(patch) {
-    this.patch('git', { filters: { ...this.state.git.filters, ...patch } })
+    this.patch('git', {
+      filters: { ...this.state.git.filters, ...patch },
+      selectedHash: null,
+      detail: null,
+      detailHash: null,
+      detailLoading: false,
+    })
     void this.loadLog(true)
   }
 
@@ -1657,15 +2017,20 @@ export class WorkbenchStore {
       })
       if (token !== this.gitRequestToken) return
       const commits = reset ? result.commits : [...this.state.git.commits, ...result.commits]
+      const selectedStillVisible = this.state.git.selectedHash === null
+        || commits.some(commit => commit.hash === this.state.git.selectedHash)
       this.patch('git', {
         commits,
         skip: skip + result.commits.length,
         hasMore: result.commits.length >= pageSize,
         loading: false,
         error: null,
+        ...(selectedStillVisible ? {} : { selectedHash: null, detail: null, detailHash: null, detailLoading: false }),
       })
       if (reset && commits.length > 0 && this.state.git.selectedHash === null) {
-        // Leave selection empty: the details pane shows its empty state.
+        // Select the newest commit without opening the Drawer; Enter/double
+        // click then has a target.
+        this.patch('git', { selectedHash: commits[0].hash })
       }
     } catch (error) {
       if (token !== this.gitRequestToken) return
@@ -1677,28 +2042,77 @@ export class WorkbenchStore {
     if (this.state.git.hasMore && !this.state.git.loading) void this.loadLog(false)
   }
 
-  async selectCommit(hash) {
-    this.patch('git', { selectedHash: hash, detailLoading: true, detail: null })
+  /** Single click: select only. Never fires a git request or changes the Drawer. */
+  selectCommit(hash) {
+    if (typeof hash !== 'string' || hash === '') return
+    this.patch('git', { selectedHash: hash })
+  }
+
+  /** Double click / Enter: load the commit into the right-hand Drawer. */
+  async openCommitDetail(hash) {
+    if (typeof hash !== 'string' || hash === '') return
+    const token = ++this.gitDetailToken
+    this.patch('git', { selectedHash: hash, detailHash: hash, detailLoading: true, detail: null })
     try {
       const detail = await call('git.detail', { root: this.state.root, hash })
-      if (this.state.git.selectedHash !== hash) return
-      // Single click fills the in-panel details; double click opens the full
-      // diff tab (openCommit), so the editor stays free of detail markup.
+      if (token !== this.gitDetailToken || this.state.git.detailHash !== hash) return
       this.patch('git', { detail, detailLoading: false })
     } catch (error) {
-      this.patch('git', { detailLoading: false, detail: null, error: error instanceof Error ? error.message : String(error) })
+      if (token !== this.gitDetailToken) return
+      this.patch('git', {
+        detailLoading: false, detail: null,
+        error: error instanceof Error ? error.message : String(error),
+      })
     }
+  }
+
+  closeCommitDetail() {
+    this.gitDetailToken += 1
+    this.patch('git', { detail: null, detailHash: null, detailLoading: false })
+  }
+
+  /**
+   * UI entry for branch switching: refuse a dirty worktree, then confirm.
+   * `checkout` itself stays the transport call.
+   */
+  requestCheckout(ref) {
+    if (typeof ref !== 'string' || ref === '') return
+    if (ref === this.state.status.branch) return
+    const dirty = (this.state.status.entries ?? []).filter(entry => entry.ignored !== true)
+    if (dirty.length > 0) {
+      this.toast('error', this.t('git.checkoutBlocked'), this.t('git.checkoutBlockedHint'))
+      return
+    }
+    this.askChoice(
+      this.t('git.checkout'),
+      /^[0-9a-f]{7,40}$/i.test(ref) ? this.t('git.checkoutConfirm') : this.t('git.checkoutBranchConfirm'),
+      [
+        { key: 'cancel', label: this.t('common.cancel'), action: () => {} },
+        {
+          key: 'checkout', label: this.t('git.checkout'), primary: true,
+          action: () => { void this.checkout(ref) },
+        },
+      ],
+    )
   }
 
   async checkout(ref) {
     try {
       await call('git.checkout', { root: this.state.root, ref })
       this.toast('success', this.t('git.branchSwitched'), ref)
+      const detached = /^[0-9a-f]{7,40}$/i.test(ref)
+      this.patch('git', {
+        branchInitialized: true,
+        filters: { ...this.state.git.filters, branch: detached ? '' : ref },
+        selectedHash: null,
+        detail: null,
+        detailHash: null,
+      })
       await this.refreshStatus({ initial: true })
       void this.loadBranches()
       void this.loadLog(true)
     } catch (error) {
-      this.toast('error', this.t('commit.failed'), error instanceof Error ? error.message : String(error))
+      this.toast('error', this.t('git.checkoutFailed'), error instanceof Error ? error.message : String(error))
     }
   }
 
@@ -1800,6 +2214,7 @@ export class WorkbenchStore {
       const layout = { ...this.state.layout, left: this.state.layout.left === tool ? null : tool }
       this.set({ layout })
       if (layout.left === 'commit') this.#focusCommitLater()
+      if (layout.left === 'project') this.set({ treeFocusTick: (this.state.treeFocusTick ?? 0) + 1 })
     } else {
       const next = this.state.layout.bottom === tool ? null : tool
       if (next === 'terminal' && this.state.terminal.sessions.length === 0) {
@@ -1815,6 +2230,7 @@ export class WorkbenchStore {
     if (tool === 'project' || tool === 'commit') {
       this.set({ layout: { ...this.state.layout, left: tool } })
       if (tool === 'commit') this.#focusCommitLater()
+      if (tool === 'project') this.set({ treeFocusTick: (this.state.treeFocusTick ?? 0) + 1 })
       this.persist()
     } else if (tool === 'terminal' && this.state.terminal.sessions.length === 0) {
       this.addTerminal()

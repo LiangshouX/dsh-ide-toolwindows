@@ -27,6 +27,7 @@ import {
 import {
   appendIgnore, createEntry, deleteEntries, duplicateEntry, moveEntries, renameEntry,
 } from './host/fileops.js'
+import { listFiles, searchFiles } from './host/search.js'
 import {
   ApiError, optionalBoolean, optionalInteger, readJsonBody, requireString, stringArray,
   writeError, writeOk,
@@ -74,7 +75,7 @@ export function apply(ctx) {
     const prefix = toplevel === null || toplevel === workspaceRoot
       ? ''
       : relative(workspaceRoot, toplevel).split(sep).join('/')
-    return { root, workspaceRoot, prefix, gitPath: current.git.path }
+    return { root, workspaceRoot, repoRoot: toplevel ?? null, isRepo: toplevel !== null, prefix, gitPath: current.git.path }
   }
 
   /** Workspace-relative path → repository-relative path. */
@@ -144,12 +145,43 @@ export function apply(ctx) {
       return readFileForPreview(root, requireString(payload, 'path'))
     },
 
+    'fs.files': async (payload) => {
+      const env = await repoEnv(payload)
+      return listFiles(env)
+    },
+
+    'fs.stat': async (payload) => {
+      const root = await canonicalRoot(payload.root)
+      const absolute = resolveInside(root, requireString(payload, 'path'))
+      try {
+        const info = await stat(absolute)
+        return { path: toRelative(root, absolute), size: info.size, mtimeMs: info.mtimeMs, isDirectory: info.isDirectory() }
+      } catch {
+        throw new ApiError('not-found', 'file not found', 404)
+      }
+    },
+
+    'fs.search': async (payload) => {
+      const env = await repoEnv(payload)
+      const query = requireString(payload, 'query')
+      return searchFiles(env, {
+        query,
+        caseSensitive: optionalBoolean(payload, 'caseSensitive', false),
+        wholeWord: optionalBoolean(payload, 'wholeWord', false),
+        regexp: optionalBoolean(payload, 'regexp', false),
+        include: stringArray(payload, 'include'),
+        exclude: stringArray(payload, 'exclude'),
+        maxResults: optionalInteger(payload, 'maxResults', 2000),
+      })
+    },
+
     'fs.write': async (payload) => {
       const root = await canonicalRoot(payload.root)
       const path = requireString(payload, 'path')
       const content = requireString(payload, 'content', { allowEmpty: true })
       const encoding = typeof payload.encoding === 'string' ? payload.encoding : 'utf-8'
-      return writeFileText(root, path, content, encoding)
+      const expectedMtimeMs = Number.isFinite(payload.expectedMtimeMs) ? payload.expectedMtimeMs : undefined
+      return writeFileText(root, path, content, encoding, { expectedMtimeMs })
     },
 
     'fs.reveal': async (payload) => {
@@ -213,6 +245,7 @@ export function apply(ctx) {
       return deleteEntries(root, {
         paths: stringArray(payload, 'paths'),
         trash: optionalBoolean(payload, 'trash', current.delete?.useRecycleBin !== false),
+        allowPermanent: optionalBoolean(payload, 'allowPermanent', false),
       })
     },
 
@@ -327,6 +360,8 @@ export function apply(ctx) {
         branch: typeof payload.branch === 'string' ? payload.branch : undefined,
         author: typeof payload.author === 'string' ? payload.author : undefined,
         query: typeof payload.query === 'string' ? payload.query : undefined,
+        since: typeof payload.since === 'string' ? payload.since : undefined,
+        regex: optionalBoolean(payload, 'regex', false),
         path,
       })
       return { commits, hasMore: commits.length > 0 }

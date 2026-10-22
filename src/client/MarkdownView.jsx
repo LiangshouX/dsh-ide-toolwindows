@@ -15,6 +15,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { IconOutline } from './icons.jsx'
 import { extractHeadings } from './markdown-outline.js'
+import { DomFindBar } from './DomFindBar.jsx'
 
 let markdownComponent = null
 let primitivesLoading = null
@@ -143,12 +144,27 @@ function FallbackMarkdown({ text }) {
  * @param {{ text: string, outlineOpen: boolean, onToggleOutline: () => void,
  *   labels?: Record<string, string> }} props
  */
-export function MarkdownView({ text, outlineOpen, onToggleOutline, labels = {} }) {
+export function MarkdownView({ text, outlineOpen, onToggleOutline, labels = {}, t = (key) => key }) {
   const MarkdownText = useMarkdownComponent()
   const containerRef = useRef(null)
   const [activeSlug, setActiveSlug] = useState('')
+  const [findOpen, setFindOpen] = useState(false)
   const headings = useMemo(() => extractHeadings(text), [text])
   const headingKey = useMemo(() => headings.map(heading => heading.slug).join('|'), [headings])
+
+  useEffect(() => {
+    const onKey = (event) => {
+      if (!(event.ctrlKey || event.metaKey) || event.altKey || event.shiftKey) return
+      if (event.key.toLowerCase() !== 'f') return
+      const target = event.target
+      if (!(target instanceof Element) || target.closest('.itw-root') === null) return
+      event.preventDefault()
+      event.stopPropagation()
+      setFindOpen(true)
+    }
+    window.addEventListener('keydown', onKey, true)
+    return () => window.removeEventListener('keydown', onKey, true)
+  }, [])
 
   // Assign the parsed slugs to the rendered heading elements in document order.
   useEffect(() => {
@@ -202,6 +218,9 @@ export function MarkdownView({ text, outlineOpen, onToggleOutline, labels = {} }
   }
 
   return React.createElement('div', { className: 'itw-markdown-wrap' },
+    findOpen === true
+      ? React.createElement(DomFindBar, { containerRef, t, onClose: () => setFindOpen(false) })
+      : null,
     React.createElement('div', { className: 'itw-markdown', ref: containerRef },
       MarkdownText !== null
         ? React.createElement(MarkdownText, { text, labels: markdownLabels(labels) })

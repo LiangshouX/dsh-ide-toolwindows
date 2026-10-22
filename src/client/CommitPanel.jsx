@@ -10,7 +10,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { ContextMenu } from './ui.jsx'
 import { FileTypeIcon, IconRefresh } from './icons.jsx'
-import { headerState, groupByChangelist, groupByDirectory, DEFAULT_CHANGELIST } from './commit-model.js'
+import { headerState, groupByChangelist, groupByDirectory, changelistOf, DEFAULT_CHANGELIST } from './commit-model.js'
 import { dirName } from './util.js'
 
 function LineStats({ stats }) {
@@ -30,7 +30,7 @@ function FileRow({ store, state, entry, checked, onOpen, onMenu }) {
   const stats = entry.staged ? entry.stagedLines : entry.unstagedLines
   const letter = entry.conflict === true ? '!' : entry.untracked === true ? 'U' : (entry.xy ?? '').replace(/\./g, '')
   return React.createElement('div', {
-    className: `itw-file-row ${selected ? 'itw-selected' : ''}`,
+    className: `itw-file-row ${selected ? 'itw-selected' : ''} ${entry.untracked === true ? 'itw-file-untracked' : ''} ${entry.conflict === true ? 'itw-file-conflict' : ''}`,
     title: entry.path,
     onClick: () => store.patch('commit', { selectedPath: entry.path }),
     onDoubleClick: () => onOpen(entry),
@@ -186,16 +186,16 @@ export function CommitPanel({ store, state }) {
     }))
   }
 
-  const changesBody = groups.changes.length === 0
+  const activeList = changelists.active ?? DEFAULT_CHANGELIST
+  const visibleChanges = groups.changes.filter(entry => changelistOf(entry.path, changelists.lists) === activeList)
+  const changesBody = visibleChanges.length === 0
     ? React.createElement('div', { className: 'itw-group-empty' }, t('commit.noChangesGroup'))
-    : (customLists.length > 0 || changelists.active !== DEFAULT_CHANGELIST
-        ? groupByChangelist(groups.changes, changelists.lists).map(section => React.createElement('div', {
-            key: section.name, className: 'itw-changelist',
-          },
-            React.createElement('div', { className: 'itw-changelist-head' }, section.name, React.createElement('span', { className: 'itw-count' }, section.entries.length)),
-            renderEntries(section.entries),
+    : (activeList === DEFAULT_CHANGELIST
+        ? renderEntries(visibleChanges)
+        : React.createElement('div', { className: 'itw-changelist' },
+            React.createElement('div', { className: 'itw-changelist-head' }, activeList, React.createElement('span', { className: 'itw-count' }, visibleChanges.length)),
+            renderEntries(visibleChanges),
           ))
-        : renderEntries(groups.changes))
 
   return React.createElement('div', { className: 'itw-commit' },
     React.createElement('div', { className: 'itw-panel-header' },
@@ -303,6 +303,22 @@ export function CommitPanel({ store, state }) {
         type: 'button', className: 'itw-textbtn itw-small', title: t('commit.newChangelist'),
         onClick: () => setDialog({ kind: 'changelist', name: '', paths: [] }),
       }, '+'),
+      activeList !== DEFAULT_CHANGELIST
+        ? React.createElement('button', {
+            type: 'button', className: 'itw-textbtn itw-small itw-danger', title: t('commit.deleteChangelist'),
+            onClick: () => store.askChoice(
+              t('commit.deleteChangelist'),
+              t('commit.deleteChangelistBody'),
+              [
+                { key: 'cancel', label: t('common.cancel'), action: () => {} },
+                {
+                  key: 'delete', label: t('commit.deleteChangelist'), danger: true,
+                  action: () => { void store.deleteChangelist(activeList) },
+                },
+              ],
+            ),
+          }, '×')
+        : null,
       React.createElement('span', { className: 'itw-spacer' }),
       React.createElement('button', {
         type: 'button', className: 'itw-textbtn itw-small itw-danger', title: t('commit.rollback'),
@@ -312,7 +328,7 @@ export function CommitPanel({ store, state }) {
     ),
     React.createElement('div', { className: 'itw-groups' },
       React.createElement('div', { className: 'itw-group' },
-        React.createElement(GroupHeader, { store, title: t('commit.changes'), entries: groups.changes, checkedPaths }),
+        React.createElement(GroupHeader, { store, title: t('commit.changes'), entries: visibleChanges, checkedPaths }),
         changesBody,
       ),
       React.createElement('div', { className: 'itw-group' },

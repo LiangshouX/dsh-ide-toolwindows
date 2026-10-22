@@ -30,6 +30,7 @@ const SHORTCUT_FALLBACK = {
   favorite: 'Alt+Shift+F',
   compare: 'Ctrl+D',
   findInFiles: 'Ctrl+Shift+F',
+  quickOpen: 'Ctrl+Shift+N',
   openEntry: 'Enter',
 }
 
@@ -45,6 +46,12 @@ function childOf(parent, name) {
   return `${parent.replace(/[\\/]$/, '')}${separator}${name}`
 }
 
+/** Workspace-relative forward-slash path → absolute path under `root`. */
+function absoluteOf(root, rel) {
+  const separator = root.includes('\\') ? '\\' : '/'
+  return `${root.replace(/[\\/]$/, '')}${separator}${String(rel).split('/').join(separator)}`
+}
+
 /** Whether a relative path sits under an excluded directory pattern. */
 export function isExcluded(rel, patterns) {
   if (!Array.isArray(patterns) || patterns.length === 0) return false
@@ -58,14 +65,16 @@ export function isExcluded(rel, patterns) {
 }
 
 /** Flatten the expanded tree into render rows. */
-function flatten(state, filter, showIgnored, ignored) {
+function flatten(state, filter, showIgnored, ignored, mode = 'tree') {
   const rows = []
   const dirs = state.dirs
-  const normalized = filter.trim().toLowerCase()
+  const normalized = mode === 'tree' ? filter.trim().toLowerCase() : ''
   const root = state.root
   if (root === '') return rows
 
-  const isExpanded = path => state.expanded.has(path) || normalized !== ''
+  // A tree filter only searches what is already loaded; never pretend an
+  // unloaded folder is "loading" just because a filter is active.
+  const isExpanded = path => state.expanded.has(path)
   const visible = entry => showIgnored || !ignored.has(entry.rel)
 
   const walk = (path, depth) => {
@@ -165,7 +174,27 @@ export function ProjectPanel({ store, state }) {
   const showIgnored = state.settings?.project?.showIgnored === true
   const singleClickOpen = state.settings?.project?.singleClickOpen === true
   const status = useMemo(() => aggregateStatus(state.status.entries ?? []), [state.status])
-  const rows = useMemo(() => flatten(state, state.filter, showIgnored, status.ignored), [state, state.filter, showIgnored, status])
+  const filterMode = state.filterMode === 'tree' ? 'tree' : 'files'
+  const quickRows = useMemo(() => {
+    const query = state.filter.trim().toLowerCase()
+    if (filterMode !== 'files' || query === '') return []
+    return state.fileIndex
+      .filter(rel => rel.toLowerCase().includes(query))
+      .slice(0, 300)
+      .map(rel => ({
+        kind: 'file',
+        key: `quick:${rel}`,
+        quick: true,
+        entry: {
+          name: rel.slice(rel.lastIndexOf('/') + 1),
+          path: absoluteOf(state.root, rel),
+          rel,
+          isDir: false,
+        },
+      }))
+  }, [filterMode, state.filter, state.fileIndex, state.root])
+  const treeRows = useMemo(() => flatten(state, state.filter, showIgnored, status.ignored, filterMode), [state, state.filter, showIgnored, status, filterMode])
+  const rows = filterMode === 'files' && state.filter.trim() !== '' ? quickRows : treeRows
   const rowPaths = useMemo(() => rows.filter(row => row.entry !== undefined).map(row => row.entry.path), [rows])
   const excluded = state.settings?.project?.excluded ?? []
 
@@ -177,6 +206,10 @@ export function ProjectPanel({ store, state }) {
     setViewport(element.clientHeight)
     return () => observer.disconnect()
   }, [])
+
+  useEffect(() => {
+    if ((state.treeFocusTick ?? 0) > 0) scrollRef.current?.focus()
+  }, [state.treeFocusTick])
 
   // Reverse locate: reveal the selected path after any navigation source.
   useEffect(() => {
@@ -249,6 +282,9 @@ export function ProjectPanel({ store, state }) {
     const pasteTarget = isDir ? entry.path : (entry === undefined ? state.root : parentOf(entry.path))
     const shortcut = shortcutFor
     const items = [
+      { key: 'find-in-files', text: t('search.title'), shortcut: shortcut('findInFiles'), action: () => store.openSearchTab() },
+      { key: 'quick-open', text: t('quickOpen.title'), shortcut: shortcut('quickOpen'), action: () => store.openQuickOpen() },
+      null,
       { key: 'new-file', text: t('project.newFile'), shortcut: 'Alt+Insert', action: () => beginNew(parentDir, false) },
       { key: 'new-dir', text: t('project.newDir'), shortcut: 'Alt+Insert', action: () => beginNew(parentDir, true) },
       null,
@@ -294,6 +330,8 @@ export function ProjectPanel({ store, state }) {
   const onRowClick = (event, row) => {
     const entry = row.entry
     if (entry === undefined) return
+    // Keep keyboard actions scoped to the tree (F2/Delete/Ctrl+A).
+    scrollRef.current?.focus()
     if (event.ctrlKey || event.metaKey) {
       store.toggleSelection(entry.path)
       return
@@ -303,6 +341,10 @@ export function ProjectPanel({ store, state }) {
       return
     }
     store.setSelection([entry.path], entry.path)
+    if (row.quick === true) {
+      store.openFile(entry.path, { rel: entry.rel, preview: true })
+      return
+    }
     if (!entry.isDir && singleClickOpen) store.openFile(entry.path, { rel: entry.rel, preview: true })
   }
 
@@ -319,6 +361,12 @@ export function ProjectPanel({ store, state }) {
     if (target instanceof HTMLElement && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable)) return
     const key = event.key
     const hit = name => matchesShortcut(shortcutFor(name), event)
+    if ((event.ctrlKey || event.metaKey) && !event.altKey && key.toLowerCase() === 'a') {
+      event.preventDefault()
+      event.stopPropagation()
+      if (rowPaths.length > 0) store.setSelection(rowPaths, rowPaths[0])
+      return
+    }
     if (hit('rename')) { event.preventDefault(); beginRename(currentEntry); return }
     if (hit('delete')) { event.preventDefault(); store.requestDelete(currentPaths); return }
     if (hit('duplicate')) { event.preventDefault(); void store.duplicateEntries(currentPaths); return }
@@ -457,7 +505,11 @@ export function ProjectPanel({ store, state }) {
         React.createElement('div', { className: 'itw-empty-title' }, t('project.empty')),
         React.createElement('button', { type: 'button', className: 'itw-textbtn itw-primary', onClick: () => store.openRootPicker() }, t('project.openWorkspace')),
       )
-    : React.createElement('div', { className: 'itw-vlist', style: { height: `${rows.length * ROW_HEIGHT}px` } },
+    : (filterMode === 'files' && state.filter.trim() !== '' && rows.length === 0 && state.fileIndexLoading !== true
+        ? React.createElement('div', { className: 'itw-empty' },
+            React.createElement('div', { className: 'itw-empty-title' }, t('project.noMatches')),
+          )
+        : React.createElement('div', { className: 'itw-vlist', style: { height: `${rows.length * ROW_HEIGHT}px` } },
         visible.map((row, index) => {
           const top = (start + index) * ROW_HEIGHT
           const style = { top: `${top}px`, paddingLeft: `${8 + row.depth * 14}px` }
@@ -507,7 +559,7 @@ export function ProjectPanel({ store, state }) {
           const editing = renaming !== null && renaming.path === entry.path
           return React.createElement('div', {
             key: row.key,
-            className: `${classes} ${active !== undefined ? 'itw-selected' : ''}`,
+            className: `${classes} ${active !== undefined ? 'itw-opened' : ''}`,
             style,
             title: entry.rel,
             draggable: !editing,
@@ -537,9 +589,12 @@ export function ProjectPanel({ store, state }) {
                   onDoubleClick: event => event.stopPropagation(),
                 })
               : React.createElement('span', { className: 'itw-tree-name' }, entry.name),
+            row.quick === true
+              ? React.createElement('span', { className: 'itw-tree-relative' }, entry.rel)
+              : null,
           )
         }),
-      )
+      ))
 
   const favorites = state.settings?.favorites ?? []
   const favoritesPanel = favoritesOpen && favorites.length > 0
@@ -576,6 +631,10 @@ export function ProjectPanel({ store, state }) {
         onClick: () => setFavoritesOpen(!favoritesOpen),
       }, '★'),
       React.createElement('button', {
+        type: 'button', className: 'itw-iconbtn', title: `${t('search.title')} (${shortcutFor('findInFiles')})`,
+        onClick: () => store.openSearchTab(),
+      }, React.createElement('span', { style: { fontSize: 16, lineHeight: 1 } }, '\u2315')),
+      React.createElement('button', {
         type: 'button', className: `itw-iconbtn ${filterOpen ? 'itw-on' : ''}`, title: t('project.filter'),
         onClick: () => { setFilterOpen(!filterOpen); if (filterOpen) store.setFilter('') },
       }, React.createElement(IconSearch, { width: 14, height: 14 })),
@@ -591,15 +650,36 @@ export function ProjectPanel({ store, state }) {
     favoritesPanel,
     filterOpen || state.filter !== ''
       ? React.createElement('div', { className: 'itw-filter' },
+          React.createElement('div', { className: 'itw-filter-mode', role: 'group' },
+            React.createElement('button', {
+              type: 'button', className: filterMode === 'files' ? 'itw-on' : '',
+              title: t('project.filterFiles'),
+              onClick: () => store.setFilterMode('files'),
+            }, t('project.filterFiles')),
+            React.createElement('button', {
+              type: 'button', className: filterMode === 'tree' ? 'itw-on' : '',
+              title: t('project.filterTree'),
+              onClick: () => store.setFilterMode('tree'),
+            }, t('project.filterTree')),
+          ),
           React.createElement(IconSearch, { width: 13, height: 13 }),
           React.createElement('input', {
             autoFocus: true,
-            placeholder: t('project.filter'),
+            placeholder: filterMode === 'tree' ? t('project.filter') : t('project.filterFiles'),
             value: state.filter,
             onChange: event => store.setFilter(event.target.value),
             onKeyDown: event => { if (event.key === 'Escape') { store.setFilter(''); setFilterOpen(false) } },
           }),
         )
+      : null,
+    filterMode === 'tree' && state.filter.trim() !== ''
+      ? React.createElement('div', { className: 'itw-filter-hint' }, t('project.filterTreeHint'))
+      : null,
+    filterMode === 'files' && state.filter.trim() !== '' && state.fileIndexLoading === true
+      ? React.createElement('div', { className: 'itw-filter-hint' }, t('project.filterIndexing'))
+      : null,
+    filterMode === 'files' && state.filter.trim() !== '' && state.fileIndexError !== null
+      ? React.createElement('div', { className: 'itw-filter-hint itw-error-text' }, t('project.filterError'))
       : null,
     React.createElement('div', {
       className: 'itw-panel-body itw-tree',

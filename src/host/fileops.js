@@ -226,13 +226,15 @@ function trashViaPowerShell(absolute, isDir) {
 }
 
 /**
- * Delete entries (optionally into the recycle bin, falling back to a
- * permanent delete only when the caller asked for it).
+ * Delete entries. With `trash`, a failed recycle-bin call is reported instead
+ * of silently falling back to a permanent delete; the caller must explicitly
+ * retry with `trash: false`.
  * @param {string} root canonical workspace root
- * @param {{ paths: string[], trash?: boolean }} input
+ * @param {{ paths: string[], trash?: boolean, allowPermanent?: boolean }} input
  */
 export async function deleteEntries(root, input) {
   const trash = input.trash === true
+  const allowPermanent = input.allowPermanent === true
   const results = []
   for (const raw of input.paths) {
     const source = resolveInside(root, raw)
@@ -243,7 +245,12 @@ export async function deleteEntries(root, input) {
       if (info === null) throw new ApiError('not-found', 'path not found', 404)
       if (info.isSymbolicLink()) throw new ApiError('forbidden', 'refusing to delete a symlink', 403)
       let trashed = false
-      if (trash) trashed = await trashViaPowerShell(source, info.isDirectory())
+      if (trash) {
+        trashed = await trashViaPowerShell(source, info.isDirectory())
+        if (!trashed && !allowPermanent) {
+          throw new ApiError('trash-failed', `could not move "${display}" to the recycle bin`, 409)
+        }
+      }
       if (!trashed) await rm(source, { recursive: true, force: false })
       results.push({ path: display, ok: true, trashed })
     } catch (error) {

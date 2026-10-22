@@ -77,10 +77,14 @@ export function baseName(path) {
 }
 
 /** Format an ISO-ish git date (`2026-10-21 10:00:00 +0800`). */
-export function formatGitDate(value) {
+export function formatGitDate(value, compact = false) {
   if (typeof value !== 'string' || value === '') return ''
   const match = /^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})/.exec(value)
-  if (match !== null) return `${match[1]}-${match[2]}-${match[3]} ${match[4]}:${match[5]}`
+  if (match !== null) {
+    return compact
+      ? `${match[2]}-${match[3]} ${match[4]}:${match[5]}`
+      : `${match[1]}-${match[2]}-${match[3]} ${match[4]}:${match[5]}`
+  }
   const date = new Date(value)
   if (Number.isNaN(date.getTime())) return value
   return date.toLocaleString()

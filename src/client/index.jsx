@@ -114,7 +114,45 @@ export function apply(ctx) {
       const store = activeStore()
       const shortcuts = (store ?? settingsStore).state.settings?.shortcuts
       if (shortcuts == null) return
+      const target = event.target
+      const inWorkbench = target instanceof Element && target.closest('.itw-root') !== null
       const inTerminal = isTerminalTarget(event.target)
+      if (store?.state.active === true && inWorkbench) {
+        if (matchesShortcut(shortcuts.findInFiles ?? 'Ctrl+Shift+F', event)
+          || matchesShortcut(shortcuts.findInFilesAlt ?? 'Ctrl+Alt+F', event)) {
+          event.preventDefault()
+          event.stopPropagation()
+          store.openSearchTab()
+          return
+        }
+        if (matchesShortcut(shortcuts.quickOpen ?? 'Ctrl+Shift+N', event)) {
+          event.preventDefault()
+          event.stopPropagation()
+          store.openQuickOpen()
+          return
+        }
+        // Ctrl+P is the VS Code muscle memory; keep both (decision 4C).
+        if ((event.ctrlKey || event.metaKey) && !event.altKey && !event.shiftKey && event.key.toLowerCase() === 'p') {
+          event.preventDefault()
+          event.stopPropagation()
+          store.openQuickOpen()
+          return
+        }
+        if (store.state.activeId === 'search:in-files' && event.key === 'F8' && !event.ctrlKey && !event.altKey && !event.metaKey) {
+          event.preventDefault()
+          event.stopPropagation()
+          store.openNextSearchResult(event.shiftKey ? -1 : 1)
+          return
+        }
+        if (store.state.layout.bottom === 'git'
+          && matchesShortcut(shortcuts.openCommitDetail ?? 'Ctrl+Alt+D', event)) {
+          event.preventDefault()
+          event.stopPropagation()
+          const hash = store.state.git.selectedHash ?? store.state.git.commits[0]?.hash
+          if (hash !== undefined) void store.openCommitDetail(hash)
+          return
+        }
+      }
       const pairs = [
         ['project', shortcuts.project], ['commit', shortcuts.commit],
         ['git', shortcuts.git], ['terminal', shortcuts.terminal],
@@ -123,6 +161,9 @@ export function apply(ctx) {
       for (const [action, shortcut] of pairs) {
         if (!shortcut || !matchesShortcut(shortcut, event)) continue
         if (inTerminal && (action === 'focusCommit' || action === 'push')) continue
+        // Ctrl+K / F11 belong to the IDE only while it has focus; otherwise a
+        // chat input or another panel must receive them.
+        if ((action === 'focusCommit') && !inWorkbench) continue
         if (action === 'push') {
           if (store?.state.active !== true || store.state.status.isRepo !== true) return
           event.preventDefault()
@@ -137,16 +178,17 @@ export function apply(ctx) {
         // Opening mounts the body after this event. Apply the requested tool
         // once its store exists; do not consume shortcuts without a Session.
         requestAnimationFrame(() => {
-          const target = activeStore()
-          if (target === undefined) return
-          if (action === 'focusCommit') target.focusCommit()
-          else if (wasActive) target.toggleTool(action)
-          else target.showTool(action)
+          const targetStore = activeStore()
+          if (targetStore === undefined) return
+          if (action === 'focusCommit') targetStore.focusCommit()
+          else if (wasActive) targetStore.toggleTool(action)
+          else targetStore.showTool(action)
         })
         return
       }
       if (store?.state.active !== true) return
       if (event.key === 'F11') {
+        if (!inWorkbench) return
         event.preventDefault()
         event.stopPropagation()
         store.toggleFullscreen(event.target)

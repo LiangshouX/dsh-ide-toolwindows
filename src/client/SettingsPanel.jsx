@@ -14,6 +14,9 @@ const SHORTCUT_FIELDS = [
   ['terminal', 'terminalShortcut'],
   ['focusCommit', 'focusCommitShortcut'],
   ['push', 'pushShortcut'],
+  ['findInFiles', 'findInFilesShortcut'],
+  ['findInFilesAlt', 'findInFilesAltShortcut'],
+  ['quickOpen', 'quickOpenShortcut'],
 ]
 
 export function SettingsForm({ store, state, compact }) {
@@ -110,11 +113,11 @@ export function SettingsForm({ store, state, compact }) {
           onChange: event => update({ terminal: { copyOnSelect: event.target.checked } }),
         }),
       ),
-      React.createElement(Row, { label: t('settings.fontSize') },
+      React.createElement(Row, { label: t('settings.terminalFontSize') },
         React.createElement('input', {
           type: 'number', min: 10, max: 20,
-          value: draft.editor?.fontSize ?? 13,
-          onChange: event => update({ editor: { fontSize: Number(event.target.value) || 13 } }),
+          value: draft.terminal?.fontSize ?? 13,
+          onChange: event => update({ terminal: { fontSize: Number(event.target.value) || 13 } }),
         }),
       ),
     ),
@@ -183,11 +186,28 @@ export function SettingsForm({ store, state, compact }) {
     ),
     React.createElement('div', { className: 'itw-settings-group' },
       React.createElement('h3', null, t('settings.editorGroup')),
-      React.createElement(Row, { label: t('settings.defaultReadOnly'), hint: t('settings.defaultReadOnlyHint') },
+      React.createElement(Row, { label: t('settings.openMode'), hint: t('settings.openModeHint') },
+        React.createElement('select', {
+          value: draft.editor?.openMode ?? 'auto',
+          onChange: event => update({ editor: { openMode: event.target.value } }),
+        },
+          React.createElement('option', { value: 'auto' }, t('settings.openModeAuto')),
+          React.createElement('option', { value: 'editable' }, t('settings.openModeEditable')),
+          React.createElement('option', { value: 'readonly' }, t('settings.openModeReadonly')),
+        ),
+      ),
+      React.createElement(Row, { label: t('settings.editableMaxBytes'), hint: t('settings.editableMaxBytesHint') },
         React.createElement('input', {
-          type: 'checkbox',
-          checked: draft.editor?.defaultReadOnly !== false,
-          onChange: event => update({ editor: { defaultReadOnly: event.target.checked } }),
+          type: 'number', min: 64, max: 16384, step: 64,
+          value: Math.round((draft.editor?.editableMaxBytes ?? (1 << 20)) / 1024),
+          onChange: event => update({ editor: { editableMaxBytes: (Number(event.target.value) || 1024) * 1024 } }),
+        }),
+      ),
+      React.createElement(Row, { label: t('settings.editorFontSize') },
+        React.createElement('input', {
+          type: 'number', min: 10, max: 20,
+          value: draft.editor?.fontSize ?? 13,
+          onChange: event => update({ editor: { fontSize: Number(event.target.value) || 13 } }),
         }),
       ),
       React.createElement(Row, { label: t('settings.markdownPreview'), hint: t('settings.markdownPreviewHint') },
@@ -272,10 +292,10 @@ export function SettingsForm({ store, state, compact }) {
             vscode: { path: '' },
             terminal: { shell: 'auto', copyOnSelect: false },
             project: { alwaysSelectOpened: true, showHidden: true },
-            editor: { fontSize: 13, highlight: true, defaultReadOnly: true, markdownPreview: true },
+            editor: { fontSize: 13, highlight: true, openMode: 'auto', editableMaxBytes: 1 << 20, markdownPreview: true },
             shortcuts: {
               project: 'Alt+1', commit: 'Alt+0', git: 'Alt+9', terminal: 'Alt+F12',
-              focusCommit: 'Ctrl+K', push: 'Ctrl+Shift+K',
+              focusCommit: 'Ctrl+K', push: 'Ctrl+Shift+K', findInFiles: 'Ctrl+Shift+F', findInFilesAlt: 'Ctrl+Alt+F', openCommitDetail: 'Ctrl+Alt+D', quickOpen: 'Ctrl+Shift+N',
             },
           }
           setDraft({ ...draft, ...reset })

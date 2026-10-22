@@ -115,12 +115,12 @@ test('commit and git windows render their rows and graph', async () => {
   assert.match(html, /commit\.title/)
 })
 
-test('a preview tab renders italic and a code view', async () => {
+test('a preview tab renders italic and a code surface', async () => {
   const mod = await loadModule()
   const html = mod.renderCode()
   assert.match(html, /itw-preview/)
-  assert.match(html, /itw-code-line/)
-  assert.match(html, /itw-tok-keyword/)
+  assert.match(html, /itw-codemirror/)
+  assert.match(html, /itw-opened/)
 })
 
 test('diff view renders selected-file rows', async () => {
@@ -136,6 +136,42 @@ test('diff component renders unified mode with hunk actions', async () => {
   const html = mod.renderDiffComponent()
   assert.match(html, /itw-diff-hunk/)
   assert.match(html, /commit\.stageAll/)
+})
+
+test('Git drawer renders the commit metadata and file list', async () => {
+  const mod = await loadModule()
+  const html = mod.renderGitDrawer()
+  assert.match(html, /itw-git-drawer/)
+  assert.match(html, /itw-git-drawer-files/)
+  assert.match(html, /a\.ts/)
+  assert.match(html, /git\.fileList/)
+  // A normal dock keeps the log columns and the side Drawer.
+  assert.match(html, /itw-author/)
+  assert.match(html, /itw-date/)
+  assert.doesNotMatch(html, /itw-git-narrow/)
+})
+
+test('Find in Files renders grouped results', async () => {
+  const mod = await loadModule()
+  const html = mod.renderSearchTab()
+  assert.match(html, /itw-search/)
+  assert.match(html, /itw-search-hit/)
+  assert.match(html, /search\.title/)
+})
+
+test('Quick Open renders matching paths', async () => {
+  const mod = await loadModule()
+  const html = mod.renderQuickOpen()
+  assert.match(html, /itw-quick/)
+  assert.match(html, /main\.ts/)
+  assert.match(html, /src/)
+})
+
+test('Project file filter renders a flat quick-locate row', async () => {
+  const mod = await loadModule()
+  const html = mod.renderProjectQuickFilter()
+  assert.match(html, /itw-tree-relative/)
+  assert.match(html, /src\/main\.ts/)
 })
 
 test('project picker lists the workspace root and first-level folders', async () => {

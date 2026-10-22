@@ -5,13 +5,14 @@
  */
 import React, { useEffect, useRef, useState } from 'react'
 import { useWorkbench } from './hooks.js'
-import { IconFolder, IconGit, IconGear, IconRefresh, IconTerminal, StripeIcon } from './icons.jsx'
+import { IconFolder, IconGit, IconGear, IconRefresh, IconSearch, IconTerminal, StripeIcon } from './icons.jsx'
 import { ProjectPanel } from './ProjectPanel.jsx'
 import { CommitPanel } from './CommitPanel.jsx'
 import { GitPanel } from './GitPanel.jsx'
 import { TerminalPanel } from './TerminalPanel.jsx'
 import { EditorArea } from './EditorArea.jsx'
 import { SettingsForm } from './SettingsPanel.jsx'
+import { QuickOpen } from './QuickOpen.jsx'
 import { ConfirmModal, ContextMenu, Kbd, Toast } from './ui.jsx'
 import { baseName } from './util.js'
 
@@ -62,6 +63,10 @@ function TopBar({ store, state, fullscreen, onOpenSettings }) {
       'aria-pressed': fullscreen,
       onClick: event => store.toggleFullscreen(event.currentTarget),
     }, '⛶'),
+    React.createElement('button', {
+      type: 'button', className: 'itw-iconbtn', title: `${t('search.title')} (${state.settings?.shortcuts?.findInFiles ?? 'Ctrl+Shift+F'})`,
+      onClick: () => store.openSearchTab(),
+    }, React.createElement(IconSearch, { width: 15, height: 15 })),
     React.createElement('button', {
       type: 'button', className: 'itw-iconbtn', title: t('common.refresh'),
       onClick: () => { void store.reloadTree(); void store.refreshStatus({ initial: true }); void store.loadBranches() },
@@ -363,19 +368,26 @@ export function Workbench({ store, visible = true, fullscreen = false }) {
     )
   }
 
-  const bottom = state.layout.bottom !== null && state.layout.bottom !== undefined
+  const bottom = state.layout.bottom !== null && state.layout.bottom !== undefined ? state.layout.bottom : null
+  const terminalKeep = state.terminal.sessions.length > 0
+  const bottomNode = bottom !== null || terminalKeep
     ? React.createElement('div', {
-        className: 'itw-bottom',
-        style: { height: `${state.layout.bottomHeight}px` },
+        className: `itw-bottom ${bottom === null ? 'itw-bottom-hidden' : ''}`,
+        style: { height: bottom === null ? 0 : state.layout.bottomHeight },
       },
-        React.createElement('div', { className: 'itw-bottom-resizer', onPointerDown: startBottomResize }),
-        React.createElement(BottomTabs, { store, state }),
+        bottom !== null
+          ? React.createElement(React.Fragment, null,
+              React.createElement('div', { className: 'itw-bottom-resizer', onPointerDown: startBottomResize }),
+              React.createElement(BottomTabs, { store, state }),
+            )
+          : null,
         React.createElement('div', { className: 'itw-bottom-body' },
-          React.createElement('div', { className: 'itw-bottom-content' },
-            state.layout.bottom === 'terminal'
-              ? React.createElement(TerminalPanel, { store, state })
-              : React.createElement(GitPanel, { store, state }),
-          ),
+          bottom === 'git' ? React.createElement(GitPanel, { store, state }) : null,
+          terminalKeep
+            ? React.createElement('div', {
+                className: bottom === 'terminal' ? 'itw-bottom-content' : 'itw-term-hidden',
+              }, React.createElement(TerminalPanel, { store, state, visible: bottom === 'terminal' }))
+            : (bottom === 'terminal' ? React.createElement(TerminalPanel, { store, state, visible: true }) : null),
         ),
       )
     : null
@@ -387,7 +399,7 @@ export function Workbench({ store, visible = true, fullscreen = false }) {
       left,
       React.createElement('div', { className: 'itw-center' },
         React.createElement(EditorArea, { store, state }),
-        bottom,
+        bottomNode,
       ),
     ),
     React.createElement(StatusBar, { store, state }),
@@ -406,6 +418,7 @@ export function Workbench({ store, visible = true, fullscreen = false }) {
         )
       : null,
     React.createElement(ConfirmModal, { dialog: state.confirm, onClose: () => store.dismissConfirm() }),
+    React.createElement(QuickOpen, { store, state }),
     React.createElement(Toast, { toast: state.toast }),
     React.createElement(RootPicker, { store, state }),
     React.createElement(ProjectPicker, { store, state }),

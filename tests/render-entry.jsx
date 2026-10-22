@@ -240,3 +240,52 @@ export function renderDiffComponent() {
   }
   return renderToStaticMarkup(React.createElement(DiffView, { store, state: store.state, tab }))
 }
+
+export function renderGitDrawer() {
+  const store = baseStore()
+  store.state.layout = { ...store.state.layout, bottom: 'git' }
+  store.state.git = {
+    ...store.state.git,
+    commits: [
+      { hash: 'aaa', shortHash: 'aaa', parents: ['bbb'], author: 'Ann', email: 'a@x', date: '2026-10-20 10:00:00 +0800', refs: ['HEAD -> main'], subject: 'first' },
+    ],
+    branches: ['main'],
+    selectedHash: 'aaa',
+    detailHash: 'aaa',
+    detail: {
+      hash: 'aaa', shortHash: 'aaa', parents: ['bbb'], author: 'Ann', email: 'a@x',
+      date: '2026-10-20 10:00:00 +0800', refs: ['HEAD -> main'], subject: 'first',
+      body: 'Body line', diff: SAMPLE_DIFF,
+    },
+    loading: false,
+  }
+  return renderToStaticMarkup(React.createElement(Workbench, { store }))
+}
+
+export function renderSearchTab() {
+  const store = baseStore()
+  store.state.tabs = [{ id: 'search:in-files', kind: 'search', name: 'search.title', loading: false, error: null }]
+  store.state.activeId = 'search:in-files'
+  store.state.search = {
+    ...store.state.search,
+    query: 'a.ts', results: [{ path: 'a.ts', matches: [{ line: 1, column: 1, preview: 'const a = 1' }] }],
+    tookMs: 4, loading: false,
+  }
+  return renderToStaticMarkup(React.createElement(Workbench, { store }))
+}
+
+export function renderQuickOpen() {
+  const store = baseStore()
+  store.state.quickOpen = true
+  store.state.quickOpenQuery = 'ma'
+  store.state.fileIndex = ['src/main.ts', 'a.ts']
+  return renderToStaticMarkup(React.createElement(Workbench, { store }))
+}
+
+export function renderProjectQuickFilter() {
+  const store = baseStore()
+  store.state.filter = 'ma'
+  store.state.filterMode = 'files'
+  store.state.fileIndex = ['src/main.ts', 'a.ts']
+  return renderToStaticMarkup(React.createElement(Workbench, { store }))
+}

@@ -299,8 +299,9 @@ export function encodeText(content, encoding) {
  * @param {string} path absolute path inside the workspace
  * @param {string} content new text
  * @param {string} [encoding] encoding reported by the read
+ * @param {{ expectedMtimeMs?: number }} [options] optimistic-concurrency guard
  */
-export async function writeFileText(root, path, content, encoding = 'utf-8') {
+export async function writeFileText(root, path, content, encoding = 'utf-8', options = {}) {
   const absolute = resolveInside(root, path)
   let info
   try {
@@ -310,6 +311,11 @@ export async function writeFileText(root, path, content, encoding = 'utf-8') {
   }
   if (info.isSymbolicLink()) throw new ApiError('forbidden', 'refusing to write through a symlink', 403)
   if (info.isDirectory()) throw new ApiError('bad-request', 'path is a directory')
+  if (Number.isFinite(options.expectedMtimeMs) && Math.abs(info.mtimeMs - options.expectedMtimeMs) > 0.5) {
+    // The file changed after the editor read it. Refuse the write instead of
+    // silently clobbering the other program's edit.
+    throw new ApiError('stale-file', `file changed on disk since it was opened (mtime ${info.mtimeMs})`, 409)
+  }
   const buffer = encodeText(content, encoding)
   if (buffer.length > MAX_WRITE_BYTES) {
     throw new ApiError('too-large', `file exceeds the ${MAX_WRITE_BYTES} byte write limit`, 413)
