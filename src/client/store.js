@@ -12,6 +12,8 @@ import {
   DEFAULT_CHANGELIST, assignChangelist, changelistOf, isEntryChecked, splitCommitGroups, checkedPathsOf,
 } from './commit-model.js'
 import { baseName, debounce, dirName, formatGitDate } from './util.js'
+import { parseFileAddress, resolveFileAddress } from './file-address.js'
+import { normalizeScopePath, sameScopePath, sessionCwdOf } from './workspace-scope.js'
 
 let sequence = 0
 /** A process-local id for transient UI keys. */
@@ -157,10 +159,12 @@ export class WorkbenchStore {
   /**
    * @param {any} ctx client cordis context
    * @param {() => string} t bound translate function
+   * @param {string} [preferredRoot] workspace root this store belongs to
    */
-  constructor(ctx, t) {
+  constructor(ctx, t, preferredRoot = '') {
     this.ctx = ctx
     this.t = t
+    this.preferredRoot = typeof preferredRoot === 'string' ? preferredRoot : ''
     this.state = initialState()
     this.listeners = new Set()
     this.pollTimer = null
@@ -173,6 +177,7 @@ export class WorkbenchStore {
     this.searchToken = 0
     this.searchIndex = -1
     this.settingsFile = ''
+    this.initPromise = null
     this.unsubscribers = []
   }
 
@@ -242,7 +247,19 @@ export class WorkbenchStore {
   }
 
   // ── boot ──────────────────────────────────────────────────────────────
-  async init() {
+  /**
+   * Load settings and the workspace once. Concurrent callers share the same
+   * promise; a failed boot is retried by the Workbench's Retry action.
+   * @returns {Promise<void>}
+   */
+  init() {
+    if (this.initPromise !== null && this.state.fatal === null) return this.initPromise
+    if (this.state.fatal !== null) this.set({ phase: 'booting', fatal: null })
+    this.initPromise = this.#runInit()
+    return this.initPromise
+  }
+
+  async #runInit() {
     this.unsubscribers.push(this.ctx.locale.subscribe(() => {
       this.set({ localeTick: this.state.localeTick + 1 })
     }))
@@ -251,7 +268,10 @@ export class WorkbenchStore {
       this.settingsFile = settingsResult.file
       const workspaces = await call('workspace.list')
       const settings = settingsResult.value
-      const preferred = this.#pickRoot(settings, workspaces)
+      // A workspace-scoped store boots at the active Session's cwd, so the
+      // conversation and the IDE show the same project. Without one (the
+      // settings page store, or an older host) fall back to the old policy.
+      const preferred = this.preferredRoot !== '' ? this.preferredRoot : this.#pickRoot(settings, workspaces)
       const savedProject = preferred !== undefined ? settings?.projectRoots?.[preferred] : undefined
       this.set({
         settings,
@@ -286,6 +306,81 @@ export class WorkbenchStore {
     } catch (error) {
       this.set({ phase: 'ready', fatal: error instanceof Error ? error.message : String(error) })
     }
+  }
+
+  /** Ensure the store is booted; safe to call from a chat file-link bridge. */
+  async ensureInit() {
+    if (this.state.phase === 'ready' && this.state.root !== '') return true
+    await this.init()
+    return this.state.phase === 'ready' && this.state.root !== ''
+  }
+
+  /**
+   * Open one `dsh-resource://file/…` link in the workbench.
+   *
+   * The chat's own file opener always resolves a path against the viewing
+   * Session's workspace and hands the address to `sidebarRight.openResource`;
+   * this method turns that address into an absolute path, makes sure the file
+   * is inside the selected IDE project (switching to the containing project
+   * when it is not and no edits are dirty), reveals it in the Project tree and
+   * opens a preview tab at the requested line.
+   * @param {string} address the resource address
+   * @param {{ line?: number }} [options]
+   * @returns {Promise<boolean>} true when the file is now open in the workbench
+   */
+  async openExternalFile(address, options = {}) {
+    const parsed = parseFileAddress(address)
+    if (parsed === undefined) return false
+    if (!(await this.ensureInit())) {
+      this.toast('error', this.t('links.openFailed'), String(address))
+      return false
+    }
+    const cwd = parsed.scope === 'session'
+      ? (sessionCwdOf(this.ctx, parsed.sessionId) || this.state.workspaceRoot)
+      : this.state.workspaceRoot
+    const absolute = resolveFileAddress(parsed, cwd)
+    if (absolute === undefined) {
+      this.toast('error', this.t('links.openFailed'), String(address))
+      return false
+    }
+    if (!this.#insideRoot(absolute)) {
+      const project = this.#projectContaining(absolute)
+      if (project === undefined || sameScopePath(project, this.state.root)) {
+        this.toast('error', this.t('links.outsideRoot'), absolute)
+        return false
+      }
+      if (this.state.tabs.some(tab => tab.dirty === true)) {
+        this.toast('error', this.t('links.dirtyProject'), absolute)
+        return false
+      }
+      await this.selectProject(project)
+      if (!sameScopePath(this.state.root, project)) {
+        this.toast('error', this.t('links.outsideRoot'), absolute)
+        return false
+      }
+    }
+    this.showTool('project')
+    this.openFile(absolute, { preview: true, line: options.line })
+    return true
+  }
+
+  /** Whether one absolute path is inside the selected IDE project root. */
+  #insideRoot(path) {
+    const root = normalizeScopePath(this.state.root)
+    const candidate = normalizeScopePath(path)
+    return root !== '' && (candidate === root || candidate.startsWith(`${root}/`))
+  }
+
+  /** The deepest project candidate that contains one absolute path. */
+  #projectContaining(path) {
+    const candidate = normalizeScopePath(path)
+    let best
+    for (const project of this.state.projects) {
+      const root = normalizeScopePath(project.path)
+      if (root === '' || !(candidate === root || candidate.startsWith(`${root}/`))) continue
+      if (best === undefined || root.length > normalizeScopePath(best).length) best = project.path
+    }
+    return best
   }
 
   /** Choose the durable root: last used → most recent workspace → default dir. */
@@ -515,13 +610,15 @@ export class WorkbenchStore {
       layout: state.layout,
     }
     try {
-      const result = await call('settings.update', {
-        patch: {
-          lastRoot: state.workspaceRoot,
-          projectRoots: { [state.workspaceRoot]: state.root },
-          workspaceState: { [state.root]: workspaceState },
-        },
-      })
+      const patch = {
+        projectRoots: { [state.workspaceRoot]: state.root },
+        workspaceState: { [state.root]: workspaceState },
+      }
+      // Workspace-scoped stores share one settings document. A background
+      // store's debounce must not steal `lastRoot` from the active workspace;
+      // only the visible workbench updates it.
+      if (state.active === true) patch.lastRoot = state.workspaceRoot
+      const result = await call('settings.update', { patch })
       const next = { ...state.settings, ...result.value }
       // Keep the in-memory document in sync without a render (the tree reads
       // settings.project.showHidden on every list call).

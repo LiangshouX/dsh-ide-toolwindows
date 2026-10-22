@@ -260,7 +260,18 @@ test('client opens a native sidebar tab without registering a central page', asy
     assert.ok(mod.clientInject.includes('sidebarRightTabs'))
     assert.equal(types[0].kind, 'ide-toolwindows')
     assert.equal(types[0].guide[0].title(), 'panelLabel')
+    assert.deepEqual(types[0].patterns, [
+      'dsh-resource://file/session/**',
+      'dsh-resource://file/absolute/**',
+    ])
+    assert.equal(types[0].priority, 'extension')
+    assert.equal(types[0].canOpen('dsh-resource://file/session/session-1/src/a.ts'), true)
+    assert.equal(types[0].canOpen('dsh-resource://file/session/session-1/report.pdf'), false)
+    assert.equal(types[0].title('dsh-resource://file/session/session-1/src/a.ts'), 'a.ts')
+    assert.equal(types[0].title('sidebar://ide-toolwindows'), 'panelLabel')
     assert.ok(entries.some(entry => entry.name === 'sidebar.right.pane.tab'))
+    assert.ok(entries.some(entry => entry.name === 'conversation.hero.options'))
+    assert.ok(entries.some(entry => entry.name === 'sidebar.footer.action'))
     assert.ok(!entries.some(entry => entry.name === 'main' || entry.name === 'sidebar.panellist'))
     const header = entries.find(entry => entry.name === 'conversation.session.header.utilities')
     const fragment = header.component()

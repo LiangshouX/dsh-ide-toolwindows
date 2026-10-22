@@ -71,6 +71,11 @@ export const DEFAULT_SETTINGS = {
     cleanupCommand: '',
     optimizeImportsCommand: '',
   },
+  /** Where links to files in the conversation open. */
+  links: {
+    /** 'ide' = this plugin's workbench; 'sidebar' = DSH's own right-sidebar preview. */
+    chatFiles: 'ide',
+  },
   /** Tool-window layout, per tool: dock side, mode, pin/auto-hide, size. */
   layout: {
     tools: {

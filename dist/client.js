@@ -369,6 +369,13 @@ var en = {
   "settings.showHidden": "Show hidden files",
   "settings.singleClickOpen": "Open files with single click",
   "settings.singleClickOpenHint": "Single click opens a preview tab (edited files become real tabs)",
+  "settings.chatFileLinks": "Chat file links",
+  "settings.chatFileLinksHint": "Where links to files in the conversation open",
+  "settings.chatFileLinksIde": "IDE Tool Windows",
+  "settings.chatFileLinksSidebar": "Sidebar (DSH default)",
+  "links.openFailed": "Could not open this file in the IDE",
+  "links.outsideRoot": "This file is outside the current IDE project",
+  "links.dirtyProject": "Save or close the open edits before switching the IDE project",
   "settings.showIgnored": "Show ignored files",
   "settings.showIgnoredHint": "List .gitignore matches in grey (hidden by default)",
   "settings.groupByDirectory": "Group changes by directory",
@@ -773,6 +780,13 @@ var zh = {
   "settings.showHidden": "\u663E\u793A\u9690\u85CF\u6587\u4EF6",
   "settings.singleClickOpen": "\u5355\u51FB\u6253\u5F00\u6587\u4EF6",
   "settings.singleClickOpenHint": "\u5355\u51FB\u6253\u5F00\u9884\u89C8\u6807\u7B7E\uFF0C\u7F16\u8F91\u540E\u8F6C\u4E3A\u6B63\u5F0F\u6807\u7B7E",
+  "settings.chatFileLinks": "\u804A\u5929\u6587\u4EF6\u94FE\u63A5",
+  "settings.chatFileLinksHint": "\u804A\u5929\u4E2D\u7684\u6587\u4EF6\u94FE\u63A5\u5728\u54EA\u91CC\u6253\u5F00",
+  "settings.chatFileLinksIde": "IDE \u5DE5\u5177\u7A97\u53E3",
+  "settings.chatFileLinksSidebar": "\u4FA7\u680F\uFF08DSH \u9ED8\u8BA4\uFF09",
+  "links.openFailed": "\u65E0\u6CD5\u5728 IDE \u4E2D\u6253\u5F00\u8BE5\u6587\u4EF6",
+  "links.outsideRoot": "\u8BE5\u6587\u4EF6\u4E0D\u5728\u5F53\u524D IDE \u9879\u76EE\u5185",
+  "links.dirtyProject": "\u5207\u6362 IDE \u9879\u76EE\u524D\u8BF7\u5148\u4FDD\u5B58\u6216\u5173\u95ED\u672A\u4FDD\u5B58\u7684\u7F16\u8F91",
   "settings.showIgnored": "\u663E\u793A\u88AB\u5FFD\u7565\u7684\u6587\u4EF6",
   "settings.showIgnoredHint": "\u4EE5\u7070\u8272\u5217\u51FA .gitignore \u547D\u4E2D\u7684\u6587\u4EF6\uFF08\u9ED8\u8BA4\u9690\u85CF\uFF09",
   "settings.groupByDirectory": "\u6309\u76EE\u5F55\u5206\u7EC4\u663E\u793A\u6539\u52A8",
@@ -1455,6 +1469,156 @@ function debounce(fn2, delay) {
   return wrapped;
 }
 
+// src/client/file-address.js
+var FILE_ADDRESS_PREFIX = "dsh-resource://file/";
+function parseFileAddress(address) {
+  if (typeof address !== "string" || !address.startsWith(FILE_ADDRESS_PREFIX)) return void 0;
+  try {
+    const end = address.search(/[?#]/);
+    const body = address.slice(FILE_ADDRESS_PREFIX.length, end === -1 ? void 0 : end);
+    const [scope, ...rest] = body.split("/");
+    if (scope === "session") {
+      const [id2, ...segments] = rest;
+      if (id2 === void 0 || id2 === "" || segments.length === 0) return void 0;
+      return { scope, sessionId: decodeURIComponent(id2), path: segments.map(decodeURIComponent).join("/") };
+    }
+    if (scope === "absolute") {
+      const unc = rest[0] === "" && rest.length > 1;
+      const segments = (unc ? rest.slice(1) : rest).map(decodeURIComponent);
+      if (segments.length === 0 || segments[0] === "") return void 0;
+      if (unc) return { scope, path: `//${segments.join("/")}` };
+      return { scope, path: /^[A-Za-z]:$/.test(segments[0]) ? segments.join("/") : `/${segments.join("/")}` };
+    }
+    return void 0;
+  } catch {
+    return void 0;
+  }
+}
+function isFileAddress(address) {
+  return typeof address === "string" && address.startsWith(FILE_ADDRESS_PREFIX);
+}
+function basenameOfFileAddress(address) {
+  const parsed = parseFileAddress(address);
+  if (parsed === void 0) return void 0;
+  const parts = parsed.path.split("/").filter((part) => part !== "");
+  return parts.length === 0 ? void 0 : parts[parts.length - 1];
+}
+function isAbsoluteFilePath(path2) {
+  return path2.startsWith("/") || /^[A-Za-z]:[\\/]/.test(path2) || path2.startsWith("\\\\");
+}
+function normalizeFilePath(input, cwd) {
+  const separator = typeof cwd === "string" && cwd.includes("\\") ? "\\" : "/";
+  let value = String(input).replace(/\\/g, "/");
+  let prefix = "";
+  if (value.startsWith("//")) {
+    prefix = "//";
+    value = value.slice(2);
+  } else if (/^[A-Za-z]:\//.test(value)) {
+    prefix = value.slice(0, 2);
+    value = value.slice(2).replace(/^\/+/, "");
+  } else if (value.startsWith("/")) {
+    prefix = "/";
+    value = value.slice(1);
+  }
+  const parts = [];
+  for (const part of value.split("/")) {
+    if (part === "" || part === ".") continue;
+    if (part === "..") {
+      if (parts.length > 0) parts.pop();
+      continue;
+    }
+    parts.push(part);
+  }
+  const joined = parts.join(separator);
+  if (prefix === "//") return joined === "" ? `${separator}${separator}` : `${separator}${separator}${joined}`;
+  if (prefix === "/") return joined === "" ? separator : `${separator}${joined}`;
+  if (prefix !== "") return joined === "" ? `${prefix}${separator}` : `${prefix}${separator}${joined}`;
+  return joined;
+}
+function resolveFileAddress(parsed, cwd) {
+  if (parsed === void 0 || parsed === null) return void 0;
+  if (parsed.scope === "absolute") return normalizeFilePath(parsed.path, cwd);
+  const path2 = parsed.path;
+  if (typeof path2 !== "string" || path2 === "") return void 0;
+  if (isAbsoluteFilePath(path2)) return normalizeFilePath(path2, cwd);
+  if (typeof cwd !== "string" || cwd === "") return void 0;
+  return normalizeFilePath(`${cwd.replace(/[\\/]+$/, "")}/${path2}`, cwd);
+}
+var NON_IDE_EXTENSIONS = /* @__PURE__ */ new Set([
+  ".pdf",
+  ".doc",
+  ".docx",
+  ".xls",
+  ".xlsx",
+  ".ppt",
+  ".pptx",
+  ".odt",
+  ".ods",
+  ".odp",
+  ".rtf",
+  ".epub",
+  ".zip",
+  ".tar",
+  ".gz",
+  ".tgz",
+  ".7z",
+  ".rar",
+  ".bz2",
+  ".xz",
+  ".exe",
+  ".dll",
+  ".so",
+  ".dylib",
+  ".bin",
+  ".iso",
+  ".jar",
+  ".class",
+  ".wasm"
+]);
+function isIdeViewableAddress(address) {
+  const name2 = basenameOfFileAddress(address);
+  if (name2 === void 0) return false;
+  const dot3 = name2.lastIndexOf(".");
+  if (dot3 < 0) return true;
+  return !NON_IDE_EXTENSIONS.has(name2.slice(dot3).toLowerCase());
+}
+
+// src/client/workspace-scope.js
+function normalizeScopePath(path2) {
+  if (typeof path2 !== "string" || path2 === "") return "";
+  const slashed = path2.replace(/\\/g, "/").replace(/\/+/g, "/").replace(/\/+$/, "");
+  const windows2 = /^[A-Za-z]:\//.test(slashed) || slashed.startsWith("//");
+  return windows2 ? slashed.toLowerCase() : slashed;
+}
+function sameScopePath(left, right) {
+  const normalized = normalizeScopePath(left);
+  return normalized !== "" && normalized === normalizeScopePath(right);
+}
+function sessionCwdOf(ctx, sessionId) {
+  if (typeof sessionId !== "string" || sessionId === "") return "";
+  try {
+    const sessions = ctx?.sessions ?? ctx?.get?.("sessions");
+    const list = sessions?.list?.getSnapshot?.();
+    const summary = list?.byId?.[sessionId];
+    return typeof summary?.cwd === "string" ? summary.cwd : "";
+  } catch {
+    return "";
+  }
+}
+function workspaceScopeKey(ctx, sessionId) {
+  const cwd = sessionCwdOf(ctx, sessionId);
+  return cwd === "" ? `session:${sessionId}` : `workspace:${normalizeScopePath(cwd)}`;
+}
+function sameWorkspace(ctx, left, right) {
+  return sameScopePath(sessionCwdOf(ctx, left), sessionCwdOf(ctx, right));
+}
+function shouldContinueIde(ctx, previous, next, visibleSession) {
+  if (typeof previous !== "string" || typeof next !== "string") return false;
+  if (previous === "" || next === "" || previous === next) return false;
+  if (visibleSession !== previous) return false;
+  return sameWorkspace(ctx, previous, next);
+}
+
 // src/client/store.js
 var sequence = 0;
 function nextId(prefix = "id") {
@@ -1582,10 +1746,12 @@ var WorkbenchStore = class {
   /**
    * @param {any} ctx client cordis context
    * @param {() => string} t bound translate function
+   * @param {string} [preferredRoot] workspace root this store belongs to
    */
-  constructor(ctx, t2) {
+  constructor(ctx, t2, preferredRoot = "") {
     this.ctx = ctx;
     this.t = t2;
+    this.preferredRoot = typeof preferredRoot === "string" ? preferredRoot : "";
     this.state = initialState();
     this.listeners = /* @__PURE__ */ new Set();
     this.pollTimer = null;
@@ -1600,6 +1766,7 @@ var WorkbenchStore = class {
     this.searchToken = 0;
     this.searchIndex = -1;
     this.settingsFile = "";
+    this.initPromise = null;
     this.unsubscribers = [];
   }
   // ── subscription ──────────────────────────────────────────────────────
@@ -1662,7 +1829,18 @@ var WorkbenchStore = class {
     this.set({ confirm: null });
   }
   // ── boot ──────────────────────────────────────────────────────────────
-  async init() {
+  /**
+   * Load settings and the workspace once. Concurrent callers share the same
+   * promise; a failed boot is retried by the Workbench's Retry action.
+   * @returns {Promise<void>}
+   */
+  init() {
+    if (this.initPromise !== null && this.state.fatal === null) return this.initPromise;
+    if (this.state.fatal !== null) this.set({ phase: "booting", fatal: null });
+    this.initPromise = this.#runInit();
+    return this.initPromise;
+  }
+  async #runInit() {
     this.unsubscribers.push(this.ctx.locale.subscribe(() => {
       this.set({ localeTick: this.state.localeTick + 1 });
     }));
@@ -1671,7 +1849,7 @@ var WorkbenchStore = class {
       this.settingsFile = settingsResult.file;
       const workspaces = await call("workspace.list");
       const settings = settingsResult.value;
-      const preferred = this.#pickRoot(settings, workspaces);
+      const preferred = this.preferredRoot !== "" ? this.preferredRoot : this.#pickRoot(settings, workspaces);
       const savedProject = preferred !== void 0 ? settings?.projectRoots?.[preferred] : void 0;
       this.set({
         settings,
@@ -1703,6 +1881,75 @@ var WorkbenchStore = class {
     } catch (error) {
       this.set({ phase: "ready", fatal: error instanceof Error ? error.message : String(error) });
     }
+  }
+  /** Ensure the store is booted; safe to call from a chat file-link bridge. */
+  async ensureInit() {
+    if (this.state.phase === "ready" && this.state.root !== "") return true;
+    await this.init();
+    return this.state.phase === "ready" && this.state.root !== "";
+  }
+  /**
+   * Open one `dsh-resource://file/…` link in the workbench.
+   *
+   * The chat's own file opener always resolves a path against the viewing
+   * Session's workspace and hands the address to `sidebarRight.openResource`;
+   * this method turns that address into an absolute path, makes sure the file
+   * is inside the selected IDE project (switching to the containing project
+   * when it is not and no edits are dirty), reveals it in the Project tree and
+   * opens a preview tab at the requested line.
+   * @param {string} address the resource address
+   * @param {{ line?: number }} [options]
+   * @returns {Promise<boolean>} true when the file is now open in the workbench
+   */
+  async openExternalFile(address, options = {}) {
+    const parsed = parseFileAddress(address);
+    if (parsed === void 0) return false;
+    if (!await this.ensureInit()) {
+      this.toast("error", this.t("links.openFailed"), String(address));
+      return false;
+    }
+    const cwd = parsed.scope === "session" ? sessionCwdOf(this.ctx, parsed.sessionId) || this.state.workspaceRoot : this.state.workspaceRoot;
+    const absolute = resolveFileAddress(parsed, cwd);
+    if (absolute === void 0) {
+      this.toast("error", this.t("links.openFailed"), String(address));
+      return false;
+    }
+    if (!this.#insideRoot(absolute)) {
+      const project = this.#projectContaining(absolute);
+      if (project === void 0 || sameScopePath(project, this.state.root)) {
+        this.toast("error", this.t("links.outsideRoot"), absolute);
+        return false;
+      }
+      if (this.state.tabs.some((tab3) => tab3.dirty === true)) {
+        this.toast("error", this.t("links.dirtyProject"), absolute);
+        return false;
+      }
+      await this.selectProject(project);
+      if (!sameScopePath(this.state.root, project)) {
+        this.toast("error", this.t("links.outsideRoot"), absolute);
+        return false;
+      }
+    }
+    this.showTool("project");
+    this.openFile(absolute, { preview: true, line: options.line });
+    return true;
+  }
+  /** Whether one absolute path is inside the selected IDE project root. */
+  #insideRoot(path2) {
+    const root = normalizeScopePath(this.state.root);
+    const candidate = normalizeScopePath(path2);
+    return root !== "" && (candidate === root || candidate.startsWith(`${root}/`));
+  }
+  /** The deepest project candidate that contains one absolute path. */
+  #projectContaining(path2) {
+    const candidate = normalizeScopePath(path2);
+    let best;
+    for (const project of this.state.projects) {
+      const root = normalizeScopePath(project.path);
+      if (root === "" || !(candidate === root || candidate.startsWith(`${root}/`))) continue;
+      if (best === void 0 || root.length > normalizeScopePath(best).length) best = project.path;
+    }
+    return best;
   }
   /** Choose the durable root: last used → most recent workspace → default dir. */
   #pickRoot(settings, workspaces) {
@@ -1912,13 +2159,12 @@ var WorkbenchStore = class {
       layout: state.layout
     };
     try {
-      const result = await call("settings.update", {
-        patch: {
-          lastRoot: state.workspaceRoot,
-          projectRoots: { [state.workspaceRoot]: state.root },
-          workspaceState: { [state.root]: workspaceState }
-        }
-      });
+      const patch = {
+        projectRoots: { [state.workspaceRoot]: state.root },
+        workspaceState: { [state.root]: workspaceState }
+      };
+      if (state.active === true) patch.lastRoot = state.workspaceRoot;
+      const result = await call("settings.update", { patch });
       const next = { ...state.settings, ...result.value };
       this.state.settings = next;
     } catch {
@@ -48564,6 +48810,7 @@ function SettingsForm({ store, state, compact }) {
       delete: { ...draft.delete, ...patch.delete ?? {} },
       layout: { ...draft.layout, ...patch.layout ?? {} },
       editor: { ...draft.editor, ...patch.editor ?? {} },
+      links: { ...draft.links, ...patch.links ?? {} },
       shortcuts: { ...draft.shortcuts, ...patch.shortcuts ?? {} }
     };
     setDraft(next);
@@ -48680,6 +48927,20 @@ function SettingsForm({ store, state, compact }) {
           checked: draft.project?.singleClickOpen === true,
           onChange: (event) => update({ project: { singleClickOpen: event.target.checked } })
         })
+      ),
+      import_react15.default.createElement(
+        Row,
+        { label: t2("settings.chatFileLinks"), hint: t2("settings.chatFileLinksHint") },
+        import_react15.default.createElement(
+          "select",
+          {
+            className: "itw-select",
+            value: draft.links?.chatFiles === "sidebar" ? "sidebar" : "ide",
+            onChange: (event) => update({ links: { chatFiles: event.target.value } })
+          },
+          import_react15.default.createElement("option", { value: "ide" }, t2("settings.chatFileLinksIde")),
+          import_react15.default.createElement("option", { value: "sidebar" }, t2("settings.chatFileLinksSidebar"))
+        )
       ),
       import_react15.default.createElement(
         Row,
@@ -48873,6 +49134,7 @@ function SettingsForm({ store, state, compact }) {
             terminal: { shell: "auto", copyOnSelect: false },
             project: { alwaysSelectOpened: true, showHidden: true },
             editor: { fontSize: 13, highlight: true, openMode: "auto", editableMaxBytes: 1 << 20, markdownPreview: true },
+            links: { chatFiles: "ide" },
             shortcuts: {
               project: "Alt+1",
               commit: "Alt+0",
@@ -50334,7 +50596,7 @@ var CSS2 = `
 `;
 
 // src/client/index.jsx
-var inject = ["slots", "locale", "sidebarRight", "sidebarRightTabs"];
+var inject = ["slots", "locale", "sidebarRight", "sidebarRightTabs", "sessions"];
 var PANEL_ID = "ide-toolwindows";
 function PanelIcon({ size = 20 }) {
   return import_react18.default.createElement(
@@ -50355,12 +50617,70 @@ function PanelIcon({ size = 20 }) {
     import_react18.default.createElement("polyline", { points: "9.6 14.2 11 15.4 13.6 13.6" })
   );
 }
-function BoundWorkbench({ getStore, sessionId, useTabInfo }) {
+function useMountedSession(ctx) {
+  const mounted = ctx.sidebarRight?.mounted;
+  return (0, import_react18.useSyncExternalStore)(
+    (callback) => typeof mounted?.subscribe === "function" ? mounted.subscribe(callback) : () => {
+    },
+    () => typeof mounted?.getSnapshot === "function" ? mounted.getSnapshot() : void 0,
+    () => void 0
+  );
+}
+function FileLinkBridge({ store, sessionId, tab: tab3, ctx, requestOpen }) {
+  const [failed, setFailed] = import_react18.default.useState(false);
+  const address = typeof tab3.contentId === "string" ? tab3.contentId : "";
+  const line = tab3.navigation?.params?.line;
+  (0, import_react18.useLayoutEffect)(() => {
+    let alive = true;
+    void store.openExternalFile(address, { line }).catch(() => {
+    });
+    try {
+      ctx.sidebarRight.openTab(PANEL_ID, { replaceTab: tab3.id });
+    } catch {
+      if (alive) setFailed(true);
+    }
+    return () => {
+      alive = false;
+    };
+  }, [address, line, tab3.id, store, ctx]);
+  if (!failed) return null;
+  return import_react18.default.createElement(
+    "div",
+    { className: "itw-empty" },
+    import_react18.default.createElement("div", { className: "itw-empty-title" }, store.t("links.openFailed")),
+    import_react18.default.createElement("button", {
+      type: "button",
+      className: "itw-textbtn itw-primary",
+      onClick: () => {
+        setFailed(false);
+        try {
+          ctx.sidebarRight.close(tab3.id);
+        } catch {
+        }
+        requestOpen(sessionId);
+      }
+    }, store.t("common.retry"))
+  );
+}
+function BoundWorkbench({ getStore, sessionId, useTabInfo, ctx, reportVisible, requestOpen }) {
   const { tab: tab3, sidebar } = useTabInfo();
-  const store = getStore(sessionId, tab3.id);
+  const store = getStore(sessionId);
+  const mountedId = useMountedSession(ctx);
+  const hasMounted = typeof ctx.sidebarRight?.mounted?.getSnapshot === "function";
+  const isMounted = !hasMounted || mountedId === void 0 || mountedId === sessionId;
+  const fileLink = isFileAddress(tab3.contentId);
   (0, import_react18.useEffect)(() => {
-    void store.init();
-  }, [store]);
+    if (isMounted) void store.init();
+  }, [store, isMounted]);
+  (0, import_react18.useEffect)(() => {
+    if (fileLink) return void 0;
+    reportVisible(sessionId, isMounted && tab3.visible === true);
+    return () => reportVisible(sessionId, false);
+  }, [sessionId, isMounted, tab3.visible, fileLink, reportVisible]);
+  if (fileLink) {
+    return import_react18.default.createElement(FileLinkBridge, { store, sessionId, tab: tab3, ctx, requestOpen });
+  }
+  if (!isMounted) return null;
   return import_react18.default.createElement(Workbench, { store, visible: tab3.visible, fullscreen: sidebar.fullscreen });
 }
 function BoundSettings({ store, close }) {
@@ -50386,26 +50706,100 @@ function apply(ctx) {
       offEn();
     };
   }, "dsh-ide-toolwindows: dictionaries");
+  const settingsStore = new WorkbenchStore(ctx, t2);
+  void settingsStore.init();
   const Styles = () => import_react18.default.createElement("style", { "data-dsh-ide-toolwindows": "" }, `${xterm_default}
 ${CSS2}`);
   const stores = /* @__PURE__ */ new Map();
-  const getStore = (sessionId, tabId) => {
-    const key = `${sessionId}:${tabId}`;
-    if (!stores.has(key)) stores.set(key, new WorkbenchStore(ctx, t2));
+  const hasMounted = typeof ctx.sidebarRight?.mounted?.getSnapshot === "function";
+  const getStore = (sessionId) => {
+    const id2 = typeof sessionId === "string" ? sessionId : "";
+    const key = hasMounted ? workspaceScopeKey(ctx, id2) : `session:${id2}`;
+    if (!stores.has(key)) stores.set(key, new WorkbenchStore(ctx, t2, sessionCwdOf(ctx, id2)));
     return stores.get(key);
   };
   const activeStore = () => {
-    const sessionId = ctx.sidebarRight.mounted.getSnapshot();
+    const sessionId = ctx.sidebarRight.mounted?.getSnapshot();
     const tab3 = ctx.sidebarRight.active();
-    return tab3?.kind === PANEL_ID ? stores.get(`${sessionId}:${tab3.id}`) : void 0;
+    if (tab3?.kind !== PANEL_ID || typeof sessionId !== "string") return void 0;
+    return getStore(sessionId);
   };
-  const open = () => ctx.sidebarRight.openTab(PANEL_ID);
+  let pendingOpen = null;
+  let pendingTimer = null;
+  let pendingAttempts = 0;
+  const clearPending = () => {
+    if (pendingTimer !== null) {
+      clearTimeout(pendingTimer);
+      pendingTimer = null;
+    }
+    pendingOpen = null;
+    pendingAttempts = 0;
+  };
+  const verifyOpen = (target) => {
+    if (pendingOpen !== target) return;
+    const mounted = ctx.sidebarRight?.mounted?.getSnapshot();
+    if (mounted !== target) {
+      clearPending();
+      return;
+    }
+    let opened = false;
+    try {
+      const inventory = ctx.sidebarRight?.openTabs?.getSnapshot?.();
+      if (Array.isArray(inventory)) {
+        opened = inventory.some((tab3) => tab3?.sessionId === target && tab3?.kind === PANEL_ID);
+      } else {
+        opened = ctx.sidebarRight.active()?.kind === PANEL_ID;
+      }
+    } catch {
+      opened = false;
+    }
+    if (opened || pendingAttempts >= 40) {
+      clearPending();
+      return;
+    }
+    pendingAttempts += 1;
+    pendingTimer = setTimeout(flushOpen, 25);
+  };
+  const flushOpen = () => {
+    if (pendingOpen === null) return;
+    const target = pendingOpen;
+    const mounted = ctx.sidebarRight?.mounted?.getSnapshot();
+    if (mounted !== target) {
+      clearPending();
+      return;
+    }
+    try {
+      ctx.sidebarRight.openTab(PANEL_ID);
+      pendingTimer = setTimeout(() => verifyOpen(target), 30);
+    } catch {
+      pendingAttempts += 1;
+      if (pendingAttempts >= 40) clearPending();
+      else pendingTimer = setTimeout(flushOpen, 25);
+    }
+  };
+  const requestOpen = (sessionId = ctx.sidebarRight?.mounted?.getSnapshot()) => {
+    if (typeof sessionId !== "string" || sessionId === "") return;
+    pendingOpen = sessionId;
+    pendingAttempts = 0;
+    if (pendingTimer !== null) {
+      clearTimeout(pendingTimer);
+      pendingTimer = null;
+    }
+    flushOpen();
+  };
+  const open = () => requestOpen();
   const toggle = () => {
     if (ctx.sidebarRight.isExpanded() && ctx.sidebarRight.active()?.kind === PANEL_ID) {
       ctx.sidebarRight.toggleExpanded();
     } else {
       open();
     }
+  };
+  let ideVisibleSession = null;
+  const reportVisible = (sessionId, visible) => {
+    if (typeof sessionId !== "string") return;
+    if (visible === true) ideVisibleSession = sessionId;
+    else if (ideVisibleSession === sessionId) ideVisibleSession = null;
   };
   const modules = ctx.get("modules");
   if (modules != null && typeof modules.import === "function") {
@@ -50414,8 +50808,25 @@ ${CSS2}`);
   ctx.effect(() => ctx.sidebarRightTabs.register({
     id: "dsh-ide-toolwindows",
     kind: PANEL_ID,
-    title: () => t2("panelLabel"),
+    title: (address) => isFileAddress(address) ? basenameOfFileAddress(address) ?? t2("panelLabel") : t2("panelLabel"),
     keepMounted: true,
+    // A chat file link is a `dsh-resource://file/...` address. These longer
+    // patterns outrank the better-sidebar editor (`dsh-resource://file/**`) by
+    // matched-pattern length, independent of registration order.
+    patterns: ["dsh-resource://file/session/**", "dsh-resource://file/absolute/**"],
+    priority: "extension",
+    canOpen: (address) => {
+      if (settingsStore.state.settings?.links?.chatFiles === "sidebar") return false;
+      if (!isIdeViewableAddress(address)) return false;
+      const parsed = parseFileAddress(address);
+      if (parsed === void 0) return false;
+      if (parsed.scope === "session") {
+        const current = sessionCwdOf(ctx, ctx.sidebarRight?.mounted?.getSnapshot());
+        const target = sessionCwdOf(ctx, parsed.sessionId);
+        if (current !== "" && target !== "" && !sameScopePath(current, target)) return false;
+      }
+      return true;
+    },
     guide: [{ id: PANEL_ID, title: () => t2("panelLabel"), icon: PanelIcon, order: 35 }]
   }), "dsh-ide-toolwindows: sidebar tab type");
   ctx.effect(() => ctx.slots.inject("sidebar.right.pane.tab", () => ctx.slots.register({
@@ -50425,7 +50836,13 @@ ${CSS2}`);
     import_react18.default.Fragment,
     null,
     import_react18.default.createElement(Styles),
-    import_react18.default.createElement(BoundWorkbench, { ...props, getStore })
+    import_react18.default.createElement(BoundWorkbench, {
+      ...props,
+      getStore,
+      ctx,
+      reportVisible,
+      requestOpen
+    })
   ))), "dsh-ide-toolwindows: sidebar body");
   ctx.effect(() => ctx.slots.inject("conversation.session.header.utilities", () => ctx.slots.register({
     name: "conversation.session.header.utilities",
@@ -50438,8 +50855,51 @@ ${CSS2}`);
     import_react18.default.createElement(Styles),
     import_react18.default.createElement(OpenButton, { open: toggle, t: t2 })
   ))), "dsh-ide-toolwindows: sidebar entry");
-  const settingsStore = new WorkbenchStore(ctx, t2);
-  void settingsStore.init();
+  ctx.effect(() => ctx.slots.inject("conversation.hero.options", () => ctx.slots.register({
+    name: "conversation.hero.options",
+    id: PANEL_ID,
+    order: 40,
+    label: () => t2("panelLabel")
+  }, () => import_react18.default.createElement(
+    import_react18.default.Fragment,
+    null,
+    import_react18.default.createElement(Styles),
+    import_react18.default.createElement(OpenButton, { open, t: t2 })
+  ))), "dsh-ide-toolwindows: new-session entry");
+  ctx.effect(() => ctx.slots.inject("sidebar.footer.action", () => ctx.slots.register({
+    name: "sidebar.footer.action",
+    id: PANEL_ID,
+    order: 20,
+    label: () => t2("panelLabel")
+  }, () => import_react18.default.createElement(
+    import_react18.default.Fragment,
+    null,
+    import_react18.default.createElement(Styles),
+    import_react18.default.createElement(OpenButton, { open, t: t2 })
+  ))), "dsh-ide-toolwindows: sidebar footer entry");
+  ctx.effect(() => {
+    const mounted = ctx.sidebarRight?.mounted;
+    if (typeof mounted?.subscribe !== "function" || typeof mounted.getSnapshot !== "function") {
+      return () => clearPending();
+    }
+    let lastMounted = mounted.getSnapshot();
+    const onMounted = () => {
+      const next = mounted.getSnapshot();
+      const previous = lastMounted;
+      lastMounted = next;
+      if (typeof next !== "string" || next === "" || next === previous) return;
+      if (!shouldContinueIde(ctx, previous, next, ideVisibleSession)) return;
+      requestOpen(next);
+    };
+    const unsubscribeMounted = mounted.subscribe(onMounted);
+    const openTabs = ctx.sidebarRight?.openTabs;
+    const unsubscribeTabs = typeof openTabs?.subscribe === "function" ? openTabs.subscribe(flushOpen) : void 0;
+    return () => {
+      unsubscribeMounted?.();
+      unsubscribeTabs?.();
+      clearPending();
+    };
+  }, "dsh-ide-toolwindows: workspace continuity");
   ctx.effect(() => ctx.slots.inject("settings.section", () => ctx.slots.register({
     name: "settings.section",
     id: PANEL_ID,

@@ -64,10 +64,21 @@ any of them:
 
 - Click **IDE Tool Windows** in the conversation header, or select it from the
   right sidebar's add-page guide. The workbench is a native
-  `sidebar.right.pane.tab` beside the conversation; a selected session is required.
+  `sidebar.right.pane.tab` beside the conversation. The New Session row also
+  carries the same entry on Ctrl+N, and a compact footer action beside Settings
+  keeps it reachable when a skin hides the header utilities; a completely
+  session-less start page has no right sidebar to open.
+- Sessions in one DSH workspace share one workbench state: switching Sessions
+  (including a new Session) keeps the file tree, open files and Git context,
+  and the IDE reopens in the arriving Session when it was visible in the one
+  being left. In v1 the terminal PTY and editor undo stacks are rebuilt on a
+  Session switch.
+- File links in chat (user `@` references and assistant Markdown links) open in
+  the IDE by default, reveal the file in the Project tree and land on `#L24`;
+  Settings → IDE Tool Windows → Chat file links switches back to DSH's sidebar.
 - Shortcuts open the sidebar. Narrow panes stack Project/Commit above the editor;
   wider panes restore the side-by-side layout. Native tab controls support splitting,
-  floating and fullscreen. Each session has its own workbench; hidden tabs pause refresh.
+  floating and fullscreen. Hidden tabs pause refresh.
 - Git is the **system CLI** (argv arrays, never shell strings), so credential
   managers, hooks and your git config all work. Paths are parsed from
   `status --porcelain=v2 -z`, `diff --numstat -z`, and a `log` record stream.

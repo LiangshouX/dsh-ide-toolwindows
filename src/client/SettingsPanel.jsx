@@ -64,6 +64,7 @@ export function SettingsForm({ store, state, compact }) {
       delete: { ...draft.delete, ...(patch.delete ?? {}) },
       layout: { ...draft.layout, ...(patch.layout ?? {}) },
       editor: { ...draft.editor, ...(patch.editor ?? {}) },
+      links: { ...draft.links, ...(patch.links ?? {}) },
       shortcuts: { ...draft.shortcuts, ...(patch.shortcuts ?? {}) },
     }
     setDraft(next)
@@ -150,6 +151,16 @@ export function SettingsForm({ store, state, compact }) {
           checked: draft.project?.singleClickOpen === true,
           onChange: event => update({ project: { singleClickOpen: event.target.checked } }),
         }),
+      ),
+      React.createElement(Row, { label: t('settings.chatFileLinks'), hint: t('settings.chatFileLinksHint') },
+        React.createElement('select', {
+          className: 'itw-select',
+          value: draft.links?.chatFiles === 'sidebar' ? 'sidebar' : 'ide',
+          onChange: event => update({ links: { chatFiles: event.target.value } }),
+        },
+          React.createElement('option', { value: 'ide' }, t('settings.chatFileLinksIde')),
+          React.createElement('option', { value: 'sidebar' }, t('settings.chatFileLinksSidebar')),
+        ),
       ),
       React.createElement(Row, { label: t('settings.showIgnored'), hint: t('settings.showIgnoredHint') },
         React.createElement('input', {
@@ -293,6 +304,7 @@ export function SettingsForm({ store, state, compact }) {
             terminal: { shell: 'auto', copyOnSelect: false },
             project: { alwaysSelectOpened: true, showHidden: true },
             editor: { fontSize: 13, highlight: true, openMode: 'auto', editableMaxBytes: 1 << 20, markdownPreview: true },
+            links: { chatFiles: 'ide' },
             shortcuts: {
               project: 'Alt+1', commit: 'Alt+0', git: 'Alt+9', terminal: 'Alt+F12',
               focusCommit: 'Ctrl+K', push: 'Ctrl+Shift+K', findInFiles: 'Ctrl+Shift+F', findInFilesAlt: 'Ctrl+Alt+F', openCommitDetail: 'Ctrl+Alt+D', quickOpen: 'Ctrl+Shift+N',

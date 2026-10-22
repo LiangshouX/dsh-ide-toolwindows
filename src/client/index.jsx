@@ -1,5 +1,5 @@
 /** Client integration: a native right-sidebar tab, header entry and shortcuts. */
-import React, { useEffect } from 'react'
+import React, { useEffect, useLayoutEffect, useSyncExternalStore } from 'react'
 import xtermCss from '@xterm/xterm/css/xterm.css'
 import { NS, en, zh } from './i18n.js'
 import { WorkbenchStore } from './store.js'
@@ -9,8 +9,12 @@ import { CSS } from './styles.js'
 import { setPrimitivesLoader } from './MarkdownView.jsx'
 import { matchesShortcut, isTerminalTarget } from './util.js'
 import { useWorkbench } from './hooks.js'
+import {
+  basenameOfFileAddress, isFileAddress, isIdeViewableAddress, parseFileAddress,
+} from './file-address.js'
+import { sameScopePath, sessionCwdOf, shouldContinueIde, workspaceScopeKey } from './workspace-scope.js'
 
-export const inject = ['slots', 'locale', 'sidebarRight', 'sidebarRightTabs']
+export const inject = ['slots', 'locale', 'sidebarRight', 'sidebarRightTabs', 'sessions']
 const PANEL_ID = 'ide-toolwindows'
 
 function PanelIcon({ size = 20 }) {
@@ -25,10 +29,76 @@ function PanelIcon({ size = 20 }) {
   )
 }
 
-function BoundWorkbench({ getStore, sessionId, useTabInfo }) {
+/** The on-screen Session the right Sidebar is currently drawing. */
+function useMountedSession(ctx) {
+  const mounted = ctx.sidebarRight?.mounted
+  return useSyncExternalStore(
+    (callback) => (typeof mounted?.subscribe === 'function' ? mounted.subscribe(callback) : () => {}),
+    () => (typeof mounted?.getSnapshot === 'function' ? mounted.getSnapshot() : undefined),
+    () => undefined,
+  )
+}
+
+/**
+ * A file resource tab is only a transient carrier: it opens the file in the
+ * workbench and replaces itself with the IDE page tab. It never renders a
+ * second Workbench (which would duplicate terminal sockets and editor state).
+ */
+function FileLinkBridge({ store, sessionId, tab, ctx, requestOpen }) {
+  const [failed, setFailed] = React.useState(false)
+  const address = typeof tab.contentId === 'string' ? tab.contentId : ''
+  const line = tab.navigation?.params?.line
+
+  useLayoutEffect(() => {
+    let alive = true
+    void store.openExternalFile(address, { line }).catch(() => {})
+    try {
+      ctx.sidebarRight.openTab(PANEL_ID, { replaceTab: tab.id })
+    } catch {
+      if (alive) setFailed(true)
+    }
+    return () => { alive = false }
+  }, [address, line, tab.id, store, ctx])
+
+  if (!failed) return null
+  return React.createElement('div', { className: 'itw-empty' },
+    React.createElement('div', { className: 'itw-empty-title' }, store.t('links.openFailed')),
+    React.createElement('button', {
+      type: 'button', className: 'itw-textbtn itw-primary',
+      onClick: () => {
+        setFailed(false)
+        try { ctx.sidebarRight.close(tab.id) } catch { /* the layout owns the tab */ }
+        requestOpen(sessionId)
+      },
+    }, store.t('common.retry')),
+  )
+}
+
+function BoundWorkbench({ getStore, sessionId, useTabInfo, ctx, reportVisible, requestOpen }) {
   const { tab, sidebar } = useTabInfo()
-  const store = getStore(sessionId, tab.id)
-  useEffect(() => { void store.init() }, [store])
+  const store = getStore(sessionId)
+  const mountedId = useMountedSession(ctx)
+  const hasMounted = typeof ctx.sidebarRight?.mounted?.getSnapshot === 'function'
+  // A background Session still keeps its tab body mounted (keepMounted), but it
+  // must not draw a second Workbench against the same workspace store. When the
+  // host has no `mounted` feed, fall back to drawing every body as before.
+  const isMounted = !hasMounted || mountedId === undefined || mountedId === sessionId
+  const fileLink = isFileAddress(tab.contentId)
+
+  useEffect(() => {
+    if (isMounted) void store.init()
+  }, [store, isMounted])
+
+  useEffect(() => {
+    if (fileLink) return undefined
+    reportVisible(sessionId, isMounted && tab.visible === true)
+    return () => reportVisible(sessionId, false)
+  }, [sessionId, isMounted, tab.visible, fileLink, reportVisible])
+
+  if (fileLink) {
+    return React.createElement(FileLinkBridge, { store, sessionId, tab, ctx, requestOpen })
+  }
+  if (!isMounted) return null
   return React.createElement(Workbench, { store, visible: tab.visible, fullscreen: sidebar.fullscreen })
 }
 
@@ -52,26 +122,98 @@ export function apply(ctx) {
     return () => { offZh(); offEn() }
   }, 'dsh-ide-toolwindows: dictionaries')
 
+  // The settings document is shared by every workspace store; load it before a
+  // file-link claim can consult `links.chatFiles`.
+  const settingsStore = new WorkbenchStore(ctx, t)
+  void settingsStore.init()
+
   // Render styles through React so their lifetime follows the plugin's seats.
   const Styles = () => React.createElement('style', { 'data-dsh-ide-toolwindows': '' }, `${xtermCss}\n${CSS}`)
   const stores = new Map()
-  const getStore = (sessionId, tabId) => {
-    const key = `${sessionId}:${tabId}`
-    if (!stores.has(key)) stores.set(key, new WorkbenchStore(ctx, t))
+  const hasMounted = typeof ctx.sidebarRight?.mounted?.getSnapshot === 'function'
+  const getStore = (sessionId) => {
+    const id = typeof sessionId === 'string' ? sessionId : ''
+    const key = hasMounted ? workspaceScopeKey(ctx, id) : `session:${id}`
+    if (!stores.has(key)) stores.set(key, new WorkbenchStore(ctx, t, sessionCwdOf(ctx, id)))
     return stores.get(key)
   }
   const activeStore = () => {
-    const sessionId = ctx.sidebarRight.mounted.getSnapshot()
+    const sessionId = ctx.sidebarRight.mounted?.getSnapshot()
     const tab = ctx.sidebarRight.active()
-    return tab?.kind === PANEL_ID ? stores.get(`${sessionId}:${tab.id}`) : undefined
+    if (tab?.kind !== PANEL_ID || typeof sessionId !== 'string') return undefined
+    return getStore(sessionId)
   }
-  const open = () => ctx.sidebarRight.openTab(PANEL_ID)
+
+  // `openTab` fails while the arriving Session's rightbar store is not adopted
+  // yet. Queue the intent and replay it on `mounted`/`openTabs` changes and a
+  // short bounded timer; no polling follows.
+  let pendingOpen = null
+  let pendingTimer = null
+  let pendingAttempts = 0
+  const clearPending = () => {
+    if (pendingTimer !== null) { clearTimeout(pendingTimer); pendingTimer = null }
+    pendingOpen = null
+    pendingAttempts = 0
+  }
+  const verifyOpen = (target) => {
+    if (pendingOpen !== target) return
+    const mounted = ctx.sidebarRight?.mounted?.getSnapshot()
+    if (mounted !== target) { clearPending(); return }
+    let opened = false
+    try {
+      const inventory = ctx.sidebarRight?.openTabs?.getSnapshot?.()
+      if (Array.isArray(inventory)) {
+        opened = inventory.some(tab => tab?.sessionId === target && tab?.kind === PANEL_ID)
+      } else {
+        opened = ctx.sidebarRight.active()?.kind === PANEL_ID
+      }
+    } catch {
+      opened = false
+    }
+    if (opened || pendingAttempts >= 40) { clearPending(); return }
+    pendingAttempts += 1
+    pendingTimer = setTimeout(flushOpen, 25)
+  }
+  const flushOpen = () => {
+    if (pendingOpen === null) return
+    const target = pendingOpen
+    const mounted = ctx.sidebarRight?.mounted?.getSnapshot()
+    if (mounted !== target) { clearPending(); return }
+    try {
+      ctx.sidebarRight.openTab(PANEL_ID)
+      // Some hosts accept the call before the Session's rightbar store is
+      // adopted and simply no-op. Confirm membership once, then retry.
+      pendingTimer = setTimeout(() => verifyOpen(target), 30)
+    } catch {
+      pendingAttempts += 1
+      if (pendingAttempts >= 40) clearPending()
+      else pendingTimer = setTimeout(flushOpen, 25)
+    }
+  }
+  const requestOpen = (sessionId = ctx.sidebarRight?.mounted?.getSnapshot()) => {
+    if (typeof sessionId !== 'string' || sessionId === '') return
+    pendingOpen = sessionId
+    pendingAttempts = 0
+    if (pendingTimer !== null) { clearTimeout(pendingTimer); pendingTimer = null }
+    flushOpen()
+  }
+  const open = () => requestOpen()
   const toggle = () => {
     if (ctx.sidebarRight.isExpanded() && ctx.sidebarRight.active()?.kind === PANEL_ID) {
       ctx.sidebarRight.toggleExpanded()
     } else {
       open()
     }
+  }
+
+  // Which Session last had the IDE body actually visible. A Session switch
+  // reads this before React commits the new Session's body, then reopens the
+  // IDE in the arriving Session when both share a workspace.
+  let ideVisibleSession = null
+  const reportVisible = (sessionId, visible) => {
+    if (typeof sessionId !== 'string') return
+    if (visible === true) ideVisibleSession = sessionId
+    else if (ideVisibleSession === sessionId) ideVisibleSession = null
   }
 
   const modules = ctx.get('modules')
@@ -81,7 +223,27 @@ export function apply(ctx) {
 
   ctx.effect(() => ctx.sidebarRightTabs.register({
     id: 'dsh-ide-toolwindows', kind: PANEL_ID,
-    title: () => t('panelLabel'), keepMounted: true,
+    title: address => (isFileAddress(address)
+      ? (basenameOfFileAddress(address) ?? t('panelLabel'))
+      : t('panelLabel')),
+    keepMounted: true,
+    // A chat file link is a `dsh-resource://file/...` address. These longer
+    // patterns outrank the better-sidebar editor (`dsh-resource://file/**`) by
+    // matched-pattern length, independent of registration order.
+    patterns: ['dsh-resource://file/session/**', 'dsh-resource://file/absolute/**'],
+    priority: 'extension',
+    canOpen: address => {
+      if (settingsStore.state.settings?.links?.chatFiles === 'sidebar') return false
+      if (!isIdeViewableAddress(address)) return false
+      const parsed = parseFileAddress(address)
+      if (parsed === undefined) return false
+      if (parsed.scope === 'session') {
+        const current = sessionCwdOf(ctx, ctx.sidebarRight?.mounted?.getSnapshot())
+        const target = sessionCwdOf(ctx, parsed.sessionId)
+        if (current !== '' && target !== '' && !sameScopePath(current, target)) return false
+      }
+      return true
+    },
     guide: [{ id: PANEL_ID, title: () => t('panelLabel'), icon: PanelIcon, order: 35 }],
   }), 'dsh-ide-toolwindows: sidebar tab type')
 
@@ -89,7 +251,9 @@ export function apply(ctx) {
     name: 'sidebar.right.pane.tab', key: 'dsh-ide-toolwindows',
   }, props => React.createElement(React.Fragment, null,
     React.createElement(Styles),
-    React.createElement(BoundWorkbench, { ...props, getStore }),
+    React.createElement(BoundWorkbench, {
+      ...props, getStore, ctx, reportVisible, requestOpen,
+    }),
   ))), 'dsh-ide-toolwindows: sidebar body')
 
   ctx.effect(() => ctx.slots.inject('conversation.session.header.utilities', () => ctx.slots.register({
@@ -99,8 +263,50 @@ export function apply(ctx) {
     React.createElement(Styles), React.createElement(OpenButton, { open: toggle, t }),
   ))), 'dsh-ide-toolwindows: sidebar entry')
 
-  const settingsStore = new WorkbenchStore(ctx, t)
-  void settingsStore.init()
+  // A blank Session hides the whole session-header title cluster, so the entry
+  // above disappears on Ctrl+N. The New Session row keeps its compact options
+  // list; contribute the same button there. Non-blank Sessions never render it.
+  ctx.effect(() => ctx.slots.inject('conversation.hero.options', () => ctx.slots.register({
+    name: 'conversation.hero.options', id: PANEL_ID, order: 40,
+    label: () => t('panelLabel'),
+  }, () => React.createElement(React.Fragment, null,
+    React.createElement(Styles), React.createElement(OpenButton, { open, t }),
+  ))), 'dsh-ide-toolwindows: new-session entry')
+
+  // The footer entry is the always-present fallback: it survives when a skin or
+  // a narrow header hides the session utilities, and it is visible on the
+  // session-less start page as well (where no right Sidebar can be opened yet).
+  ctx.effect(() => ctx.slots.inject('sidebar.footer.action', () => ctx.slots.register({
+    name: 'sidebar.footer.action', id: PANEL_ID, order: 20,
+    label: () => t('panelLabel'),
+  }, () => React.createElement(React.Fragment, null,
+    React.createElement(Styles), React.createElement(OpenButton, { open, t }),
+  ))), 'dsh-ide-toolwindows: sidebar footer entry')
+
+  ctx.effect(() => {
+    const mounted = ctx.sidebarRight?.mounted
+    if (typeof mounted?.subscribe !== 'function' || typeof mounted.getSnapshot !== 'function') {
+      return () => clearPending()
+    }
+    let lastMounted = mounted.getSnapshot()
+    const onMounted = () => {
+      const next = mounted.getSnapshot()
+      const previous = lastMounted
+      lastMounted = next
+      if (typeof next !== 'string' || next === '' || next === previous) return
+      if (!shouldContinueIde(ctx, previous, next, ideVisibleSession)) return
+      requestOpen(next)
+    }
+    const unsubscribeMounted = mounted.subscribe(onMounted)
+    const openTabs = ctx.sidebarRight?.openTabs
+    const unsubscribeTabs = typeof openTabs?.subscribe === 'function' ? openTabs.subscribe(flushOpen) : undefined
+    return () => {
+      unsubscribeMounted?.()
+      unsubscribeTabs?.()
+      clearPending()
+    }
+  }, 'dsh-ide-toolwindows: workspace continuity')
+
   ctx.effect(() => ctx.slots.inject('settings.section', () => ctx.slots.register({
     name: 'settings.section', id: PANEL_ID, order: 60, label: () => t('settings.nav'),
   }, props => React.createElement(React.Fragment, null,

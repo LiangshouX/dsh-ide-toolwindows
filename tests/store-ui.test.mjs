@@ -87,6 +87,53 @@ test('openCommitDetail loads git.detail and closeCommitDetail keeps the row sele
   }
 })
 
+test('openExternalFile resolves a chat address, reveals the tree and jumps to the line', async () => {
+  const store = fakeStore()
+  store.state.projects = [{ path: 'C:\\work\\demo', isRoot: true, isRepo: true }]
+  store.state.tabs = []
+  store.state.activeId = null
+  const calls = []
+  const original = globalThis.fetch
+  globalThis.fetch = async (url, init) => {
+    const body = JSON.parse(init.body)
+    calls.push({ url: String(url), body })
+    const value = String(url).includes('fs.tree')
+      ? { entries: [], truncated: false }
+      : { kind: 'text', content: 'export const a = 1\n', size: 23, encoding: 'utf-8', truncated: false }
+    return { ok: true, status: 200, async json() { return { ok: true, value } } }
+  }
+  try {
+    const opened = await store.openExternalFile(
+      'dsh-resource://file/session/s1/src/main.ts',
+      { line: 4 },
+    )
+    assert.equal(opened, true)
+    assert.equal(store.state.tabs.length, 1)
+    assert.equal(store.state.tabs[0].path, 'C:\\work\\demo\\src\\main.ts')
+    assert.equal(store.state.tabs[0].revealLine, 4)
+    assert.equal(store.state.activeId, store.state.tabs[0].id)
+    assert.equal(store.state.layout.left, 'project')
+    assert.equal(store.state.expanded.has('C:\\work\\demo\\src'), true)
+    assert.ok(calls.some(call => call.url.includes('fs.read')))
+  } finally {
+    store.persist.cancel()
+    globalThis.fetch = original
+  }
+})
+
+test('openExternalFile refuses a file outside the IDE project root', async () => {
+  const store = fakeStore()
+  store.state.projects = [{ path: 'C:\\work\\demo', isRoot: true, isRepo: true }]
+  try {
+    const opened = await store.openExternalFile('dsh-resource://file/session/s1/../outside/a.ts')
+    assert.equal(opened, false)
+    assert.equal(store.state.toast?.text, 'links.outsideRoot')
+  } finally {
+    if (store.toastTimer !== null) clearTimeout(store.toastTimer)
+    store.persist.cancel()
+  }
+})
+
 test('requestCheckout refuses a dirty worktree without calling the host', () => {
   const store = fakeStore()
   store.state.status = { ...store.state.status, isRepo: true, branch: 'main', entries: [{ path: 'a', ignored: false }] }
