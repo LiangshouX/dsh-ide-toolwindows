@@ -3124,41 +3124,41 @@ function IconFolder(props = {}) {
   });
 }
 var FILE_TINTS = {
-  java: "#d18a52",
-  ts: "#4f9cf9",
-  tsx: "#4f9cf9",
-  js: "#e8c244",
-  jsx: "#e8c244",
-  python: "#5aa9dd",
-  go: "#39b9c6",
-  rust: "#e0956a",
-  json: "#d7c15a",
-  markdown: "#4f9cf9",
-  html: "#e07a52",
-  css: "#c678dd",
-  sql: "#e0a458",
-  shell: "#7fbf6a",
-  config: "#b07ae8",
-  image: "#7cae6f",
-  svg: "#b07ae8",
-  pdf: "#e2686f",
-  archive: "#b58b6a",
-  lock: "#57a86b",
-  git: "#d97a9a",
-  docker: "#4f9cf9",
-  env: "#b58b6a",
-  build: "#8fbc8f",
-  c: "#5c9fd6",
-  cpp: "#8b7bff",
-  csharp: "#7cae6f",
-  ruby: "#dd5d5d",
-  php: "#8b7bff",
-  kotlin: "#c678dd",
-  swift: "#e0956a",
-  vue: "#42b883",
-  xml: "#8fbc8f",
-  log: "#8a93a1",
-  file: "var(--itw-icon-file, #9aa4b2)"
+  java: "#b0722e",
+  ts: "#3178c6",
+  tsx: "#3178c6",
+  js: "#c99700",
+  jsx: "#c99700",
+  python: "#3572a5",
+  go: "#0090b0",
+  rust: "#b35a2a",
+  json: "#4b5563",
+  markdown: "#2f6fd0",
+  html: "#d84315",
+  css: "#7b1fa2",
+  sql: "#bf6a00",
+  shell: "#2e7d32",
+  config: "#6f42c1",
+  image: "#558b2f",
+  svg: "#8e44ad",
+  pdf: "#c62828",
+  archive: "#8d6e63",
+  lock: "#2e7d4f",
+  git: "#c2185b",
+  docker: "#0d6efd",
+  env: "#8d6e63",
+  build: "#558b2f",
+  c: "#1565c0",
+  cpp: "#5e35b1",
+  csharp: "#2e7d4f",
+  ruby: "#c62828",
+  php: "#5e35b1",
+  kotlin: "#7b1fa2",
+  swift: "#b35a2a",
+  vue: "#2e8b57",
+  xml: "#558b2f",
+  log: "#6b7280",
+  file: "var(--itw-icon-file, #6b7280)"
 };
 function monoLabel(text, tint, size = 4.6) {
   return import_react2.default.createElement("text", {
@@ -3315,9 +3315,9 @@ function FileTypeIcon(props = {}) {
   if (props.isDir === true) return import_react2.default.createElement(IconFolder, { open: props.open === true, size: props.size ?? 15 });
   const kind = fileTypeOf(name2);
   const tint = FILE_TINTS[kind] ?? FILE_TINTS.file;
-  const size = props.size ?? 15;
+  const size = props.size ?? 16;
   return svg([
-    import_react2.default.createElement("g", { key: "glyph", transform: "translate(-4.96 -9.2) scale(1.6)" }, ...typeGlyph(kind, tint))
+    import_react2.default.createElement("g", { key: "glyph", transform: "translate(-8 -12.4) scale(1.9)" }, ...typeGlyph(kind, tint))
   ], { width: size, height: size });
 }
 function IconLock(props = {}) {
