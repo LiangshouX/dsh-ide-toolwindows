@@ -176,6 +176,9 @@ test('client opens a native sidebar tab without registering a central page', asy
   const types = []
   const disposers = []
   const opened = []
+  let expanded = false
+  let activeTab
+  let collapsed = 0
   let subscriptions = 0
   const ctx = {
     locale: {
@@ -184,9 +187,11 @@ test('client opens a native sidebar tab without registering a central page', asy
       subscribe: () => { subscriptions++; return () => { subscriptions-- } },
     },
     sidebarRight: {
-      openTab: kind => opened.push(kind),
+      openTab: kind => { opened.push(kind); expanded = true; activeTab = { kind } },
       mounted: { getSnapshot: () => 'session-1' },
-      active: () => undefined,
+      active: () => activeTab,
+      isExpanded: () => expanded,
+      toggleExpanded: () => { expanded = !expanded; collapsed++ },
     },
     sidebarRightTabs: { register: type => {
       types.push(type)
@@ -216,8 +221,23 @@ test('client opens a native sidebar tab without registering a central page', asy
     const header = entries.find(entry => entry.name === 'conversation.session.header.utilities')
     const fragment = header.component()
     const buttonComponent = fragment.props.children[1]
-    buttonComponent.type(buttonComponent.props).props.onClick()
+    const click = buttonComponent.type(buttonComponent.props).props.onClick
+    click()
     assert.deepEqual(opened, ['ide-toolwindows'])
+    assert.equal(expanded, true)
+    click()
+    assert.equal(expanded, false)
+    assert.equal(collapsed, 1)
+    assert.equal(opened.length, 1)
+    click()
+    assert.equal(expanded, true)
+    assert.equal(opened.length, 2)
+    activeTab = { kind: 'files' }
+    click()
+    assert.equal(expanded, true)
+    assert.equal(activeTab.kind, 'ide-toolwindows')
+    assert.equal(collapsed, 1)
+    assert.equal(opened.length, 3)
   } finally {
     for (const dispose of disposers.reverse()) dispose?.()
     globalThis.fetch = originalFetch

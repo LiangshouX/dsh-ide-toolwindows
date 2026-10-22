@@ -48565,6 +48565,13 @@ ${CSS}`);
     return tab3?.kind === PANEL_ID ? stores.get(`${sessionId}:${tab3.id}`) : void 0;
   };
   const open = () => ctx.sidebarRight.openTab(PANEL_ID);
+  const toggle = () => {
+    if (ctx.sidebarRight.isExpanded() && ctx.sidebarRight.active()?.kind === PANEL_ID) {
+      ctx.sidebarRight.toggleExpanded();
+    } else {
+      open();
+    }
+  };
   const modules = ctx.get("modules");
   if (modules != null && typeof modules.import === "function") {
     setPrimitivesLoader(() => modules.import("@deepseek-ai/dsh-client-ui-primitives"));
@@ -48594,7 +48601,7 @@ ${CSS}`);
     import_react15.default.Fragment,
     null,
     import_react15.default.createElement(Styles),
-    import_react15.default.createElement(OpenButton, { open, t: t2 })
+    import_react15.default.createElement(OpenButton, { open: toggle, t: t2 })
   ))), "dsh-ide-toolwindows: sidebar entry");
   const settingsStore = new WorkbenchStore(ctx, t2);
   void settingsStore.init();

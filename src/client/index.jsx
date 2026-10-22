@@ -66,6 +66,13 @@ export function apply(ctx) {
     return tab?.kind === PANEL_ID ? stores.get(`${sessionId}:${tab.id}`) : undefined
   }
   const open = () => ctx.sidebarRight.openTab(PANEL_ID)
+  const toggle = () => {
+    if (ctx.sidebarRight.isExpanded() && ctx.sidebarRight.active()?.kind === PANEL_ID) {
+      ctx.sidebarRight.toggleExpanded()
+    } else {
+      open()
+    }
+  }
 
   const modules = ctx.get('modules')
   if (modules != null && typeof modules.import === 'function') {
@@ -89,7 +96,7 @@ export function apply(ctx) {
     name: 'conversation.session.header.utilities', id: PANEL_ID, order: 30,
     label: () => t('panelLabel'),
   }, () => React.createElement(React.Fragment, null,
-    React.createElement(Styles), React.createElement(OpenButton, { open, t }),
+    React.createElement(Styles), React.createElement(OpenButton, { open: toggle, t }),
   ))), 'dsh-ide-toolwindows: sidebar entry')
 
   const settingsStore = new WorkbenchStore(ctx, t)
