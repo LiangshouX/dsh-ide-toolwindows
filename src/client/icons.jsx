@@ -357,10 +357,14 @@ export function FileTypeIcon(props = {}) {
   const kind = fileTypeOf(name)
   const tint = FILE_TINTS[kind] ?? FILE_TINTS.file
   const size = props.size ?? 16
-  // Glyph-only mark (no page frame), scaled to fill the row height — the same
-  // visual weight as the DSH sidebar's file badges.
+  // Rounded tile + glyph, matching the DSH sidebar's badge style.
   return svg([
-    React.createElement('g', { key: 'glyph', transform: 'translate(-8 -12.4) scale(1.9)' }, ...typeGlyph(kind, tint)),
+    React.createElement('rect', {
+      key: 'bg',
+      x: 1.4, y: 1.4, width: 13.2, height: 13.2, rx: 3.2,
+      fill: tint, fillOpacity: 0.16, stroke: tint, strokeOpacity: 0.28, strokeWidth: 0.6,
+    }),
+    React.createElement('g', { key: 'glyph', transform: 'translate(-4.2 -8.2) scale(1.5)' }, ...typeGlyph(kind, tint)),
   ], { width: size, height: size })
 }
 

@@ -3317,7 +3317,20 @@ function FileTypeIcon(props = {}) {
   const tint = FILE_TINTS[kind] ?? FILE_TINTS.file;
   const size = props.size ?? 16;
   return svg([
-    import_react2.default.createElement("g", { key: "glyph", transform: "translate(-8 -12.4) scale(1.9)" }, ...typeGlyph(kind, tint))
+    import_react2.default.createElement("rect", {
+      key: "bg",
+      x: 1.4,
+      y: 1.4,
+      width: 13.2,
+      height: 13.2,
+      rx: 3.2,
+      fill: tint,
+      fillOpacity: 0.16,
+      stroke: tint,
+      strokeOpacity: 0.28,
+      strokeWidth: 0.6
+    }),
+    import_react2.default.createElement("g", { key: "glyph", transform: "translate(-4.2 -8.2) scale(1.5)" }, ...typeGlyph(kind, tint))
   ], { width: size, height: size });
 }
 function IconLock(props = {}) {
