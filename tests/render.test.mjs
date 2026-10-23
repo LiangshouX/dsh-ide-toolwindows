@@ -226,6 +226,14 @@ test('settings render grouped rows with a shared control column', async () => {
   assert.equal((html.match(/settings\.idePathHint/g) ?? []).length, 1)
 })
 
+test('HTML editor offers sidebar preview and default-browser actions', async () => {
+  const html = (await loadModule()).renderHtmlEditor()
+  assert.match(html, /itw-html-actions/)
+  assert.match(html, /editor\.htmlPreviewSidebar/)
+  assert.match(html, /editor\.htmlPreviewBrowser/)
+  assert.match(html, /itw-chrome/)
+})
+
 test('client opens a native sidebar tab without registering a central page', async () => {
   const mod = await loadModule()
   const entries = []
@@ -253,6 +261,16 @@ test('client opens a native sidebar tab without registering a central page', asy
       types.push(type)
       return () => types.splice(types.indexOf(type), 1)
     } },
+    sessions: {
+      list: {
+        getSnapshot: () => ({
+          byId: {
+            'session-1': { cwd: 'C:\\work\\demo' },
+            'session-2': { cwd: 'C:\\work\\other' },
+          },
+        }),
+      },
+    },
     slots: {
       inject: (_name, register) => register(),
       register: (options, component) => {
@@ -278,7 +296,15 @@ test('client opens a native sidebar tab without registering a central page', asy
     ])
     assert.equal(types[0].priority, 'extension')
     assert.equal(types[0].canOpen('dsh-resource://file/session/session-1/src/a.ts'), true)
+    // Inside the workspace but outside the selected project still claims: the
+    // bridge then asks whether to widen the IDE project to the workspace root.
+    assert.equal(types[0].canOpen('dsh-resource://file/session/session-1/lib/a.ts'), true)
     assert.equal(types[0].canOpen('dsh-resource://file/session/session-1/report.pdf'), false)
+    // A link outside the DSH workspace falls through to DSH's own sidebar.
+    assert.equal(types[0].canOpen('dsh-resource://file/session/session-1/C:/outside/a.ts'), false)
+    assert.equal(types[0].canOpen('dsh-resource://file/absolute/D:/outside/a.ts'), false)
+    // A link owned by another Session's workspace is not claimed either.
+    assert.equal(types[0].canOpen('dsh-resource://file/session/session-2/src/a.ts'), false)
     assert.equal(types[0].title('dsh-resource://file/session/session-1/src/a.ts'), 'a.ts')
     assert.equal(types[0].title('sidebar://ide-toolwindows'), 'panelLabel')
     assert.ok(entries.some(entry => entry.name === 'sidebar.right.pane.tab'))

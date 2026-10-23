@@ -32,6 +32,22 @@ export function sameScopePath(left, right) {
 }
 
 /**
+ * Whether one path is the root itself or lives below it.
+ *
+ * Both sides go through {@link normalizeScopePath}, so separator spelling,
+ * trailing slashes and Windows case never split one tree into two.
+ * @param {unknown} root the containing directory
+ * @param {unknown} path the candidate file or directory
+ * @returns {boolean} false when either path is empty
+ */
+export function isPathWithin(root, path) {
+  const parent = normalizeScopePath(root)
+  if (parent === '') return false
+  const candidate = normalizeScopePath(path)
+  return candidate === parent || candidate.startsWith(`${parent}/`)
+}
+
+/**
  * The workspace root a Session belongs to, when the host has published it.
  * @param {any} ctx client cordis context
  * @param {string} sessionId

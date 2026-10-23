@@ -13,7 +13,7 @@
  */
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { ChevronDown, ChevronRight, ContextMenu } from './ui.jsx'
-import { FileTypeIcon, IconExternal, IconRefresh, IconSearch } from './icons.jsx'
+import { FileTypeIcon, IconExternal, IconGlobe, IconRefresh, IconSearch } from './icons.jsx'
 import { openInIdeMenu } from './ide-menu.js'
 import { aggregateStatus, statusClass } from './git-colors.js'
 import { baseName, matchesShortcut } from './util.js'
@@ -311,6 +311,11 @@ export function ProjectPanel({ store, state }) {
       null,
       { key: 'favorite', text: t('project.addFavorite'), shortcut: shortcut('favorite'), disabled: currentPaths.length === 0, action: () => { void store.toggleFavorite(currentPaths) } },
       { key: 'terminal', text: t('project.openTerminal'), action: () => { store.addTerminal({ cwd: isDir ? entry.path : (entry === undefined ? state.root : parentDir) }) } },
+      {
+        key: 'sidebar', text: t('project.openInSidebar'), icon: React.createElement(IconGlobe, { width: 13, height: 13 }),
+        disabled: entry === undefined || isDir,
+        action: () => { if (entry !== undefined && !isDir) void store.openInSidebar(entry.path) },
+      },
       { ...openInIdeMenu(store, entry?.path, isDir), icon: React.createElement(IconExternal, { width: 13, height: 13 }) },
       { key: 'reveal', text: t('project.reveal'), icon: React.createElement(IconExternal, { width: 13, height: 13 }), disabled: entry === undefined, action: () => { void store.reveal(entry.path) } },
     ]

@@ -373,12 +373,18 @@ var en = {
   "settings.singleClickOpen": "Open files with single click",
   "settings.singleClickOpenHint": "Single click opens a preview tab (edited files become real tabs)",
   "settings.chatFileLinks": "Chat file links",
-  "settings.chatFileLinksHint": "Where links to files in the conversation open",
+  "settings.chatFileLinksHint": "Where links to files in the conversation open; files outside the workspace always use the sidebar",
   "settings.chatFileLinksIde": "IDE Tool Windows",
   "settings.chatFileLinksSidebar": "Sidebar (DSH default)",
   "links.openFailed": "Could not open this file in the IDE",
   "links.outsideRoot": "This file is outside the current IDE project",
   "links.dirtyProject": "Save or close the open edits before switching the IDE project",
+  "links.switchProjectTitle": "Switch the IDE project?",
+  "links.switchProjectBody": "This file is outside the current IDE project. Switch the IDE project to the workspace root and open it?",
+  "links.switchProjectYes": "Yes",
+  "links.openInDefaultSidebar": "No, open in the default sidebar",
+  "sidebar.openFailed": "Could not open this file in the sidebar",
+  "browser.openFailed": "Could not open the default browser",
   "settings.showIgnored": "Show ignored files",
   "settings.showIgnoredHint": "List .gitignore matches in grey (hidden by default)",
   "settings.groupByDirectory": "Group changes by directory",
@@ -496,6 +502,7 @@ var en = {
   "project.removeFavorite": "Remove from Favorites",
   "project.favorites": "Favorites",
   "project.openTerminal": "Open in Terminal",
+  "project.openInSidebar": "Open in sidebar tab",
   "project.moveTitle": "Move",
   "project.moveTarget": "Destination folder",
   "project.movePlaceholder": "Absolute path, or a path inside the project",
@@ -698,6 +705,8 @@ var en = {
   "editor.unsavedSwitchRoot": "Switching the workspace discards unsaved changes in the open files.",
   "editor.outline": "Document outline",
   "editor.outlineEmpty": "No headings",
+  "editor.htmlPreviewSidebar": "Preview in DSH sidebar",
+  "editor.htmlPreviewBrowser": "Open in default browser",
   "editor.codeBlock": "Code",
   "editor.wrap": "Wrap",
   "editor.unwrap": "No wrap",
@@ -787,12 +796,18 @@ var zh = {
   "settings.singleClickOpen": "\u5355\u51FB\u6253\u5F00\u6587\u4EF6",
   "settings.singleClickOpenHint": "\u5355\u51FB\u6253\u5F00\u9884\u89C8\u6807\u7B7E\uFF0C\u7F16\u8F91\u540E\u8F6C\u4E3A\u6B63\u5F0F\u6807\u7B7E",
   "settings.chatFileLinks": "\u804A\u5929\u6587\u4EF6\u94FE\u63A5",
-  "settings.chatFileLinksHint": "\u804A\u5929\u4E2D\u7684\u6587\u4EF6\u94FE\u63A5\u5728\u54EA\u91CC\u6253\u5F00",
+  "settings.chatFileLinksHint": "\u804A\u5929\u4E2D\u7684\u6587\u4EF6\u94FE\u63A5\u5728\u54EA\u91CC\u6253\u5F00\uFF1B\u5DE5\u4F5C\u533A\u5916\u7684\u6587\u4EF6\u59CB\u7EC8\u4F7F\u7528\u4FA7\u680F",
   "settings.chatFileLinksIde": "IDE \u5DE5\u5177\u7A97\u53E3",
   "settings.chatFileLinksSidebar": "\u4FA7\u680F\uFF08DSH \u9ED8\u8BA4\uFF09",
   "links.openFailed": "\u65E0\u6CD5\u5728 IDE \u4E2D\u6253\u5F00\u8BE5\u6587\u4EF6",
   "links.outsideRoot": "\u8BE5\u6587\u4EF6\u4E0D\u5728\u5F53\u524D IDE \u9879\u76EE\u5185",
   "links.dirtyProject": "\u5207\u6362 IDE \u9879\u76EE\u524D\u8BF7\u5148\u4FDD\u5B58\u6216\u5173\u95ED\u672A\u4FDD\u5B58\u7684\u7F16\u8F91",
+  "links.switchProjectTitle": "\u5207\u6362 IDE \u9879\u76EE\uFF1F",
+  "links.switchProjectBody": "\u8BE5\u6587\u4EF6\u4E0D\u5728\u5F53\u524D IDE \u9879\u76EE\u5185\uFF0C\u662F\u5426\u5207\u6362 IDE \u9879\u76EE\uFF1F",
+  "links.switchProjectYes": "\u662F",
+  "links.openInDefaultSidebar": "\u5426\uFF0C\u7528\u9ED8\u8BA4\u65B9\u5F0F\u6253\u5F00",
+  "sidebar.openFailed": "\u65E0\u6CD5\u5728\u4FA7\u680F\u4E2D\u6253\u5F00\u8BE5\u6587\u4EF6",
+  "browser.openFailed": "\u65E0\u6CD5\u6253\u5F00\u9ED8\u8BA4\u6D4F\u89C8\u5668",
   "settings.showIgnored": "\u663E\u793A\u88AB\u5FFD\u7565\u7684\u6587\u4EF6",
   "settings.showIgnoredHint": "\u4EE5\u7070\u8272\u5217\u51FA .gitignore \u547D\u4E2D\u7684\u6587\u4EF6\uFF08\u9ED8\u8BA4\u9690\u85CF\uFF09",
   "settings.groupByDirectory": "\u6309\u76EE\u5F55\u5206\u7EC4\u663E\u793A\u6539\u52A8",
@@ -910,6 +925,7 @@ var zh = {
   "project.removeFavorite": "\u4ECE\u6536\u85CF\u5939\u79FB\u9664",
   "project.favorites": "\u6536\u85CF\u5939",
   "project.openTerminal": "\u5728\u7EC8\u7AEF\u4E2D\u6253\u5F00",
+  "project.openInSidebar": "\u5728\u4FA7\u680F\u6807\u7B7E\u4E2D\u6253\u5F00",
   "project.moveTitle": "\u79FB\u52A8",
   "project.moveTarget": "\u76EE\u6807\u76EE\u5F55",
   "project.movePlaceholder": "\u7EDD\u5BF9\u8DEF\u5F84\uFF0C\u6216\u9879\u76EE\u5185\u7684\u76F8\u5BF9\u8DEF\u5F84",
@@ -1112,6 +1128,8 @@ var zh = {
   "editor.unsavedSwitchRoot": "\u5207\u6362\u5DE5\u4F5C\u533A\u5C06\u4E22\u5F03\u6253\u5F00\u6587\u4EF6\u4E2D\u7684\u672A\u4FDD\u5B58\u4FEE\u6539\u3002",
   "editor.outline": "\u6587\u6863\u76EE\u5F55",
   "editor.outlineEmpty": "\u6CA1\u6709\u6807\u9898",
+  "editor.htmlPreviewSidebar": "\u5728 DSH \u4FA7\u680F\u4E2D\u9884\u89C8",
+  "editor.htmlPreviewBrowser": "\u7528\u9ED8\u8BA4\u6D4F\u89C8\u5668\u6253\u5F00",
   "editor.codeBlock": "\u4EE3\u7801",
   "editor.wrap": "\u81EA\u52A8\u6362\u884C",
   "editor.unwrap": "\u4E0D\u6362\u884C",
@@ -1588,6 +1606,85 @@ function isIdeViewableAddress(address) {
   if (dot3 < 0) return true;
   return !NON_IDE_EXTENSIONS.has(name2.slice(dot3).toLowerCase());
 }
+function encodeSegment(segment) {
+  return encodeURIComponent(segment).replace(/%3A/gi, ":");
+}
+function encodePath(path2) {
+  return path2.split("/").map(encodeSegment).join("/");
+}
+function sessionFileAddress(sessionId, path2) {
+  const normalized = String(path2).replace(/\\/g, "/").replace(/^(?:\.\/)+/, "");
+  return `${FILE_ADDRESS_PREFIX}session/${encodeSegment(String(sessionId))}/${encodePath(normalized)}`;
+}
+function fileAddressFor(sessionId, cwd, path2) {
+  const normalized = String(path2).replace(/\\/g, "/");
+  if (!isAbsoluteFilePath(normalized)) return sessionFileAddress(sessionId, normalized);
+  const root = typeof cwd === "string" ? cwd.replace(/\\/g, "/").replace(/\/+$/, "") : "";
+  if (root !== "" && normalized === root) return sessionFileAddress(sessionId, "");
+  if (root !== "" && normalized.startsWith(`${root}/`)) return sessionFileAddress(sessionId, normalized.slice(root.length + 1));
+  return sessionFileAddress(sessionId, normalized);
+}
+function fileUrlForPath(path2) {
+  const normalized = String(path2).replace(/\\/g, "/");
+  const encoded = normalized.split("/").map((segment) => encodeURIComponent(segment).replace(/%3A/gi, ":")).join("/");
+  if (/^[A-Za-z]:\//.test(normalized)) return `file:///${encoded}`;
+  if (normalized.startsWith("//")) return `file:${encoded}`;
+  return `file://${encoded}`;
+}
+
+// src/client/file-link.js
+function serviceOf(ctx, key) {
+  try {
+    const service = ctx?.get?.(key);
+    if (service !== void 0 && service !== null) return service;
+  } catch {
+  }
+  return ctx?.[key];
+}
+function defaultSidebarKind(ctx, address, ownKind) {
+  try {
+    const tabs = serviceOf(ctx, "sidebarRightTabs");
+    if (typeof tabs?.candidates !== "function") return void 0;
+    const candidates = tabs.candidates(address);
+    if (!Array.isArray(candidates)) return void 0;
+    for (const candidate of candidates) {
+      if (typeof candidate?.kind === "string" && candidate.kind !== ownKind) return candidate.kind;
+    }
+  } catch {
+  }
+  return void 0;
+}
+function openInDefaultSidebar(ctx, address, options = {}) {
+  const sidebar = serviceOf(ctx, "sidebarRight");
+  if (typeof sidebar?.openResource !== "function") return false;
+  const placement = {
+    ...options.line === void 0 ? {} : { params: { line: options.line } },
+    revealIfOpened: true,
+    ...options.replaceTab === void 0 ? {} : { replaceTab: options.replaceTab }
+  };
+  const kinds = [];
+  if (typeof options.kind === "string" && options.kind !== "") kinds.push(options.kind);
+  const probed = defaultSidebarKind(ctx, address, options.ownKind);
+  if (probed !== void 0 && !kinds.includes(probed)) kinds.push(probed);
+  for (const kind of kinds) {
+    try {
+      sidebar.openResource(address, { ...placement, kind });
+      return true;
+    } catch {
+    }
+  }
+  if (typeof options.suppressSelf !== "function") return false;
+  let release;
+  try {
+    release = options.suppressSelf();
+    sidebar.openResource(address, placement);
+    return true;
+  } catch {
+    return false;
+  } finally {
+    if (typeof release === "function") release();
+  }
+}
 
 // src/client/workspace-scope.js
 function normalizeScopePath(path2) {
@@ -1599,6 +1696,12 @@ function normalizeScopePath(path2) {
 function sameScopePath(left, right) {
   const normalized = normalizeScopePath(left);
   return normalized !== "" && normalized === normalizeScopePath(right);
+}
+function isPathWithin(root, path2) {
+  const parent = normalizeScopePath(root);
+  if (parent === "") return false;
+  const candidate = normalizeScopePath(path2);
+  return candidate === parent || candidate.startsWith(`${parent}/`);
 }
 function sessionCwdOf(ctx, sessionId) {
   if (typeof sessionId !== "string" || sessionId === "") return "";
@@ -1665,6 +1768,8 @@ function initialState() {
     statusError: null,
     statusAt: 0,
     layout: { left: "project", leftWidth: 300, bottom: null, bottomHeight: 270, gitDrawerWidth: 420 },
+    /** True while the pane is too narrow for side-by-side docks (CSS + JS agree). */
+    stacked: false,
     dirs: /* @__PURE__ */ new Map(),
     expanded: /* @__PURE__ */ new Set(),
     selectedPath: "",
@@ -1774,6 +1879,8 @@ var WorkbenchStore = class {
     this.settingsFile = "";
     this.initPromise = null;
     this.unsubscribers = [];
+    this.hiddenLayout = null;
+    this.lastToolGroup = "left";
   }
   // ── subscription ──────────────────────────────────────────────────────
   subscribe = (listener) => {
@@ -1895,67 +2002,105 @@ var WorkbenchStore = class {
     return this.state.phase === "ready" && this.state.root !== "";
   }
   /**
-   * Open one `dsh-resource://file/…` link in the workbench.
+   * Resolve and open one `dsh-resource://file/…` link in the workbench.
    *
-   * The chat's own file opener always resolves a path against the viewing
-   * Session's workspace and hands the address to `sidebarRight.openResource`;
-   * this method turns that address into an absolute path, makes sure the file
-   * is inside the selected IDE project (switching to the containing project
-   * when it is not and no edits are dirty), reveals it in the Project tree and
-   * opens a preview tab at the requested line.
+   * A chat link can name three places:
+   * - a file inside the selected IDE project → open it;
+   * - a file inside the DSH workspace but outside the selected IDE project
+   *   (for example the IDE project is a first-level sub-folder) → report
+   *   `needs-project-switch` so the caller can ask before widening the IDE
+   *   project to the workspace root;
+   * - a file outside the workspace → report `outside-workspace`; the caller
+   *   hands it to DSH's own sidebar instead of erroring.
+   *
+   * The chat's own file opener resolves a path against the viewing Session's
+   * workspace and hands the address to `sidebarRight.openResource`; this method
+   * turns that address into an absolute path and reveals it in the Project tree
+   * at the requested line.
+   *
    * @param {string} address the resource address
-   * @param {{ line?: number }} [options]
-   * @returns {Promise<boolean>} true when the file is now open in the workbench
+   * @param {{ line?: number, switchProject?: boolean }} [options] `switchProject`
+   *   agrees to widen the IDE project to the workspace root
+   * @returns {Promise<{
+   *   status: 'opened' | 'needs-project-switch' | 'outside-workspace' | 'dirty' | 'failed',
+   *   absolute?: string,
+   * }>}
    */
   async openExternalFile(address, options = {}) {
     const parsed = parseFileAddress(address);
-    if (parsed === void 0) return false;
-    if (!await this.ensureInit()) {
-      this.toast("error", this.t("links.openFailed"), String(address));
-      return false;
-    }
-    const cwd = parsed.scope === "session" ? sessionCwdOf(this.ctx, parsed.sessionId) || this.state.workspaceRoot : this.state.workspaceRoot;
+    if (parsed === void 0) return { status: "failed" };
+    if (!await this.ensureInit()) return { status: "failed" };
+    const linkCwd = parsed.scope === "session" ? sessionCwdOf(this.ctx, parsed.sessionId) : "";
+    const cwd = linkCwd || this.state.workspaceRoot;
     const absolute = resolveFileAddress(parsed, cwd);
-    if (absolute === void 0) {
-      this.toast("error", this.t("links.openFailed"), String(address));
+    if (absolute === void 0) return { status: "failed" };
+    const workspace = this.state.workspaceRoot || cwd;
+    if (workspace === "" || !isPathWithin(workspace, absolute)) {
+      return { status: "outside-workspace", absolute };
+    }
+    if (this.#insideRoot(absolute)) {
+      this.#revealInProject(absolute, options.line);
+      return { status: "opened", absolute };
+    }
+    if (this.state.tabs.some((tab3) => tab3.dirty === true)) {
+      return { status: "dirty", absolute };
+    }
+    if (options.switchProject !== true) {
+      return { status: "needs-project-switch", absolute };
+    }
+    const switched = await this.selectProject(workspace);
+    if (switched === false || !this.#insideRoot(absolute)) {
+      return { status: "failed", absolute };
+    }
+    this.#revealInProject(absolute, options.line);
+    return { status: "opened", absolute };
+  }
+  /** Reveal one file the workbench already accepted (tree + preview tab). */
+  #revealInProject(absolute, line) {
+    this.showTool("project");
+    this.openFile(absolute, { preview: true, line });
+  }
+  /** The session-scoped resource address for one absolute path. */
+  #sidebarAddressOf(path2) {
+    const sessionId = this.ctx.sidebarRight?.mounted?.getSnapshot();
+    if (typeof sessionId !== "string" || sessionId === "") return void 0;
+    const cwd = sessionCwdOf(this.ctx, sessionId) || this.state.workspaceRoot;
+    return fileAddressFor(sessionId, cwd, path2);
+  }
+  /**
+   * Open one file in DSH's own sidebar as a separate tab.
+   *
+   * The built-in `text` document preview renders text, Markdown, images, PDFs,
+   * Office documents and HTML; naming it avoids the better-sidebar editor and
+   * gives the product's own preview for HTML, which this workbench does not
+   * render.
+   * @param {string} path absolute file path
+   * @returns {boolean} true when the sidebar accepted the open
+   */
+  openInSidebar(path2) {
+    if (typeof path2 !== "string" || path2 === "") return false;
+    const address = this.#sidebarAddressOf(path2);
+    const opened = address !== void 0 && openInDefaultSidebar(this.ctx, address, { kind: "text", ownKind: "ide-toolwindows" });
+    if (!opened) {
+      this.toast("error", this.t("sidebar.openFailed"), path2);
       return false;
     }
-    if (!this.#insideRoot(absolute)) {
-      const project = this.#projectContaining(absolute);
-      if (project === void 0 || sameScopePath(project, this.state.root)) {
-        this.toast("error", this.t("links.outsideRoot"), absolute);
-        return false;
-      }
-      if (this.state.tabs.some((tab3) => tab3.dirty === true)) {
-        this.toast("error", this.t("links.dirtyProject"), absolute);
-        return false;
-      }
-      await this.selectProject(project);
-      if (!sameScopePath(this.state.root, project)) {
-        this.toast("error", this.t("links.outsideRoot"), absolute);
-        return false;
-      }
-    }
-    this.showTool("project");
-    this.openFile(absolute, { preview: true, line: options.line });
     return true;
+  }
+  /** Open one file in the OS default browser (the Chrome button). */
+  async openInDefaultBrowser(path2) {
+    if (typeof path2 !== "string" || path2 === "") return false;
+    try {
+      await call("shell.openExternal", { url: fileUrlForPath(path2) });
+      return true;
+    } catch (error) {
+      this.toast("error", this.t("browser.openFailed"), errorMessage(error));
+      return false;
+    }
   }
   /** Whether one absolute path is inside the selected IDE project root. */
   #insideRoot(path2) {
-    const root = normalizeScopePath(this.state.root);
-    const candidate = normalizeScopePath(path2);
-    return root !== "" && (candidate === root || candidate.startsWith(`${root}/`));
-  }
-  /** The deepest project candidate that contains one absolute path. */
-  #projectContaining(path2) {
-    const candidate = normalizeScopePath(path2);
-    let best;
-    for (const project of this.state.projects) {
-      const root = normalizeScopePath(project.path);
-      if (root === "" || !(candidate === root || candidate.startsWith(`${root}/`))) continue;
-      if (best === void 0 || root.length > normalizeScopePath(best).length) best = project.path;
-    }
-    return best;
+    return isPathWithin(this.state.root, path2);
   }
   /** Choose the durable root: last used → most recent workspace → default dir. */
   #pickRoot(settings, workspaces) {
@@ -2054,11 +2199,12 @@ var WorkbenchStore = class {
   }
   /** Switch the IDE project root inside the current workspace. */
   async selectProject(projectRoot) {
-    if (typeof projectRoot !== "string" || projectRoot === "") return;
-    if (!this.state.projects.some((project) => project.path === projectRoot)) return;
-    if (projectRoot === this.state.root) {
+    if (typeof projectRoot !== "string" || projectRoot === "") return false;
+    const project = this.state.projects.find((item) => sameScopePath(item.path, projectRoot));
+    if (project === void 0) return false;
+    if (sameScopePath(project.path, this.state.root)) {
       this.set({ projectPicker: false });
-      return;
+      return true;
     }
     if (this.state.tabs.some((tab3) => tab3.dirty === true)) {
       this.askConfirm(
@@ -2066,12 +2212,13 @@ var WorkbenchStore = class {
         this.t("editor.unsavedSwitchRoot"),
         this.t("editor.discardChanges"),
         () => {
-          void this.#switchProject(projectRoot);
+          void this.#switchProject(project.path);
         }
       );
-      return;
+      return false;
     }
-    await this.#switchProject(projectRoot);
+    await this.#switchProject(project.path);
+    return true;
   }
   async #switchProject(projectRoot) {
     this.set({
@@ -3549,7 +3696,14 @@ ${outcome.output ?? ""}`.trim();
   showHistory(rel) {
     const value = typeof rel === "string" ? rel.replace(/[\\/]+$/, "") : "";
     this.patch("git", { filters: { ...this.state.git.filters, path: value }, selectedHash: null, detail: null });
-    this.set({ layout: { ...this.state.layout, bottom: "git" } });
+    this.set({
+      layout: {
+        ...this.state.layout,
+        bottom: "git",
+        ...this.state.stacked === true ? { left: null } : {}
+      }
+    });
+    this.lastToolGroup = "bottom";
     void this.loadLog(true);
     this.persist();
   }
@@ -3709,7 +3863,12 @@ ${outcome.output ?? ""}`.trim();
       error: null
     };
     const sessions = [...this.state.terminal.sessions, session];
-    const layout = { ...this.state.layout, bottom: "terminal" };
+    const layout = {
+      ...this.state.layout,
+      bottom: "terminal",
+      ...this.state.stacked === true ? { left: null } : {}
+    };
+    this.lastToolGroup = "bottom";
     this.set({
       terminal: { ...this.state.terminal, sessions, activeKey: id2 },
       layout
@@ -3722,7 +3881,12 @@ ${outcome.output ?? ""}`.trim();
     this.set({ terminal: { ...this.state.terminal, sessions } });
   }
   activateTerminal(key) {
-    const layout = { ...this.state.layout, bottom: "terminal" };
+    const layout = {
+      ...this.state.layout,
+      bottom: "terminal",
+      ...this.state.stacked === true ? { left: null } : {}
+    };
+    this.lastToolGroup = "bottom";
     this.set({ terminal: { ...this.state.terminal, activeKey: key }, layout });
     this.persist();
   }
@@ -3758,10 +3922,43 @@ ${outcome.output ?? ""}`.trim();
     if (this.state.terminal.activeKey !== null) void this.closeTerminal(this.state.terminal.activeKey);
   }
   // ── layout ────────────────────────────────────────────────────────────
+  /**
+   * Record the pane's layout mode. `transition` is only true for a measured
+   * width change, never the first measurement of a freshly mounted pane.
+   *
+   * The stacked mode should not show four docks around a narrow content area:
+   * a real width transition hides whatever is open, and a fresh mount hides
+   * only when both groups are already open (a single default tool stays).
+   * The hidden layout is kept for Ctrl+Shift+F12.
+   * @param {boolean} stacked
+   * @param {{ transition?: boolean }} [options]
+   */
+  setStacked(stacked, options = {}) {
+    const next = stacked === true;
+    if (this.state.stacked === next) return;
+    const was = this.state.stacked === true;
+    this.set({ stacked: next });
+    if (!was && next) {
+      const layout = this.state.layout;
+      const hasLeft = layout.left !== null && layout.left !== void 0;
+      const hasBottom = layout.bottom !== null && layout.bottom !== void 0;
+      const crowded = hasLeft && hasBottom;
+      if (crowded || options.transition === true && (hasLeft || hasBottom)) {
+        this.hiddenLayout = { left: layout.left ?? null, bottom: layout.bottom ?? null };
+        this.set({ layout: { ...layout, left: null, bottom: null } });
+      }
+    }
+  }
   toggleTool(tool) {
     if (tool === "project" || tool === "commit") {
-      const layout = { ...this.state.layout, left: this.state.layout.left === tool ? null : tool };
+      const next = this.state.layout.left === tool ? null : tool;
+      const layout = {
+        ...this.state.layout,
+        left: next,
+        ...next !== null && this.state.stacked === true ? { bottom: null } : {}
+      };
       this.set({ layout });
+      if (next !== null) this.lastToolGroup = "left";
       if (layout.left === "commit") this.#focusCommitLater();
       if (layout.left === "project") this.set({ treeFocusTick: (this.state.treeFocusTick ?? 0) + 1 });
     } else {
@@ -3770,20 +3967,41 @@ ${outcome.output ?? ""}`.trim();
         this.addTerminal();
         return;
       }
-      this.set({ layout: { ...this.state.layout, bottom: next } });
+      this.set({
+        layout: {
+          ...this.state.layout,
+          bottom: next,
+          ...next !== null && this.state.stacked === true ? { left: null } : {}
+        }
+      });
+      if (next !== null) this.lastToolGroup = "bottom";
     }
     this.persist();
   }
   showTool(tool) {
     if (tool === "project" || tool === "commit") {
-      this.set({ layout: { ...this.state.layout, left: tool } });
+      this.set({
+        layout: {
+          ...this.state.layout,
+          left: tool,
+          ...this.state.stacked === true ? { bottom: null } : {}
+        }
+      });
+      this.lastToolGroup = "left";
       if (tool === "commit") this.#focusCommitLater();
       if (tool === "project") this.set({ treeFocusTick: (this.state.treeFocusTick ?? 0) + 1 });
       this.persist();
     } else if (tool === "terminal" && this.state.terminal.sessions.length === 0) {
       this.addTerminal();
     } else {
-      this.set({ layout: { ...this.state.layout, bottom: tool } });
+      this.set({
+        layout: {
+          ...this.state.layout,
+          bottom: tool,
+          ...this.state.stacked === true ? { left: null } : {}
+        }
+      });
+      this.lastToolGroup = "bottom";
       this.persist();
     }
   }
@@ -3800,7 +4018,8 @@ ${outcome.output ?? ""}`.trim();
       this.set({ layout: { ...layout, left: null, bottom: null } });
     } else {
       const saved = this.hiddenLayout ?? { left: "project", bottom: null };
-      this.set({ layout: { ...layout, ...saved } });
+      const restore = this.state.stacked === true ? saved.left !== null && saved.left !== void 0 && (this.lastToolGroup === "left" || saved.bottom === null || saved.bottom === void 0) ? { left: saved.left, bottom: null } : { left: null, bottom: saved.bottom ?? null } : saved;
+      this.set({ layout: { ...layout, ...restore } });
     }
     this.persist();
   }
@@ -3823,7 +4042,14 @@ ${outcome.output ?? ""}`.trim();
     this.patch("commit", { focusTick: (this.state.commit.focusTick ?? 0) + 1 });
   }
   focusCommit() {
-    this.set({ layout: { ...this.state.layout, left: "commit" } });
+    this.set({
+      layout: {
+        ...this.state.layout,
+        left: "commit",
+        ...this.state.stacked === true ? { bottom: null } : {}
+      }
+    });
+    this.lastToolGroup = "left";
     this.#focusCommitLater();
     this.persist();
   }
@@ -4248,6 +4474,25 @@ function IconRestore(props = {}) {
     path("M2.8 8a5.2 5.2 0 1 0 1.6-3.8", { key: "arc" }),
     path("M2.6 2.6v3.2h3.2", { key: "arrow" })
   ], props);
+}
+function IconGlobe(props = {}) {
+  return svg([
+    import_react2.default.createElement("circle", { key: "c", cx: 8, cy: 8, r: 6.2, fill: "none", stroke: "currentColor", strokeWidth: 1.35 }),
+    path("M1.8 8h12.4M8 1.8c2.4 2 2.4 10.4 0 12.4M8 1.8c-2.4 2-2.4 10.4 0 12.4", { key: "g" })
+  ], props);
+}
+function IconChrome(props = {}) {
+  return import_react2.default.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    viewBox: "0 0 24 24",
+    width: 16,
+    height: 16,
+    "aria-hidden": true,
+    ...props
+  }, import_react2.default.createElement("path", {
+    fill: "currentColor",
+    d: "M12 0C8.21 0 4.831 1.757 2.632 4.501l3.953 6.848A5.454 5.454 0 0 1 12 6.545h10.691A12 12 0 0 0 12 0zM1.931 5.47A11.943 11.943 0 0 0 0 12c0 6.012 4.42 10.991 10.189 11.864l3.953-6.847a5.45 5.45 0 0 1-6.865-2.29zm13.342 2.166a5.446 5.446 0 0 1 1.45 7.09l.002.001h-.002l-5.344 9.257c.206.01.413.016.621.016 6.627 0 12-5.373 12-12 0-1.54-.29-3.011-.818-4.364zM12 16.364a4.364 4.364 0 1 1 0-8.728 4.364 4.364 0 0 1 0 8.728z"
+  }));
 }
 function StripeIcon(props = {}) {
   const size = props.size ?? 20;
@@ -4895,6 +5140,15 @@ function ProjectPanel({ store, state }) {
       { key: "terminal", text: t2("project.openTerminal"), action: () => {
         store.addTerminal({ cwd: isDir ? entry.path : entry === void 0 ? state.root : parentDir });
       } },
+      {
+        key: "sidebar",
+        text: t2("project.openInSidebar"),
+        icon: import_react4.default.createElement(IconGlobe, { width: 13, height: 13 }),
+        disabled: entry === void 0 || isDir,
+        action: () => {
+          if (entry !== void 0 && !isDir) void store.openInSidebar(entry.path);
+        }
+      },
       { ...openInIdeMenu(store, entry?.path, isDir), icon: import_react4.default.createElement(IconExternal, { width: 13, height: 13 }) },
       { key: "reveal", text: t2("project.reveal"), icon: import_react4.default.createElement(IconExternal, { width: 13, height: 13 }), disabled: entry === void 0, action: () => {
         void store.reveal(entry.path);
@@ -48458,6 +48712,14 @@ function TabBar({ store, state }) {
           disabled: menu.tab.dirty !== true,
           action: () => store.discardDraft(menu.tab.id)
         },
+        {
+          key: "sidebar",
+          text: t2("project.openInSidebar"),
+          disabled: menu.tab.kind !== "file",
+          action: () => {
+            void store.openInSidebar(menu.tab.path);
+          }
+        },
         openInIdeMenu(store, menu.tab.path, menu.tab.kind !== "file"),
         null,
         {
@@ -48663,6 +48925,35 @@ function EditorToolbar({ store, state, tab: tab3 }) {
     import_react14.default.createElement("span", null, payload?.encoding ?? "utf-8")
   );
 }
+function isHtmlPath(path2) {
+  return typeof path2 === "string" && /\.(?:html?|xhtml)$/i.test(path2);
+}
+function HtmlPreviewActions({ store, tab: tab3 }) {
+  const t2 = store.t;
+  if (tab3.kind !== "file" || !isHtmlPath(tab3.path)) return null;
+  return import_react14.default.createElement(
+    "div",
+    { className: "itw-html-actions" },
+    import_react14.default.createElement("button", {
+      type: "button",
+      className: "itw-html-action",
+      title: t2("editor.htmlPreviewSidebar"),
+      "aria-label": t2("editor.htmlPreviewSidebar"),
+      onClick: () => {
+        void store.openInSidebar(tab3.path);
+      }
+    }, import_react14.default.createElement(IconGlobe, { width: 15, height: 15 })),
+    import_react14.default.createElement("button", {
+      type: "button",
+      className: "itw-html-action itw-chrome",
+      title: t2("editor.htmlPreviewBrowser"),
+      "aria-label": t2("editor.htmlPreviewBrowser"),
+      onClick: () => {
+        void store.openInDefaultBrowser(tab3.path);
+      }
+    }, import_react14.default.createElement(IconChrome, { width: 15, height: 15 }))
+  );
+}
 function EditorArea({ store, state }) {
   const active = state.tabs.find((tab3) => tab3.id === state.activeId);
   const [findOpen, setFindOpen] = (0, import_react14.useState)(false);
@@ -48767,7 +49058,8 @@ function EditorArea({ store, state }) {
       readOnly: active.editing !== true,
       onClose: () => setFindOpen(false)
     }) : null,
-    content2
+    content2,
+    import_react14.default.createElement(HtmlPreviewActions, { store, tab: active })
   );
 }
 
@@ -48784,6 +49076,28 @@ var SHORTCUT_FIELDS = [
   ["findInFilesAlt", "findInFilesAltShortcut"],
   ["quickOpen", "quickOpenShortcut"]
 ];
+function Group({ title, description, children }) {
+  return import_react15.default.createElement(
+    "section",
+    { className: "itw-settings-group" },
+    import_react15.default.createElement("h3", { className: "itw-settings-group-title" }, title),
+    description !== void 0 ? import_react15.default.createElement("p", { className: "itw-settings-group-desc" }, description) : null,
+    import_react15.default.createElement("div", { className: "itw-settings-rows" }, children)
+  );
+}
+function Row({ label, hint, children }) {
+  return import_react15.default.createElement(
+    "div",
+    { className: "itw-settings-row" },
+    import_react15.default.createElement(
+      "div",
+      { className: "itw-settings-label" },
+      import_react15.default.createElement("div", { className: "itw-settings-title" }, label),
+      hint !== void 0 ? import_react15.default.createElement("div", { className: "itw-settings-hint" }, hint) : null
+    ),
+    import_react15.default.createElement("div", { className: "itw-settings-control" }, children)
+  );
+}
 function SettingsForm({ store, state, compact }) {
   const t2 = store.t;
   const settings = state.settings ?? {};
@@ -48792,6 +49106,29 @@ function SettingsForm({ store, state, compact }) {
   const [capturing, setCapturing] = (0, import_react15.useState)(false);
   const timer = (0, import_react15.useRef)(null);
   const savedTimer = (0, import_react15.useRef)(null);
+  const rootRef = (0, import_react15.useRef)(null);
+  const scrollRef = (0, import_react15.useRef)({ parent: null, top: 0 });
+  const captureScroll = () => {
+    let node = rootRef.current?.parentElement ?? null;
+    while (node !== null) {
+      const overflow = typeof getComputedStyle === "function" ? getComputedStyle(node).overflowY : "";
+      if ((overflow === "auto" || overflow === "scroll") && node.scrollHeight > node.clientHeight) {
+        scrollRef.current = { parent: node, top: node.scrollTop };
+        return;
+      }
+      node = node.parentElement;
+    }
+    scrollRef.current = { parent: null, top: typeof window !== "undefined" ? window.scrollY : 0 };
+  };
+  const restoreScroll = () => {
+    const { parent, top: top2 } = scrollRef.current;
+    const apply2 = () => {
+      if (parent !== null) parent.scrollTop = top2;
+      else if (typeof window !== "undefined" && typeof window.scrollTo === "function") window.scrollTo({ top: top2 });
+    };
+    if (typeof requestAnimationFrame === "function") requestAnimationFrame(apply2);
+    else apply2();
+  };
   (0, import_react15.useEffect)(() => {
     setDraft(settings);
   }, [settings]);
@@ -48804,6 +49141,7 @@ function SettingsForm({ store, state, compact }) {
     timer.current = setTimeout(() => {
       timer.current = null;
       void store.updateSettings(patch).then(() => {
+        restoreScroll();
         setSaved(true);
         if (savedTimer.current !== null) clearTimeout(savedTimer.current);
         savedTimer.current = setTimeout(() => setSaved(false), 1600);
@@ -48811,6 +49149,7 @@ function SettingsForm({ store, state, compact }) {
     }, 350);
   };
   const update = (patch) => {
+    captureScroll();
     const next = {
       ...draft,
       ...patch,
@@ -48830,27 +49169,9 @@ function SettingsForm({ store, state, compact }) {
     setDraft(next);
     commit(patch);
   };
-  const Group = ({ title, description, children }) => import_react15.default.createElement(
-    "section",
-    { className: "itw-settings-group" },
-    import_react15.default.createElement("h3", { className: "itw-settings-group-title" }, title),
-    description !== void 0 ? import_react15.default.createElement("p", { className: "itw-settings-group-desc" }, description) : null,
-    import_react15.default.createElement("div", { className: "itw-settings-rows" }, children)
-  );
-  const Row = ({ label, hint, children }) => import_react15.default.createElement(
-    "div",
-    { className: "itw-settings-row" },
-    import_react15.default.createElement(
-      "div",
-      { className: "itw-settings-label" },
-      import_react15.default.createElement("div", { className: "itw-settings-title" }, label),
-      hint !== void 0 ? import_react15.default.createElement("div", { className: "itw-settings-hint" }, hint) : null
-    ),
-    import_react15.default.createElement("div", { className: "itw-settings-control" }, children)
-  );
   return import_react15.default.createElement(
     "div",
-    { className: "itw-settings" },
+    { className: "itw-settings", ref: rootRef },
     import_react15.default.createElement(
       Group,
       {
@@ -49290,6 +49611,10 @@ function QuickOpen({ store, state }) {
   );
 }
 
+// src/client/layout.js
+var STACK_WIDTH = 560;
+var LEFT_PANE_RATIO = 42;
+
 // src/client/Workbench.jsx
 function TopBar({ store, state, fullscreen, onOpenSettings }) {
   const t2 = store.t;
@@ -49670,6 +49995,7 @@ function Workbench({ store, visible = true, fullscreen = false }) {
   const state = useWorkbench(store);
   const [settingsOpen, setSettingsOpen] = (0, import_react17.useState)(false);
   const leftRef = (0, import_react17.useRef)(null);
+  const rootRef = (0, import_react17.useRef)(null);
   (0, import_react17.useEffect)(() => {
     if (!visible) return;
     store.activate();
@@ -49677,6 +50003,19 @@ function Workbench({ store, visible = true, fullscreen = false }) {
       store.deactivate();
     };
   }, [store, visible]);
+  (0, import_react17.useEffect)(() => {
+    const element = rootRef.current;
+    if (element === null || typeof ResizeObserver !== "function") return void 0;
+    let measured = false;
+    const observer = new ResizeObserver((entries) => {
+      const width = entries[0]?.contentRect?.width ?? 0;
+      if (!(width > 0)) return;
+      store.setStacked(width <= STACK_WIDTH, { transition: measured });
+      measured = true;
+    });
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [store]);
   const startLeftResize = (event) => {
     event.preventDefault();
     const startX = event.clientX;
@@ -49712,7 +50051,7 @@ function Workbench({ store, visible = true, fullscreen = false }) {
       {
         className: "itw-left",
         ref: leftRef,
-        style: { width: `${state.layout.leftWidth}px` }
+        style: { "--itw-left-width": `${state.layout.leftWidth}px` }
       },
       state.layout.left === "project" ? import_react17.default.createElement(ProjectPanel, { store, state }) : import_react17.default.createElement(CommitPanel, { store, state }),
       import_react17.default.createElement("div", { className: "itw-left-resizer", onPointerDown: startLeftResize })
@@ -49743,7 +50082,7 @@ function Workbench({ store, visible = true, fullscreen = false }) {
   ) : null;
   return import_react17.default.createElement(
     "div",
-    { className: "itw-root" },
+    { className: "itw-root", ref: rootRef },
     import_react17.default.createElement(TopBar, { store, state, fullscreen, onOpenSettings: () => setSettingsOpen(true) }),
     import_react17.default.createElement(
       "div",
@@ -49788,7 +50127,7 @@ function Workbench({ store, visible = true, fullscreen = false }) {
 
 // src/client/styles.js
 var CSS2 = `
-.itw-root, .itw-settings {
+.itw-root, .itw-settings, .itw-link-shell {
   --itw-bg: var(--dsw-alias-bg-base, #15171c);
   --itw-panel: var(--dsw-alias-bg-layer-1, #1b1e24);
   --itw-panel-2: var(--dsw-alias-bg-layer-2, #22262e);
@@ -49914,7 +50253,8 @@ var CSS2 = `
 .itw-badge.itw-badge-dirty { background: var(--itw-success); }
 
 .itw-left {
-  position: relative; flex: 0 0 auto; min-width: 200px; max-width: 640px; display: flex; flex-direction: column;
+  position: relative; flex: 0 0 auto; width: var(--itw-left-width, 300px);
+  min-width: 200px; max-width: 640px; display: flex; flex-direction: column;
   background: var(--itw-panel); border-right: 1px solid var(--itw-border);
 }
 .itw-left-resizer {
@@ -49967,6 +50307,19 @@ var CSS2 = `
 .itw-tabbar-actions { display: flex; align-items: center; gap: 2px; padding: 0 6px; margin-left: auto; position: sticky; right: 0; background: var(--itw-panel); }
 
 .itw-editor { flex: 1; min-height: 0; display: flex; flex-direction: column; position: relative; overflow: hidden; }
+/* Floating HTML preview actions, top-right of the content area. */
+.itw-html-actions {
+  position: absolute; top: 70px; right: 14px; z-index: 12;
+  display: flex; gap: 4px; padding: 4px; color: var(--itw-muted);
+  border: 1px solid var(--itw-border); border-radius: 8px;
+  background: var(--itw-overlay); box-shadow: 0 6px 18px rgba(0, 0, 0, .18);
+}
+.itw-html-action {
+  width: 28px; height: 28px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center;
+}
+.itw-html-action:hover { color: var(--itw-fg); background: rgba(127, 127, 127, .14); }
+.itw-html-action.itw-chrome { color: #4285f4; }
+.itw-html-action.itw-chrome:hover { color: #4285f4; filter: brightness(1.12); }
 .itw-editor-toolbar {
   height: 30px; flex: 0 0 30px; display: flex; align-items: center; gap: 8px; padding: 0 10px;
   border-bottom: 1px solid var(--itw-border); background: var(--itw-bg); color: var(--itw-muted); font-size: 11.5px;
@@ -50128,6 +50481,30 @@ var CSS2 = `
 
 .itw-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 26px 20px; color: var(--itw-muted); text-align: center; font-size: 12px; }
 .itw-empty-title { color: var(--itw-fg); font-size: 13px; font-weight: 600; }
+/* The file-link carrier tab is not inside the workbench root, so it carries
+   its own token scope and a centered dialog card. Without this the primary
+   button's white label sits on an unresolved (transparent) accent background. */
+.itw-link-shell {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  flex: 1 1 auto; width: 100%; height: 100%; min-height: 0; padding: 16px; overflow: auto;
+  background: var(--itw-bg); color: var(--itw-fg);
+  font-family: var(--itw-font); font-size: 13px; line-height: 1.45;
+  -webkit-app-region: no-drag;
+}
+.itw-link-shell *, .itw-link-shell *::before, .itw-link-shell *::after { box-sizing: border-box; }
+.itw-link-shell .itw-textbtn { font: inherit; cursor: pointer; }
+.itw-link-prompt {
+  width: 100%; max-width: 480px; padding: 22px 20px;
+  border: 1px solid var(--itw-border); border-radius: 12px;
+  background: var(--itw-panel); box-shadow: 0 12px 32px rgba(0, 0, 0, .18);
+}
+.itw-link-body { color: var(--itw-fg); font-size: 12.5px; line-height: 1.5; }
+.itw-link-path {
+  max-width: 100%; color: var(--itw-muted); font-family: var(--itw-mono, ui-monospace, Consolas, monospace);
+  font-size: 11px; line-height: 1.45; word-break: break-all; user-select: text;
+}
+.itw-link-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 2px; }
+.itw-link-actions .itw-textbtn { height: auto; min-height: 28px; padding: 5px 14px; white-space: normal; text-align: center; }
 .itw-error-box { margin: 8px; padding: 8px 10px; border: 1px solid rgba(226, 104, 111, .4); border-radius: 6px; background: rgba(226, 104, 111, .08); color: var(--itw-error); font-size: 11.5px; white-space: pre-wrap; word-break: break-word; user-select: text; }
 
 .itw-menu {
@@ -50664,6 +51041,19 @@ var CSS2 = `
   .itw-project-path, .itw-top-spacer { display: none; }
   .itw-branch-chip { max-width: 100px; padding: 0 4px; }
   .itw-topbar > button { flex-shrink: 0; }
+  /* Keep a readable editor: below this width the left dock follows the pane
+     instead of holding its remembered pixel width. */
+  .itw-left { width: min(var(--itw-left-width, 300px), ${LEFT_PANE_RATIO}cqw); }
+  .itw-statusbar { overflow-x: auto; white-space: nowrap; }
+  .itw-status-item { flex-shrink: 0; }
+  .itw-editor-toolbar { overflow-x: auto; flex-shrink: 0; }
+  .itw-modal { max-width: calc(100% - 16px); }
+}
+
+/* Stack only when a side-by-side layout would leave the editor too narrow.
+   Most laptop windows put the right sidebar at ~45% of the frame, well above
+   this width; docking vertically is the fallback, not the normal mode. */
+@container ide-workbench (max-width: ${STACK_WIDTH}px) {
   .itw-body { flex-direction: column; }
   .itw-stripe { width: 100%; flex: 0 0 38px; flex-direction: row; padding: 2px 6px; border-right: 0; border-bottom: 1px solid var(--itw-border); }
   .itw-stripe-spacer { flex: 1; }
@@ -50673,10 +51063,6 @@ var CSS2 = `
   .itw-left-resizer { display: none; }
   .itw-center { min-height: 140px; }
   .itw-bottom { max-height: 65%; min-height: 100px; }
-  .itw-statusbar { overflow-x: auto; white-space: nowrap; }
-  .itw-status-item { flex-shrink: 0; }
-  .itw-editor-toolbar { overflow-x: auto; flex-shrink: 0; }
-  .itw-modal { max-width: calc(100% - 16px); }
 }
 `;
 
@@ -50711,43 +51097,103 @@ function useMountedSession(ctx) {
     () => void 0
   );
 }
-function FileLinkBridge({ store, sessionId, tab: tab3, ctx, requestOpen }) {
-  const [failed, setFailed] = import_react18.default.useState(false);
+function FileLinkBridge({ store, tab: tab3, ctx, suppressSelf }) {
   const address = typeof tab3.contentId === "string" ? tab3.contentId : "";
   const line = tab3.navigation?.params?.line;
-  (0, import_react18.useLayoutEffect)(() => {
-    let alive = true;
-    void store.openExternalFile(address, { line }).catch(() => {
-    });
+  const [view, setView] = import_react18.default.useState({ phase: "opening", absolute: "" });
+  const replaceWithIde = import_react18.default.useCallback(() => {
     try {
       ctx.sidebarRight.openTab(PANEL_ID, { replaceTab: tab3.id });
+      return true;
     } catch {
-      if (alive) setFailed(true);
+      return false;
     }
-    return () => {
-      alive = false;
-    };
-  }, [address, line, tab3.id, store, ctx]);
-  if (!failed) return null;
-  return import_react18.default.createElement(
+  }, [ctx, tab3.id]);
+  const openDefault = import_react18.default.useCallback(() => openInDefaultSidebar(ctx, address, {
+    ownKind: PANEL_ID,
+    line,
+    replaceTab: tab3.id,
+    suppressSelf
+  }), [ctx, address, line, tab3.id, suppressSelf]);
+  const close = import_react18.default.useCallback(() => {
+    try {
+      ctx.sidebarRight.close(tab3.id);
+    } catch {
+    }
+  }, [ctx, tab3.id]);
+  const begin = import_react18.default.useCallback(async (switchProject) => {
+    setView((current) => ({ ...current, phase: "opening" }));
+    let result;
+    try {
+      result = await store.openExternalFile(address, { line, switchProject });
+    } catch {
+      result = { status: "failed" };
+    }
+    if (result.status === "opened") {
+      if (!replaceWithIde()) setView({ phase: "failed", absolute: result.absolute ?? "" });
+      return;
+    }
+    if (result.status === "outside-workspace") {
+      if (openDefault()) return;
+    }
+    const phase = result.status === "needs-project-switch" ? "prompt" : result.status === "dirty" ? "dirty" : "failed";
+    setView({ phase, absolute: result.absolute ?? "" });
+  }, [store, address, line, replaceWithIde, openDefault]);
+  (0, import_react18.useLayoutEffect)(() => {
+    void begin(false);
+  }, [begin]);
+  const path2 = view.absolute !== "" ? view.absolute : address;
+  const button = (key, label, extra, onClick) => import_react18.default.createElement("button", {
+    key,
+    type: "button",
+    className: `itw-textbtn ${extra}`.trim(),
+    onClick
+  }, store.t(label));
+  const card = (title, body, actions) => import_react18.default.createElement(
     "div",
-    { className: "itw-empty" },
-    import_react18.default.createElement("div", { className: "itw-empty-title" }, store.t("links.openFailed")),
-    import_react18.default.createElement("button", {
-      type: "button",
-      className: "itw-textbtn itw-primary",
-      onClick: () => {
-        setFailed(false);
-        try {
-          ctx.sidebarRight.close(tab3.id);
-        } catch {
-        }
-        requestOpen(sessionId);
-      }
-    }, store.t("common.retry"))
+    { className: "itw-empty itw-link-prompt" },
+    import_react18.default.createElement("div", { className: "itw-empty-title" }, store.t(title)),
+    body === "" ? null : import_react18.default.createElement("div", { className: "itw-link-body" }, store.t(body)),
+    path2 === "" ? null : import_react18.default.createElement("div", { className: "itw-link-path" }, path2),
+    import_react18.default.createElement("div", { className: "itw-link-actions" }, actions)
   );
+  const defaultButton = () => button("default", "links.openInDefaultSidebar", "", () => {
+    if (!openDefault()) setView({ phase: "failed", absolute: path2 });
+  });
+  let content2;
+  if (view.phase === "opening") {
+    content2 = import_react18.default.createElement(
+      "div",
+      { className: "itw-empty" },
+      import_react18.default.createElement("div", { className: "itw-empty-title" }, store.t("common.loading"))
+    );
+  } else if (view.phase === "prompt") {
+    content2 = card("links.switchProjectTitle", "links.switchProjectBody", [
+      button("yes", "links.switchProjectYes", "itw-primary", () => {
+        void begin(true);
+      }),
+      defaultButton()
+    ]);
+  } else if (view.phase === "dirty") {
+    content2 = card("links.dirtyProject", "", [
+      button("retry", "common.retry", "", () => {
+        void begin(true);
+      }),
+      defaultButton(),
+      button("close", "common.close", "", close)
+    ]);
+  } else {
+    content2 = card("links.openFailed", "", [
+      button("retry", "common.retry", "", () => {
+        void begin(false);
+      }),
+      defaultButton(),
+      button("close", "common.close", "", close)
+    ]);
+  }
+  return import_react18.default.createElement("div", { className: "itw-link-shell" }, content2);
 }
-function BoundWorkbench({ getStore, sessionId, useTabInfo, ctx, reportVisible, requestOpen }) {
+function BoundWorkbench({ getStore, sessionId, useTabInfo, ctx, reportVisible, suppressSelf }) {
   const { tab: tab3, sidebar } = useTabInfo();
   const store = getStore(sessionId);
   const mountedId = useMountedSession(ctx);
@@ -50763,7 +51209,7 @@ function BoundWorkbench({ getStore, sessionId, useTabInfo, ctx, reportVisible, r
     return () => reportVisible(sessionId, false);
   }, [sessionId, isMounted, tab3.visible, fileLink, reportVisible]);
   if (fileLink) {
-    return import_react18.default.createElement(FileLinkBridge, { store, sessionId, tab: tab3, ctx, requestOpen });
+    return import_react18.default.createElement(FileLinkBridge, { store, tab: tab3, ctx, suppressSelf });
   }
   if (!isMounted) return null;
   return import_react18.default.createElement(Workbench, { store, visible: tab3.visible, fullscreen: sidebar.fullscreen });
@@ -50793,6 +51239,13 @@ function apply(ctx) {
   }, "dsh-ide-toolwindows: dictionaries");
   const settingsStore = new WorkbenchStore(ctx, t2);
   void settingsStore.init();
+  let suppressFileLinkClaim = false;
+  const suppressSelf = () => {
+    suppressFileLinkClaim = true;
+    return () => {
+      suppressFileLinkClaim = false;
+    };
+  };
   const Styles = () => import_react18.default.createElement("style", { "data-dsh-ide-toolwindows": "" }, `${xterm_default}
 ${CSS2}`);
   const stores = /* @__PURE__ */ new Map();
@@ -50901,16 +51354,20 @@ ${CSS2}`);
     patterns: ["dsh-resource://file/session/**", "dsh-resource://file/absolute/**"],
     priority: "extension",
     canOpen: (address) => {
+      if (suppressFileLinkClaim) return false;
       if (settingsStore.state.settings?.links?.chatFiles === "sidebar") return false;
       if (!isIdeViewableAddress(address)) return false;
       const parsed = parseFileAddress(address);
       if (parsed === void 0) return false;
-      if (parsed.scope === "session") {
-        const current = sessionCwdOf(ctx, ctx.sidebarRight?.mounted?.getSnapshot());
-        const target = sessionCwdOf(ctx, parsed.sessionId);
-        if (current !== "" && target !== "" && !sameScopePath(current, target)) return false;
-      }
-      return true;
+      const mountedSession = ctx.sidebarRight?.mounted?.getSnapshot();
+      const current = sessionCwdOf(ctx, mountedSession);
+      const linkCwd = parsed.scope === "session" ? sessionCwdOf(ctx, parsed.sessionId) : "";
+      if (current !== "" && linkCwd !== "" && !sameScopePath(current, linkCwd)) return false;
+      const workspace = current || linkCwd;
+      if (workspace === "") return true;
+      const absolute = resolveFileAddress(parsed, linkCwd || current);
+      if (absolute === void 0) return false;
+      return isPathWithin(workspace, absolute);
     },
     guide: [{ id: PANEL_ID, title: () => t2("panelLabel"), icon: PanelIcon, order: 35 }]
   }), "dsh-ide-toolwindows: sidebar tab type");
@@ -50926,7 +51383,7 @@ ${CSS2}`);
       getStore,
       ctx,
       reportVisible,
-      requestOpen
+      suppressSelf
     })
   ))), "dsh-ide-toolwindows: sidebar body");
   ctx.effect(() => ctx.slots.inject("conversation.session.header.utilities", () => ctx.slots.register({

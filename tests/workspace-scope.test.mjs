@@ -1,6 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import {
+  isPathWithin,
   normalizeScopePath,
   sameScopePath,
   sameWorkspace,
@@ -25,6 +26,16 @@ test('compares workspace paths', () => {
   assert.equal(sameScopePath('/home/me', '/home/me/'), true)
   assert.equal(sameScopePath('/home/me', '/home/other'), false)
   assert.equal(sameScopePath('', ''), false)
+})
+
+test('tests containment without a sibling-prefix false positive', () => {
+  assert.equal(isPathWithin('C:\\Work\\Demo', 'c:/work/demo/src/a.ts'), true)
+  assert.equal(isPathWithin('C:\\Work\\Demo', 'C:\\Work\\Demo'), true)
+  assert.equal(isPathWithin('C:\\Work\\Demo', 'C:\\Work\\Demo2\\a.ts'), false)
+  assert.equal(isPathWithin('C:\\Work\\Demo', 'D:\\Work\\Demo\\a.ts'), false)
+  assert.equal(isPathWithin('', 'C:\\Work\\Demo\\a.ts'), false)
+  assert.equal(isPathWithin('/repo', '/repo2/a.ts'), false)
+  assert.equal(isPathWithin('/repo', '/repo/a.ts'), true)
 })
 
 test('maps sessions in one workspace to one scope key', () => {

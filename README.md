@@ -74,11 +74,21 @@ any of them:
   being left. In v1 the terminal PTY and editor undo stacks are rebuilt on a
   Session switch.
 - File links in chat (user `@` references and assistant Markdown links) open in
-  the IDE by default, reveal the file in the Project tree and land on `#L24`;
-  Settings → IDE Tool Windows → Chat file links switches back to DSH's sidebar.
-- Shortcuts open the sidebar. Narrow panes stack Project/Commit above the editor;
-  wider panes restore the side-by-side layout. Native tab controls support splitting,
-  floating and fullscreen. Hidden tabs pause refresh.
+  the IDE by default, reveal the file in the Project tree and land on `#L24`.
+  A link outside the DSH workspace falls back to DSH's own sidebar; a link
+  inside the workspace but outside the current IDE project asks before widening
+  the IDE project to the workspace root. Settings → IDE Tool Windows → Chat
+  file links switches back to DSH's sidebar entirely.
+- Shortcuts open the sidebar. The workbench stays side-by-side (Project/Commit
+  left, editor right, Git/Terminal below the editor) down to a 560 px pane —
+  the width a laptop's default right sidebar usually exceeds. Only narrower
+  panes stack vertically; entering that mode focuses the content and makes the
+  Project/Commit and Git/Terminal groups mutually exclusive. Native tab controls
+  support splitting, floating and fullscreen. Hidden tabs pause refresh.
+- Right-click a file in the Project tree or a file tab to **Open in sidebar
+  tab**: the document opens in DSH's own sidebar preview instead of the IDE.
+  HTML files also show two floating actions at the top-right of the editor:
+  preview in DSH's sidebar (globe) or open in the OS default browser (Chrome).
 - Git is the **system CLI** (argv arrays, never shell strings), so credential
   managers, hooks and your git config all work. Paths are parsed from
   `status --porcelain=v2 -z`, `diff --numstat -z`, and a `log` record stream.

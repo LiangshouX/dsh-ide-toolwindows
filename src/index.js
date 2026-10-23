@@ -8,6 +8,7 @@
  *   Commit    git.status / diff / stage / unstage / discard / applyPatch / commit
  *   Git       git.log / branches / checkout / revert / detail / push
  *   Terminal  ws terminal + terminal.shells / terminal.activity
+ *   Shell     shell.openExternal (validated URL → OS default handler)
  *
  * Git is always the system CLI (argv arrays, never a shell string), so the
  * user's own credential manager, hooks and config apply. Every request is
@@ -20,6 +21,7 @@ import { WebSocketServer, WebSocket } from 'ws'
 import { runGit, repoRootOf, status as gitStatus, diff as gitDiff, diffRev as gitDiffRev, diffRefs as gitDiffRefs, stage as gitStage, unstage as gitUnstage, discard as gitDiscard, applyPatch as gitApplyPatch, commit as gitCommit, push as gitPush, log as gitLog, branches as gitBranches, checkout as gitCheckout, revert as gitRevert, commitDetail, commitFileDiff, showFile, recentMessages } from './host/git.js'
 import { SettingsStore, settingsFile } from './host/settings-store.js'
 import { openInIdea, openInIde } from './host/idea.js'
+import { openExternalUrl } from './host/shell.js'
 import {
   canonicalRoot, listDirectory, listProjectCandidates, readFileForPreview, resolveInside,
   revealInExplorer, runCommand, shellArgv, shellCandidates, terminalEnv, toRelative, writeFileText,
@@ -202,6 +204,8 @@ export function apply(ctx) {
       // Use the selected IDE project root, never repoEnv's git toplevel.
       return openInIdea(payload, current.idea.path)
     },
+
+    'shell.openExternal': async (payload) => openExternalUrl(payload),
 
     'fs.create': async (payload) => {
       const root = await canonicalRoot(payload.root)

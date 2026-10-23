@@ -12,8 +12,9 @@ import {
   DEFAULT_CHANGELIST, assignChangelist, changelistOf, isEntryChecked, splitCommitGroups, checkedPathsOf,
 } from './commit-model.js'
 import { baseName, debounce, dirName, formatGitDate } from './util.js'
-import { parseFileAddress, resolveFileAddress } from './file-address.js'
-import { normalizeScopePath, sameScopePath, sessionCwdOf } from './workspace-scope.js'
+import { fileAddressFor, fileUrlForPath, parseFileAddress, resolveFileAddress } from './file-address.js'
+import { openInDefaultSidebar } from './file-link.js'
+import { isPathWithin, sameScopePath, sessionCwdOf } from './workspace-scope.js'
 
 let sequence = 0
 /** A process-local id for transient UI keys. */
@@ -71,6 +72,8 @@ function initialState() {
     statusError: null,
     statusAt: 0,
     layout: { left: 'project', leftWidth: 300, bottom: null, bottomHeight: 270, gitDrawerWidth: 420 },
+    /** True while the pane is too narrow for side-by-side docks (CSS + JS agree). */
+    stacked: false,
     dirs: new Map(),
     expanded: new Set(),
     selectedPath: '',
@@ -179,6 +182,10 @@ export class WorkbenchStore {
     this.settingsFile = ''
     this.initPromise = null
     this.unsubscribers = []
+    /** Layout hidden by Ctrl+Shift+F12, restored by a second press. */
+    this.hiddenLayout = null
+    /** The dock group the user last opened ('left' or 'bottom'). */
+    this.lastToolGroup = 'left'
   }
 
   // ── subscription ──────────────────────────────────────────────────────
@@ -316,71 +323,119 @@ export class WorkbenchStore {
   }
 
   /**
-   * Open one `dsh-resource://file/…` link in the workbench.
+   * Resolve and open one `dsh-resource://file/…` link in the workbench.
    *
-   * The chat's own file opener always resolves a path against the viewing
-   * Session's workspace and hands the address to `sidebarRight.openResource`;
-   * this method turns that address into an absolute path, makes sure the file
-   * is inside the selected IDE project (switching to the containing project
-   * when it is not and no edits are dirty), reveals it in the Project tree and
-   * opens a preview tab at the requested line.
+   * A chat link can name three places:
+   * - a file inside the selected IDE project → open it;
+   * - a file inside the DSH workspace but outside the selected IDE project
+   *   (for example the IDE project is a first-level sub-folder) → report
+   *   `needs-project-switch` so the caller can ask before widening the IDE
+   *   project to the workspace root;
+   * - a file outside the workspace → report `outside-workspace`; the caller
+   *   hands it to DSH's own sidebar instead of erroring.
+   *
+   * The chat's own file opener resolves a path against the viewing Session's
+   * workspace and hands the address to `sidebarRight.openResource`; this method
+   * turns that address into an absolute path and reveals it in the Project tree
+   * at the requested line.
+   *
    * @param {string} address the resource address
-   * @param {{ line?: number }} [options]
-   * @returns {Promise<boolean>} true when the file is now open in the workbench
+   * @param {{ line?: number, switchProject?: boolean }} [options] `switchProject`
+   *   agrees to widen the IDE project to the workspace root
+   * @returns {Promise<{
+   *   status: 'opened' | 'needs-project-switch' | 'outside-workspace' | 'dirty' | 'failed',
+   *   absolute?: string,
+   * }>}
    */
   async openExternalFile(address, options = {}) {
     const parsed = parseFileAddress(address)
-    if (parsed === undefined) return false
-    if (!(await this.ensureInit())) {
-      this.toast('error', this.t('links.openFailed'), String(address))
-      return false
-    }
-    const cwd = parsed.scope === 'session'
-      ? (sessionCwdOf(this.ctx, parsed.sessionId) || this.state.workspaceRoot)
-      : this.state.workspaceRoot
+    if (parsed === undefined) return { status: 'failed' }
+    if (!(await this.ensureInit())) return { status: 'failed' }
+    const linkCwd = parsed.scope === 'session'
+      ? sessionCwdOf(this.ctx, parsed.sessionId)
+      : ''
+    const cwd = linkCwd || this.state.workspaceRoot
     const absolute = resolveFileAddress(parsed, cwd)
-    if (absolute === undefined) {
-      this.toast('error', this.t('links.openFailed'), String(address))
+    if (absolute === undefined) return { status: 'failed' }
+    const workspace = this.state.workspaceRoot || cwd
+    // Not inside the DSH workspace at all: this window must not claim it. The
+    // caller falls back to DSH's own sidebar, which keeps its own security and
+    // preview rules for files that live outside the project.
+    if (workspace === '' || !isPathWithin(workspace, absolute)) {
+      return { status: 'outside-workspace', absolute }
+    }
+    if (this.#insideRoot(absolute)) {
+      this.#revealInProject(absolute, options.line)
+      return { status: 'opened', absolute }
+    }
+    // Inside the workspace but outside the current IDE project (the project is
+    // a sub-folder). Widening the project resets the tree, Git view and tabs,
+    // so it only happens after the user agrees.
+    if (this.state.tabs.some(tab => tab.dirty === true)) {
+      return { status: 'dirty', absolute }
+    }
+    if (options.switchProject !== true) {
+      return { status: 'needs-project-switch', absolute }
+    }
+    const switched = await this.selectProject(workspace)
+    if (switched === false || !this.#insideRoot(absolute)) {
+      return { status: 'failed', absolute }
+    }
+    this.#revealInProject(absolute, options.line)
+    return { status: 'opened', absolute }
+  }
+
+  /** Reveal one file the workbench already accepted (tree + preview tab). */
+  #revealInProject(absolute, line) {
+    this.showTool('project')
+    this.openFile(absolute, { preview: true, line })
+  }
+
+  /** The session-scoped resource address for one absolute path. */
+  #sidebarAddressOf(path) {
+    const sessionId = this.ctx.sidebarRight?.mounted?.getSnapshot()
+    if (typeof sessionId !== 'string' || sessionId === '') return undefined
+    const cwd = sessionCwdOf(this.ctx, sessionId) || this.state.workspaceRoot
+    return fileAddressFor(sessionId, cwd, path)
+  }
+
+  /**
+   * Open one file in DSH's own sidebar as a separate tab.
+   *
+   * The built-in `text` document preview renders text, Markdown, images, PDFs,
+   * Office documents and HTML; naming it avoids the better-sidebar editor and
+   * gives the product's own preview for HTML, which this workbench does not
+   * render.
+   * @param {string} path absolute file path
+   * @returns {boolean} true when the sidebar accepted the open
+   */
+  openInSidebar(path) {
+    if (typeof path !== 'string' || path === '') return false
+    const address = this.#sidebarAddressOf(path)
+    const opened = address !== undefined
+      && openInDefaultSidebar(this.ctx, address, { kind: 'text', ownKind: 'ide-toolwindows' })
+    if (!opened) {
+      this.toast('error', this.t('sidebar.openFailed'), path)
       return false
     }
-    if (!this.#insideRoot(absolute)) {
-      const project = this.#projectContaining(absolute)
-      if (project === undefined || sameScopePath(project, this.state.root)) {
-        this.toast('error', this.t('links.outsideRoot'), absolute)
-        return false
-      }
-      if (this.state.tabs.some(tab => tab.dirty === true)) {
-        this.toast('error', this.t('links.dirtyProject'), absolute)
-        return false
-      }
-      await this.selectProject(project)
-      if (!sameScopePath(this.state.root, project)) {
-        this.toast('error', this.t('links.outsideRoot'), absolute)
-        return false
-      }
-    }
-    this.showTool('project')
-    this.openFile(absolute, { preview: true, line: options.line })
     return true
+  }
+
+  /** Open one file in the OS default browser (the Chrome button). */
+  async openInDefaultBrowser(path) {
+    if (typeof path !== 'string' || path === '') return false
+    try {
+      await call('shell.openExternal', { url: fileUrlForPath(path) })
+      return true
+    } catch (error) {
+      this.toast('error', this.t('browser.openFailed'), errorMessage(error))
+      return false
+    }
   }
 
   /** Whether one absolute path is inside the selected IDE project root. */
   #insideRoot(path) {
-    const root = normalizeScopePath(this.state.root)
-    const candidate = normalizeScopePath(path)
-    return root !== '' && (candidate === root || candidate.startsWith(`${root}/`))
-  }
-
-  /** The deepest project candidate that contains one absolute path. */
-  #projectContaining(path) {
-    const candidate = normalizeScopePath(path)
-    let best
-    for (const project of this.state.projects) {
-      const root = normalizeScopePath(project.path)
-      if (root === '' || !(candidate === root || candidate.startsWith(`${root}/`))) continue
-      if (best === undefined || root.length > normalizeScopePath(best).length) best = project.path
-    }
-    return best
+    return isPathWithin(this.state.root, path)
   }
 
   /** Choose the durable root: last used → most recent workspace → default dir. */
@@ -487,22 +542,26 @@ export class WorkbenchStore {
 
   /** Switch the IDE project root inside the current workspace. */
   async selectProject(projectRoot) {
-    if (typeof projectRoot !== 'string' || projectRoot === '') return
-    if (!this.state.projects.some(project => project.path === projectRoot)) return
-    if (projectRoot === this.state.root) {
+    if (typeof projectRoot !== 'string' || projectRoot === '') return false
+    // Compare through `normalizeScopePath` so a session cwd spelled with a
+    // different separator or drive-letter case still matches the project list.
+    const project = this.state.projects.find(item => sameScopePath(item.path, projectRoot))
+    if (project === undefined) return false
+    if (sameScopePath(project.path, this.state.root)) {
       this.set({ projectPicker: false })
-      return
+      return true
     }
     if (this.state.tabs.some(tab => tab.dirty === true)) {
       this.askConfirm(
         this.t('editor.unsavedTitle'),
         this.t('editor.unsavedSwitchRoot'),
         this.t('editor.discardChanges'),
-        () => { void this.#switchProject(projectRoot) },
+        () => { void this.#switchProject(project.path) },
       )
-      return
+      return false
     }
-    await this.#switchProject(projectRoot)
+    await this.#switchProject(project.path)
+    return true
   }
 
   async #switchProject(projectRoot) {
@@ -2083,7 +2142,14 @@ export class WorkbenchStore {
   showHistory(rel) {
     const value = typeof rel === 'string' ? rel.replace(/[\\/]+$/, '') : ''
     this.patch('git', { filters: { ...this.state.git.filters, path: value }, selectedHash: null, detail: null })
-    this.set({ layout: { ...this.state.layout, bottom: 'git' } })
+    this.set({
+      layout: {
+        ...this.state.layout,
+        bottom: 'git',
+        ...(this.state.stacked === true ? { left: null } : {}),
+      },
+    })
+    this.lastToolGroup = 'bottom'
     void this.loadLog(true)
     this.persist()
   }
@@ -2251,7 +2317,12 @@ export class WorkbenchStore {
       error: null,
     }
     const sessions = [...this.state.terminal.sessions, session]
-    const layout = { ...this.state.layout, bottom: 'terminal' }
+    const layout = {
+      ...this.state.layout,
+      bottom: 'terminal',
+      ...(this.state.stacked === true ? { left: null } : {}),
+    }
+    this.lastToolGroup = 'bottom'
     this.set({
       terminal: { ...this.state.terminal, sessions, activeKey: id },
       layout,
@@ -2266,7 +2337,12 @@ export class WorkbenchStore {
   }
 
   activateTerminal(key) {
-    const layout = { ...this.state.layout, bottom: 'terminal' }
+    const layout = {
+      ...this.state.layout,
+      bottom: 'terminal',
+      ...(this.state.stacked === true ? { left: null } : {}),
+    }
+    this.lastToolGroup = 'bottom'
     this.set({ terminal: { ...this.state.terminal, activeKey: key }, layout })
     this.persist()
   }
@@ -2306,10 +2382,44 @@ export class WorkbenchStore {
   }
 
   // ── layout ────────────────────────────────────────────────────────────
+  /**
+   * Record the pane's layout mode. `transition` is only true for a measured
+   * width change, never the first measurement of a freshly mounted pane.
+   *
+   * The stacked mode should not show four docks around a narrow content area:
+   * a real width transition hides whatever is open, and a fresh mount hides
+   * only when both groups are already open (a single default tool stays).
+   * The hidden layout is kept for Ctrl+Shift+F12.
+   * @param {boolean} stacked
+   * @param {{ transition?: boolean }} [options]
+   */
+  setStacked(stacked, options = {}) {
+    const next = stacked === true
+    if (this.state.stacked === next) return
+    const was = this.state.stacked === true
+    this.set({ stacked: next })
+    if (!was && next) {
+      const layout = this.state.layout
+      const hasLeft = layout.left !== null && layout.left !== undefined
+      const hasBottom = layout.bottom !== null && layout.bottom !== undefined
+      const crowded = hasLeft && hasBottom
+      if (crowded || (options.transition === true && (hasLeft || hasBottom))) {
+        this.hiddenLayout = { left: layout.left ?? null, bottom: layout.bottom ?? null }
+        this.set({ layout: { ...layout, left: null, bottom: null } })
+      }
+    }
+  }
+
   toggleTool(tool) {
     if (tool === 'project' || tool === 'commit') {
-      const layout = { ...this.state.layout, left: this.state.layout.left === tool ? null : tool }
+      const next = this.state.layout.left === tool ? null : tool
+      const layout = {
+        ...this.state.layout,
+        left: next,
+        ...(next !== null && this.state.stacked === true ? { bottom: null } : {}),
+      }
       this.set({ layout })
+      if (next !== null) this.lastToolGroup = 'left'
       if (layout.left === 'commit') this.#focusCommitLater()
       if (layout.left === 'project') this.set({ treeFocusTick: (this.state.treeFocusTick ?? 0) + 1 })
     } else {
@@ -2318,21 +2428,42 @@ export class WorkbenchStore {
         this.addTerminal()
         return
       }
-      this.set({ layout: { ...this.state.layout, bottom: next } })
+      this.set({
+        layout: {
+          ...this.state.layout,
+          bottom: next,
+          ...(next !== null && this.state.stacked === true ? { left: null } : {}),
+        },
+      })
+      if (next !== null) this.lastToolGroup = 'bottom'
     }
     this.persist()
   }
 
   showTool(tool) {
     if (tool === 'project' || tool === 'commit') {
-      this.set({ layout: { ...this.state.layout, left: tool } })
+      this.set({
+        layout: {
+          ...this.state.layout,
+          left: tool,
+          ...(this.state.stacked === true ? { bottom: null } : {}),
+        },
+      })
+      this.lastToolGroup = 'left'
       if (tool === 'commit') this.#focusCommitLater()
       if (tool === 'project') this.set({ treeFocusTick: (this.state.treeFocusTick ?? 0) + 1 })
       this.persist()
     } else if (tool === 'terminal' && this.state.terminal.sessions.length === 0) {
       this.addTerminal()
     } else {
-      this.set({ layout: { ...this.state.layout, bottom: tool } })
+      this.set({
+        layout: {
+          ...this.state.layout,
+          bottom: tool,
+          ...(this.state.stacked === true ? { left: null } : {}),
+        },
+      })
+      this.lastToolGroup = 'bottom'
       this.persist()
     }
   }
@@ -2352,7 +2483,15 @@ export class WorkbenchStore {
       this.set({ layout: { ...layout, left: null, bottom: null } })
     } else {
       const saved = this.hiddenLayout ?? { left: 'project', bottom: null }
-      this.set({ layout: { ...layout, ...saved } })
+      // The stacked layout admits one group at a time: restore the group the
+      // user opened last (or the only saved one) instead of re-creating the
+      // cramped four-dock arrangement.
+      const restore = this.state.stacked === true
+        ? (saved.left !== null && saved.left !== undefined && (this.lastToolGroup === 'left' || saved.bottom === null || saved.bottom === undefined)
+            ? { left: saved.left, bottom: null }
+            : { left: null, bottom: saved.bottom ?? null })
+        : saved
+      this.set({ layout: { ...layout, ...restore } })
     }
     this.persist()
   }
@@ -2380,7 +2519,14 @@ export class WorkbenchStore {
   }
 
   focusCommit() {
-    this.set({ layout: { ...this.state.layout, left: 'commit' } })
+    this.set({
+      layout: {
+        ...this.state.layout,
+        left: 'commit',
+        ...(this.state.stacked === true ? { bottom: null } : {}),
+      },
+    })
+    this.lastToolGroup = 'left'
     this.#focusCommitLater()
     this.persist()
   }

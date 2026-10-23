@@ -143,3 +143,57 @@ export function isIdeViewableAddress(address) {
   if (dot < 0) return true
   return !NON_IDE_EXTENSIONS.has(name.slice(dot).toLowerCase())
 }
+
+/** Component-encode one id or path segment, keeping `:` literal for drive letters. */
+function encodeSegment(segment) {
+  return encodeURIComponent(segment).replace(/%3A/gi, ':')
+}
+
+/** Encode a `/`-separated path segment by segment. */
+function encodePath(path) {
+  return path.split('/').map(encodeSegment).join('/')
+}
+
+/**
+ * Build the session-scoped address for one file path.
+ * @param {string} sessionId
+ * @param {string} path absolute or session-relative, either separator
+ * @returns {string}
+ */
+export function sessionFileAddress(sessionId, path) {
+  const normalized = String(path).replace(/\\/g, '/').replace(/^(?:\.\/)+/, '')
+  return `${FILE_ADDRESS_PREFIX}session/${encodeSegment(String(sessionId))}/${encodePath(normalized)}`
+}
+
+/**
+ * Build the session-scoped address DSH uses for a path as a caller holds it.
+ *
+ * A relative path, or an absolute path inside the session's workspace, becomes
+ * the relative spelling; an absolute path outside it keeps its absolute
+ * spelling inside the session scope.
+ * @param {string} sessionId
+ * @param {string | undefined} cwd the session workspace root
+ * @param {string} path
+ * @returns {string}
+ */
+export function fileAddressFor(sessionId, cwd, path) {
+  const normalized = String(path).replace(/\\/g, '/')
+  if (!isAbsoluteFilePath(normalized)) return sessionFileAddress(sessionId, normalized)
+  const root = typeof cwd === 'string' ? cwd.replace(/\\/g, '/').replace(/\/+$/, '') : ''
+  if (root !== '' && normalized === root) return sessionFileAddress(sessionId, '')
+  if (root !== '' && normalized.startsWith(`${root}/`)) return sessionFileAddress(sessionId, normalized.slice(root.length + 1))
+  return sessionFileAddress(sessionId, normalized)
+}
+
+/**
+ * Build a `file://` URL the OS default browser can open.
+ * @param {string} path absolute native path
+ * @returns {string}
+ */
+export function fileUrlForPath(path) {
+  const normalized = String(path).replace(/\\/g, '/')
+  const encoded = normalized.split('/').map(segment => encodeURIComponent(segment).replace(/%3A/gi, ':')).join('/')
+  if (/^[A-Za-z]:\//.test(normalized)) return `file:///${encoded}`
+  if (normalized.startsWith('//')) return `file:${encoded}`
+  return `file://${encoded}`
+}

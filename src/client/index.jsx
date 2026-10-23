@@ -10,9 +10,12 @@ import { setPrimitivesLoader } from './MarkdownView.jsx'
 import { matchesShortcut, isTerminalTarget } from './util.js'
 import { useWorkbench } from './hooks.js'
 import {
-  basenameOfFileAddress, isFileAddress, isIdeViewableAddress, parseFileAddress,
+  basenameOfFileAddress, isFileAddress, isIdeViewableAddress, parseFileAddress, resolveFileAddress,
 } from './file-address.js'
-import { sameScopePath, sessionCwdOf, shouldContinueIde, workspaceScopeKey } from './workspace-scope.js'
+import {
+  isPathWithin, sameScopePath, sessionCwdOf, shouldContinueIde, workspaceScopeKey,
+} from './workspace-scope.js'
+import { openInDefaultSidebar } from './file-link.js'
 
 export const inject = ['slots', 'locale', 'sidebarRight', 'sidebarRightTabs', 'sessions']
 const PANEL_ID = 'ide-toolwindows'
@@ -43,38 +46,104 @@ function useMountedSession(ctx) {
  * A file resource tab is only a transient carrier: it opens the file in the
  * workbench and replaces itself with the IDE page tab. It never renders a
  * second Workbench (which would duplicate terminal sockets and editor state).
+ *
+ * When the file cannot stay in the IDE — it lives outside the DSH workspace, or
+ * the user declines to widen the IDE project to the workspace root — the
+ * carrier tab hands the address back to DSH's own sidebar and replaces itself
+ * with that viewer instead of surfacing an error.
  */
-function FileLinkBridge({ store, sessionId, tab, ctx, requestOpen }) {
-  const [failed, setFailed] = React.useState(false)
+function FileLinkBridge({ store, tab, ctx, suppressSelf }) {
   const address = typeof tab.contentId === 'string' ? tab.contentId : ''
   const line = tab.navigation?.params?.line
+  const [view, setView] = React.useState({ phase: 'opening', absolute: '' })
 
-  useLayoutEffect(() => {
-    let alive = true
-    void store.openExternalFile(address, { line }).catch(() => {})
+  const replaceWithIde = React.useCallback(() => {
     try {
       ctx.sidebarRight.openTab(PANEL_ID, { replaceTab: tab.id })
+      return true
     } catch {
-      if (alive) setFailed(true)
+      return false
     }
-    return () => { alive = false }
-  }, [address, line, tab.id, store, ctx])
+  }, [ctx, tab.id])
 
-  if (!failed) return null
-  return React.createElement('div', { className: 'itw-empty' },
-    React.createElement('div', { className: 'itw-empty-title' }, store.t('links.openFailed')),
-    React.createElement('button', {
-      type: 'button', className: 'itw-textbtn itw-primary',
-      onClick: () => {
-        setFailed(false)
-        try { ctx.sidebarRight.close(tab.id) } catch { /* the layout owns the tab */ }
-        requestOpen(sessionId)
-      },
-    }, store.t('common.retry')),
+  const openDefault = React.useCallback(() => openInDefaultSidebar(ctx, address, {
+    ownKind: PANEL_ID, line, replaceTab: tab.id, suppressSelf,
+  }), [ctx, address, line, tab.id, suppressSelf])
+
+  const close = React.useCallback(() => {
+    try { ctx.sidebarRight.close(tab.id) } catch { /* the layout owns the tab */ }
+  }, [ctx, tab.id])
+
+  const begin = React.useCallback(async (switchProject) => {
+    setView(current => ({ ...current, phase: 'opening' }))
+    let result
+    try {
+      result = await store.openExternalFile(address, { line, switchProject })
+    } catch {
+      result = { status: 'failed' }
+    }
+    if (result.status === 'opened') {
+      if (!replaceWithIde()) setView({ phase: 'failed', absolute: result.absolute ?? '' })
+      return
+    }
+    if (result.status === 'outside-workspace') {
+      // The link belongs to the default sidebar; hand it over with this tab as
+      // the carrier so no extra tab is left behind.
+      if (openDefault()) return
+    }
+    const phase = result.status === 'needs-project-switch'
+      ? 'prompt'
+      : result.status === 'dirty' ? 'dirty' : 'failed'
+    setView({ phase, absolute: result.absolute ?? '' })
+  }, [store, address, line, replaceWithIde, openDefault])
+
+  useLayoutEffect(() => {
+    void begin(false)
+  }, [begin])
+
+  const path = view.absolute !== '' ? view.absolute : address
+  const button = (key, label, extra, onClick) => React.createElement('button', {
+    key, type: 'button', className: `itw-textbtn ${extra}`.trim(), onClick,
+  }, store.t(label))
+  const card = (title, body, actions) => React.createElement('div', { className: 'itw-empty itw-link-prompt' },
+    React.createElement('div', { className: 'itw-empty-title' }, store.t(title)),
+    body === '' ? null : React.createElement('div', { className: 'itw-link-body' }, store.t(body)),
+    path === '' ? null : React.createElement('div', { className: 'itw-link-path' }, path),
+    React.createElement('div', { className: 'itw-link-actions' }, actions),
   )
+  const defaultButton = () => button('default', 'links.openInDefaultSidebar', '', () => {
+    if (!openDefault()) setView({ phase: 'failed', absolute: path })
+  })
+
+  let content
+  if (view.phase === 'opening') {
+    content = React.createElement('div', { className: 'itw-empty' },
+      React.createElement('div', { className: 'itw-empty-title' }, store.t('common.loading')),
+    )
+  } else if (view.phase === 'prompt') {
+    content = card('links.switchProjectTitle', 'links.switchProjectBody', [
+      button('yes', 'links.switchProjectYes', 'itw-primary', () => { void begin(true) }),
+      defaultButton(),
+    ])
+  } else if (view.phase === 'dirty') {
+    content = card('links.dirtyProject', '', [
+      button('retry', 'common.retry', '', () => { void begin(true) }),
+      defaultButton(),
+      button('close', 'common.close', '', close),
+    ])
+  } else {
+    content = card('links.openFailed', '', [
+      button('retry', 'common.retry', '', () => { void begin(false) }),
+      defaultButton(),
+      button('close', 'common.close', '', close),
+    ])
+  }
+  // `.itw-root`'s tokens are scoped to the workbench; this carrier tab is a
+  // sibling surface, so it brings its own `.itw-link-shell` token scope.
+  return React.createElement('div', { className: 'itw-link-shell' }, content)
 }
 
-function BoundWorkbench({ getStore, sessionId, useTabInfo, ctx, reportVisible, requestOpen }) {
+function BoundWorkbench({ getStore, sessionId, useTabInfo, ctx, reportVisible, suppressSelf }) {
   const { tab, sidebar } = useTabInfo()
   const store = getStore(sessionId)
   const mountedId = useMountedSession(ctx)
@@ -96,7 +165,7 @@ function BoundWorkbench({ getStore, sessionId, useTabInfo, ctx, reportVisible, r
   }, [sessionId, isMounted, tab.visible, fileLink, reportVisible])
 
   if (fileLink) {
-    return React.createElement(FileLinkBridge, { store, sessionId, tab, ctx, requestOpen })
+    return React.createElement(FileLinkBridge, { store, tab, ctx, suppressSelf })
   }
   if (!isMounted) return null
   return React.createElement(Workbench, { store, visible: tab.visible, fullscreen: sidebar.fullscreen })
@@ -126,6 +195,15 @@ export function apply(ctx) {
   // file-link claim can consult `links.chatFiles`.
   const settingsStore = new WorkbenchStore(ctx, t)
   void settingsStore.init()
+
+  // `openInDefaultSidebar` uses this when the host does not publish the tab
+  // registry's `candidates()`: the IDE declines one address for the duration
+  // of the synchronous default open, so the registry ranks the default type.
+  let suppressFileLinkClaim = false
+  const suppressSelf = () => {
+    suppressFileLinkClaim = true
+    return () => { suppressFileLinkClaim = false }
+  }
 
   // Render styles through React so their lifetime follows the plugin's seats.
   const Styles = () => React.createElement('style', { 'data-dsh-ide-toolwindows': '' }, `${xtermCss}\n${CSS}`)
@@ -233,16 +311,23 @@ export function apply(ctx) {
     patterns: ['dsh-resource://file/session/**', 'dsh-resource://file/absolute/**'],
     priority: 'extension',
     canOpen: address => {
+      if (suppressFileLinkClaim) return false
       if (settingsStore.state.settings?.links?.chatFiles === 'sidebar') return false
       if (!isIdeViewableAddress(address)) return false
       const parsed = parseFileAddress(address)
       if (parsed === undefined) return false
-      if (parsed.scope === 'session') {
-        const current = sessionCwdOf(ctx, ctx.sidebarRight?.mounted?.getSnapshot())
-        const target = sessionCwdOf(ctx, parsed.sessionId)
-        if (current !== '' && target !== '' && !sameScopePath(current, target)) return false
-      }
-      return true
+      const mountedSession = ctx.sidebarRight?.mounted?.getSnapshot()
+      const current = sessionCwdOf(ctx, mountedSession)
+      const linkCwd = parsed.scope === 'session' ? sessionCwdOf(ctx, parsed.sessionId) : ''
+      if (current !== '' && linkCwd !== '' && !sameScopePath(current, linkCwd)) return false
+      // Claim only files inside the DSH workspace. A link that points elsewhere
+      // (another drive, a temp file, a sibling checkout) must fall through to
+      // DSH's own sidebar, which owns previews and path rules for it.
+      const workspace = current || linkCwd
+      if (workspace === '') return true
+      const absolute = resolveFileAddress(parsed, linkCwd || current)
+      if (absolute === undefined) return false
+      return isPathWithin(workspace, absolute)
     },
     guide: [{ id: PANEL_ID, title: () => t('panelLabel'), icon: PanelIcon, order: 35 }],
   }), 'dsh-ide-toolwindows: sidebar tab type')
@@ -252,7 +337,7 @@ export function apply(ctx) {
   }, props => React.createElement(React.Fragment, null,
     React.createElement(Styles),
     React.createElement(BoundWorkbench, {
-      ...props, getStore, ctx, reportVisible, requestOpen,
+      ...props, getStore, ctx, reportVisible, suppressSelf,
     }),
   ))), 'dsh-ide-toolwindows: sidebar body')
 

@@ -4,8 +4,10 @@
  * `--dsw-alias-*` tokens with a neutral fallback, so the panel follows the
  * harness light/dark theme and transparent skins.
  */
+import { LEFT_PANE_RATIO, STACK_WIDTH } from './layout.js'
+
 export const CSS = `
-.itw-root, .itw-settings {
+.itw-root, .itw-settings, .itw-link-shell {
   --itw-bg: var(--dsw-alias-bg-base, #15171c);
   --itw-panel: var(--dsw-alias-bg-layer-1, #1b1e24);
   --itw-panel-2: var(--dsw-alias-bg-layer-2, #22262e);
@@ -131,7 +133,8 @@ export const CSS = `
 .itw-badge.itw-badge-dirty { background: var(--itw-success); }
 
 .itw-left {
-  position: relative; flex: 0 0 auto; min-width: 200px; max-width: 640px; display: flex; flex-direction: column;
+  position: relative; flex: 0 0 auto; width: var(--itw-left-width, 300px);
+  min-width: 200px; max-width: 640px; display: flex; flex-direction: column;
   background: var(--itw-panel); border-right: 1px solid var(--itw-border);
 }
 .itw-left-resizer {
@@ -184,6 +187,19 @@ export const CSS = `
 .itw-tabbar-actions { display: flex; align-items: center; gap: 2px; padding: 0 6px; margin-left: auto; position: sticky; right: 0; background: var(--itw-panel); }
 
 .itw-editor { flex: 1; min-height: 0; display: flex; flex-direction: column; position: relative; overflow: hidden; }
+/* Floating HTML preview actions, top-right of the content area. */
+.itw-html-actions {
+  position: absolute; top: 70px; right: 14px; z-index: 12;
+  display: flex; gap: 4px; padding: 4px; color: var(--itw-muted);
+  border: 1px solid var(--itw-border); border-radius: 8px;
+  background: var(--itw-overlay); box-shadow: 0 6px 18px rgba(0, 0, 0, .18);
+}
+.itw-html-action {
+  width: 28px; height: 28px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center;
+}
+.itw-html-action:hover { color: var(--itw-fg); background: rgba(127, 127, 127, .14); }
+.itw-html-action.itw-chrome { color: #4285f4; }
+.itw-html-action.itw-chrome:hover { color: #4285f4; filter: brightness(1.12); }
 .itw-editor-toolbar {
   height: 30px; flex: 0 0 30px; display: flex; align-items: center; gap: 8px; padding: 0 10px;
   border-bottom: 1px solid var(--itw-border); background: var(--itw-bg); color: var(--itw-muted); font-size: 11.5px;
@@ -345,6 +361,30 @@ export const CSS = `
 
 .itw-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 26px 20px; color: var(--itw-muted); text-align: center; font-size: 12px; }
 .itw-empty-title { color: var(--itw-fg); font-size: 13px; font-weight: 600; }
+/* The file-link carrier tab is not inside the workbench root, so it carries
+   its own token scope and a centered dialog card. Without this the primary
+   button's white label sits on an unresolved (transparent) accent background. */
+.itw-link-shell {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  flex: 1 1 auto; width: 100%; height: 100%; min-height: 0; padding: 16px; overflow: auto;
+  background: var(--itw-bg); color: var(--itw-fg);
+  font-family: var(--itw-font); font-size: 13px; line-height: 1.45;
+  -webkit-app-region: no-drag;
+}
+.itw-link-shell *, .itw-link-shell *::before, .itw-link-shell *::after { box-sizing: border-box; }
+.itw-link-shell .itw-textbtn { font: inherit; cursor: pointer; }
+.itw-link-prompt {
+  width: 100%; max-width: 480px; padding: 22px 20px;
+  border: 1px solid var(--itw-border); border-radius: 12px;
+  background: var(--itw-panel); box-shadow: 0 12px 32px rgba(0, 0, 0, .18);
+}
+.itw-link-body { color: var(--itw-fg); font-size: 12.5px; line-height: 1.5; }
+.itw-link-path {
+  max-width: 100%; color: var(--itw-muted); font-family: var(--itw-mono, ui-monospace, Consolas, monospace);
+  font-size: 11px; line-height: 1.45; word-break: break-all; user-select: text;
+}
+.itw-link-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 2px; }
+.itw-link-actions .itw-textbtn { height: auto; min-height: 28px; padding: 5px 14px; white-space: normal; text-align: center; }
 .itw-error-box { margin: 8px; padding: 8px 10px; border: 1px solid rgba(226, 104, 111, .4); border-radius: 6px; background: rgba(226, 104, 111, .08); color: var(--itw-error); font-size: 11.5px; white-space: pre-wrap; word-break: break-word; user-select: text; }
 
 .itw-menu {
@@ -881,6 +921,19 @@ export const CSS = `
   .itw-project-path, .itw-top-spacer { display: none; }
   .itw-branch-chip { max-width: 100px; padding: 0 4px; }
   .itw-topbar > button { flex-shrink: 0; }
+  /* Keep a readable editor: below this width the left dock follows the pane
+     instead of holding its remembered pixel width. */
+  .itw-left { width: min(var(--itw-left-width, 300px), ${LEFT_PANE_RATIO}cqw); }
+  .itw-statusbar { overflow-x: auto; white-space: nowrap; }
+  .itw-status-item { flex-shrink: 0; }
+  .itw-editor-toolbar { overflow-x: auto; flex-shrink: 0; }
+  .itw-modal { max-width: calc(100% - 16px); }
+}
+
+/* Stack only when a side-by-side layout would leave the editor too narrow.
+   Most laptop windows put the right sidebar at ~45% of the frame, well above
+   this width; docking vertically is the fallback, not the normal mode. */
+@container ide-workbench (max-width: ${STACK_WIDTH}px) {
   .itw-body { flex-direction: column; }
   .itw-stripe { width: 100%; flex: 0 0 38px; flex-direction: row; padding: 2px 6px; border-right: 0; border-bottom: 1px solid var(--itw-border); }
   .itw-stripe-spacer { flex: 1; }
@@ -890,9 +943,5 @@ export const CSS = `
   .itw-left-resizer { display: none; }
   .itw-center { min-height: 140px; }
   .itw-bottom { max-height: 65%; min-height: 100px; }
-  .itw-statusbar { overflow-x: auto; white-space: nowrap; }
-  .itw-status-item { flex-shrink: 0; }
-  .itw-editor-toolbar { overflow-x: auto; flex-shrink: 0; }
-  .itw-modal { max-width: calc(100% - 16px); }
 }
 `

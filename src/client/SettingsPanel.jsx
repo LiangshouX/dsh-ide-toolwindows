@@ -19,6 +19,30 @@ const SHORTCUT_FIELDS = [
   ['quickOpen', 'quickOpenShortcut'],
 ]
 
+// These two presentational components are deliberately top-level: defining
+// them inside `SettingsForm` would give every render a new component type,
+// making React unmount/remount the whole form. On a long settings page that
+// remount is what threw the page back to the top after a change.
+function Group({ title, description, children }) {
+  return React.createElement('section', { className: 'itw-settings-group' },
+    React.createElement('h3', { className: 'itw-settings-group-title' }, title),
+    description !== undefined
+      ? React.createElement('p', { className: 'itw-settings-group-desc' }, description)
+      : null,
+    React.createElement('div', { className: 'itw-settings-rows' }, children),
+  )
+}
+
+function Row({ label, hint, children }) {
+  return React.createElement('div', { className: 'itw-settings-row' },
+    React.createElement('div', { className: 'itw-settings-label' },
+      React.createElement('div', { className: 'itw-settings-title' }, label),
+      hint !== undefined ? React.createElement('div', { className: 'itw-settings-hint' }, hint) : null,
+    ),
+    React.createElement('div', { className: 'itw-settings-control' }, children),
+  )
+}
+
 export function SettingsForm({ store, state, compact }) {
   const t = store.t
   const settings = state.settings ?? {}
@@ -27,6 +51,35 @@ export function SettingsForm({ store, state, compact }) {
   const [capturing, setCapturing] = useState(false)
   const timer = useRef(null)
   const savedTimer = useRef(null)
+  const rootRef = useRef(null)
+  const scrollRef = useRef({ parent: null, top: 0 })
+
+  // The native settings page owns the scroll container around this section.
+  // Remember where the user was before a debounced save and put it back after
+  // the settings document publishes, so editing a low row does not jump to the
+  // top of a long page.
+  const captureScroll = () => {
+    let node = rootRef.current?.parentElement ?? null
+    while (node !== null) {
+      const overflow = typeof getComputedStyle === 'function' ? getComputedStyle(node).overflowY : ''
+      if ((overflow === 'auto' || overflow === 'scroll') && node.scrollHeight > node.clientHeight) {
+        scrollRef.current = { parent: node, top: node.scrollTop }
+        return
+      }
+      node = node.parentElement
+    }
+    scrollRef.current = { parent: null, top: typeof window !== 'undefined' ? window.scrollY : 0 }
+  }
+
+  const restoreScroll = () => {
+    const { parent, top } = scrollRef.current
+    const apply = () => {
+      if (parent !== null) parent.scrollTop = top
+      else if (typeof window !== 'undefined' && typeof window.scrollTo === 'function') window.scrollTo({ top })
+    }
+    if (typeof requestAnimationFrame === 'function') requestAnimationFrame(apply)
+    else apply()
+  }
 
   useEffect(() => {
     setDraft(settings)
@@ -43,6 +96,7 @@ export function SettingsForm({ store, state, compact }) {
     timer.current = setTimeout(() => {
       timer.current = null
       void store.updateSettings(patch).then(() => {
+        restoreScroll()
         setSaved(true)
         if (savedTimer.current !== null) clearTimeout(savedTimer.current)
         savedTimer.current = setTimeout(() => setSaved(false), 1600)
@@ -51,6 +105,7 @@ export function SettingsForm({ store, state, compact }) {
   }
 
   const update = (patch) => {
+    captureScroll()
     const next = {
       ...draft,
       ...patch,
@@ -73,25 +128,9 @@ export function SettingsForm({ store, state, compact }) {
 
   // A settings group is a titled block of rows. The description is shared by
   // every row (instead of repeating the same hint under each control).
-  const Group = ({ title, description, children }) => React.createElement('section', { className: 'itw-settings-group' },
-    React.createElement('h3', { className: 'itw-settings-group-title' }, title),
-    description !== undefined
-      ? React.createElement('p', { className: 'itw-settings-group-desc' }, description)
-      : null,
-    React.createElement('div', { className: 'itw-settings-rows' }, children),
-  )
-
   // Label and hint form the reading column; every control sits in the same
   // right-hand column so switches, selects and text fields line up.
-  const Row = ({ label, hint, children }) => React.createElement('div', { className: 'itw-settings-row' },
-    React.createElement('div', { className: 'itw-settings-label' },
-      React.createElement('div', { className: 'itw-settings-title' }, label),
-      hint !== undefined ? React.createElement('div', { className: 'itw-settings-hint' }, hint) : null,
-    ),
-    React.createElement('div', { className: 'itw-settings-control' }, children),
-  )
-
-  return React.createElement('div', { className: 'itw-settings' },
+  return React.createElement('div', { className: 'itw-settings', ref: rootRef },
     React.createElement(Group, {
       title: t('settings.shortcuts'),
       description: t('settings.shortcutsGroupHint'),

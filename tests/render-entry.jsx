@@ -7,6 +7,7 @@ import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { WorkbenchStore } from '../src/client/store.js'
 import { Workbench } from '../src/client/Workbench.jsx'
+import { EditorArea } from '../src/client/EditorArea.jsx'
 import { DiffView } from '../src/client/DiffView.jsx'
 import { SettingsForm } from '../src/client/SettingsPanel.jsx'
 export { apply as applyClient, inject as clientInject } from '../src/client/index.jsx'
@@ -288,6 +289,33 @@ export function renderProjectQuickFilter() {
   store.state.filter = 'ma'
   store.state.filterMode = 'files'
   store.state.fileIndex = ['src/main.ts', 'a.ts']
+  return renderToStaticMarkup(React.createElement(Workbench, { store }))
+}
+
+export function renderHtmlEditor() {
+  const store = baseStore()
+  const content = '<!doctype html><h1>Hello</h1>\n'
+  const tab = {
+    id: 'file:index.html',
+    kind: 'file',
+    path: 'C:\\work\\demo\\index.html',
+    rel: 'index.html',
+    name: 'index.html',
+    preview: false,
+    pinned: true,
+    loading: false,
+    error: null,
+    payload: { kind: 'text', content, encoding: 'utf-8', size: content.length, truncated: false, eol: '\n' },
+    scrollTop: 0,
+    editing: false,
+    view: 'code',
+    outlineOpen: false,
+    draft: null,
+    dirty: false,
+    saving: false,
+  }
+  store.state.tabs = [tab]
+  store.state.activeId = tab.id
   return renderToStaticMarkup(React.createElement(Workbench, { store }))
 }
 

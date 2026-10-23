@@ -15,8 +15,8 @@ import { FindBar } from './FindBar.jsx'
 import { SearchView } from './SearchView.jsx'
 import { ContextMenu, Kbd } from './ui.jsx'
 import {
-  FileTypeIcon, IconClose, IconCode, IconEdit, IconEye, IconLock, IconMore, IconOutline,
-  IconPin, IconRestore, IconSave, StripeIcon,
+  FileTypeIcon, IconChrome, IconClose, IconCode, IconEdit, IconEye, IconGlobe, IconLock,
+  IconMore, IconOutline, IconPin, IconRestore, IconSave, StripeIcon,
 } from './icons.jsx'
 import { baseName } from './util.js'
 import { openInIdeMenu } from './ide-menu.js'
@@ -202,6 +202,10 @@ function TabBar({ store, state }) {
               key: 'revert', text: t('editor.restore'), disabled: menu.tab.dirty !== true,
               action: () => store.discardDraft(menu.tab.id),
             },
+            {
+              key: 'sidebar', text: t('project.openInSidebar'), disabled: menu.tab.kind !== 'file',
+              action: () => { void store.openInSidebar(menu.tab.path) },
+            },
             openInIdeMenu(store, menu.tab.path, menu.tab.kind !== 'file'),
             null,
             {
@@ -377,6 +381,33 @@ function EditorToolbar({ store, state, tab }) {
   )
 }
 
+/** Whether a path is an HTML document this workbench cannot render inline. */
+function isHtmlPath(path) {
+  return typeof path === 'string' && /\.(?:html?|xhtml)$/i.test(path)
+}
+
+/**
+ * Floating actions for HTML files: the right side of the workbench shows the
+ * source, while DSH's own sidebar can render the document and the OS default
+ * browser can open it with its normal relative-asset behaviour.
+ */
+function HtmlPreviewActions({ store, tab }) {
+  const t = store.t
+  if (tab.kind !== 'file' || !isHtmlPath(tab.path)) return null
+  return React.createElement('div', { className: 'itw-html-actions' },
+    React.createElement('button', {
+      type: 'button', className: 'itw-html-action', title: t('editor.htmlPreviewSidebar'),
+      'aria-label': t('editor.htmlPreviewSidebar'),
+      onClick: () => { void store.openInSidebar(tab.path) },
+    }, React.createElement(IconGlobe, { width: 15, height: 15 })),
+    React.createElement('button', {
+      type: 'button', className: 'itw-html-action itw-chrome', title: t('editor.htmlPreviewBrowser'),
+      'aria-label': t('editor.htmlPreviewBrowser'),
+      onClick: () => { void store.openInDefaultBrowser(tab.path) },
+    }, React.createElement(IconChrome, { width: 15, height: 15 })),
+  )
+}
+
 export function EditorArea({ store, state }) {
   const active = state.tabs.find(tab => tab.id === state.activeId)
   const [findOpen, setFindOpen] = useState(false)
@@ -487,5 +518,6 @@ export function EditorArea({ store, state }) {
         })
       : null,
     content,
+    React.createElement(HtmlPreviewActions, { store, tab: active }),
   )
 }

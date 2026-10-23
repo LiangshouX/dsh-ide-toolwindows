@@ -16,6 +16,103 @@ function fakeStore() {
   return store
 }
 
+test('stacked layout hides crowded docks on mount and on a width transition', () => {
+  const store = fakeStore()
+  // A fresh mount in a narrow pane keeps a single default tool...
+  store.state.layout = { ...store.state.layout, left: 'project', bottom: null }
+  store.setStacked(true, { transition: false })
+  assert.equal(store.state.layout.left, 'project')
+  // ...but four docks would leave no usable content area.
+  store.setStacked(false, { transition: true })
+  store.state.layout = { ...store.state.layout, left: 'project', bottom: 'terminal' }
+  store.setStacked(true, { transition: false })
+  assert.equal(store.state.layout.left, null)
+  assert.equal(store.state.layout.bottom, null)
+  assert.deepEqual(store.hiddenLayout, { left: 'project', bottom: 'terminal' })
+  // A real resize into the stacked width always focuses the content area.
+  store.setStacked(false, { transition: true })
+  store.state.layout = { ...store.state.layout, left: 'project', bottom: null }
+  store.setStacked(true, { transition: true })
+  assert.equal(store.state.layout.left, null)
+  assert.equal(store.state.layout.bottom, null)
+  assert.deepEqual(store.hiddenLayout, { left: 'project', bottom: null })
+  // Restoring hidden tools in stacked mode restores one group, never both.
+  store.toggleHideAll()
+  assert.equal(store.state.layout.left, 'project')
+  assert.equal(store.state.layout.bottom, null)
+  store.persist.cancel()
+})
+
+test('stacked layout makes Project/Commit and Git/Terminal mutually exclusive', () => {
+  const store = fakeStore()
+  store.setStacked(true)
+  store.state.layout = { ...store.state.layout, left: 'project', bottom: null }
+  store.showTool('git')
+  assert.equal(store.state.layout.bottom, 'git')
+  assert.equal(store.state.layout.left, null)
+  store.toggleTool('commit')
+  assert.equal(store.state.layout.left, 'commit')
+  assert.equal(store.state.layout.bottom, null)
+  store.toggleTool('terminal')
+  assert.equal(store.state.layout.bottom, 'terminal')
+  assert.equal(store.state.layout.left, null)
+  store.persist.cancel()
+})
+
+test('horizontal layout keeps both groups open', () => {
+  const store = fakeStore()
+  store.state.layout = { ...store.state.layout, left: 'project', bottom: null }
+  store.showTool('git')
+  assert.equal(store.state.layout.left, 'project')
+  assert.equal(store.state.layout.bottom, 'git')
+  store.persist.cancel()
+})
+
+test('openInSidebar names the built-in text preview for a session address', () => {
+  const calls = []
+  const ctx = {
+    locale: { subscribe: () => () => {} },
+    sessions: { list: { getSnapshot: () => ({ byId: { s1: { cwd: 'C:\\work\\demo' } } }) } },
+    sidebarRight: {
+      mounted: { getSnapshot: () => 's1' },
+      openResource: (address, options) => { calls.push({ address, options }) },
+    },
+    sidebarRightTabs: { candidates: () => [{ kind: 'ide-toolwindows' }, { kind: 'text' }] },
+  }
+  const store = new WorkbenchStore(ctx, key => key)
+  store.state = {
+    ...store.state,
+    workspaceRoot: 'C:\\work\\demo', root: 'C:\\work\\demo', phase: 'ready',
+  }
+  try {
+    assert.equal(store.openInSidebar('C:\\work\\demo\\index.html'), true)
+    assert.equal(calls[0].address, 'dsh-resource://file/session/s1/index.html')
+    assert.equal(calls[0].options.kind, 'text')
+    assert.equal(store.state.toast, null)
+  } finally {
+    store.persist.cancel()
+  }
+})
+
+test('openInDefaultBrowser sends a file URL to the host', async () => {
+  const store = fakeStore()
+  const calls = []
+  const original = globalThis.fetch
+  globalThis.fetch = async (url, init) => {
+    calls.push({ url: String(url), body: JSON.parse(init.body) })
+    return { ok: true, status: 200, async json() { return { ok: true, value: { opened: true } } } }
+  }
+  try {
+    const opened = await store.openInDefaultBrowser('C:\\work\\demo\\index.html')
+    assert.equal(opened, true)
+    assert.match(calls[0].url, /shell\.openExternal/)
+    assert.equal(calls[0].body.url, 'file:///C:/work/demo/index.html')
+  } finally {
+    store.persist.cancel()
+    globalThis.fetch = original
+  }
+})
+
 test('openSearchTab creates one search tab and focuses it', () => {
   const store = fakeStore()
   store.openSearchTab()
@@ -103,11 +200,11 @@ test('openExternalFile resolves a chat address, reveals the tree and jumps to th
     return { ok: true, status: 200, async json() { return { ok: true, value } } }
   }
   try {
-    const opened = await store.openExternalFile(
+    const result = await store.openExternalFile(
       'dsh-resource://file/session/s1/src/main.ts',
       { line: 4 },
     )
-    assert.equal(opened, true)
+    assert.equal(result.status, 'opened')
     assert.equal(store.state.tabs.length, 1)
     assert.equal(store.state.tabs[0].path, 'C:\\work\\demo\\src\\main.ts')
     assert.equal(store.state.tabs[0].revealLine, 4)
@@ -121,15 +218,84 @@ test('openExternalFile resolves a chat address, reveals the tree and jumps to th
   }
 })
 
-test('openExternalFile refuses a file outside the IDE project root', async () => {
+test('openExternalFile leaves files outside the workspace to the default sidebar', async () => {
   const store = fakeStore()
   store.state.projects = [{ path: 'C:\\work\\demo', isRoot: true, isRepo: true }]
   try {
-    const opened = await store.openExternalFile('dsh-resource://file/session/s1/../outside/a.ts')
-    assert.equal(opened, false)
-    assert.equal(store.state.toast?.text, 'links.outsideRoot')
+    const result = await store.openExternalFile('dsh-resource://file/session/s1/../outside/a.ts')
+    assert.equal(result.status, 'outside-workspace')
+    assert.equal(result.absolute, 'C:\\work\\outside\\a.ts')
+    // The fallback is not an error: no toast and no IDE tab.
+    assert.equal(store.state.toast, null)
+    assert.deepEqual(store.state.tabs, [])
   } finally {
     if (store.toastTimer !== null) clearTimeout(store.toastTimer)
+    store.persist.cancel()
+  }
+})
+
+test('openExternalFile asks before widening a sub-folder project to the workspace root', async () => {
+  const store = fakeStore()
+  store.state.root = 'C:\\work\\demo\\src'
+  store.state.projects = [
+    { path: 'C:\\work\\demo', isRoot: true, isRepo: false },
+    { path: 'C:\\work\\demo\\src', isRoot: false, isRepo: true },
+  ]
+  const original = globalThis.fetch
+  globalThis.fetch = async (url) => {
+    const value = String(url).includes('git.status')
+      ? { isRepo: false, entries: [], detached: false }
+      : String(url).includes('git.log')
+        ? { commits: [], hasMore: false }
+        : String(url).includes('fs.tree')
+          ? { entries: [], truncated: false }
+          : String(url).includes('fs.read')
+            ? { kind: 'text', content: 'export const a = 1\n', size: 23, encoding: 'utf-8', truncated: false }
+            : String(url).includes('settings.update')
+              ? { value: {} }
+              : { shells: [], names: [], messages: [] }
+    return { ok: true, status: 200, async json() { return { ok: true, value } } }
+  }
+  try {
+    const asked = await store.openExternalFile('dsh-resource://file/session/s1/lib/a.ts')
+    assert.equal(asked.status, 'needs-project-switch')
+    assert.equal(store.state.root, 'C:\\work\\demo\\src')
+    assert.equal(store.state.tabs.length, 0)
+
+    const opened = await store.openExternalFile(
+      'dsh-resource://file/session/s1/lib/a.ts',
+      { switchProject: true },
+    )
+    assert.equal(opened.status, 'opened')
+    assert.equal(store.state.root, 'C:\\work\\demo')
+    assert.equal(store.state.tabs[0].path, 'C:\\work\\demo\\lib\\a.ts')
+  } finally {
+    store.persist.cancel()
+    if (store.toastTimer !== null) clearTimeout(store.toastTimer)
+    globalThis.fetch = original
+  }
+})
+
+test('openExternalFile reports dirty edits instead of switching the IDE project', async () => {
+  const store = fakeStore()
+  store.state.root = 'C:\\work\\demo\\src'
+  store.state.projects = [
+    { path: 'C:\\work\\demo', isRoot: true, isRepo: false },
+    { path: 'C:\\work\\demo\\src', isRoot: false, isRepo: true },
+  ]
+  store.state.tabs = [{
+    id: 'file:a', kind: 'file', path: 'C:\\work\\demo\\src\\a.ts', dirty: true, draft: 'x',
+  }]
+  store.state.activeId = 'file:a'
+  try {
+    const result = await store.openExternalFile(
+      'dsh-resource://file/session/s1/lib/a.ts',
+      { switchProject: true },
+    )
+    assert.equal(result.status, 'dirty')
+    assert.equal(store.state.root, 'C:\\work\\demo\\src')
+    assert.equal(store.state.tabs.length, 1)
+  } finally {
     store.persist.cancel()
   }
 })

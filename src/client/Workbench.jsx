@@ -13,8 +13,9 @@ import { TerminalPanel } from './TerminalPanel.jsx'
 import { EditorArea } from './EditorArea.jsx'
 import { SettingsForm } from './SettingsPanel.jsx'
 import { QuickOpen } from './QuickOpen.jsx'
-import { ConfirmModal, ContextMenu, Kbd, Toast } from './ui.jsx'
+import { ContextMenu, ConfirmModal, Kbd, Toast } from './ui.jsx'
 import { baseName } from './util.js'
+import { STACK_WIDTH } from './layout.js'
 
 function TopBar({ store, state, fullscreen, onOpenSettings }) {
   const t = store.t
@@ -317,12 +318,31 @@ export function Workbench({ store, visible = true, fullscreen = false }) {
   const state = useWorkbench(store)
   const [settingsOpen, setSettingsOpen] = useState(false)
   const leftRef = useRef(null)
+  const rootRef = useRef(null)
 
   useEffect(() => {
     if (!visible) return
     store.activate()
     return () => { store.deactivate() }
   }, [store, visible])
+
+  // The stylesheet's container query and this observer share `STACK_WIDTH`, so
+  // the body CSS and the tool-group behavior flip at exactly the same width.
+  // `transition` is false for the first measurement: opening the IDE in a
+  // narrow pane keeps its default tool visible instead of hiding it.
+  useEffect(() => {
+    const element = rootRef.current
+    if (element === null || typeof ResizeObserver !== 'function') return undefined
+    let measured = false
+    const observer = new ResizeObserver(entries => {
+      const width = entries[0]?.contentRect?.width ?? 0
+      if (!(width > 0)) return
+      store.setStacked(width <= STACK_WIDTH, { transition: measured })
+      measured = true
+    })
+    observer.observe(element)
+    return () => observer.disconnect()
+  }, [store])
 
   const startLeftResize = (event) => {
     event.preventDefault()
@@ -359,7 +379,7 @@ export function Workbench({ store, visible = true, fullscreen = false }) {
     left = React.createElement('div', {
       className: 'itw-left',
       ref: leftRef,
-      style: { width: `${state.layout.leftWidth}px` },
+      style: { '--itw-left-width': `${state.layout.leftWidth}px` },
     },
       state.layout.left === 'project'
         ? React.createElement(ProjectPanel, { store, state })
@@ -392,7 +412,7 @@ export function Workbench({ store, visible = true, fullscreen = false }) {
       )
     : null
 
-  return React.createElement('div', { className: 'itw-root' },
+  return React.createElement('div', { className: 'itw-root', ref: rootRef },
     React.createElement(TopBar, { store, state, fullscreen, onOpenSettings: () => setSettingsOpen(true) }),
     React.createElement('div', { className: 'itw-body' },
       React.createElement(Stripe, { store, state }),

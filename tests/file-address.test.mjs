@@ -2,10 +2,13 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import {
   basenameOfFileAddress,
+  fileAddressFor,
+  fileUrlForPath,
   isFileAddress,
   isIdeViewableAddress,
   parseFileAddress,
   resolveFileAddress,
+  sessionFileAddress,
 } from '../src/client/file-address.js'
 
 test('parses a session-scoped file address', () => {
@@ -67,4 +70,30 @@ test('claims text and images but leaves office/binary formats to the sidebar', (
   assert.equal(isIdeViewableAddress('dsh-resource://file/session/s1/sheet.xlsx'), false)
   assert.equal(isIdeViewableAddress('dsh-resource://file/session/s1/spec.docx'), false)
   assert.equal(isIdeViewableAddress('dsh-resource://file/session/s1/LICENSE'), true)
+})
+
+test('builds session-scoped addresses for relative, inside and outside paths', () => {
+  assert.equal(
+    sessionFileAddress('s1', 'src/my file.ts'),
+    'dsh-resource://file/session/s1/src/my%20file.ts',
+  )
+  assert.equal(
+    fileAddressFor('s1', 'C:\\work\\demo', 'C:\\work\\demo\\src\\a.ts'),
+    'dsh-resource://file/session/s1/src/a.ts',
+  )
+  assert.equal(
+    fileAddressFor('s1', 'C:\\work\\demo', 'C:\\other\\a.ts'),
+    'dsh-resource://file/session/s1/C:/other/a.ts',
+  )
+  assert.equal(
+    fileAddressFor('s1', 'C:\\work\\demo', 'D:\\outside\\a.ts'),
+    'dsh-resource://file/session/s1/D:/outside/a.ts',
+  )
+})
+
+test('builds file URLs for drive, POSIX and UNC paths', () => {
+  assert.equal(fileUrlForPath('C:\\work\\a.html'), 'file:///C:/work/a.html')
+  assert.equal(fileUrlForPath('C:\\work\\a b.html'), 'file:///C:/work/a%20b.html')
+  assert.equal(fileUrlForPath('/home/me/a.html'), 'file:///home/me/a.html')
+  assert.equal(fileUrlForPath('\\\\server\\share\\a.html'), 'file://server/share/a.html')
 })
