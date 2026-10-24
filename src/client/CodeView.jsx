@@ -41,8 +41,8 @@ const IDENT = /^[A-Za-z_$][\w$]*/
 function tokenize(line, family) {
   if (family === 'txt' || line === '') return [[line, '']]
   if (family === 'md') {
-    if (/^\s*#{1,6}\s/.test(line)) return [[line, 'itw-tok-keyword']]
-    if (/^\s*>/.test(line)) return [[line, 'itw-tok-comment']]
+    if (/^\s*#{1,6}\s/.test(line)) return [[line, 'iwb-tok-keyword']]
+    if (/^\s*>/.test(line)) return [[line, 'iwb-tok-comment']]
     return [[line, '']]
   }
   if (family === 'html') return tokenizeHtml(line)
@@ -53,26 +53,26 @@ function tokenize(line, family) {
     const rest = line.slice(index)
     if (family === 'json') {
       const jsonString = /^"(?:[^"\\]|\\.)*"?/.exec(rest)
-      if (jsonString !== null) { push(jsonString[0], 'itw-tok-string'); index += jsonString[0].length; continue }
+      if (jsonString !== null) { push(jsonString[0], 'iwb-tok-string'); index += jsonString[0].length; continue }
     }
-    if (rest.startsWith('//') && ['js', 'c', 'css', 'sql'].includes(family)) { push(rest, 'itw-tok-comment'); break }
+    if (rest.startsWith('//') && ['js', 'c', 'css', 'sql'].includes(family)) { push(rest, 'iwb-tok-comment'); break }
     if (family === 'py' || family === 'sh' || family === 'yaml') {
       const hash = rest.indexOf('#')
-      if (hash === 0) { push(rest, 'itw-tok-comment'); break }
+      if (hash === 0) { push(rest, 'iwb-tok-comment'); break }
     }
-    if (family === 'sql' && rest.startsWith('--')) { push(rest, 'itw-tok-comment'); break }
+    if (family === 'sql' && rest.startsWith('--')) { push(rest, 'iwb-tok-comment'); break }
     const string = JS_STRING.exec(rest)
-    if (string !== null && string[0] !== '') { push(string[0], 'itw-tok-string'); index += string[0].length; continue }
+    if (string !== null && string[0] !== '') { push(string[0], 'iwb-tok-string'); index += string[0].length; continue }
     const number = NUMBER.exec(rest)
-    if (number !== null && number[0] !== '') { push(number[0], 'itw-tok-number'); index += number[0].length; continue }
+    if (number !== null && number[0] !== '') { push(number[0], 'iwb-tok-number'); index += number[0].length; continue }
     const ident = IDENT.exec(rest)
     if (ident !== null && ident[0] !== '') {
       const word = ident[0]
       const after = rest.slice(word.length)
       let cls = ''
-      if (KEYWORDS[family]?.has(word)) cls = 'itw-tok-keyword'
-      else if (/^\s*\(/.test(after)) cls = 'itw-tok-fn'
-      else if (/^[A-Z]/.test(word) && family !== 'json') cls = 'itw-tok-type'
+      if (KEYWORDS[family]?.has(word)) cls = 'iwb-tok-keyword'
+      else if (/^\s*\(/.test(after)) cls = 'iwb-tok-fn'
+      else if (/^[A-Z]/.test(word) && family !== 'json') cls = 'iwb-tok-type'
       push(word, cls)
       index += word.length
       continue
@@ -91,23 +91,23 @@ function tokenizeHtml(line) {
   let match
   while ((match = regex.exec(line)) !== null) {
     if (match.index > last) out.push([line.slice(last, match.index), ''])
-    if (match[1] !== undefined) out.push([match[1], 'itw-tok-comment'])
+    if (match[1] !== undefined) out.push([match[1], 'iwb-tok-comment'])
     else {
-      out.push([match[2], 'itw-tok-comment'])
-      out.push([match[3], 'itw-tok-tag'])
+      out.push([match[2], 'iwb-tok-comment'])
+      out.push([match[3], 'iwb-tok-tag'])
       const attrs = match[4] ?? ''
       let cursor = 0
       const attrRegex = /([A-Za-z_:][\w:.-]*)(\s*=\s*)("(?:[^"]*)"|'(?:[^']*)')?/g
       let attr
       while ((attr = attrRegex.exec(attrs)) !== null) {
         if (attr.index > cursor) out.push([attrs.slice(cursor, attr.index), ''])
-        out.push([attr[1], 'itw-tok-attr'])
+        out.push([attr[1], 'iwb-tok-attr'])
         if (attr[2] !== undefined) out.push([attr[2], ''])
-        if (attr[3] !== undefined) out.push([attr[3], 'itw-tok-string'])
+        if (attr[3] !== undefined) out.push([attr[3], 'iwb-tok-string'])
         cursor = attr.index + attr[0].length
       }
       if (cursor < attrs.length) out.push([attrs.slice(cursor), ''])
-      out.push([match[5], 'itw-tok-comment'])
+      out.push([match[5], 'iwb-tok-comment'])
     }
     last = match.index + match[0].length
   }
@@ -154,26 +154,26 @@ export function CodeView({ content, path, fontSize = 13, highlight = true, initi
   const gutter = Math.max(42, digits * 8 + 22)
 
   return React.createElement('div', {
-    className: 'itw-code',
+    className: 'iwb-code',
     ref: scrollRef,
-    style: { '--itw-line': `${lineHeight}px`, '--itw-gutter': `${gutter}px`, fontSize: `${fontSize}px` },
+    style: { '--iwb-line': `${lineHeight}px`, '--iwb-gutter': `${gutter}px`, fontSize: `${fontSize}px` },
     onScroll: event => {
       const top = event.currentTarget.scrollTop
       setScrollTop(top)
       onScrollTop?.(top)
     },
   },
-    React.createElement('div', { className: 'itw-code-inner', style: { height: `${total}px` } },
+    React.createElement('div', { className: 'iwb-code-inner', style: { height: `${total}px` } },
       Array.from({ length: Math.max(0, end - start) }, (_, offset) => {
         const lineIndex = start + offset
         const rawLine = (lines[lineIndex] ?? '').replace(/\r$/, '')
         return React.createElement('div', {
           key: lineIndex,
-          className: 'itw-code-line',
+          className: 'iwb-code-line',
           style: { position: 'absolute', top: `${lineIndex * lineHeight}px`, left: 0, right: 0 },
         },
-          React.createElement('span', { className: 'itw-ln' }, String(lineIndex + 1)),
-          React.createElement('span', { className: 'itw-code-text' },
+          React.createElement('span', { className: 'iwb-ln' }, String(lineIndex + 1)),
+          React.createElement('span', { className: 'iwb-code-text' },
             highlight
               ? tokensFor(rawLine, family).map(([piece, cls], tokenIndex) => (cls === ''
                   ? piece

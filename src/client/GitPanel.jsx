@@ -57,7 +57,7 @@ function GraphCell({ row, width, height, offset }) {
     key: `n-${lane}-${index}`,
     cx: 7 + lane * CELL, cy: height / 2, r: 3.4,
     fill: GRAPH_COLORS[lane % GRAPH_COLORS.length],
-    stroke: 'var(--itw-bg)', strokeWidth: 1.2,
+    stroke: 'var(--iwb-bg)', strokeWidth: 1.2,
   }))
   if (row.mergeLanes.length > 0) {
     lines.push(React.createElement('line', {
@@ -78,7 +78,7 @@ function RefChip({ value }) {
     style: {
       display: 'inline-flex', alignItems: 'center', height: 15, padding: '0 5px', borderRadius: 3, fontSize: 10,
       background: isHead ? 'rgba(76,154,255,.2)' : isRemote ? 'rgba(127,127,127,.18)' : 'rgba(79,180,119,.2)',
-      color: isHead ? 'var(--itw-accent)' : isRemote ? 'var(--itw-muted)' : 'var(--itw-success)',
+      color: isHead ? 'var(--iwb-accent)' : isRemote ? 'var(--iwb-muted)' : 'var(--iwb-success)',
       maxWidth: 110, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
     },
   }, value)
@@ -112,10 +112,10 @@ export function diffFiles(diff) {
 }
 
 function InlinePatch({ text }) {
-  return React.createElement('div', { className: 'itw-git-inline-diff' },
+  return React.createElement('div', { className: 'iwb-git-inline-diff' },
     String(text ?? '').split('\n').map((line, index) => React.createElement('div', {
       key: index,
-      className: `itw-git-inline-line ${line.startsWith('+') && !line.startsWith('+++') ? 'itw-add' : ''} ${line.startsWith('-') && !line.startsWith('---') ? 'itw-del' : ''} ${line.startsWith('@@') ? 'itw-hunk' : ''}`,
+      className: `iwb-git-inline-line ${line.startsWith('+') && !line.startsWith('+++') ? 'iwb-add' : ''} ${line.startsWith('-') && !line.startsWith('---') ? 'iwb-del' : ''} ${line.startsWith('@@') ? 'iwb-hunk' : ''}`,
     }, line === '' ? '\u00a0' : line)),
   )
 }
@@ -133,13 +133,13 @@ function BranchPopover({ store, state, x, y, onClose }) {
   useEffect(() => { setIndex(0) }, [query])
   const choose = (name) => { onClose(); store.requestCheckout(name) }
   return React.createElement('div', {
-    className: 'itw-branch-popover',
+    className: 'iwb-branch-popover',
     style: { left: `${x}px`, top: `${y}px` },
     onMouseDown: event => event.stopPropagation(),
   },
     React.createElement('input', {
       ref: inputRef,
-      className: 'itw-input',
+      className: 'iwb-input',
       style: { width: '100%' },
       placeholder: t('git.searchBranch'),
       value: query,
@@ -151,18 +151,18 @@ function BranchPopover({ store, state, x, y, onClose }) {
         else if (event.key === 'Escape') { event.preventDefault(); onClose() }
       },
     }),
-    React.createElement('div', { className: 'itw-branch-list' },
+    React.createElement('div', { className: 'iwb-branch-list' },
       names.length === 0
-        ? React.createElement('div', { className: 'itw-quick-empty' }, t('quickOpen.empty'))
+        ? React.createElement('div', { className: 'iwb-quick-empty' }, t('quickOpen.empty'))
         : names.map((name, position) => React.createElement('button', {
             key: name,
             type: 'button',
-            className: `itw-branch-row ${position === index ? 'itw-selected' : ''}`,
+            className: `iwb-branch-row ${position === index ? 'iwb-selected' : ''}`,
             onMouseEnter: () => setIndex(position),
             onClick: () => choose(name),
           },
-            React.createElement('span', { className: 'itw-branch-check' }, name === state.status.branch ? '✓' : ''),
-            React.createElement('span', { className: 'itw-branch-name' }, name),
+            React.createElement('span', { className: 'iwb-branch-check' }, name === state.status.branch ? '✓' : ''),
+            React.createElement('span', { className: 'iwb-branch-name' }, name),
           )),
     ),
   )
@@ -195,80 +195,80 @@ function CommitDrawer({ store, state, narrow, width, onResizeStart, onClose }) {
 
   return React.createElement(React.Fragment, null,
     narrow
-      ? React.createElement('div', { className: 'itw-git-drawer-backdrop', onMouseDown: onClose })
+      ? React.createElement('div', { className: 'iwb-git-drawer-backdrop', onMouseDown: onClose })
       : null,
     React.createElement('aside', {
-      className: `itw-git-drawer ${narrow ? 'itw-git-drawer-overlay' : ''}`,
+      className: `iwb-git-drawer ${narrow ? 'iwb-git-drawer-overlay' : ''}`,
       style: narrow ? undefined : { width: `${width}px` },
       role: 'complementary',
       'aria-label': t('git.detailTitle'),
     },
-      narrow ? null : React.createElement('div', { className: 'itw-git-drawer-resizer', onPointerDown: onResizeStart }),
-      React.createElement('div', { className: 'itw-git-drawer-head' },
-        React.createElement('span', { className: 'itw-git-drawer-title', title: detail?.subject ?? '' },
+      narrow ? null : React.createElement('div', { className: 'iwb-git-drawer-resizer', onPointerDown: onResizeStart }),
+      React.createElement('div', { className: 'iwb-git-drawer-head' },
+        React.createElement('span', { className: 'iwb-git-drawer-title', title: detail?.subject ?? '' },
           detail?.subject ?? (git.detailLoading ? t('common.loading') : '')),
-        React.createElement('span', { className: 'itw-spacer' }),
+        React.createElement('span', { className: 'iwb-spacer' }),
         detail !== null
           ? React.createElement('button', {
-              type: 'button', className: 'itw-iconbtn', title: t('git.copySha'),
+              type: 'button', className: 'iwb-iconbtn', title: t('git.copySha'),
               onClick: () => { void copy(detail.hash) },
             }, React.createElement(IconCopy, { width: 12, height: 12 }))
           : null,
         React.createElement('button', {
           ref: closeRef,
-          type: 'button', className: 'itw-iconbtn', title: t('git.closeDetail'),
+          type: 'button', className: 'iwb-iconbtn', title: t('git.closeDetail'),
           onClick: onClose,
         }, React.createElement(IconClose, { width: 13, height: 13 })),
       ),
       detail === null && git.detailLoading === true
-        ? React.createElement('div', { className: 'itw-git-drawer-body' }, React.createElement('div', { className: 'itw-empty' }, t('common.loading')))
+        ? React.createElement('div', { className: 'iwb-git-drawer-body' }, React.createElement('div', { className: 'iwb-empty' }, t('common.loading')))
         : (detail === null
-            ? React.createElement('div', { className: 'itw-git-drawer-body' }, React.createElement('div', { className: 'itw-empty' }, t('git.selectCommit')))
-            : React.createElement('div', { className: 'itw-git-drawer-body' },
-                React.createElement('div', { className: 'itw-git-drawer-meta' },
-                  React.createElement('span', { className: 'itw-git-drawer-sha', title: detail.hash }, detail.shortHash),
+            ? React.createElement('div', { className: 'iwb-git-drawer-body' }, React.createElement('div', { className: 'iwb-empty' }, t('git.selectCommit')))
+            : React.createElement('div', { className: 'iwb-git-drawer-body' },
+                React.createElement('div', { className: 'iwb-git-drawer-meta' },
+                  React.createElement('span', { className: 'iwb-git-drawer-sha', title: detail.hash }, detail.shortHash),
                   React.createElement('span', null, detail.author),
-                  detail.email !== '' ? React.createElement('span', { className: 'itw-git-detail-dim' }, detail.email) : null,
-                  React.createElement('span', { className: 'itw-git-detail-dim' }, detail.date),
-                  ...(detail.refs ?? []).map(ref => React.createElement('span', { key: ref, className: 'itw-ref-chip' }, ref)),
+                  detail.email !== '' ? React.createElement('span', { className: 'iwb-git-detail-dim' }, detail.email) : null,
+                  React.createElement('span', { className: 'iwb-git-detail-dim' }, detail.date),
+                  ...(detail.refs ?? []).map(ref => React.createElement('span', { key: ref, className: 'iwb-ref-chip' }, ref)),
                   detail.parents?.length > 0
-                    ? React.createElement('span', { className: 'itw-git-detail-dim' }, `${t('git.parents')}: ${detail.parents.map(parent => parent.slice(0, 7)).join(', ')}`)
+                    ? React.createElement('span', { className: 'iwb-git-detail-dim' }, `${t('git.parents')}: ${detail.parents.map(parent => parent.slice(0, 7)).join(', ')}`)
                     : null,
                 ),
                 React.createElement('button', {
-                  type: 'button', className: 'itw-textbtn itw-small itw-git-open-full', title: t('git.openFull'),
+                  type: 'button', className: 'iwb-textbtn iwb-small iwb-git-open-full', title: t('git.openFull'),
                   onClick: () => { void store.openCommit(detail.hash) },
                 }, t('git.openFull')),
                 detail.body !== ''
-                  ? React.createElement('pre', { className: 'itw-git-drawer-body-text' }, detail.body)
+                  ? React.createElement('pre', { className: 'iwb-git-drawer-body-text' }, detail.body)
                   : null,
-                React.createElement('div', { className: 'itw-git-drawer-section-title' },
+                React.createElement('div', { className: 'iwb-git-drawer-section-title' },
                   `${t('git.fileList')} · ${files.length}`,
-                  React.createElement('span', { className: 'itw-additions' }, ` +${additions}`),
-                  React.createElement('span', { className: 'itw-deletions' }, ` -${deletions}`),
+                  React.createElement('span', { className: 'iwb-additions' }, ` +${additions}`),
+                  React.createElement('span', { className: 'iwb-deletions' }, ` -${deletions}`),
                 ),
                 files.length === 0
-                  ? React.createElement('div', { className: 'itw-git-detail-dim' }, t('git.noFiles'))
+                  ? React.createElement('div', { className: 'iwb-git-detail-dim' }, t('git.noFiles'))
                   : React.createElement(React.Fragment, null,
-                      React.createElement('div', { className: 'itw-git-drawer-files' },
+                      React.createElement('div', { className: 'iwb-git-drawer-files' },
                         files.map(file => React.createElement('button', {
                           key: file.path,
                           type: 'button',
-                          className: `itw-git-drawer-file ${selected?.path === file.path ? 'itw-selected' : ''}`,
+                          className: `iwb-git-drawer-file ${selected?.path === file.path ? 'iwb-selected' : ''}`,
                           title: file.path,
                           onClick: () => setSelectedFile(file.path),
                           onDoubleClick: () => { void store.openCommitFile(detail.hash, file.path) },
                         },
-                          React.createElement('span', { className: `itw-git-file-status itw-status-${file.status}` }, file.status),
-                          React.createElement('span', { className: 'itw-git-file-name' }, file.path.split('/').pop()),
-                          React.createElement('span', { className: 'itw-git-file-dir' }, file.path.includes('/') ? file.path.slice(0, file.path.lastIndexOf('/')) : ''),
-                          React.createElement('span', { className: 'itw-additions' }, `+${file.additions}`),
-                          React.createElement('span', { className: 'itw-deletions' }, `-${file.deletions}`),
+                          React.createElement('span', { className: `iwb-git-file-status iwb-status-${file.status}` }, file.status),
+                          React.createElement('span', { className: 'iwb-git-file-name' }, file.path.split('/').pop()),
+                          React.createElement('span', { className: 'iwb-git-file-dir' }, file.path.includes('/') ? file.path.slice(0, file.path.lastIndexOf('/')) : ''),
+                          React.createElement('span', { className: 'iwb-additions' }, `+${file.additions}`),
+                          React.createElement('span', { className: 'iwb-deletions' }, `-${file.deletions}`),
                         )),
                       ),
                       selected !== undefined
-                        ? React.createElement('div', { className: 'itw-git-drawer-inline' },
-                            React.createElement('div', { className: 'itw-git-drawer-section-title' }, selected.path),
+                        ? React.createElement('div', { className: 'iwb-git-drawer-inline' },
+                            React.createElement('div', { className: 'iwb-git-drawer-section-title' }, selected.path),
                             React.createElement(InlinePatch, { text: selected.patch }),
                           )
                         : null,
@@ -417,7 +417,7 @@ export function GitPanel({ store, state }) {
   useEffect(() => {
     if (branchMenu === null) return undefined
     const onDown = (event) => {
-      if (event.target instanceof Element && event.target.closest('.itw-branch-popover, .itw-branch-switch') !== null) return
+      if (event.target instanceof Element && event.target.closest('.iwb-branch-popover, .iwb-branch-switch') !== null) return
       setBranchMenu(null)
     }
     window.addEventListener('mousedown', onDown, true)
@@ -447,10 +447,10 @@ export function GitPanel({ store, state }) {
     ['90 days ago', 'git.last90'],
   ]
 
-  return React.createElement('div', { className: 'itw-git' },
-    React.createElement('div', { className: 'itw-git-filters' },
+  return React.createElement('div', { className: 'iwb-git' },
+    React.createElement('div', { className: 'iwb-git-filters' },
       React.createElement('button', {
-        type: 'button', className: 'itw-branch-switch', title: t('git.switchBranchTitle'),
+        type: 'button', className: 'iwb-branch-switch', title: t('git.switchBranchTitle'),
         onClick: event => {
           const rect = event.currentTarget.getBoundingClientRect()
           setBranchMenu({ x: rect.left, y: rect.bottom + 4 })
@@ -458,38 +458,38 @@ export function GitPanel({ store, state }) {
       },
         React.createElement(IconBranch, { width: 13, height: 13 }),
         React.createElement('span', null, state.status.detached === true ? t('git.detached') : (state.status.branch ?? '—')),
-        React.createElement('span', { className: 'itw-branch-caret' }, '▾'),
+        React.createElement('span', { className: 'iwb-branch-caret' }, '▾'),
       ),
       (git.compare ?? []).length > 0
-        ? React.createElement('span', { className: 'itw-compare-chip', title: t('git.compareHint') },
+        ? React.createElement('span', { className: 'iwb-compare-chip', title: t('git.compareHint') },
             (git.compare ?? []).map(hash => hash.slice(0, 7)).join(' \u2194 '),
             React.createElement('button', {
-              type: 'button', className: 'itw-path-chip-clear', title: t('git.clearCompare'),
+              type: 'button', className: 'iwb-path-chip-clear', title: t('git.clearCompare'),
               onClick: () => store.patch('git', { compare: [] }),
             }, '\u00d7'),
           )
         : null,
       (git.compare ?? []).length === 2
         ? React.createElement('button', {
-            type: 'button', className: 'itw-textbtn itw-small itw-primary',
+            type: 'button', className: 'iwb-textbtn iwb-small iwb-primary',
             onClick: () => store.compareSelected(),
           }, t('git.compare'))
         : null,
       React.createElement('button', {
         type: 'button',
-        className: `itw-textbtn itw-small ${git.filters.branch === '' ? 'itw-primary' : ''}`,
+        className: `iwb-textbtn iwb-small ${git.filters.branch === '' ? 'iwb-primary' : ''}`,
         title: t('git.branchFilter'),
         onClick: () => store.setGitFilters({ branch: git.filters.branch === '' ? (state.status.branch ?? '') : '' }),
       }, git.filters.branch === '' ? t('git.allBranches') : t('git.currentBranchOnly')),
       React.createElement('select', {
-        className: 'itw-select', title: t('git.dateFilter'),
+        className: 'iwb-select', title: t('git.dateFilter'),
         value: git.filters.since ?? '',
         onChange: event => store.setGitFilters({ since: event.target.value }),
       },
         dateOptions.map(([value, key]) => React.createElement('option', { key: value, value }, t(key))),
       ),
       React.createElement('input', {
-        className: 'itw-input', style: { width: 100 }, placeholder: t('git.authorFilter'),
+        className: 'iwb-input', style: { width: 100 }, placeholder: t('git.authorFilter'),
         value: git.filters.author,
         onChange: event => {
           const value = event.target.value
@@ -498,7 +498,7 @@ export function GitPanel({ store, state }) {
         },
       }),
       React.createElement('input', {
-        className: 'itw-input', style: { flex: 1, minWidth: 100, width: 'auto' }, placeholder: t('git.queryFilter'),
+        className: 'iwb-input', style: { flex: 1, minWidth: 100, width: 'auto' }, placeholder: t('git.queryFilter'),
         value: git.filters.query,
         onChange: event => {
           const value = event.target.value
@@ -507,40 +507,40 @@ export function GitPanel({ store, state }) {
         },
       }),
       git.filters.path !== undefined && git.filters.path !== ''
-        ? React.createElement('span', { className: 'itw-path-chip', title: git.filters.path },
-            React.createElement('span', { className: 'itw-path-chip-text' }, git.filters.path),
+        ? React.createElement('span', { className: 'iwb-path-chip', title: git.filters.path },
+            React.createElement('span', { className: 'iwb-path-chip-text' }, git.filters.path),
             React.createElement('button', {
-              type: 'button', className: 'itw-path-chip-clear', title: t('git.clearPath'),
+              type: 'button', className: 'iwb-path-chip-clear', title: t('git.clearPath'),
               onClick: () => store.setGitFilters({ path: '' }),
             }, '×'),
           )
         : null,
       git.selectedHash !== null && git.selectedHash !== undefined && !drawerOpen
         ? React.createElement('button', {
-            type: 'button', className: 'itw-textbtn itw-small',
+            type: 'button', className: 'iwb-textbtn iwb-small',
             onClick: () => openDetail(git.selectedHash),
           }, t('git.openDetails'))
         : null,
       React.createElement('button', {
-        type: 'button', className: 'itw-iconbtn', title: t('common.refresh'),
+        type: 'button', className: 'iwb-iconbtn', title: t('common.refresh'),
         onClick: () => { void store.loadLog(true); void store.loadBranches(); void store.refreshStatus({ initial: true }) },
       }, React.createElement(IconRefresh, { width: 14, height: 14 })),
     ),
-    React.createElement('div', { className: `itw-git-main ${tableNarrow ? 'itw-git-narrow' : ''}`, ref: mainRef },
+    React.createElement('div', { className: `iwb-git-main ${tableNarrow ? 'iwb-git-narrow' : ''}`, ref: mainRef },
       React.createElement('div', {
-        className: 'itw-git-table',
-        style: { '--itw-graph-w': `${graphWidth}px` },
+        className: 'iwb-git-table',
+        style: { '--iwb-graph-w': `${graphWidth}px` },
       },
-        React.createElement('div', { className: 'itw-git-head' },
+        React.createElement('div', { className: 'iwb-git-head' },
           React.createElement('span', null, ''),
           React.createElement('span', null, 'SHA'),
           React.createElement('span', null, t('git.message')),
           React.createElement('span', null, t('git.author')),
           React.createElement('span', null, t('git.date')),
         ),
-        React.createElement('div', { className: 'itw-git-scroll', ref: scrollRef, onScroll },
+        React.createElement('div', { className: 'iwb-git-scroll', ref: scrollRef, onScroll },
           rows.length === 0 && git.loading !== true
-            ? React.createElement('div', { className: 'itw-git-empty' },
+            ? React.createElement('div', { className: 'iwb-git-empty' },
                 React.createElement('div', null,
                   state.status.isRepo === true
                     ? (git.error ?? t('git.noCommits'))
@@ -548,14 +548,14 @@ export function GitPanel({ store, state }) {
                 ),
                 state.status.isRepo !== true
                   ? React.createElement('button', {
-                      type: 'button', className: 'itw-textbtn itw-primary itw-small', style: { marginTop: 10 },
+                      type: 'button', className: 'iwb-textbtn iwb-primary iwb-small', style: { marginTop: 10 },
                       onClick: () => store.openProjectPicker(),
                     }, repoProjects.length > 0 ? t('project.chooseRepo') : t('project.selectProject'))
                   : (git.error !== null && git.error !== undefined
-                      ? React.createElement('button', { type: 'button', className: 'itw-textbtn itw-small', style: { marginTop: 10 }, onClick: () => { void store.loadLog(true) } }, t('common.retry'))
+                      ? React.createElement('button', { type: 'button', className: 'iwb-textbtn iwb-small', style: { marginTop: 10 }, onClick: () => { void store.loadLog(true) } }, t('common.retry'))
                       : null),
               )
-            : React.createElement('div', { className: 'itw-git-rows', style: { height: `${rows.length * ROW_HEIGHT}px` } },
+            : React.createElement('div', { className: 'iwb-git-rows', style: { height: `${rows.length * ROW_HEIGHT}px` } },
                 rows.slice(start, end).map((row, index) => {
                   const commit = row.commit
                   const top = (start + index) * ROW_HEIGHT
@@ -567,7 +567,7 @@ export function GitPanel({ store, state }) {
                       if (element === null) rowRefs.current.delete(commit.hash)
                       else rowRefs.current.set(commit.hash, element)
                     },
-                    className: `itw-git-row ${selected ? 'itw-selected' : ''} ${inCompare ? 'itw-compare' : ''}`,
+                    className: `iwb-git-row ${selected ? 'iwb-selected' : ''} ${inCompare ? 'iwb-compare' : ''}`,
                     style: { top: `${top}px` },
                     tabIndex: 0,
                     onClick: event => {
@@ -578,11 +578,11 @@ export function GitPanel({ store, state }) {
                     onKeyDown: event => onRowKeyDown(event, commit),
                     onContextMenu: event => onContextMenu(event, commit),
                   },
-                    React.createElement('div', { className: 'itw-git-graph' },
+                    React.createElement('div', { className: 'iwb-git-graph' },
                       React.createElement(GraphCell, { row, width: graphWidth, height: ROW_HEIGHT, offset: 0 }),
                     ),
-                    React.createElement('span', { className: 'itw-sha' }, commit.shortHash),
-                    React.createElement('span', { className: 'itw-subject', style: { display: 'flex', alignItems: 'center', gap: 6, minWidth: 0 } },
+                    React.createElement('span', { className: 'iwb-sha' }, commit.shortHash),
+                    React.createElement('span', { className: 'iwb-subject', style: { display: 'flex', alignItems: 'center', gap: 6, minWidth: 0 } },
                       commit.refs.length > 0
                         ? React.createElement('span', { style: { display: 'inline-flex', gap: 4, flex: '0 0 auto' } },
                             commit.refs.slice(0, 2).map(ref => React.createElement(RefChip, { key: ref, value: ref })),
@@ -590,12 +590,12 @@ export function GitPanel({ store, state }) {
                         : null,
                       React.createElement('span', { style: { overflow: 'hidden', textOverflow: 'ellipsis' } }, commit.subject),
                     ),
-                    React.createElement('span', { className: 'itw-author', title: commit.email }, commit.author),
-                    React.createElement('span', { className: 'itw-date' }, formatGitDate(commit.date, tableNarrow)),
+                    React.createElement('span', { className: 'iwb-author', title: commit.email }, commit.author),
+                    React.createElement('span', { className: 'iwb-date' }, formatGitDate(commit.date, tableNarrow)),
                   )
                 }),
                 git.loading === true
-                  ? React.createElement('div', { style: { position: 'absolute', left: 0, right: 0, bottom: -26, height: 26, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--itw-muted)', fontSize: 11 } }, t('common.loading'))
+                  ? React.createElement('div', { style: { position: 'absolute', left: 0, right: 0, bottom: -26, height: 26, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--iwb-muted)', fontSize: 11 } }, t('common.loading'))
                   : null,
               ),
         ),

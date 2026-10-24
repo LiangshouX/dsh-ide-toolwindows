@@ -59,15 +59,15 @@ export function QuickOpen({ store, state }) {
   }
 
   return React.createElement('div', {
-    className: 'itw-quick-backdrop',
+    className: 'iwb-quick-backdrop',
     onMouseDown: event => { if (event.target === event.currentTarget) store.closeQuickOpen() },
   },
-    React.createElement('div', { className: 'itw-quick', role: 'dialog', 'aria-modal': 'true', 'aria-label': t('quickOpen.title') },
-      React.createElement('div', { className: 'itw-quick-head' },
-        React.createElement('span', { className: 'itw-quick-title' }, t('quickOpen.title')),
+    React.createElement('div', { className: 'iwb-quick', role: 'dialog', 'aria-modal': 'true', 'aria-label': t('quickOpen.title') },
+      React.createElement('div', { className: 'iwb-quick-head' },
+        React.createElement('span', { className: 'iwb-quick-title' }, t('quickOpen.title')),
         React.createElement('input', {
           ref: inputRef,
-          className: 'itw-quick-input',
+          className: 'iwb-quick-input',
           value: state.quickOpenQuery,
           placeholder: t('quickOpen.placeholder'),
           spellCheck: false,
@@ -80,23 +80,23 @@ export function QuickOpen({ store, state }) {
           },
         }),
       ),
-      React.createElement('div', { className: 'itw-quick-list' },
+      React.createElement('div', { className: 'iwb-quick-list' },
         state.fileIndexLoading === true && state.fileIndex.length === 0
-          ? React.createElement('div', { className: 'itw-quick-empty' }, t('common.loading'))
+          ? React.createElement('div', { className: 'iwb-quick-empty' }, t('common.loading'))
           : (results.length === 0
-              ? React.createElement('div', { className: 'itw-quick-empty' }, t('quickOpen.empty'))
+              ? React.createElement('div', { className: 'iwb-quick-empty' }, t('quickOpen.empty'))
               : results.map((path, position) => React.createElement('button', {
                   key: path,
                   type: 'button',
-                  className: `itw-quick-row ${position === active ? 'itw-selected' : ''}`,
+                  className: `iwb-quick-row ${position === active ? 'iwb-selected' : ''}`,
                   onMouseEnter: () => store.set({ quickOpenIndex: position }),
                   onClick: () => open(path),
                 },
-                  React.createElement('span', { className: 'itw-quick-name' }, path.slice(path.lastIndexOf('/') + 1)),
-                  React.createElement('span', { className: 'itw-quick-dir' }, path.includes('/') ? path.slice(0, path.lastIndexOf('/')) : ''),
+                  React.createElement('span', { className: 'iwb-quick-name' }, path.slice(path.lastIndexOf('/') + 1)),
+                  React.createElement('span', { className: 'iwb-quick-dir' }, path.includes('/') ? path.slice(0, path.lastIndexOf('/')) : ''),
                 ))),
       ),
-      React.createElement('div', { className: 'itw-quick-foot' },
+      React.createElement('div', { className: 'iwb-quick-foot' },
         `${results.length} · ${t('quickOpen.hint')}`,
         state.fileIndexError !== null ? ` · ${state.fileIndexError}` : '',
       ),

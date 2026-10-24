@@ -55,7 +55,7 @@ export class ApiError extends Error {
 export async function call(method, payload = {}, signal) {
   let response
   try {
-    response = await fetch(httpUrl(`ide-toolwindows/api/${method}`).href, {
+    response = await fetch(httpUrl(`ide-workbench/api/${method}`).href, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify(payload),

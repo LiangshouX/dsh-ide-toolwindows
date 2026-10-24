@@ -1,5 +1,5 @@
 /**
- * Wire helpers for the /ide-toolwindows JSON API.
+ * Wire helpers for the /ide-workbench JSON API.
  *
  * Every method answers `{ ok: true, value }` or `{ ok: false, error: { code, message } }`.
  * The shape mirrors what the shipped DSH plugins use, so the client has one

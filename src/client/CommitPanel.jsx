@@ -15,10 +15,10 @@ import { dirName } from './util.js'
 
 function LineStats({ stats }) {
   if (stats === undefined || stats === null) return null
-  if (stats.binary === true) return React.createElement('span', { className: 'itw-file-stat' }, 'bin')
-  return React.createElement('span', { className: 'itw-file-stat' },
-    React.createElement('span', { className: 'itw-additions' }, `+${stats.additions}`),
-    React.createElement('span', { className: 'itw-deletions' }, `-${stats.deletions}`),
+  if (stats.binary === true) return React.createElement('span', { className: 'iwb-file-stat' }, 'bin')
+  return React.createElement('span', { className: 'iwb-file-stat' },
+    React.createElement('span', { className: 'iwb-additions' }, `+${stats.additions}`),
+    React.createElement('span', { className: 'iwb-deletions' }, `-${stats.deletions}`),
   )
 }
 
@@ -30,7 +30,7 @@ function FileRow({ store, state, entry, checked, onOpen, onMenu }) {
   const stats = entry.staged ? entry.stagedLines : entry.unstagedLines
   const letter = entry.conflict === true ? '!' : entry.untracked === true ? 'U' : (entry.xy ?? '').replace(/\./g, '')
   return React.createElement('div', {
-    className: `itw-file-row ${selected ? 'itw-selected' : ''} ${entry.untracked === true ? 'itw-file-untracked' : ''} ${entry.conflict === true ? 'itw-file-conflict' : ''}`,
+    className: `iwb-file-row ${selected ? 'iwb-selected' : ''} ${entry.untracked === true ? 'iwb-file-untracked' : ''} ${entry.conflict === true ? 'iwb-file-conflict' : ''}`,
     title: entry.path,
     onClick: () => store.patch('commit', { selectedPath: entry.path }),
     onDoubleClick: () => onOpen(entry),
@@ -41,14 +41,14 @@ function FileRow({ store, state, entry, checked, onOpen, onMenu }) {
       checked,
       disabled: entry.conflict === true,
       title: store.t('commit.check'),
-      style: { accentColor: 'var(--itw-accent)', margin: 0 },
+      style: { accentColor: 'var(--iwb-accent)', margin: 0 },
       onClick: event => event.stopPropagation(),
       onChange: () => { void store.toggleCommitEntry(entry) },
     }),
     React.createElement(FileTypeIcon, { name, size: 14 }),
-    React.createElement('span', { className: 'itw-file-name', style: entry.conflict === true ? { color: 'var(--itw-error)' } : undefined }, name),
-    parent !== '' ? React.createElement('span', { className: 'itw-file-dir' }, parent) : null,
-    React.createElement('span', { className: 'itw-file-status' }, letter),
+    React.createElement('span', { className: 'iwb-file-name', style: entry.conflict === true ? { color: 'var(--iwb-error)' } : undefined }, name),
+    parent !== '' ? React.createElement('span', { className: 'iwb-file-dir' }, parent) : null,
+    React.createElement('span', { className: 'iwb-file-status' }, letter),
     React.createElement(LineStats, { stats }),
   )
 }
@@ -60,25 +60,25 @@ function GroupHeader({ store, title, entries, checkedPaths }) {
   useEffect(() => {
     if (ref.current !== null) ref.current.indeterminate = tri === 'some'
   }, [tri])
-  return React.createElement('div', { className: 'itw-group-header' },
+  return React.createElement('div', { className: 'iwb-group-header' },
     React.createElement('input', {
       ref,
       type: 'checkbox',
       checked: tri === 'all',
       disabled: entries.length === 0,
       title: tri === 'all' ? store.t('commit.uncheckAll') : store.t('commit.checkAll'),
-      style: { accentColor: 'var(--itw-accent)', margin: 0 },
+      style: { accentColor: 'var(--iwb-accent)', margin: 0 },
       onChange: () => { void store.setCommitChecked(entries, tri !== 'all') },
     }),
     React.createElement('span', null, title),
-    React.createElement('span', { className: 'itw-count' }, entries.length),
+    React.createElement('span', { className: 'iwb-count' }, entries.length),
   )
 }
 
 /** One directory heading inside a group (Group by Directory). */
 function DirectorySection({ store, state, dir, entries, checkedPaths, onOpen, onMenu }) {
-  return React.createElement('div', { className: 'itw-dir-section' },
-    React.createElement('div', { className: 'itw-dir-heading' }, dir === '' ? store.t('common.root') : dir),
+  return React.createElement('div', { className: 'iwb-dir-section' },
+    React.createElement('div', { className: 'iwb-dir-heading' }, dir === '' ? store.t('common.root') : dir),
     entries.map(entry => React.createElement(FileRow, {
       key: entry.path, store, state, entry,
       checked: checkedPaths.has(entry.path), onOpen, onMenu,
@@ -189,42 +189,42 @@ export function CommitPanel({ store, state }) {
   const activeList = changelists.active ?? DEFAULT_CHANGELIST
   const visibleChanges = groups.changes.filter(entry => changelistOf(entry.path, changelists.lists) === activeList)
   const changesBody = visibleChanges.length === 0
-    ? React.createElement('div', { className: 'itw-group-empty' }, t('commit.noChangesGroup'))
+    ? React.createElement('div', { className: 'iwb-group-empty' }, t('commit.noChangesGroup'))
     : (activeList === DEFAULT_CHANGELIST
         ? renderEntries(visibleChanges)
-        : React.createElement('div', { className: 'itw-changelist' },
-            React.createElement('div', { className: 'itw-changelist-head' }, activeList, React.createElement('span', { className: 'itw-count' }, visibleChanges.length)),
+        : React.createElement('div', { className: 'iwb-changelist' },
+            React.createElement('div', { className: 'iwb-changelist-head' }, activeList, React.createElement('span', { className: 'iwb-count' }, visibleChanges.length)),
             renderEntries(visibleChanges),
           ))
 
-  return React.createElement('div', { className: 'itw-commit' },
-    React.createElement('div', { className: 'itw-panel-header' },
-      React.createElement('span', { className: 'itw-panel-title' }, t('commit.title')),
+  return React.createElement('div', { className: 'iwb-commit' },
+    React.createElement('div', { className: 'iwb-panel-header' },
+      React.createElement('span', { className: 'iwb-panel-title' }, t('commit.title')),
       state.status.isRepo === true
-        ? React.createElement('span', { className: 'itw-panel-sub' }, state.status.detached === true ? t('git.detached') : (state.status.branch ?? ''))
-        : React.createElement('span', { className: 'itw-panel-sub' }, t('welcome.noRepo')),
-      React.createElement('span', { className: 'itw-spacer' }),
+        ? React.createElement('span', { className: 'iwb-panel-sub' }, state.status.detached === true ? t('git.detached') : (state.status.branch ?? ''))
+        : React.createElement('span', { className: 'iwb-panel-sub' }, t('welcome.noRepo')),
+      React.createElement('span', { className: 'iwb-spacer' }),
       React.createElement('button', {
         type: 'button',
-        className: `itw-iconbtn ${groupByDir ? 'itw-on' : ''}`,
+        className: `iwb-iconbtn ${groupByDir ? 'iwb-on' : ''}`,
         title: t('commit.groupByDirectoryHint'),
         onClick: () => { void store.setGroupByDirectory(!groupByDir) },
       }, '▤'),
       React.createElement('button', {
-        type: 'button', className: 'itw-iconbtn', title: t('common.refresh'),
+        type: 'button', className: 'iwb-iconbtn', title: t('common.refresh'),
         onClick: () => { void store.refreshStatus({ initial: true }); void store.loadCommitMessages() },
       }, React.createElement(IconRefresh, { width: 14, height: 14 })),
     ),
     state.status.isRepo !== true
-      ? React.createElement('div', { className: 'itw-commit-hint' },
+      ? React.createElement('div', { className: 'iwb-commit-hint' },
           React.createElement('span', null, t('project.noRepoHint')),
           React.createElement('button', {
-            type: 'button', className: 'itw-textbtn itw-small',
+            type: 'button', className: 'iwb-textbtn iwb-small',
             onClick: () => store.openProjectPicker(),
           }, t('project.chooseRepo')),
         )
       : null,
-    React.createElement('div', { className: 'itw-commit-message' },
+    React.createElement('div', { className: 'iwb-commit-message' },
       React.createElement('textarea', {
         ref: textareaRef,
         placeholder: state.settings?.git?.commitTemplate || t('commit.messagePlaceholder'),
@@ -238,8 +238,8 @@ export function CommitPanel({ store, state }) {
           }
         },
       }),
-      React.createElement('div', { className: 'itw-commit-actions' },
-        React.createElement('label', { className: 'itw-check', title: initial ? t('commit.amendDisabled') : t('commit.amend') },
+      React.createElement('div', { className: 'iwb-commit-actions' },
+        React.createElement('label', { className: 'iwb-check', title: initial ? t('commit.amendDisabled') : t('commit.amend') },
           React.createElement('input', {
             type: 'checkbox', checked: commit.amend, disabled: initial,
             onChange: event => store.setAmend(event.target.checked),
@@ -247,7 +247,7 @@ export function CommitPanel({ store, state }) {
           t('commit.amend'),
         ),
         React.createElement('select', {
-          className: 'itw-select',
+          className: 'iwb-select',
           style: { maxWidth: 120 },
           value: '',
           title: t('commit.history'),
@@ -257,24 +257,24 @@ export function CommitPanel({ store, state }) {
           React.createElement('option', { value: '' }, t('commit.history')),
           history.map(item => React.createElement('option', { key: item.value, value: item.value }, item.label)),
         ),
-        React.createElement('span', { className: 'itw-spacer' }),
+        React.createElement('span', { className: 'iwb-spacer' }),
         React.createElement('button', {
           type: 'button',
-          className: 'itw-textbtn itw-primary itw-small',
+          className: 'iwb-textbtn iwb-primary iwb-small',
           disabled: !canCommit,
           onClick: () => { void store.commit(commit.message, commit.amend, false) },
         }, commit.committing ? t('common.loading') : t('commit.commit')),
         React.createElement('button', {
           type: 'button',
-          className: 'itw-textbtn itw-small',
+          className: 'iwb-textbtn iwb-small',
           disabled: !canCommit,
           onClick: () => { void store.commit(commit.message, commit.amend, true) },
         }, t('commit.commitAndPush')),
       ),
       taskDefs.length > 0
-        ? React.createElement('div', { className: 'itw-commit-tasks' },
+        ? React.createElement('div', { className: 'iwb-commit-tasks' },
             taskDefs.map(([key, label, command]) => React.createElement('label', {
-              key, className: 'itw-check', title: command,
+              key, className: 'iwb-check', title: command,
             },
               React.createElement('input', {
                 type: 'checkbox',
@@ -286,12 +286,12 @@ export function CommitPanel({ store, state }) {
           )
         : null,
       commit.error !== null && commit.error !== undefined
-        ? React.createElement('div', { className: 'itw-error-box', style: { margin: '8px 0 0' } }, commit.error)
+        ? React.createElement('div', { className: 'iwb-error-box', style: { margin: '8px 0 0' } }, commit.error)
         : null,
     ),
-    React.createElement('div', { className: 'itw-commit-toolbar' },
+    React.createElement('div', { className: 'iwb-commit-toolbar' },
       React.createElement('select', {
-        className: 'itw-select',
+        className: 'iwb-select',
         value: changelists.active,
         title: t('commit.changelist'),
         onChange: event => { void store.setActiveChangelist(event.target.value) },
@@ -300,12 +300,12 @@ export function CommitPanel({ store, state }) {
         customLists.map(name => React.createElement('option', { key: name, value: name }, name)),
       ),
       React.createElement('button', {
-        type: 'button', className: 'itw-textbtn itw-small', title: t('commit.newChangelist'),
+        type: 'button', className: 'iwb-textbtn iwb-small', title: t('commit.newChangelist'),
         onClick: () => setDialog({ kind: 'changelist', name: '', paths: [] }),
       }, '+'),
       activeList !== DEFAULT_CHANGELIST
         ? React.createElement('button', {
-            type: 'button', className: 'itw-textbtn itw-small itw-danger', title: t('commit.deleteChangelist'),
+            type: 'button', className: 'iwb-textbtn iwb-small iwb-danger', title: t('commit.deleteChangelist'),
             onClick: () => store.askChoice(
               t('commit.deleteChangelist'),
               t('commit.deleteChangelistBody'),
@@ -319,31 +319,31 @@ export function CommitPanel({ store, state }) {
             ),
           }, '×')
         : null,
-      React.createElement('span', { className: 'itw-spacer' }),
+      React.createElement('span', { className: 'iwb-spacer' }),
       React.createElement('button', {
-        type: 'button', className: 'itw-textbtn itw-small itw-danger', title: t('commit.rollback'),
+        type: 'button', className: 'iwb-textbtn iwb-small iwb-danger', title: t('commit.rollback'),
         disabled: checkedPaths.size === 0 && state.commit.selectedPath === '',
         onClick: rollback,
       }, t('commit.rollback')),
     ),
-    React.createElement('div', { className: 'itw-groups' },
-      React.createElement('div', { className: 'itw-group' },
+    React.createElement('div', { className: 'iwb-groups' },
+      React.createElement('div', { className: 'iwb-group' },
         React.createElement(GroupHeader, { store, title: t('commit.changes'), entries: visibleChanges, checkedPaths }),
         changesBody,
       ),
-      React.createElement('div', { className: 'itw-group' },
+      React.createElement('div', { className: 'iwb-group' },
         React.createElement(GroupHeader, { store, title: t('commit.unversioned'), entries: groups.unversioned, checkedPaths }),
         groups.unversioned.length === 0
-          ? React.createElement('div', { className: 'itw-group-empty' }, t('commit.noUnversioned'))
+          ? React.createElement('div', { className: 'iwb-group-empty' }, t('commit.noUnversioned'))
           : renderEntries(groups.unversioned),
       ),
     ),
     menu !== null ? React.createElement(ContextMenu, { x: menu.x, y: menu.y, items: menuItems, onClose: () => setMenu(null) }) : null,
     dialog !== null
-      ? React.createElement('div', { className: 'itw-modal-backdrop', onMouseDown: event => { if (event.target === event.currentTarget) setDialog(null) } },
-          React.createElement('div', { className: 'itw-modal', role: 'dialog', 'aria-modal': 'true' },
+      ? React.createElement('div', { className: 'iwb-modal-backdrop', onMouseDown: event => { if (event.target === event.currentTarget) setDialog(null) } },
+          React.createElement('div', { className: 'iwb-modal', role: 'dialog', 'aria-modal': 'true' },
             React.createElement('h2', null, t('commit.newChangelist')),
-            React.createElement('label', { className: 'itw-field' },
+            React.createElement('label', { className: 'iwb-field' },
               React.createElement('span', null, t('commit.changelistName')),
               React.createElement('input', {
                 autoFocus: true,
@@ -361,10 +361,10 @@ export function CommitPanel({ store, state }) {
                 },
               }),
             ),
-            React.createElement('div', { className: 'itw-modal-actions' },
-              React.createElement('button', { type: 'button', className: 'itw-textbtn', onClick: () => setDialog(null) }, t('common.cancel')),
+            React.createElement('div', { className: 'iwb-modal-actions' },
+              React.createElement('button', { type: 'button', className: 'iwb-textbtn', onClick: () => setDialog(null) }, t('common.cancel')),
               React.createElement('button', {
-                type: 'button', className: 'itw-textbtn itw-primary',
+                type: 'button', className: 'iwb-textbtn iwb-primary',
                 onClick: () => {
                   const name = dialog.name.trim()
                   setDialog(null)

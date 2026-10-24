@@ -447,7 +447,7 @@ export function ProjectPanel({ store, state }) {
     const paths = selection.has(entry.path) ? currentPaths : [entry.path]
     dragRef.current = { paths, copy: false }
     event.dataTransfer.effectAllowed = 'copyMove'
-    event.dataTransfer.setData('application/x-itw-paths', JSON.stringify(paths))
+    event.dataTransfer.setData('application/x-iwb-paths', JSON.stringify(paths))
     event.dataTransfer.setData('text/plain', paths.join('\n'))
   }
 
@@ -506,26 +506,26 @@ export function ProjectPanel({ store, state }) {
   }
 
   const rootRow = state.root === ''
-    ? React.createElement('div', { className: 'itw-empty' },
-        React.createElement('div', { className: 'itw-empty-title' }, t('project.empty')),
-        React.createElement('button', { type: 'button', className: 'itw-textbtn itw-primary', onClick: () => store.openRootPicker() }, t('project.openWorkspace')),
+    ? React.createElement('div', { className: 'iwb-empty' },
+        React.createElement('div', { className: 'iwb-empty-title' }, t('project.empty')),
+        React.createElement('button', { type: 'button', className: 'iwb-textbtn iwb-primary', onClick: () => store.openRootPicker() }, t('project.openWorkspace')),
       )
     : (filterMode === 'files' && state.filter.trim() !== '' && rows.length === 0 && state.fileIndexLoading !== true
-        ? React.createElement('div', { className: 'itw-empty' },
-            React.createElement('div', { className: 'itw-empty-title' }, t('project.noMatches')),
+        ? React.createElement('div', { className: 'iwb-empty' },
+            React.createElement('div', { className: 'iwb-empty-title' }, t('project.noMatches')),
           )
-        : React.createElement('div', { className: 'itw-vlist', style: { height: `${rows.length * ROW_HEIGHT}px` } },
+        : React.createElement('div', { className: 'iwb-vlist', style: { height: `${rows.length * ROW_HEIGHT}px` } },
         visible.map((row, index) => {
           const top = (start + index) * ROW_HEIGHT
           const style = { top: `${top}px`, paddingLeft: `${8 + row.depth * 14}px` }
           if (row.kind === 'loading') {
-            return React.createElement('div', { key: row.key, className: 'itw-tree-msg', style: { ...style, position: 'absolute', left: 0, right: 0 } }, t('common.loading'))
+            return React.createElement('div', { key: row.key, className: 'iwb-tree-msg', style: { ...style, position: 'absolute', left: 0, right: 0 } }, t('common.loading'))
           }
           if (row.kind === 'error') {
-            return React.createElement('div', { key: row.key, className: 'itw-error-box', style: { ...style, position: 'absolute', left: 8, right: 8 }, title: row.message }, row.message)
+            return React.createElement('div', { key: row.key, className: 'iwb-error-box', style: { ...style, position: 'absolute', left: 8, right: 8 }, title: row.message }, row.message)
           }
           if (row.kind === 'note') {
-            return React.createElement('div', { key: row.key, className: 'itw-tree-msg', style: { ...style, position: 'absolute', left: 0, right: 0 } }, row.message)
+            return React.createElement('div', { key: row.key, className: 'iwb-tree-msg', style: { ...style, position: 'absolute', left: 0, right: 0 } }, row.message)
           }
           const entry = row.entry
           const selected = selection.has(entry.path)
@@ -533,12 +533,12 @@ export function ProjectPanel({ store, state }) {
           const ignoredFile = status.ignored.has(entry.rel)
           const excludedEntry = isExcluded(entry.rel, excluded)
           const classes = [
-            'itw-vlist-row', 'itw-tree-row',
-            selected ? 'itw-selected' : '',
+            'iwb-vlist-row', 'iwb-tree-row',
+            selected ? 'iwb-selected' : '',
             kind !== undefined ? statusClass(kind) : '',
-            ignoredFile ? 'itw-git-ignored' : '',
-            excludedEntry ? 'itw-excluded' : '',
-            dropTarget === entry.path ? 'itw-drop-target' : '',
+            ignoredFile ? 'iwb-git-ignored' : '',
+            excludedEntry ? 'iwb-excluded' : '',
+            dropTarget === entry.path ? 'iwb-drop-target' : '',
           ].filter(Boolean).join(' ')
           if (row.kind === 'dir') {
             return React.createElement('div', {
@@ -555,16 +555,16 @@ export function ProjectPanel({ store, state }) {
               onDrop: event => onDrop(event, row),
               onDragEnd,
             },
-              React.createElement('span', { className: 'itw-tree-twisty' }, row.open ? React.createElement(ChevronDown, null) : React.createElement(ChevronRight, null)),
+              React.createElement('span', { className: 'iwb-tree-twisty' }, row.open ? React.createElement(ChevronDown, null) : React.createElement(ChevronRight, null)),
               React.createElement(FileTypeIcon, { name: entry.name, isDir: true, open: row.open, size: 15 }),
-              React.createElement('span', { className: 'itw-tree-name itw-dir' }, entry.name),
+              React.createElement('span', { className: 'iwb-tree-name iwb-dir' }, entry.name),
             )
           }
           const active = state.tabs.find(tab => tab.kind === 'file' && tab.path === entry.path && tab.id === state.activeId)
           const editing = renaming !== null && renaming.path === entry.path
           return React.createElement('div', {
             key: row.key,
-            className: `${classes} ${active !== undefined ? 'itw-opened' : ''}`,
+            className: `${classes} ${active !== undefined ? 'iwb-opened' : ''}`,
             style,
             title: entry.rel,
             draggable: !editing,
@@ -576,11 +576,11 @@ export function ProjectPanel({ store, state }) {
             onDrop: event => onDrop(event, row),
             onDragEnd,
           },
-            React.createElement('span', { className: 'itw-tree-twisty' }),
+            React.createElement('span', { className: 'iwb-tree-twisty' }),
             React.createElement(FileTypeIcon, { name: entry.name, size: 15 }),
             editing
               ? React.createElement('input', {
-                  className: 'itw-rename-input',
+                  className: 'iwb-rename-input',
                   autoFocus: true,
                   value: renaming.value,
                   onChange: event => setRenaming({ ...renaming, value: event.target.value }),
@@ -593,9 +593,9 @@ export function ProjectPanel({ store, state }) {
                   onClick: event => event.stopPropagation(),
                   onDoubleClick: event => event.stopPropagation(),
                 })
-              : React.createElement('span', { className: 'itw-tree-name' }, entry.name),
+              : React.createElement('span', { className: 'iwb-tree-name' }, entry.name),
             row.quick === true
-              ? React.createElement('span', { className: 'itw-tree-relative' }, entry.rel)
+              ? React.createElement('span', { className: 'iwb-tree-relative' }, entry.rel)
               : null,
           )
         }),
@@ -603,15 +603,15 @@ export function ProjectPanel({ store, state }) {
 
   const favorites = state.settings?.favorites ?? []
   const favoritesPanel = favoritesOpen && favorites.length > 0
-    ? React.createElement('div', { className: 'itw-favorites' },
+    ? React.createElement('div', { className: 'iwb-favorites' },
         favorites.map(path => React.createElement('div', {
-          key: path, className: 'itw-favorite-row', title: path,
+          key: path, className: 'iwb-favorite-row', title: path,
           onClick: () => { void store.openFile(path, { rel: path, preview: false }) },
         },
-          React.createElement('span', { className: 'itw-favorite-star' }, '★'),
-          React.createElement('span', { className: 'itw-favorite-name' }, baseName(path)),
+          React.createElement('span', { className: 'iwb-favorite-star' }, '★'),
+          React.createElement('span', { className: 'iwb-favorite-name' }, baseName(path)),
           React.createElement('button', {
-            type: 'button', className: 'itw-iconbtn itw-favorite-remove', title: t('project.removeFavorite'),
+            type: 'button', className: 'iwb-iconbtn iwb-favorite-remove', title: t('project.removeFavorite'),
             onClick: event => { event.stopPropagation(); void store.toggleFavorite([path]) },
           }, '×'),
         )),
@@ -619,50 +619,50 @@ export function ProjectPanel({ store, state }) {
     : null
 
   return React.createElement(React.Fragment, null,
-    React.createElement('div', { className: 'itw-panel-header' },
-      React.createElement('span', { className: 'itw-panel-title' }, t('project.title')),
+    React.createElement('div', { className: 'iwb-panel-header' },
+      React.createElement('span', { className: 'iwb-panel-title' }, t('project.title')),
       React.createElement('button', {
         type: 'button',
-        className: 'itw-project-sub-btn',
+        className: 'iwb-project-sub-btn',
         title: `${t('project.selectProject')} — ${state.root}`,
         onClick: () => store.openProjectPicker(),
       },
-        React.createElement('span', { className: 'itw-project-sub-name' }, baseName(state.root) || t('project.empty')),
+        React.createElement('span', { className: 'iwb-project-sub-name' }, baseName(state.root) || t('project.empty')),
         React.createElement(ChevronDown, { size: 11 }),
       ),
-      React.createElement('span', { className: 'itw-spacer' }),
+      React.createElement('span', { className: 'iwb-spacer' }),
       React.createElement('button', {
-        type: 'button', className: `itw-iconbtn ${favoritesOpen ? 'itw-on' : ''}`, title: t('project.favorites'),
+        type: 'button', className: `iwb-iconbtn ${favoritesOpen ? 'iwb-on' : ''}`, title: t('project.favorites'),
         onClick: () => setFavoritesOpen(!favoritesOpen),
       }, '★'),
       React.createElement('button', {
-        type: 'button', className: 'itw-iconbtn', title: `${t('search.title')} (${shortcutFor('findInFiles')})`,
+        type: 'button', className: 'iwb-iconbtn', title: `${t('search.title')} (${shortcutFor('findInFiles')})`,
         onClick: () => store.openSearchTab(),
       }, React.createElement('span', { style: { fontSize: 16, lineHeight: 1 } }, '\u2315')),
       React.createElement('button', {
-        type: 'button', className: `itw-iconbtn ${filterOpen ? 'itw-on' : ''}`, title: t('project.filter'),
+        type: 'button', className: `iwb-iconbtn ${filterOpen ? 'iwb-on' : ''}`, title: t('project.filter'),
         onClick: () => { setFilterOpen(!filterOpen); if (filterOpen) store.setFilter('') },
       }, React.createElement(IconSearch, { width: 14, height: 14 })),
       React.createElement('button', {
-        type: 'button', className: 'itw-iconbtn', title: t('project.newFile'),
+        type: 'button', className: 'iwb-iconbtn', title: t('project.newFile'),
         onClick: () => beginNew(state.root, false),
       }, '+'),
       React.createElement('button', {
-        type: 'button', className: 'itw-iconbtn', title: t('common.refresh'),
+        type: 'button', className: 'iwb-iconbtn', title: t('common.refresh'),
         onClick: () => { void store.sync() },
       }, React.createElement(IconRefresh, { width: 14, height: 14 })),
     ),
     favoritesPanel,
     filterOpen || state.filter !== ''
-      ? React.createElement('div', { className: 'itw-filter' },
-          React.createElement('div', { className: 'itw-filter-mode', role: 'group' },
+      ? React.createElement('div', { className: 'iwb-filter' },
+          React.createElement('div', { className: 'iwb-filter-mode', role: 'group' },
             React.createElement('button', {
-              type: 'button', className: filterMode === 'files' ? 'itw-on' : '',
+              type: 'button', className: filterMode === 'files' ? 'iwb-on' : '',
               title: t('project.filterFiles'),
               onClick: () => store.setFilterMode('files'),
             }, t('project.filterFiles')),
             React.createElement('button', {
-              type: 'button', className: filterMode === 'tree' ? 'itw-on' : '',
+              type: 'button', className: filterMode === 'tree' ? 'iwb-on' : '',
               title: t('project.filterTree'),
               onClick: () => store.setFilterMode('tree'),
             }, t('project.filterTree')),
@@ -678,16 +678,16 @@ export function ProjectPanel({ store, state }) {
         )
       : null,
     filterMode === 'tree' && state.filter.trim() !== ''
-      ? React.createElement('div', { className: 'itw-filter-hint' }, t('project.filterTreeHint'))
+      ? React.createElement('div', { className: 'iwb-filter-hint' }, t('project.filterTreeHint'))
       : null,
     filterMode === 'files' && state.filter.trim() !== '' && state.fileIndexLoading === true
-      ? React.createElement('div', { className: 'itw-filter-hint' }, t('project.filterIndexing'))
+      ? React.createElement('div', { className: 'iwb-filter-hint' }, t('project.filterIndexing'))
       : null,
     filterMode === 'files' && state.filter.trim() !== '' && state.fileIndexError !== null
-      ? React.createElement('div', { className: 'itw-filter-hint itw-error-text' }, t('project.filterError'))
+      ? React.createElement('div', { className: 'iwb-filter-hint iwb-error-text' }, t('project.filterError'))
       : null,
     React.createElement('div', {
-      className: 'itw-panel-body itw-tree',
+      className: 'iwb-panel-body iwb-tree',
       ref: scrollRef,
       tabIndex: 0,
       onKeyDown,
@@ -698,10 +698,10 @@ export function ProjectPanel({ store, state }) {
     }, rootRow),
     menu !== null ? React.createElement(ContextMenu, { x: menu.x, y: menu.y, items: menuItems, onClose: () => setMenu(null) }) : null,
     dialog !== null && dialog.kind === 'new'
-      ? React.createElement('div', { className: 'itw-modal-backdrop', onMouseDown: event => { if (event.target === event.currentTarget) setDialog(null) } },
-          React.createElement('div', { className: 'itw-modal', role: 'dialog', 'aria-modal': 'true' },
+      ? React.createElement('div', { className: 'iwb-modal-backdrop', onMouseDown: event => { if (event.target === event.currentTarget) setDialog(null) } },
+          React.createElement('div', { className: 'iwb-modal', role: 'dialog', 'aria-modal': 'true' },
             React.createElement('h2', null, dialog.isDir ? t('project.newDir') : t('project.newFile')),
-            React.createElement('label', { className: 'itw-field' },
+            React.createElement('label', { className: 'iwb-field' },
               React.createElement('span', null, t('project.nameLabel')),
               React.createElement('input', {
                 autoFocus: true, value: dialog.name,
@@ -710,7 +710,7 @@ export function ProjectPanel({ store, state }) {
               }),
             ),
             !dialog.isDir
-              ? React.createElement('label', { className: 'itw-field' },
+              ? React.createElement('label', { className: 'iwb-field' },
                   React.createElement('span', null, t('project.templateLabel')),
                   React.createElement('select', {
                     value: dialog.template,
@@ -723,19 +723,19 @@ export function ProjectPanel({ store, state }) {
                   }, NEW_TEMPLATES.map(template => React.createElement('option', { key: template.id, value: template.id }, t(template.labelKey)))),
                 )
               : null,
-            React.createElement('div', { className: 'itw-modal-actions' },
-              React.createElement('button', { type: 'button', className: 'itw-textbtn', onClick: () => setDialog(null) }, t('common.cancel')),
-              React.createElement('button', { type: 'button', className: 'itw-textbtn itw-primary', onClick: submitDialog }, t('project.create')),
+            React.createElement('div', { className: 'iwb-modal-actions' },
+              React.createElement('button', { type: 'button', className: 'iwb-textbtn', onClick: () => setDialog(null) }, t('common.cancel')),
+              React.createElement('button', { type: 'button', className: 'iwb-textbtn iwb-primary', onClick: submitDialog }, t('project.create')),
             ),
           ),
         )
       : null,
     dialog !== null && dialog.kind === 'move'
-      ? React.createElement('div', { className: 'itw-modal-backdrop', onMouseDown: event => { if (event.target === event.currentTarget) setDialog(null) } },
-          React.createElement('div', { className: 'itw-modal', role: 'dialog', 'aria-modal': 'true' },
+      ? React.createElement('div', { className: 'iwb-modal-backdrop', onMouseDown: event => { if (event.target === event.currentTarget) setDialog(null) } },
+          React.createElement('div', { className: 'iwb-modal', role: 'dialog', 'aria-modal': 'true' },
             React.createElement('h2', null, t('project.moveTitle')),
             React.createElement('p', null, dialog.paths.map(path => baseName(path)).join(', ')),
-            React.createElement('label', { className: 'itw-field' },
+            React.createElement('label', { className: 'iwb-field' },
               React.createElement('span', null, t('project.moveTarget')),
               React.createElement('input', {
                 autoFocus: true, value: dialog.target, placeholder: t('project.movePlaceholder'),
@@ -743,9 +743,9 @@ export function ProjectPanel({ store, state }) {
                 onKeyDown: event => { if (event.key === 'Enter') { event.preventDefault(); submitDialog() } },
               }),
             ),
-            React.createElement('div', { className: 'itw-modal-actions' },
-              React.createElement('button', { type: 'button', className: 'itw-textbtn', onClick: () => setDialog(null) }, t('common.cancel')),
-              React.createElement('button', { type: 'button', className: 'itw-textbtn itw-primary', onClick: submitDialog }, t('project.move')),
+            React.createElement('div', { className: 'iwb-modal-actions' },
+              React.createElement('button', { type: 'button', className: 'iwb-textbtn', onClick: () => setDialog(null) }, t('common.cancel')),
+              React.createElement('button', { type: 'button', className: 'iwb-textbtn iwb-primary', onClick: submitDialog }, t('project.move')),
             ),
           ),
         )

@@ -1,6 +1,6 @@
-# dsh-ide-toolwindows
+# dsh-ide-workbench
 
-**IDE 工具窗口** —— 为 DeepSeek Harness 提供一套 JetBrains 式工具窗：
+**IDE 工作台** —— 为 DeepSeek Harness 提供一套 JetBrains 式工具窗：
 **Project · Commit · Terminal · Git** 四窗共享同一份实时仓库状态，中间是插件自有的编辑器区（因此预览标签 / 固定标签的语义与 IDE 完全一致）。
 
 ## 0.3 更新（JetBrains 化）
@@ -24,13 +24,13 @@
 | **提交消息** | `Ctrl+K` | 打开 Commit 并聚焦消息框（对齐 IDEA）。 |
 | **推送** | `Ctrl+Shift+K` | 在工作台内推送当前分支。 |
 
-所有快捷键均可在 **设置 → IDE 工具窗口** 中重新绑定。
+所有快捷键均可在 **设置 → IDE 工作台** 中重新绑定。
 
-### IDE 工具窗口全屏与外部 IDE 联动
+### IDE 工作台全屏与外部 IDE 联动
 
 - 工作台右上角的全屏按钮和 `F11` 切换 IDE 所在侧边栏面板的全屏展示；再次点击或按 `F11` 还原，保留原分栏和打开的标签。
 - 在 Project 文件树或编辑器文件标签上右键，悬停 **在 IDE 中打开**，选择 **IntelliJ IDEA**、**WebStorm** 或 **Visual Studio Code**。启动时打开当前选中的 **IDE 项目根目录** 和该文件，支持路径中的空格与中文。
-- **设置 → IDE 工具窗口 → 外部 IDE** 可分别指定三个可执行文件路径；留空自动查找。Windows 使用 `idea64.exe`、`webstorm64.exe` 或 `Code.exe`。
+- **设置 → IDE 工作台 → 外部 IDE** 可分别指定三个可执行文件路径；留空自动查找。Windows 使用 `idea64.exe`、`webstorm64.exe` 或 `Code.exe`。
 - 外部 IDE 读取磁盘上的文件；工作台里的未保存修改请先保存。启动失败会显示原因；操作成功提示表示已发出启动请求。
 
 ### 工作区 vs. IDE 项目根目录
@@ -48,14 +48,14 @@ DSH 工作区经常只是一个「容器」：根目录本身不是 Git 仓库�
 
 ## 与 DSH 的集成方式
 
-- 在聊天顶部点击 **IDE 工具窗口** 图标，或在右侧边栏添加页面中选择 **IDE 工具窗口**；工作台作为 `sidebar.right.pane.tab` 标签与聊天并排展示。新会话（Ctrl+N）的 New Session 行也提供同一入口，设置旁的侧栏底部还提供一个常驻入口（皮肤隐藏头部工具时仍可用）；完全未选择会话的初始页没有右侧栏。
+- 在聊天顶部点击 **IDE 工作台** 图标，或在右侧边栏添加页面中选择 **IDE 工作台**；工作台作为 `sidebar.right.pane.tab` 标签与聊天并排展示。新会话（Ctrl+N）的 New Session 行也提供同一入口，设置旁的侧栏底部还提供一个常驻入口（皮肤隐藏头部工具时仍可用）；完全未选择会话的初始页没有右侧栏。
 - 同一 DSH 工作区的会话共享一个工作台状态：切换会话（含新建会话）会保持文件树、打开的文件与 Git 上下文；IDE 当前可见时会在新会话中自动重新打开。v1 中终端 PTY 与编辑器撤销栈在切会话时重建。
-- 聊天中的文件链接（用户 @ 引用与助手 Markdown 链接）默认在 IDE 工具窗口中打开，并展开文件树、定位到 `#L24` 行；文件不在工作区内时自动降级到 DSH 自带侧栏；文件在工作区内但不在当前 IDE 项目内时，先询问是否把 IDE 项目切换到工作区根。可在 设置 → IDE 工具窗口 → 聊天文件链接 切换为始终使用 DSH 侧栏。
+- 聊天中的文件链接（用户 @ 引用与助手 Markdown 链接）默认在 IDE 工作台中打开，并展开文件树、定位到 `#L24` 行；文件不在工作区内时自动降级到 DSH 自带侧栏；文件在工作区内但不在当前 IDE 项目内时，先询问是否把 IDE 项目切换到工作区根。可在 设置 → IDE 工作台 → 聊天文件链接 切换为始终使用 DSH 侧栏。
 - 快捷键会打开右侧边栏。工作台在 560px 以上的窗格中保持左右分栏（Project/Commit 在左、编辑器在右、Git/Terminal 在编辑器下方），大多数笔记本的默认侧栏宽度都高于这个阈值；只有更窄的窗格才上下排列。进入上下排列时会自动收起工具窗聚焦内容，且 Project/Commit 与 Git/Terminal 两组互斥。可通过 DSH 原生标签条拆分、浮动或全屏。隐藏时暂停刷新。
 - 在 Project 文件树或文件标签页上右键可选择 **在侧栏标签中打开**：文件改由 DSH 自带侧栏预览。HTML 文件在编辑区右上角还会显示两个浮动按钮：用 DSH 侧栏预览（地球图标）或用系统默认浏览器打开（Chrome 图标）。
 - Git 直接调用系统 CLI（argv 数组，绝不拼 shell 字符串），因此凭据管理器、hook 与你的 git 配置全部生效；解析使用 `status --porcelain=v2 -z`、`diff --numstat -z` 与自定义 `log` 流。
 - 文件读写走带路径围栏的 `fs` API；保存为原子写入，并保留原文件的编码（UTF-8/BOM/UTF-16）与换行符。所有 HTTP/WebSocket 路由与 `/api` 使用同一 Connection 准入校验。
-- 设置（快捷键、Shell、git 路径、界面几何、每个工作区的展开目录与打开的标签）持久化在 DSH 主目录的 `ide-toolwindows/settings.json`（`$DSH_HOME` / `~/.dsh`；宿主导出 `DSH_PROFILE_DIR` 时为 profile 目录）。
+- 设置（快捷键、Shell、git 路径、界面几何、每个工作区的展开目录与打开的标签）持久化在 DSH 主目录的 `ide-workbench/settings.json`（`$DSH_HOME` / `~/.dsh`；宿主导出 `DSH_PROFILE_DIR` 时为 profile 目录）。
 - UI 使用 React 渲染，样式只引用 `--dsw-alias-*` 主题令牌，明暗主题与皮肤自动跟随。
 
 ## V1 明确不做
@@ -70,18 +70,18 @@ DSH 工作区经常只是一个「容器」：根目录本身不是 Git 仓库�
 ## 本地安装
 
 ```sh
-dsh plugin install /绝对路径/dsh-ide-toolwindows
+dsh plugin install /绝对路径/dsh-ide-workbench
 ```
 
 或在 DSH 设置 → 插件中从目录安装。宿主依赖 `ws`（PTY 传输）；客户端是预构建单文件（`dist/client.js`，xterm 已内联）。
 
 ## 从 GitHub 安装
 
-仓库：<https://github.com/LiangshouX/dsh-ide-toolwindows>
+仓库：<https://github.com/LiangshouX/dsh-ide-workbench>
 
 ```sh
-git clone https://github.com/LiangshouX/dsh-ide-toolwindows.git
-cd dsh-ide-toolwindows
+git clone https://github.com/LiangshouX/dsh-ide-workbench.git
+cd dsh-ide-workbench
 npm install --omit=dev    # 只安装宿主运行时依赖 ws
 dsh plugin install .
 ```

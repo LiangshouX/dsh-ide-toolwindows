@@ -19,11 +19,11 @@ test('classifies the IDEA highlight states', () => {
 })
 
 test('class maps to the JetBrains colour classes', () => {
-  assert.equal(statusClass('untracked'), 'itw-git-untracked')
-  assert.equal(statusClass('added'), 'itw-git-added')
-  assert.equal(statusClass('modified'), 'itw-git-modified')
-  assert.equal(statusClass('conflict'), 'itw-git-conflict')
-  assert.equal(statusClass('ignored'), 'itw-git-ignored')
+  assert.equal(statusClass('untracked'), 'iwb-git-untracked')
+  assert.equal(statusClass('added'), 'iwb-git-added')
+  assert.equal(statusClass('modified'), 'iwb-git-modified')
+  assert.equal(statusClass('conflict'), 'iwb-git-conflict')
+  assert.equal(statusClass('ignored'), 'iwb-git-ignored')
   assert.equal(statusClass(null), '')
 })
 

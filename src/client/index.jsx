@@ -18,7 +18,7 @@ import {
 import { openInDefaultSidebar } from './file-link.js'
 
 export const inject = ['slots', 'locale', 'sidebarRight', 'sidebarRightTabs', 'sessions']
-const PANEL_ID = 'ide-toolwindows'
+const PANEL_ID = 'ide-workbench'
 
 function PanelIcon({ size = 20 }) {
   return React.createElement('svg', {
@@ -103,13 +103,13 @@ function FileLinkBridge({ store, tab, ctx, suppressSelf }) {
 
   const path = view.absolute !== '' ? view.absolute : address
   const button = (key, label, extra, onClick) => React.createElement('button', {
-    key, type: 'button', className: `itw-textbtn ${extra}`.trim(), onClick,
+    key, type: 'button', className: `iwb-textbtn ${extra}`.trim(), onClick,
   }, store.t(label))
-  const card = (title, body, actions) => React.createElement('div', { className: 'itw-empty itw-link-prompt' },
-    React.createElement('div', { className: 'itw-empty-title' }, store.t(title)),
-    body === '' ? null : React.createElement('div', { className: 'itw-link-body' }, store.t(body)),
-    path === '' ? null : React.createElement('div', { className: 'itw-link-path' }, path),
-    React.createElement('div', { className: 'itw-link-actions' }, actions),
+  const card = (title, body, actions) => React.createElement('div', { className: 'iwb-empty iwb-link-prompt' },
+    React.createElement('div', { className: 'iwb-empty-title' }, store.t(title)),
+    body === '' ? null : React.createElement('div', { className: 'iwb-link-body' }, store.t(body)),
+    path === '' ? null : React.createElement('div', { className: 'iwb-link-path' }, path),
+    React.createElement('div', { className: 'iwb-link-actions' }, actions),
   )
   const defaultButton = () => button('default', 'links.openInDefaultSidebar', '', () => {
     if (!openDefault()) setView({ phase: 'failed', absolute: path })
@@ -117,12 +117,12 @@ function FileLinkBridge({ store, tab, ctx, suppressSelf }) {
 
   let content
   if (view.phase === 'opening') {
-    content = React.createElement('div', { className: 'itw-empty' },
-      React.createElement('div', { className: 'itw-empty-title' }, store.t('common.loading')),
+    content = React.createElement('div', { className: 'iwb-empty' },
+      React.createElement('div', { className: 'iwb-empty-title' }, store.t('common.loading')),
     )
   } else if (view.phase === 'prompt') {
     content = card('links.switchProjectTitle', 'links.switchProjectBody', [
-      button('yes', 'links.switchProjectYes', 'itw-primary', () => { void begin(true) }),
+      button('yes', 'links.switchProjectYes', 'iwb-primary', () => { void begin(true) }),
       defaultButton(),
     ])
   } else if (view.phase === 'dirty') {
@@ -138,9 +138,9 @@ function FileLinkBridge({ store, tab, ctx, suppressSelf }) {
       button('close', 'common.close', '', close),
     ])
   }
-  // `.itw-root`'s tokens are scoped to the workbench; this carrier tab is a
-  // sibling surface, so it brings its own `.itw-link-shell` token scope.
-  return React.createElement('div', { className: 'itw-link-shell' }, content)
+  // `.iwb-root`'s tokens are scoped to the workbench; this carrier tab is a
+  // sibling surface, so it brings its own `.iwb-link-shell` token scope.
+  return React.createElement('div', { className: 'iwb-link-shell' }, content)
 }
 
 function BoundWorkbench({ getStore, sessionId, useTabInfo, ctx, reportVisible, suppressSelf }) {
@@ -179,7 +179,7 @@ function BoundSettings({ store }) {
 function OpenButton({ open, t }) {
   return React.createElement('button', {
     type: 'button', title: t('panelLabel'), 'aria-label': t('panelLabel'),
-    className: 'itw-sidebar-open', onClick: open,
+    className: 'iwb-sidebar-open', onClick: open,
   }, React.createElement(PanelIcon, { size: 18 }))
 }
 
@@ -189,7 +189,7 @@ export function apply(ctx) {
     const offZh = ctx.locale.register(NS, 'zh', zh)
     const offEn = ctx.locale.register(NS, 'en', en)
     return () => { offZh(); offEn() }
-  }, 'dsh-ide-toolwindows: dictionaries')
+  }, 'dsh-ide-workbench: dictionaries')
 
   // The settings document is shared by every workspace store; load it before a
   // file-link claim can consult `links.chatFiles`.
@@ -206,7 +206,7 @@ export function apply(ctx) {
   }
 
   // Render styles through React so their lifetime follows the plugin's seats.
-  const Styles = () => React.createElement('style', { 'data-dsh-ide-toolwindows': '' }, `${xtermCss}\n${CSS}`)
+  const Styles = () => React.createElement('style', { 'data-dsh-ide-workbench': '' }, `${xtermCss}\n${CSS}`)
   const stores = new Map()
   const hasMounted = typeof ctx.sidebarRight?.mounted?.getSnapshot === 'function'
   const getStore = (sessionId) => {
@@ -300,7 +300,7 @@ export function apply(ctx) {
   }
 
   ctx.effect(() => ctx.sidebarRightTabs.register({
-    id: 'dsh-ide-toolwindows', kind: PANEL_ID,
+    id: 'dsh-ide-workbench', kind: PANEL_ID,
     title: address => (isFileAddress(address)
       ? (basenameOfFileAddress(address) ?? t('panelLabel'))
       : t('panelLabel')),
@@ -330,23 +330,23 @@ export function apply(ctx) {
       return isPathWithin(workspace, absolute)
     },
     guide: [{ id: PANEL_ID, title: () => t('panelLabel'), icon: PanelIcon, order: 35 }],
-  }), 'dsh-ide-toolwindows: sidebar tab type')
+  }), 'dsh-ide-workbench: sidebar tab type')
 
   ctx.effect(() => ctx.slots.inject('sidebar.right.pane.tab', () => ctx.slots.register({
-    name: 'sidebar.right.pane.tab', key: 'dsh-ide-toolwindows',
+    name: 'sidebar.right.pane.tab', key: 'dsh-ide-workbench',
   }, props => React.createElement(React.Fragment, null,
     React.createElement(Styles),
     React.createElement(BoundWorkbench, {
       ...props, getStore, ctx, reportVisible, suppressSelf,
     }),
-  ))), 'dsh-ide-toolwindows: sidebar body')
+  ))), 'dsh-ide-workbench: sidebar body')
 
   ctx.effect(() => ctx.slots.inject('conversation.session.header.utilities', () => ctx.slots.register({
     name: 'conversation.session.header.utilities', id: PANEL_ID, order: 30,
     label: () => t('panelLabel'),
   }, () => React.createElement(React.Fragment, null,
     React.createElement(Styles), React.createElement(OpenButton, { open: toggle, t }),
-  ))), 'dsh-ide-toolwindows: sidebar entry')
+  ))), 'dsh-ide-workbench: sidebar entry')
 
   // A blank Session hides the whole session-header title cluster, so the entry
   // above disappears on Ctrl+N. The New Session row keeps its compact options
@@ -356,7 +356,7 @@ export function apply(ctx) {
     label: () => t('panelLabel'),
   }, () => React.createElement(React.Fragment, null,
     React.createElement(Styles), React.createElement(OpenButton, { open, t }),
-  ))), 'dsh-ide-toolwindows: new-session entry')
+  ))), 'dsh-ide-workbench: new-session entry')
 
   // The footer entry is the always-present fallback: it survives when a skin or
   // a narrow header hides the session utilities, and it is visible on the
@@ -366,7 +366,7 @@ export function apply(ctx) {
     label: () => t('panelLabel'),
   }, () => React.createElement(React.Fragment, null,
     React.createElement(Styles), React.createElement(OpenButton, { open, t }),
-  ))), 'dsh-ide-toolwindows: sidebar footer entry')
+  ))), 'dsh-ide-workbench: sidebar footer entry')
 
   ctx.effect(() => {
     const mounted = ctx.sidebarRight?.mounted
@@ -390,14 +390,14 @@ export function apply(ctx) {
       unsubscribeTabs?.()
       clearPending()
     }
-  }, 'dsh-ide-toolwindows: workspace continuity')
+  }, 'dsh-ide-workbench: workspace continuity')
 
   ctx.effect(() => ctx.slots.inject('settings.section', () => ctx.slots.register({
     name: 'settings.section', id: PANEL_ID, order: 60, label: () => t('settings.nav'),
   }, () => React.createElement(React.Fragment, null,
     React.createElement(Styles),
     React.createElement(BoundSettings, { store: settingsStore }),
-  ))), 'dsh-ide-toolwindows: settings section')
+  ))), 'dsh-ide-workbench: settings section')
 
   ctx.effect(() => {
     const onKeyDown = event => {
@@ -406,7 +406,7 @@ export function apply(ctx) {
       const shortcuts = (store ?? settingsStore).state.settings?.shortcuts
       if (shortcuts == null) return
       const target = event.target
-      const inWorkbench = target instanceof Element && target.closest('.itw-root') !== null
+      const inWorkbench = target instanceof Element && target.closest('.iwb-root') !== null
       const inTerminal = isTerminalTarget(event.target)
       if (store?.state.active === true && inWorkbench) {
         if (matchesShortcut(shortcuts.findInFiles ?? 'Ctrl+Shift+F', event)
@@ -490,7 +490,7 @@ export function apply(ctx) {
     }
     document.addEventListener('keydown', onKeyDown, true)
     return () => document.removeEventListener('keydown', onKeyDown, true)
-  }, 'dsh-ide-toolwindows: shortcuts')
+  }, 'dsh-ide-workbench: shortcuts')
 
   ctx.effect(() => () => {
     for (const store of [...stores.values(), settingsStore]) {
@@ -498,5 +498,5 @@ export function apply(ctx) {
       for (const unsubscribe of store.unsubscribers.splice(0)) unsubscribe()
     }
     stores.clear()
-  }, 'dsh-ide-toolwindows: store teardown')
+  }, 'dsh-ide-workbench: store teardown')
 }

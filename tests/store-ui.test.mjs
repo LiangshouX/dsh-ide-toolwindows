@@ -77,7 +77,7 @@ test('openInSidebar names the built-in text preview for a session address', () =
       mounted: { getSnapshot: () => 's1' },
       openResource: (address, options) => { calls.push({ address, options }) },
     },
-    sidebarRightTabs: { candidates: () => [{ kind: 'ide-toolwindows' }, { kind: 'text' }] },
+    sidebarRightTabs: { candidates: () => [{ kind: 'ide-workbench' }, { kind: 'text' }] },
   }
   const store = new WorkbenchStore(ctx, key => key)
   store.state = {

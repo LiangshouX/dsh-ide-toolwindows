@@ -33,30 +33,30 @@ function Welcome({ store, state }) {
     { key: 'git', icon: 'git', title: t('welcome.git'), shortcut: state.settings?.shortcuts?.git ?? 'Alt+9', onClick: () => store.showTool('git') },
     { key: 'terminal', icon: 'terminal', title: t('welcome.terminal'), shortcut: state.settings?.shortcuts?.terminal ?? 'Alt+F12', onClick: () => store.showTool('terminal') },
   ]
-  return React.createElement('div', { className: 'itw-welcome' },
-    React.createElement('div', { className: 'itw-welcome-card' },
-      React.createElement('h1', { className: 'itw-welcome-title' }, t('welcome.title')),
-      React.createElement('p', { className: 'itw-welcome-sub' }, t('welcome.subtitle')),
-      React.createElement('div', { className: 'itw-welcome-grid' },
+  return React.createElement('div', { className: 'iwb-welcome' },
+    React.createElement('div', { className: 'iwb-welcome-card' },
+      React.createElement('h1', { className: 'iwb-welcome-title' }, t('welcome.title')),
+      React.createElement('p', { className: 'iwb-welcome-sub' }, t('welcome.subtitle')),
+      React.createElement('div', { className: 'iwb-welcome-grid' },
         actions.map(action => React.createElement('button', {
-          key: action.key, type: 'button', className: 'itw-welcome-action', onClick: action.onClick,
+          key: action.key, type: 'button', className: 'iwb-welcome-action', onClick: action.onClick,
         },
           React.createElement(StripeIcon, { tool: action.icon, size: 17 }),
           React.createElement('span', null, action.title),
           React.createElement(Shortcut, { shortcut: action.shortcut, children: action.shortcut }),
         )),
       ),
-      React.createElement('div', { className: 'itw-welcome-meta' },
+      React.createElement('div', { className: 'iwb-welcome-meta' },
         state.status.isRepo === true
           ? React.createElement('span', null, `${t('welcome.branch')}: ${state.status.detached === true ? t('git.detached') : (branch ?? 'HEAD')}`)
           : React.createElement('span', null, t('welcome.noRepo')),
         React.createElement('span', null, state.root),
       ),
       state.status.isRepo !== true && repoProjects.length > 0
-        ? React.createElement('div', { className: 'itw-welcome-hint' },
+        ? React.createElement('div', { className: 'iwb-welcome-hint' },
             React.createElement('span', null, t('project.noRepoHint')),
             React.createElement('button', {
-              type: 'button', className: 'itw-textbtn itw-small',
+              type: 'button', className: 'iwb-textbtn iwb-small',
               onClick: () => store.openProjectPicker(),
             }, t('project.chooseRepo')),
           )
@@ -77,27 +77,27 @@ function FilePreview({ store, state, tab, onEditorReady, onFindRequest, onFindIn
     }, 400)
   }
   if (tab.loading === true && tab.payload === undefined) {
-    return React.createElement('div', { className: 'itw-editor-empty' }, t('common.loading'))
+    return React.createElement('div', { className: 'iwb-editor-empty' }, t('common.loading'))
   }
   if (tab.error !== null && tab.error !== undefined) {
-    return React.createElement('div', { className: 'itw-editor-empty' }, React.createElement('div', { className: 'itw-error-box' }, tab.error))
+    return React.createElement('div', { className: 'iwb-editor-empty' }, React.createElement('div', { className: 'iwb-error-box' }, tab.error))
   }
   const payload = tab.payload
   if (payload === undefined || payload === null) return null
   if (payload.kind === 'image') {
-    return React.createElement('div', { className: 'itw-editor-empty', style: { flexDirection: 'column', gap: 12 } },
-      React.createElement('img', { src: payload.dataUrl, alt: tab.name, style: { maxWidth: '92%', maxHeight: '82%', objectFit: 'contain', borderRadius: 6, border: '1px solid var(--itw-border)' } }),
+    return React.createElement('div', { className: 'iwb-editor-empty', style: { flexDirection: 'column', gap: 12 } },
+      React.createElement('img', { src: payload.dataUrl, alt: tab.name, style: { maxWidth: '92%', maxHeight: '82%', objectFit: 'contain', borderRadius: 6, border: '1px solid var(--iwb-border)' } }),
       React.createElement('span', null, `${tab.rel} · ${payload.size} B`),
     )
   }
   if (payload.kind === 'binary') {
-    return React.createElement('div', { className: 'itw-editor-empty' }, t('common.binary'))
+    return React.createElement('div', { className: 'iwb-editor-empty' }, t('common.binary'))
   }
   if (payload.kind === 'too-large') {
-    return React.createElement('div', { className: 'itw-editor-empty' }, t('common.tooLarge'))
+    return React.createElement('div', { className: 'iwb-editor-empty' }, t('common.tooLarge'))
   }
   if (payload.kind !== 'text') {
-    return React.createElement('div', { className: 'itw-editor-empty' }, t('common.binary'))
+    return React.createElement('div', { className: 'iwb-editor-empty' }, t('common.binary'))
   }
   const saved = payload.content ?? ''
   const text = tab.dirty === true ? (tab.draft ?? saved) : saved
@@ -158,10 +158,10 @@ function TabBar({ store, state }) {
   const t = store.t
   const [menu, setMenu] = useState(null)
   const activeIndex = state.tabs.findIndex(tab => tab.id === state.activeId)
-  return React.createElement('div', { className: 'itw-tabbar' },
+  return React.createElement('div', { className: 'iwb-tabbar' },
     state.tabs.map(tab => React.createElement('div', {
       key: tab.id,
-      className: `itw-tab ${tab.id === state.activeId ? 'itw-active' : ''} ${tab.preview ? 'itw-preview' : ''} ${tab.dirty ? 'itw-dirty' : ''}`,
+      className: `iwb-tab ${tab.id === state.activeId ? 'iwb-active' : ''} ${tab.preview ? 'iwb-preview' : ''} ${tab.dirty ? 'iwb-dirty' : ''}`,
       title: tab.path,
       onClick: () => store.activateTab(tab.id),
       onDoubleClick: () => { if (tab.kind === 'file' && tab.preview) void store.pinTab(tab.id, { silent: true }) },
@@ -171,21 +171,21 @@ function TabBar({ store, state }) {
       tab.kind === 'commit'
         ? React.createElement(IconMore, { width: 12, height: 12 })
         : React.createElement(FileTypeIcon, { name: tab.name, isDir: false, size: 14 }),
-      React.createElement('span', { className: 'itw-tab-name' }, tab.kind === 'commit' ? tab.hash.slice(0, 8) : tab.name),
+      React.createElement('span', { className: 'iwb-tab-name' }, tab.kind === 'commit' ? tab.hash.slice(0, 8) : tab.name),
       tab.dirty === true
-        ? React.createElement('span', { className: 'itw-tab-dirty', title: t('editor.dirty') })
-        : (tab.preview ? React.createElement('span', { className: 'itw-tab-dot', title: t('common.preview') }) : null),
+        ? React.createElement('span', { className: 'iwb-tab-dirty', title: t('editor.dirty') })
+        : (tab.preview ? React.createElement('span', { className: 'iwb-tab-dot', title: t('common.preview') }) : null),
       React.createElement('button', {
         type: 'button',
-        className: 'itw-tab-close',
+        className: 'iwb-tab-close',
         title: t('common.closeTab'),
         onClick: event => { event.stopPropagation(); store.closeTab(tab.id) },
       }, React.createElement(IconClose, { width: 11, height: 11 })),
     )),
-    React.createElement('div', { className: 'itw-tabbar-actions' },
+    React.createElement('div', { className: 'iwb-tabbar-actions' },
       activeIndex >= 0 && state.tabs[activeIndex]?.kind === 'file' && state.tabs[activeIndex]?.preview
         ? React.createElement('button', {
-            type: 'button', className: 'itw-iconbtn', title: t('common.pinTab'),
+            type: 'button', className: 'iwb-iconbtn', title: t('common.pinTab'),
             onClick: () => store.pinTab(state.tabs[activeIndex].id),
           }, React.createElement(IconPin, { width: 14, height: 14 }))
         : null,
@@ -241,28 +241,28 @@ function EditorToolbar({ store, state, tab }) {
       setDiffMenu({ x: rect.left - 120, y: rect.bottom + 4 })
     }
     return React.createElement(React.Fragment, null,
-      React.createElement('div', { className: 'itw-editor-toolbar' },
-        React.createElement('div', { className: 'itw-breadcrumb' },
+      React.createElement('div', { className: 'iwb-editor-toolbar' },
+        React.createElement('div', { className: 'iwb-breadcrumb' },
           React.createElement('span', null, t('commit.title')),
-          React.createElement('span', { className: 'itw-sep' }, '›'),
+          React.createElement('span', { className: 'iwb-sep' }, '›'),
           React.createElement('b', null, variant),
-          React.createElement('span', { className: 'itw-sep' }, '›'),
+          React.createElement('span', { className: 'iwb-sep' }, '›'),
           React.createElement('b', null, baseName(tab.rel)),
         ),
-        React.createElement('div', { className: 'itw-spacer' }),
+        React.createElement('div', { className: 'iwb-spacer' }),
         readOnly
           ? null
           : React.createElement(React.Fragment, null,
               React.createElement('button', {
-                type: 'button', className: 'itw-textbtn itw-small',
+                type: 'button', className: 'iwb-textbtn iwb-small',
                 onClick: anchor,
               }, t('commit.showDiffWith'), ' ▾'),
               React.createElement('button', {
-                type: 'button', className: 'itw-textbtn itw-small', title: t('commit.jumpToSource'),
+                type: 'button', className: 'iwb-textbtn iwb-small', title: t('commit.jumpToSource'),
                 onClick: () => store.jumpToSource(tab.rel),
               }, t('commit.jumpToSource')),
               React.createElement('button', {
-                type: 'button', className: 'itw-textbtn itw-small itw-danger',
+                type: 'button', className: 'iwb-textbtn iwb-small iwb-danger',
                 onClick: () => store.revertChange({ path: tab.rel, untracked: tab.untracked === true }),
               }, t('commit.revert')),
             ),
@@ -281,13 +281,13 @@ function EditorToolbar({ store, state, tab }) {
     )
   }
   if (tab.kind === 'commit') {
-    return React.createElement('div', { className: 'itw-editor-toolbar' },
-      React.createElement('div', { className: 'itw-breadcrumb' },
+    return React.createElement('div', { className: 'iwb-editor-toolbar' },
+      React.createElement('div', { className: 'iwb-breadcrumb' },
         React.createElement('b', null, t('git.details')),
-        React.createElement('span', { className: 'itw-sep' }, '›'),
-        React.createElement('b', { style: { fontFamily: 'var(--itw-mono)' } }, tab.hash.slice(0, 10)),
+        React.createElement('span', { className: 'iwb-sep' }, '›'),
+        React.createElement('b', { style: { fontFamily: 'var(--iwb-mono)' } }, tab.hash.slice(0, 10)),
       ),
-      React.createElement('div', { className: 'itw-spacer' }),
+      React.createElement('div', { className: 'iwb-spacer' }),
     )
   }
   const segments = tab.rel.split(/[\\/]/)
@@ -298,52 +298,52 @@ function EditorToolbar({ store, state, tab }) {
   const view = tab.view ?? (markdown ? 'preview' : 'code')
   const dirty = tab.dirty === true
   const saving = tab.saving === true
-  return React.createElement('div', { className: 'itw-editor-toolbar' },
-    React.createElement('div', { className: 'itw-breadcrumb', title: tab.path },
+  return React.createElement('div', { className: 'iwb-editor-toolbar' },
+    React.createElement('div', { className: 'iwb-breadcrumb', title: tab.path },
       segments.slice(0, -1).map((segment, index) => React.createElement(React.Fragment, { key: index },
         React.createElement('span', null, segment),
-        React.createElement('span', { className: 'itw-sep' }, '›'),
+        React.createElement('span', { className: 'iwb-sep' }, '›'),
       )),
       React.createElement('b', null, segments[segments.length - 1]),
-      dirty ? React.createElement('span', { className: 'itw-toolbar-dirty', title: t('editor.dirty') }, t('editor.dirty')) : null,
+      dirty ? React.createElement('span', { className: 'iwb-toolbar-dirty', title: t('editor.dirty') }, t('editor.dirty')) : null,
       tab.conflict !== null && tab.conflict !== undefined
-        ? React.createElement('span', { className: 'itw-conflict-chip', title: tab.conflict.message ?? '' },
+        ? React.createElement('span', { className: 'iwb-conflict-chip', title: tab.conflict.message ?? '' },
             t('editor.externalChanged'),
             React.createElement('button', {
-              type: 'button', className: 'itw-textbtn itw-small',
+              type: 'button', className: 'iwb-textbtn iwb-small',
               onClick: () => { void store.reloadTab(tab.id) },
             }, t('editor.reloadFromDisk')),
             React.createElement('button', {
-              type: 'button', className: 'itw-textbtn itw-small',
+              type: 'button', className: 'iwb-textbtn iwb-small',
               onClick: () => { void store.saveTab(tab.id, { force: true }) },
             }, t('editor.overwriteDisk')),
           )
         : null,
     ),
-    React.createElement('div', { className: 'itw-spacer' }),
-    payload?.truncated === true ? React.createElement('span', { style: { color: 'var(--itw-warn)' } }, t('editor.truncated')) : null,
+    React.createElement('div', { className: 'iwb-spacer' }),
+    payload?.truncated === true ? React.createElement('span', { style: { color: 'var(--iwb-warn)' } }, t('editor.truncated')) : null,
     isText && markdown && !editing
-      ? React.createElement('div', { className: 'itw-seg' },
+      ? React.createElement('div', { className: 'iwb-seg' },
           React.createElement('button', {
-            type: 'button', className: view === 'preview' ? 'itw-on' : '', title: t('editor.preview'),
+            type: 'button', className: view === 'preview' ? 'iwb-on' : '', title: t('editor.preview'),
             onClick: () => store.setTabView(tab.id, 'preview'),
           }, React.createElement(IconEye, { width: 12, height: 12 }), t('editor.preview')),
           React.createElement('button', {
-            type: 'button', className: view === 'code' ? 'itw-on' : '', title: t('editor.source'),
+            type: 'button', className: view === 'code' ? 'iwb-on' : '', title: t('editor.source'),
             onClick: () => store.setTabView(tab.id, 'code'),
           }, React.createElement(IconCode, { width: 12, height: 12 }), t('editor.source')),
         )
       : null,
     isText && markdown && !editing && view === 'preview'
       ? React.createElement('button', {
-          type: 'button', className: `itw-iconbtn ${tab.outlineOpen === true ? 'itw-on' : ''}`, title: t('editor.outline'),
+          type: 'button', className: `iwb-iconbtn ${tab.outlineOpen === true ? 'iwb-on' : ''}`, title: t('editor.outline'),
           onClick: () => store.updateActiveTab({ outlineOpen: tab.outlineOpen !== true }),
         }, React.createElement(IconOutline, { width: 14, height: 14 }))
       : null,
     isText
       ? React.createElement('button', {
           type: 'button',
-          className: 'itw-textbtn itw-small',
+          className: 'iwb-textbtn iwb-small',
           title: editing ? t('editor.toReadOnly') : t('editor.toEdit'),
           onClick: () => store.setTabEditing(tab.id, !editing),
         },
@@ -355,24 +355,24 @@ function EditorToolbar({ store, state, tab }) {
       ? React.createElement(React.Fragment, null,
           React.createElement('button', {
             type: 'button',
-            className: `itw-textbtn itw-small ${dirty ? 'itw-primary' : ''}`,
+            className: `iwb-textbtn iwb-small ${dirty ? 'iwb-primary' : ''}`,
             disabled: !dirty || saving,
             title: 'Ctrl+S',
             onClick: () => { void store.saveTab(tab.id) },
           }, React.createElement(IconSave, { width: 12, height: 12 }), saving ? t('editor.saving') : t('editor.save')),
           React.createElement('button', {
-            type: 'button', className: 'itw-iconbtn', disabled: !dirty, title: t('editor.restore'),
+            type: 'button', className: 'iwb-iconbtn', disabled: !dirty, title: t('editor.restore'),
             onClick: () => store.discardDraft(tab.id),
           }, React.createElement(IconRestore, { width: 14, height: 14 })),
         )
       : (isText && dirty
           ? React.createElement(React.Fragment, null,
               React.createElement('button', {
-                type: 'button', className: 'itw-textbtn itw-primary itw-small', disabled: saving, title: 'Ctrl+S',
+                type: 'button', className: 'iwb-textbtn iwb-primary iwb-small', disabled: saving, title: 'Ctrl+S',
                 onClick: () => { void store.saveTab(tab.id) },
               }, React.createElement(IconSave, { width: 12, height: 12 }), saving ? t('editor.saving') : t('editor.save')),
               React.createElement('button', {
-                type: 'button', className: 'itw-iconbtn', title: t('editor.restore'),
+                type: 'button', className: 'iwb-iconbtn', title: t('editor.restore'),
                 onClick: () => store.discardDraft(tab.id),
               }, React.createElement(IconRestore, { width: 14, height: 14 })),
             )
@@ -394,14 +394,14 @@ function isHtmlPath(path) {
 function HtmlPreviewActions({ store, tab }) {
   const t = store.t
   if (tab.kind !== 'file' || !isHtmlPath(tab.path)) return null
-  return React.createElement('div', { className: 'itw-html-actions' },
+  return React.createElement('div', { className: 'iwb-html-actions' },
     React.createElement('button', {
-      type: 'button', className: 'itw-html-action', title: t('editor.htmlPreviewSidebar'),
+      type: 'button', className: 'iwb-html-action', title: t('editor.htmlPreviewSidebar'),
       'aria-label': t('editor.htmlPreviewSidebar'),
       onClick: () => { void store.openInSidebar(tab.path) },
     }, React.createElement(IconGlobe, { width: 15, height: 15 })),
     React.createElement('button', {
-      type: 'button', className: 'itw-html-action itw-chrome', title: t('editor.htmlPreviewBrowser'),
+      type: 'button', className: 'iwb-html-action iwb-chrome', title: t('editor.htmlPreviewBrowser'),
       'aria-label': t('editor.htmlPreviewBrowser'),
       onClick: () => { void store.openInDefaultBrowser(tab.path) },
     }, React.createElement(IconChrome, { width: 15, height: 15 })),
@@ -426,7 +426,7 @@ export function EditorArea({ store, state }) {
     const onKeyDown = (event) => {
       if (store.state.active !== true) return
       const target = event.target
-      if (target instanceof HTMLElement && target.closest('.itw-search')) return
+      if (target instanceof HTMLElement && target.closest('.iwb-search')) return
       const mod = event.ctrlKey || event.metaKey
       const key = event.key.toLowerCase()
       if (mod && ((event.shiftKey && !event.altKey) || (event.altKey && !event.shiftKey)) && key === 'f') {
@@ -462,8 +462,8 @@ export function EditorArea({ store, state }) {
     const onKeyDown = (event) => {
       if (!(event.ctrlKey || event.metaKey) || event.altKey) return
       const target = event.target
-      if (!(target instanceof Element) || target.closest('.itw-root') === null) return
-      if (target.closest('.itw-commit, .itw-term, .itw-term-host, .itw-diff, .itw-search') !== null) return
+      if (!(target instanceof Element) || target.closest('.iwb-root') === null) return
+      if (target.closest('.iwb-commit, .iwb-term, .iwb-term-host, .iwb-diff, .iwb-search') !== null) return
       if (event.key.toLowerCase() === 'w' && !event.shiftKey) {
         event.preventDefault()
         event.stopPropagation()
@@ -483,13 +483,13 @@ export function EditorArea({ store, state }) {
   }, [store])
 
   if (active === undefined) {
-    return React.createElement('div', { className: 'itw-editor' },
+    return React.createElement('div', { className: 'iwb-editor' },
       React.createElement(TabBar, { store, state }),
       React.createElement(Welcome, { store, state }),
     )
   }
   if (active.kind === 'search') {
-    return React.createElement('div', { className: 'itw-editor' },
+    return React.createElement('div', { className: 'iwb-editor' },
       React.createElement(TabBar, { store, state }),
       React.createElement(SearchView, { store, state }),
     )
@@ -502,11 +502,11 @@ export function EditorArea({ store, state }) {
         onFindInFiles: () => store.openSearchTab(),
       })
     : (active.loading === true
-        ? React.createElement('div', { className: 'itw-editor-empty' }, store.t('common.loading'))
+        ? React.createElement('div', { className: 'iwb-editor-empty' }, store.t('common.loading'))
         : (active.error !== null && active.error !== undefined
-            ? React.createElement('div', { className: 'itw-editor-empty' }, React.createElement('div', { className: 'itw-error-box' }, active.error))
+            ? React.createElement('div', { className: 'iwb-editor-empty' }, React.createElement('div', { className: 'iwb-error-box' }, active.error))
             : React.createElement(DiffView, { store, state, tab: active })))
-  return React.createElement('div', { className: 'itw-editor' },
+  return React.createElement('div', { className: 'iwb-editor' },
     React.createElement(TabBar, { store, state }),
     React.createElement(EditorToolbar, { store, state, tab: active }),
     findOpen === true && textTab && editorApi !== null

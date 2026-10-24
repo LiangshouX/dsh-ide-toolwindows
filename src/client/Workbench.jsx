@@ -25,55 +25,55 @@ function TopBar({ store, state, fullscreen, onOpenSettings }) {
   const projectTitle = baseName(state.root)
   const showProject = state.root !== state.workspaceRoot && projectTitle !== ''
   const [menu, setMenu] = useState(null)
-  return React.createElement('div', { className: 'itw-topbar' },
+  return React.createElement('div', { className: 'iwb-topbar' },
     React.createElement('button', {
       type: 'button',
-      className: 'itw-project-select',
+      className: 'iwb-project-select',
       title: state.workspaceRoot,
       onClick: event => setMenu({ x: event.clientX, y: event.clientY + 8 }),
     },
       React.createElement(StripeIcon, { tool: 'project', size: 16 }),
-      React.createElement('span', { className: 'itw-project-name' },
+      React.createElement('span', { className: 'iwb-project-name' },
         workspaceTitle,
-        showProject ? React.createElement('span', { className: 'itw-project-current' }, ` / ${projectTitle}`) : null,
+        showProject ? React.createElement('span', { className: 'iwb-project-current' }, ` / ${projectTitle}`) : null,
       ),
-      React.createElement('span', { className: 'itw-project-path' }, state.root || state.workspaceRoot),
+      React.createElement('span', { className: 'iwb-project-path' }, state.root || state.workspaceRoot),
     ),
     state.status.isRepo === true
-      ? React.createElement('span', { className: 'itw-branch-chip', title: state.status.upstream ?? '' },
+      ? React.createElement('span', { className: 'iwb-branch-chip', title: state.status.upstream ?? '' },
           React.createElement(IconGit, { width: 12, height: 12 }),
-          React.createElement('span', { className: 'itw-branch-name' }, detached ? (state.status.oid ?? 'HEAD').slice(0, 7) : (branch ?? 'HEAD')),
-          detached ? React.createElement('span', { className: 'itw-behind' }, t('git.detached')) : null,
+          React.createElement('span', { className: 'iwb-branch-name' }, detached ? (state.status.oid ?? 'HEAD').slice(0, 7) : (branch ?? 'HEAD')),
+          detached ? React.createElement('span', { className: 'iwb-behind' }, t('git.detached')) : null,
           typeof state.status.ahead === 'number' && state.status.ahead > 0
-            ? React.createElement('span', { className: 'itw-ahead' }, `↑${state.status.ahead}`)
+            ? React.createElement('span', { className: 'iwb-ahead' }, `↑${state.status.ahead}`)
             : null,
           typeof state.status.behind === 'number' && state.status.behind > 0
-            ? React.createElement('span', { className: 'itw-behind' }, `↓${state.status.behind}`)
+            ? React.createElement('span', { className: 'iwb-behind' }, `↓${state.status.behind}`)
             : null,
         )
       : null,
-    React.createElement('div', { className: 'itw-top-spacer' }),
+    React.createElement('div', { className: 'iwb-top-spacer' }),
     React.createElement('button', {
-      type: 'button', className: 'itw-iconbtn', title: t('layout.hideAll'),
+      type: 'button', className: 'iwb-iconbtn', title: t('layout.hideAll'),
       onClick: () => store.toggleHideAll(),
     }, '⊟'),
     React.createElement('button', {
-      type: 'button', className: `itw-iconbtn ${fullscreen ? 'itw-on' : ''}`,
+      type: 'button', className: `iwb-iconbtn ${fullscreen ? 'iwb-on' : ''}`,
       title: t(fullscreen ? 'layout.exitFullscreen' : 'layout.fullscreen'),
       'aria-label': t(fullscreen ? 'layout.exitFullscreen' : 'layout.fullscreen'),
       'aria-pressed': fullscreen,
       onClick: event => store.toggleFullscreen(event.currentTarget),
     }, '⛶'),
     React.createElement('button', {
-      type: 'button', className: 'itw-iconbtn', title: `${t('search.title')} (${state.settings?.shortcuts?.findInFiles ?? 'Ctrl+Shift+F'})`,
+      type: 'button', className: 'iwb-iconbtn', title: `${t('search.title')} (${state.settings?.shortcuts?.findInFiles ?? 'Ctrl+Shift+F'})`,
       onClick: () => store.openSearchTab(),
     }, React.createElement(IconSearch, { width: 15, height: 15 })),
     React.createElement('button', {
-      type: 'button', className: 'itw-iconbtn', title: t('common.refresh'),
+      type: 'button', className: 'iwb-iconbtn', title: t('common.refresh'),
       onClick: () => { void store.reloadTree(); void store.refreshStatus({ initial: true }); void store.loadBranches() },
     }, React.createElement(IconRefresh, { width: 15, height: 15 })),
     React.createElement('button', {
-      type: 'button', className: 'itw-iconbtn', title: t('common.settings'), onClick: onOpenSettings,
+      type: 'button', className: 'iwb-iconbtn', title: t('common.settings'), onClick: onOpenSettings,
     }, React.createElement(IconGear, { width: 15, height: 15 })),
     menu !== null
       ? React.createElement(ContextMenu, {
@@ -84,7 +84,7 @@ function TopBar({ store, state, fullscreen, onOpenSettings }) {
               ? state.workspaces.map(workspace => ({
                   key: workspace.path,
                   text: workspace.title,
-                  icon: workspace.path === state.workspaceRoot ? React.createElement('span', { style: { color: 'var(--itw-accent)' } }, '●') : null,
+                  icon: workspace.path === state.workspaceRoot ? React.createElement('span', { style: { color: 'var(--iwb-accent)' } }, '●') : null,
                   action: () => { void store.setRoot(workspace.path) },
                 }))
               : [{ text: t('project.empty'), disabled: true }]),
@@ -102,25 +102,25 @@ function Stripe({ store, state }) {
   const sessions = state.terminal.sessions.length
   const button = (tool, active, children) => React.createElement('button', {
     type: 'button',
-    className: `itw-stripe-btn ${active ? 'itw-on' : ''}`,
+    className: `iwb-stripe-btn ${active ? 'iwb-on' : ''}`,
     title: `${t(`${tool}.title`)} (${state.settings?.shortcuts?.[tool] ?? ''})`,
     onClick: () => store.toggleTool(tool),
   }, children)
-  return React.createElement('div', { className: 'itw-stripe' },
+  return React.createElement('div', { className: 'iwb-stripe' },
     button('project', state.layout.left === 'project',
       React.createElement(StripeIcon, { tool: 'project', size: 20 })),
     button('commit', state.layout.left === 'commit',
       React.createElement('span', null,
         React.createElement(StripeIcon, { tool: 'commit', size: 20 }),
-        state.changeCount > 0 ? React.createElement('span', { className: 'itw-badge' }, state.changeCount > 99 ? '99+' : state.changeCount) : null,
+        state.changeCount > 0 ? React.createElement('span', { className: 'iwb-badge' }, state.changeCount > 99 ? '99+' : state.changeCount) : null,
       )),
-    React.createElement('div', { className: 'itw-stripe-spacer' }),
+    React.createElement('div', { className: 'iwb-stripe-spacer' }),
     button('git', state.layout.bottom === 'git',
       React.createElement(StripeIcon, { tool: 'git', size: 20 })),
     button('terminal', state.layout.bottom === 'terminal',
       React.createElement('span', null,
         React.createElement(StripeIcon, { tool: 'terminal', size: 20 }),
-        sessions > 0 ? React.createElement('span', { className: 'itw-badge itw-badge-dirty' }, sessions) : null,
+        sessions > 0 ? React.createElement('span', { className: 'iwb-badge iwb-badge-dirty' }, sessions) : null,
       )),
   )
 }
@@ -129,20 +129,20 @@ function BottomTabs({ store, state }) {
   const t = store.t
   const tool = state.layout.bottom
   if (tool === null || tool === undefined) return null
-  return React.createElement('div', { className: 'itw-bottom-tabs' },
+  return React.createElement('div', { className: 'iwb-bottom-tabs' },
     React.createElement('button', {
-      type: 'button', className: `itw-bottom-tab ${tool === 'terminal' ? 'itw-on' : ''}`,
+      type: 'button', className: `iwb-bottom-tab ${tool === 'terminal' ? 'iwb-on' : ''}`,
       onClick: () => store.showTool('terminal'),
     },
       React.createElement(IconTerminal, { width: 13, height: 13 }), t('terminal.title'),
-      state.terminal.sessions.length > 0 ? React.createElement('span', { className: 'itw-badge' }, state.terminal.sessions.length) : null,
+      state.terminal.sessions.length > 0 ? React.createElement('span', { className: 'iwb-badge' }, state.terminal.sessions.length) : null,
     ),
     React.createElement('button', {
-      type: 'button', className: `itw-bottom-tab ${tool === 'git' ? 'itw-on' : ''}`,
+      type: 'button', className: `iwb-bottom-tab ${tool === 'git' ? 'iwb-on' : ''}`,
       onClick: () => store.showTool('git'),
     }, React.createElement(IconGit, { width: 13, height: 13 }), t('git.title')),
     React.createElement('button', {
-      type: 'button', className: 'itw-iconbtn itw-bottom-close', title: t('common.close'),
+      type: 'button', className: 'iwb-iconbtn iwb-bottom-close', title: t('common.close'),
       onClick: () => store.setLayout({ bottom: null }),
     }, React.createElement('span', { style: { fontSize: 16, lineHeight: 1 } }, '×')),
   )
@@ -167,32 +167,32 @@ function StatusBar({ store, state }) {
           : 'UTF-8'
   const eol = text === undefined ? undefined : (text.eol === '\r\n' ? 'CRLF' : 'LF')
   const cursor = state.cursor !== null && state.cursor !== undefined && active?.editing === true ? state.cursor : null
-  return React.createElement('div', { className: 'itw-statusbar' },
-    React.createElement('span', { className: 'itw-status-item' },
-      React.createElement('span', { className: `itw-status-dot ${state.statusError !== null ? 'itw-busy' : ''}` }),
+  return React.createElement('div', { className: 'iwb-statusbar' },
+    React.createElement('span', { className: 'iwb-status-item' },
+      React.createElement('span', { className: `iwb-status-dot ${state.statusError !== null ? 'iwb-busy' : ''}` }),
       state.status.isRepo === true ? t('status.ready') : t('welcome.noRepo'),
     ),
     summary.branch !== undefined
-      ? React.createElement('span', { className: 'itw-status-item', style: { cursor: 'pointer' }, onClick: () => store.showTool('git') }, summary.branch)
+      ? React.createElement('span', { className: 'iwb-status-item', style: { cursor: 'pointer' }, onClick: () => store.showTool('git') }, summary.branch)
       : null,
     summary.changes > 0
-      ? React.createElement('span', { className: 'itw-status-item', style: { cursor: 'pointer' }, onClick: () => store.showTool('commit') }, `${summary.changes} ${t('status.changes')}`)
+      ? React.createElement('span', { className: 'iwb-status-item', style: { cursor: 'pointer' }, onClick: () => store.showTool('commit') }, `${summary.changes} ${t('status.changes')}`)
       : null,
-    React.createElement('div', { className: 'itw-spacer' }),
+    React.createElement('div', { className: 'iwb-spacer' }),
     cursor !== null
-      ? React.createElement('span', { className: 'itw-status-item' }, `${t('editor.line')} ${cursor.line}:${cursor.col}`)
+      ? React.createElement('span', { className: 'iwb-status-item' }, `${t('editor.line')} ${cursor.line}:${cursor.col}`)
       : null,
     lines !== undefined
-      ? React.createElement('span', { className: 'itw-status-item' }, `${lines} ${t('editor.lines')}`)
+      ? React.createElement('span', { className: 'iwb-status-item' }, `${lines} ${t('editor.lines')}`)
       : null,
     encoding !== undefined
-      ? React.createElement('span', { className: 'itw-status-item' }, `${encoding} ${eol}`)
+      ? React.createElement('span', { className: 'iwb-status-item' }, `${encoding} ${eol}`)
       : null,
-    React.createElement('span', { className: 'itw-status-item' },
+    React.createElement('span', { className: 'iwb-status-item' },
       React.createElement(Kbd, null, state.settings?.shortcuts?.project ?? 'Alt+1'),
       React.createElement('span', { style: { marginLeft: 4 } }, t('project.title')),
     ),
-    React.createElement('span', { className: 'itw-status-item' },
+    React.createElement('span', { className: 'iwb-status-item' },
       React.createElement(Kbd, null, state.settings?.shortcuts?.terminal ?? 'Alt+F12'),
       React.createElement('span', { style: { marginLeft: 4 } }, t('terminal.title')),
     ),
@@ -203,27 +203,27 @@ function RootPicker({ store, state }) {
   const t = store.t
   const [path, setPath] = useState('')
   if (state.rootPicker !== true) return null
-  return React.createElement('div', { className: 'itw-modal-backdrop', onMouseDown: event => { if (event.target === event.currentTarget) store.closeRootPicker() } },
-    React.createElement('div', { className: 'itw-modal', role: 'dialog', 'aria-modal': 'true' },
+  return React.createElement('div', { className: 'iwb-modal-backdrop', onMouseDown: event => { if (event.target === event.currentTarget) store.closeRootPicker() } },
+    React.createElement('div', { className: 'iwb-modal', role: 'dialog', 'aria-modal': 'true' },
       React.createElement('h2', null, t('project.openWorkspace')),
-      React.createElement('div', { className: 'itw-root-picker' },
-        React.createElement('div', { className: 'itw-root-list' },
+      React.createElement('div', { className: 'iwb-root-picker' },
+        React.createElement('div', { className: 'iwb-root-list' },
           state.workspaces.map(workspace => React.createElement('button', {
             key: workspace.path,
             type: 'button',
-            className: 'itw-root-item',
+            className: 'iwb-root-item',
             onClick: () => { store.closeRootPicker(); void store.setRoot(workspace.path) },
           },
             React.createElement(StripeIcon, { tool: 'project', size: 16 }),
             React.createElement('span', { style: { display: 'flex', flexDirection: 'column', minWidth: 0 } },
               React.createElement('b', null, workspace.title),
-              React.createElement('span', { className: 'itw-root-path' }, workspace.path),
+              React.createElement('span', { className: 'iwb-root-path' }, workspace.path),
             ),
           )),
         ),
         React.createElement('div', { style: { display: 'flex', gap: 8, marginTop: 4 } },
           React.createElement('input', {
-            className: 'itw-input',
+            className: 'iwb-input',
             style: { flex: 1, width: 'auto' },
             placeholder: t('project.workspacePath'),
             value: path,
@@ -231,13 +231,13 @@ function RootPicker({ store, state }) {
             onKeyDown: event => { if (event.key === 'Enter' && path.trim() !== '') { void store.addWorkspace(path.trim()) } },
           }),
           React.createElement('button', {
-            type: 'button', className: 'itw-textbtn itw-primary', disabled: path.trim() === '',
+            type: 'button', className: 'iwb-textbtn iwb-primary', disabled: path.trim() === '',
             onClick: () => { void store.addWorkspace(path.trim()) },
           }, t('common.open')),
         ),
       ),
-      React.createElement('div', { className: 'itw-modal-actions', style: { marginTop: 16 } },
-        React.createElement('button', { type: 'button', className: 'itw-textbtn', onClick: () => store.closeRootPicker() }, t('common.cancel')),
+      React.createElement('div', { className: 'iwb-modal-actions', style: { marginTop: 16 } },
+        React.createElement('button', { type: 'button', className: 'iwb-textbtn', onClick: () => store.closeRootPicker() }, t('common.cancel')),
       ),
     ),
   )
@@ -252,50 +252,50 @@ function ProjectPicker({ store, state }) {
   const choice = project => React.createElement('button', {
     key: project.path,
     type: 'button',
-    className: `itw-project-choice ${project.path === state.root ? 'itw-current' : ''}`,
+    className: `iwb-project-choice ${project.path === state.root ? 'iwb-current' : ''}`,
     title: project.path,
     onClick: () => { void store.selectProject(project.path) },
   },
-    React.createElement('span', { className: 'itw-project-choice-icon' },
+    React.createElement('span', { className: 'iwb-project-choice-icon' },
       project.isRepo === true
         ? React.createElement(IconGit, { width: 15, height: 15 })
         : React.createElement(IconFolder, { size: 15 }),
     ),
-    React.createElement('span', { className: 'itw-project-choice-text' },
+    React.createElement('span', { className: 'iwb-project-choice-text' },
       React.createElement('b', null, project.name),
-      React.createElement('span', { className: 'itw-project-choice-path' }, project.path),
+      React.createElement('span', { className: 'iwb-project-choice-path' }, project.path),
     ),
     project.isRepo === true
-      ? React.createElement('span', { className: 'itw-project-repo-badge' }, t('project.gitRepo'))
+      ? React.createElement('span', { className: 'iwb-project-repo-badge' }, t('project.gitRepo'))
       : null,
     project.path === state.root
-      ? React.createElement('span', { className: 'itw-project-current-badge' }, t('project.current'))
+      ? React.createElement('span', { className: 'iwb-project-current-badge' }, t('project.current'))
       : null,
   )
   return React.createElement('div', {
-    className: 'itw-modal-backdrop',
+    className: 'iwb-modal-backdrop',
     onMouseDown: event => { if (event.target === event.currentTarget) store.closeProjectPicker() },
   },
     React.createElement('div', {
-      className: 'itw-modal itw-project-picker', role: 'dialog', 'aria-modal': 'true',
+      className: 'iwb-modal iwb-project-picker', role: 'dialog', 'aria-modal': 'true',
     },
       React.createElement('h2', null, t('project.selectProject')),
-      React.createElement('p', { className: 'itw-modal-hint' }, t('project.selectProjectHint')),
-      React.createElement('div', { className: 'itw-project-picker-list' },
-        React.createElement('div', { className: 'itw-project-group' }, t('project.workspaceRoot')),
+      React.createElement('p', { className: 'iwb-modal-hint' }, t('project.selectProjectHint')),
+      React.createElement('div', { className: 'iwb-project-picker-list' },
+        React.createElement('div', { className: 'iwb-project-group' }, t('project.workspaceRoot')),
         ...root.map(choice),
-        React.createElement('div', { className: 'itw-project-group' }, t('project.subdirectories')),
+        React.createElement('div', { className: 'iwb-project-group' }, t('project.subdirectories')),
         children.length === 0
-          ? React.createElement('div', { className: 'itw-project-empty' }, t('project.noSubdirectories'))
+          ? React.createElement('div', { className: 'iwb-project-empty' }, t('project.noSubdirectories'))
           : children.map(choice),
       ),
-      React.createElement('div', { className: 'itw-modal-actions' },
+      React.createElement('div', { className: 'iwb-modal-actions' },
         React.createElement('button', {
-          type: 'button', className: 'itw-textbtn',
+          type: 'button', className: 'iwb-textbtn',
           onClick: () => { void store.loadProjects() },
         }, React.createElement(IconRefresh, { width: 12, height: 12 }), t('project.refreshProjects')),
         React.createElement('button', {
-          type: 'button', className: 'itw-textbtn', onClick: () => store.closeProjectPicker(),
+          type: 'button', className: 'iwb-textbtn', onClick: () => store.closeProjectPicker(),
         }, t('common.cancel')),
       ),
     ),
@@ -303,12 +303,12 @@ function ProjectPicker({ store, state }) {
 }
 
 function SettingsModal({ store, state, onClose }) {
-  return React.createElement('div', { className: 'itw-modal-backdrop', onMouseDown: event => { if (event.target === event.currentTarget) onClose() } },
-    React.createElement('div', { className: 'itw-modal', style: { width: 'min(620px, calc(100% - 40px))', maxHeight: '80%', overflow: 'auto' }, role: 'dialog', 'aria-modal': 'true' },
+  return React.createElement('div', { className: 'iwb-modal-backdrop', onMouseDown: event => { if (event.target === event.currentTarget) onClose() } },
+    React.createElement('div', { className: 'iwb-modal', style: { width: 'min(620px, calc(100% - 40px))', maxHeight: '80%', overflow: 'auto' }, role: 'dialog', 'aria-modal': 'true' },
       React.createElement('h2', null, store.t('settings.title')),
       React.createElement(SettingsForm, { store, state, compact: true }),
-      React.createElement('div', { className: 'itw-modal-actions' },
-        React.createElement('button', { type: 'button', className: 'itw-textbtn', onClick: onClose }, store.t('common.close')),
+      React.createElement('div', { className: 'iwb-modal-actions' },
+        React.createElement('button', { type: 'button', className: 'iwb-textbtn', onClick: onClose }, store.t('common.close')),
       ),
     ),
   )
@@ -377,14 +377,14 @@ export function Workbench({ store, visible = true, fullscreen = false }) {
   let left = null
   if (state.layout.left !== null && state.layout.left !== undefined) {
     left = React.createElement('div', {
-      className: 'itw-left',
+      className: 'iwb-left',
       ref: leftRef,
-      style: { '--itw-left-width': `${state.layout.leftWidth}px` },
+      style: { '--iwb-left-width': `${state.layout.leftWidth}px` },
     },
       state.layout.left === 'project'
         ? React.createElement(ProjectPanel, { store, state })
         : React.createElement(CommitPanel, { store, state }),
-      React.createElement('div', { className: 'itw-left-resizer', onPointerDown: startLeftResize }),
+      React.createElement('div', { className: 'iwb-left-resizer', onPointerDown: startLeftResize }),
     )
   }
 
@@ -392,47 +392,47 @@ export function Workbench({ store, visible = true, fullscreen = false }) {
   const terminalKeep = state.terminal.sessions.length > 0
   const bottomNode = bottom !== null || terminalKeep
     ? React.createElement('div', {
-        className: `itw-bottom ${bottom === null ? 'itw-bottom-hidden' : ''}`,
+        className: `iwb-bottom ${bottom === null ? 'iwb-bottom-hidden' : ''}`,
         style: { height: bottom === null ? 0 : state.layout.bottomHeight },
       },
         bottom !== null
           ? React.createElement(React.Fragment, null,
-              React.createElement('div', { className: 'itw-bottom-resizer', onPointerDown: startBottomResize }),
+              React.createElement('div', { className: 'iwb-bottom-resizer', onPointerDown: startBottomResize }),
               React.createElement(BottomTabs, { store, state }),
             )
           : null,
-        React.createElement('div', { className: 'itw-bottom-body' },
+        React.createElement('div', { className: 'iwb-bottom-body' },
           bottom === 'git' ? React.createElement(GitPanel, { store, state }) : null,
           terminalKeep
             ? React.createElement('div', {
-                className: bottom === 'terminal' ? 'itw-bottom-content' : 'itw-term-hidden',
+                className: bottom === 'terminal' ? 'iwb-bottom-content' : 'iwb-term-hidden',
               }, React.createElement(TerminalPanel, { store, state, visible: bottom === 'terminal' }))
             : (bottom === 'terminal' ? React.createElement(TerminalPanel, { store, state, visible: true }) : null),
         ),
       )
     : null
 
-  return React.createElement('div', { className: 'itw-root', ref: rootRef },
+  return React.createElement('div', { className: 'iwb-root', ref: rootRef },
     React.createElement(TopBar, { store, state, fullscreen, onOpenSettings: () => setSettingsOpen(true) }),
-    React.createElement('div', { className: 'itw-body' },
+    React.createElement('div', { className: 'iwb-body' },
       React.createElement(Stripe, { store, state }),
       left,
-      React.createElement('div', { className: 'itw-center' },
+      React.createElement('div', { className: 'iwb-center' },
         React.createElement(EditorArea, { store, state }),
         bottomNode,
       ),
     ),
     React.createElement(StatusBar, { store, state }),
     state.phase === 'booting'
-      ? React.createElement('div', { className: 'itw-empty', style: { position: 'absolute', inset: 0, background: 'var(--itw-bg)' } }, store.t('common.loading'))
+      ? React.createElement('div', { className: 'iwb-empty', style: { position: 'absolute', inset: 0, background: 'var(--iwb-bg)' } }, store.t('common.loading'))
       : null,
     state.fatal !== null && state.fatal !== undefined
-      ? React.createElement('div', { className: 'itw-modal-backdrop' },
-          React.createElement('div', { className: 'itw-modal' },
+      ? React.createElement('div', { className: 'iwb-modal-backdrop' },
+          React.createElement('div', { className: 'iwb-modal' },
             React.createElement('h2', null, store.t('common.error')),
             React.createElement('p', null, state.fatal),
-            React.createElement('div', { className: 'itw-modal-actions' },
-              React.createElement('button', { type: 'button', className: 'itw-textbtn itw-primary', onClick: () => { store.set({ fatal: null }); void store.init() } }, store.t('common.retry')),
+            React.createElement('div', { className: 'iwb-modal-actions' },
+              React.createElement('button', { type: 'button', className: 'iwb-textbtn iwb-primary', onClick: () => { store.set({ fatal: null }); void store.init() } }, store.t('common.retry')),
             ),
           ),
         )

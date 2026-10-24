@@ -6,7 +6,7 @@ import { join } from 'node:path'
 import { encodeText, writeFileText } from '../src/host/workspace.js'
 
 async function tempRoot(t) {
-  const dir = await mkdtemp(join(tmpdir(), 'itw-write-'))
+  const dir = await mkdtemp(join(tmpdir(), 'iwb-write-'))
   t.after(() => rm(dir, { recursive: true, force: true }))
   return dir
 }

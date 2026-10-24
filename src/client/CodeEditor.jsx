@@ -76,29 +76,29 @@ const HIGHLIGHT = HighlightStyle.define([
 ])
 
 const THEME = EditorView.theme({
-  '&': { height: '100%', backgroundColor: 'var(--itw-bg)', color: 'var(--itw-fg)' },
-  '.cm-scroller': { fontFamily: 'var(--itw-mono)', fontSize: '13px', lineHeight: '1.6', overflow: 'auto' },
-  '.cm-content': { caretColor: 'var(--itw-accent)', padding: '10px 0' },
+  '&': { height: '100%', backgroundColor: 'var(--iwb-bg)', color: 'var(--iwb-fg)' },
+  '.cm-scroller': { fontFamily: 'var(--iwb-mono)', fontSize: '13px', lineHeight: '1.6', overflow: 'auto' },
+  '.cm-content': { caretColor: 'var(--iwb-accent)', padding: '10px 0' },
   '.cm-line': { padding: '0 14px 0 6px' },
   '.cm-gutters': {
-    backgroundColor: 'var(--itw-bg)',
-    color: 'var(--itw-muted)',
+    backgroundColor: 'var(--iwb-bg)',
+    color: 'var(--iwb-muted)',
     border: 'none',
-    borderRight: '1px solid var(--itw-border)',
+    borderRight: '1px solid var(--iwb-border)',
     paddingLeft: '6px',
     userSelect: 'none',
   },
   '.cm-lineNumbers .cm-gutterElement': { minWidth: '34px', padding: '0 8px 0 4px' },
   '.cm-activeLine': { backgroundColor: 'rgba(127,127,127,.075)' },
-  '.cm-activeLineGutter': { backgroundColor: 'transparent', color: 'var(--itw-fg)' },
+  '.cm-activeLineGutter': { backgroundColor: 'transparent', color: 'var(--iwb-fg)' },
   '.cm-selectionBackground, ::selection': { backgroundColor: 'rgba(76,154,255,.24) !important' },
   '.cm-matchingBracket': { backgroundColor: 'rgba(76,154,255,.25)', outline: '1px solid rgba(76,154,255,.5)' },
   '.cm-searchMatch': { backgroundColor: 'rgba(215,162,74,.28)' },
-  '.cm-searchMatch.cm-searchMatch-selected': { backgroundColor: 'rgba(76,154,255,.45)', outline: '1px solid var(--itw-accent)' },
-  '.cm-cursor, .cm-dropCursor': { borderLeftColor: 'var(--itw-accent)' },
+  '.cm-searchMatch.cm-searchMatch-selected': { backgroundColor: 'rgba(76,154,255,.45)', outline: '1px solid var(--iwb-accent)' },
+  '.cm-cursor, .cm-dropCursor': { borderLeftColor: 'var(--iwb-accent)' },
   '&.cm-focused': { outline: 'none' },
-  '.cm-panels': { backgroundColor: 'var(--itw-panel)', color: 'var(--itw-fg)' },
-  '.cm-tooltip': { backgroundColor: 'var(--itw-overlay)', border: '1px solid var(--itw-border-strong)' },
+  '.cm-panels': { backgroundColor: 'var(--iwb-panel)', color: 'var(--iwb-fg)' },
+  '.cm-tooltip': { backgroundColor: 'var(--iwb-overlay)', border: '1px solid var(--iwb-border-strong)' },
 }, { dark: true })
 
 function selectionOf(view, match) {
@@ -282,5 +282,5 @@ export function CodeEditor({
     view.dispatch({ selection: { anchor: line.from }, scrollIntoView: true })
   }, [revealLine])
 
-  return React.createElement('div', { className: 'itw-codemirror', ref: hostRef })
+  return React.createElement('div', { className: 'iwb-codemirror', ref: hostRef })
 }

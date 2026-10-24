@@ -1,5 +1,5 @@
 window.__ModuleLoader__.load({
-  id: "dsh-ide-toolwindows",
+  id: "dsh-ide-workbench",
   factory: function(require) {
     var module = { exports: {} };
     var exports = module.exports;
@@ -329,13 +329,13 @@ var xterm_default = `/**
 `;
 
 // src/client/i18n.js
-var NS = "ideToolWindows";
+var NS = "ideWorkbench";
 var en = {
-  "meta.title": "IDE Tool Windows",
+  "meta.title": "IDE Workbench",
   "meta.description": "JetBrains-style Project, Commit, Terminal and Git tool windows in one shared repository model.",
-  "panelLabel": "IDE Tool Windows",
-  "settings.nav": "IDE Tool Windows",
-  "settings.title": "IDE Tool Windows Settings",
+  "panelLabel": "IDE Workbench",
+  "settings.nav": "IDE Workbench",
+  "settings.title": "IDE Workbench Settings",
   "settings.saved": "Saved",
   "settings.reset": "Reset to defaults",
   "settings.shortcuts": "Shortcuts",
@@ -374,7 +374,7 @@ var en = {
   "settings.singleClickOpenHint": "Single click opens a preview tab (edited files become real tabs)",
   "settings.chatFileLinks": "Chat file links",
   "settings.chatFileLinksHint": "Where links to files in the conversation open; files outside the workspace always use the sidebar",
-  "settings.chatFileLinksIde": "IDE Tool Windows",
+  "settings.chatFileLinksIde": "IDE Workbench",
   "settings.chatFileLinksSidebar": "Sidebar (DSH default)",
   "links.openFailed": "Could not open this file in the IDE",
   "links.outsideRoot": "This file is outside the current IDE project",
@@ -671,7 +671,7 @@ var en = {
   "terminal.failed": "The terminal could not start",
   "terminal.noShell": "No supported shell was found",
   "terminal.hint": "Type a command to get started",
-  "welcome.title": "IDE Tool Windows",
+  "welcome.title": "IDE Workbench",
   "welcome.subtitle": "Pick a file from the Project tool window, or use a shortcut.",
   "welcome.project": "Project",
   "welcome.commit": "Commit",
@@ -754,11 +754,11 @@ var en = {
   "status.changes": "changes"
 };
 var zh = {
-  "meta.title": "IDE \u5DE5\u5177\u7A97\u53E3",
+  "meta.title": "IDE \u5DE5\u4F5C\u53F0",
   "meta.description": "JetBrains \u98CE\u683C\u7684 Project / Commit / Terminal / Git \u5DE5\u5177\u7A97\uFF0C\u56DB\u7A97\u5171\u4EAB\u540C\u4E00\u4EFD\u4ED3\u5E93\u72B6\u6001\u3002",
-  "panelLabel": "IDE \u5DE5\u5177\u7A97\u53E3",
-  "settings.nav": "IDE \u5DE5\u5177\u7A97\u53E3",
-  "settings.title": "IDE \u5DE5\u5177\u7A97\u53E3\u8BBE\u7F6E",
+  "panelLabel": "IDE \u5DE5\u4F5C\u53F0",
+  "settings.nav": "IDE \u5DE5\u4F5C\u53F0",
+  "settings.title": "IDE \u5DE5\u4F5C\u53F0\u8BBE\u7F6E",
   "settings.saved": "\u5DF2\u4FDD\u5B58",
   "settings.reset": "\u6062\u590D\u9ED8\u8BA4\u8BBE\u7F6E",
   "settings.shortcuts": "\u5FEB\u6377\u952E",
@@ -797,7 +797,7 @@ var zh = {
   "settings.singleClickOpenHint": "\u5355\u51FB\u6253\u5F00\u9884\u89C8\u6807\u7B7E\uFF0C\u7F16\u8F91\u540E\u8F6C\u4E3A\u6B63\u5F0F\u6807\u7B7E",
   "settings.chatFileLinks": "\u804A\u5929\u6587\u4EF6\u94FE\u63A5",
   "settings.chatFileLinksHint": "\u804A\u5929\u4E2D\u7684\u6587\u4EF6\u94FE\u63A5\u5728\u54EA\u91CC\u6253\u5F00\uFF1B\u5DE5\u4F5C\u533A\u5916\u7684\u6587\u4EF6\u59CB\u7EC8\u4F7F\u7528\u4FA7\u680F",
-  "settings.chatFileLinksIde": "IDE \u5DE5\u5177\u7A97\u53E3",
+  "settings.chatFileLinksIde": "IDE \u5DE5\u4F5C\u53F0",
   "settings.chatFileLinksSidebar": "\u4FA7\u680F\uFF08DSH \u9ED8\u8BA4\uFF09",
   "links.openFailed": "\u65E0\u6CD5\u5728 IDE \u4E2D\u6253\u5F00\u8BE5\u6587\u4EF6",
   "links.outsideRoot": "\u8BE5\u6587\u4EF6\u4E0D\u5728\u5F53\u524D IDE \u9879\u76EE\u5185",
@@ -815,8 +815,8 @@ var zh = {
   "settings.useRecycleBin": "\u5220\u9664\u6587\u4EF6\u65F6\u79FB\u5165\u56DE\u6536\u7AD9",
   "settings.useRecycleBinHint": "\u5173\u95ED\u5219\u6C38\u4E45\u5220\u9664\uFF08\u59CB\u7EC8\u4E8C\u6B21\u786E\u8BA4\uFF09",
   "layout.hideAll": "\u6536\u8D77\u5168\u90E8\u5DE5\u5177\u7A97\uFF08Ctrl+Shift+F12\uFF09",
-  "layout.fullscreen": "IDE \u5DE5\u5177\u7A97\u53E3\u5168\u5C4F\uFF08F11\uFF09",
-  "layout.exitFullscreen": "\u8FD8\u539F IDE \u5DE5\u5177\u7A97\u53E3\uFF08F11\uFF09",
+  "layout.fullscreen": "IDE \u5DE5\u4F5C\u53F0\u5168\u5C4F\uFF08F11\uFF09",
+  "layout.exitFullscreen": "\u8FD8\u539F IDE \u5DE5\u4F5C\u53F0\uFF08F11\uFF09",
   "project.openInIde": "\u5728 IDE \u4E2D\u6253\u5F00",
   "project.ideRequested": "\u5DF2\u8BF7\u6C42 IDE \u6253\u5F00\u9879\u76EE\u548C\u6587\u4EF6",
   "project.ideFailed": "\u65E0\u6CD5\u5728 IDE \u4E2D\u6253\u5F00",
@@ -1094,7 +1094,7 @@ var zh = {
   "terminal.failed": "\u7EC8\u7AEF\u542F\u52A8\u5931\u8D25",
   "terminal.noShell": "\u672A\u627E\u5230\u53EF\u7528\u7684 Shell",
   "terminal.hint": "\u8F93\u5165\u547D\u4EE4\u5F00\u59CB\u4F7F\u7528",
-  "welcome.title": "IDE \u5DE5\u5177\u7A97\u53E3",
+  "welcome.title": "IDE \u5DE5\u4F5C\u53F0",
   "welcome.subtitle": "\u4ECE Project \u5DE5\u5177\u7A97\u9009\u62E9\u6587\u4EF6\uFF0C\u6216\u4F7F\u7528\u5FEB\u6377\u952E\u3002",
   "welcome.project": "Project",
   "welcome.commit": "Commit",
@@ -1211,7 +1211,7 @@ var ApiError = class extends Error {
 async function call(method, payload = {}, signal) {
   let response;
   try {
-    response = await fetch(httpUrl(`ide-toolwindows/api/${method}`).href, {
+    response = await fetch(httpUrl(`ide-workbench/api/${method}`).href, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify(payload),
@@ -1455,7 +1455,7 @@ function matchesShortcut(shortcut, event) {
 }
 function isTerminalTarget(target) {
   if (!(target instanceof HTMLElement)) return false;
-  return target.closest(".itw-term-host") !== null;
+  return target.closest(".iwb-term-host") !== null;
 }
 function dirName(path2) {
   if (typeof path2 !== "string") return "";
@@ -2080,7 +2080,7 @@ var WorkbenchStore = class {
   openInSidebar(path2) {
     if (typeof path2 !== "string" || path2 === "") return false;
     const address = this.#sidebarAddressOf(path2);
-    const opened = address !== void 0 && openInDefaultSidebar(this.ctx, address, { kind: "text", ownKind: "ide-toolwindows" });
+    const opened = address !== void 0 && openInDefaultSidebar(this.ctx, address, { kind: "text", ownKind: "ide-workbench" });
     if (!opened) {
       this.toast("error", this.t("sidebar.openFailed"), path2);
       return false;
@@ -4214,7 +4214,7 @@ function IconFolder(props = {}) {
   ], {
     width: props.width ?? props.size ?? 16,
     height: props.height ?? props.size ?? 16,
-    style: { color: "var(--itw-icon-folder, #d7a24a)", ...props.style ?? {} }
+    style: { color: "var(--iwb-icon-folder, #d7a24a)", ...props.style ?? {} }
   });
 }
 var FILE_TINTS = {
@@ -4252,7 +4252,7 @@ var FILE_TINTS = {
   vue: "#2e8b57",
   xml: "#558b2f",
   log: "#6b7280",
-  file: "var(--itw-icon-file, #6b7280)"
+  file: "var(--iwb-icon-file, #6b7280)"
 };
 function monoLabel(text, tint, size = 4.6) {
   return import_react2.default.createElement("text", {
@@ -4563,13 +4563,13 @@ function ContextMenu({ x, y, items, onClose, depth = 0 }) {
   }, [position.left, position.top, viewportWidth, viewportHeight, hasWindow]);
   return import_react3.default.createElement("div", {
     ref,
-    className: `itw-menu ${depth === 0 ? "itw-menu-root" : "itw-menu-sub"}`,
+    className: `iwb-menu ${depth === 0 ? "iwb-menu-root" : "iwb-menu-sub"}`,
     style: { left: `${position.left}px`, top: `${position.top}px`, minWidth: `${width}px` },
     onContextMenu: (event) => event.preventDefault()
   }, items.map((item, index) => {
-    if (item === null) return import_react3.default.createElement("div", { key: `sep-${index}`, className: "itw-menu-sep" });
+    if (item === null) return import_react3.default.createElement("div", { key: `sep-${index}`, className: "iwb-menu-sep" });
     if (item.label !== void 0 && item.action === void 0) {
-      return import_react3.default.createElement("div", { key: `label-${index}`, className: "itw-menu-label" }, item.label);
+      return import_react3.default.createElement("div", { key: `label-${index}`, className: "iwb-menu-label" }, item.label);
     }
     const hasSubmenu = Array.isArray(item.submenu) && item.submenu.length > 0;
     const open = hasSubmenu && openIndex === index;
@@ -4578,7 +4578,7 @@ function ContextMenu({ x, y, items, onClose, depth = 0 }) {
       {
         key: item.key ?? `item-${index}`,
         type: "button",
-        className: `itw-menu-item ${item.danger === true ? "itw-menu-danger" : ""}`,
+        className: `iwb-menu-item ${item.danger === true ? "iwb-menu-danger" : ""}`,
         disabled: item.disabled === true,
         "aria-haspopup": hasSubmenu ? "menu" : void 0,
         "aria-expanded": hasSubmenu ? open : void 0,
@@ -4602,11 +4602,11 @@ function ContextMenu({ x, y, items, onClose, depth = 0 }) {
           }
         }
       },
-      import_react3.default.createElement("span", { className: "itw-menu-check" }, item.checked === true ? "\u2713" : ""),
-      import_react3.default.createElement("span", { className: "itw-menu-icon" }, item.icon ?? null),
-      import_react3.default.createElement("span", { className: "itw-menu-text" }, item.text),
-      import_react3.default.createElement("span", { className: "itw-menu-shortcut" }, item.shortcut ?? ""),
-      import_react3.default.createElement("span", { className: "itw-menu-arrow" }, hasSubmenu ? "\u25B8" : "")
+      import_react3.default.createElement("span", { className: "iwb-menu-check" }, item.checked === true ? "\u2713" : ""),
+      import_react3.default.createElement("span", { className: "iwb-menu-icon" }, item.icon ?? null),
+      import_react3.default.createElement("span", { className: "iwb-menu-text" }, item.text),
+      import_react3.default.createElement("span", { className: "iwb-menu-shortcut" }, item.shortcut ?? ""),
+      import_react3.default.createElement("span", { className: "iwb-menu-arrow" }, hasSubmenu ? "\u25B8" : "")
     );
     if (!hasSubmenu || !open || subAnchor === null) return row;
     return import_react3.default.createElement(
@@ -4654,22 +4654,22 @@ function ConfirmModal({ dialog, onClose }) {
   ];
   return import_react3.default.createElement(
     "div",
-    { className: "itw-modal-backdrop", onMouseDown: (event) => {
+    { className: "iwb-modal-backdrop", onMouseDown: (event) => {
       if (event.target === event.currentTarget) onClose();
     } },
     import_react3.default.createElement(
       "div",
-      { className: "itw-modal", role: "dialog", "aria-modal": "true", "aria-label": dialog.title },
+      { className: "iwb-modal", role: "dialog", "aria-modal": "true", "aria-label": dialog.title },
       import_react3.default.createElement("h2", null, dialog.title),
       import_react3.default.createElement("p", null, dialog.body),
       import_react3.default.createElement(
         "div",
-        { className: "itw-modal-actions" },
+        { className: "iwb-modal-actions" },
         actions.map((action, index) => import_react3.default.createElement("button", {
           key: action.key ?? index,
           ref: index === 0 ? cancelRef : void 0,
           type: "button",
-          className: `itw-textbtn ${action.primary === true ? "itw-primary" : ""} ${action.danger === true ? "itw-danger-solid" : ""}`,
+          className: `iwb-textbtn ${action.primary === true ? "iwb-primary" : ""} ${action.danger === true ? "iwb-danger-solid" : ""}`,
           autoFocus: index === 0,
           onClick: () => {
             onClose();
@@ -4684,12 +4684,12 @@ function Toast({ toast }) {
   if (toast === null || toast === void 0) return null;
   return import_react3.default.createElement(
     "div",
-    { className: `itw-toast itw-${toast.kind}` },
+    { className: `iwb-toast iwb-${toast.kind}` },
     import_react3.default.createElement(
       "div",
-      { className: "itw-toast-text" },
+      { className: "iwb-toast-text" },
       import_react3.default.createElement("div", null, toast.text),
-      toast.detail !== "" && toast.detail !== void 0 ? import_react3.default.createElement("div", { className: "itw-toast-detail" }, toast.detail) : null
+      toast.detail !== "" && toast.detail !== void 0 ? import_react3.default.createElement("div", { className: "iwb-toast-detail" }, toast.detail) : null
     )
   );
 }
@@ -4734,7 +4734,7 @@ function ShortcutCapture({
   }, [active]);
   return import_react3.default.createElement("button", {
     type: "button",
-    className: `itw-settings-shortcut ${armed ? "itw-capturing" : ""}`,
+    className: `iwb-settings-shortcut ${armed ? "iwb-capturing" : ""}`,
     onClick: () => {
       setArmed(true);
       onActivate?.(true);
@@ -4744,7 +4744,7 @@ function ShortcutCapture({
   }, armed ? pressText : value);
 }
 function Kbd({ children }) {
-  return import_react3.default.createElement("span", { className: "itw-kbd" }, children);
+  return import_react3.default.createElement("span", { className: "iwb-kbd" }, children);
 }
 function ChevronRight({ size = 12 }) {
   return import_react3.default.createElement(
@@ -4800,17 +4800,17 @@ function fileStatusKind(entry) {
 function statusClass(kind) {
   switch (kind) {
     case "untracked":
-      return "itw-git-untracked";
+      return "iwb-git-untracked";
     case "added":
-      return "itw-git-added";
+      return "iwb-git-added";
     case "modified":
-      return "itw-git-modified";
+      return "iwb-git-modified";
     case "conflict":
-      return "itw-git-conflict";
+      return "iwb-git-conflict";
     case "deleted":
-      return "itw-git-deleted";
+      return "iwb-git-deleted";
     case "ignored":
-      return "itw-git-ignored";
+      return "iwb-git-ignored";
     default:
       return "";
   }
@@ -5306,7 +5306,7 @@ function ProjectPanel({ store, state }) {
     const paths = selection.has(entry.path) ? currentPaths : [entry.path];
     dragRef.current = { paths, copy: false };
     event.dataTransfer.effectAllowed = "copyMove";
-    event.dataTransfer.setData("application/x-itw-paths", JSON.stringify(paths));
+    event.dataTransfer.setData("application/x-iwb-paths", JSON.stringify(paths));
     event.dataTransfer.setData("text/plain", paths.join("\n"));
   };
   const onDragOver = (event, row) => {
@@ -5366,27 +5366,27 @@ function ProjectPanel({ store, state }) {
   };
   const rootRow = state.root === "" ? import_react4.default.createElement(
     "div",
-    { className: "itw-empty" },
-    import_react4.default.createElement("div", { className: "itw-empty-title" }, t2("project.empty")),
-    import_react4.default.createElement("button", { type: "button", className: "itw-textbtn itw-primary", onClick: () => store.openRootPicker() }, t2("project.openWorkspace"))
+    { className: "iwb-empty" },
+    import_react4.default.createElement("div", { className: "iwb-empty-title" }, t2("project.empty")),
+    import_react4.default.createElement("button", { type: "button", className: "iwb-textbtn iwb-primary", onClick: () => store.openRootPicker() }, t2("project.openWorkspace"))
   ) : filterMode === "files" && state.filter.trim() !== "" && rows.length === 0 && state.fileIndexLoading !== true ? import_react4.default.createElement(
     "div",
-    { className: "itw-empty" },
-    import_react4.default.createElement("div", { className: "itw-empty-title" }, t2("project.noMatches"))
+    { className: "iwb-empty" },
+    import_react4.default.createElement("div", { className: "iwb-empty-title" }, t2("project.noMatches"))
   ) : import_react4.default.createElement(
     "div",
-    { className: "itw-vlist", style: { height: `${rows.length * ROW_HEIGHT}px` } },
+    { className: "iwb-vlist", style: { height: `${rows.length * ROW_HEIGHT}px` } },
     visible.map((row, index) => {
       const top2 = (start + index) * ROW_HEIGHT;
       const style = { top: `${top2}px`, paddingLeft: `${8 + row.depth * 14}px` };
       if (row.kind === "loading") {
-        return import_react4.default.createElement("div", { key: row.key, className: "itw-tree-msg", style: { ...style, position: "absolute", left: 0, right: 0 } }, t2("common.loading"));
+        return import_react4.default.createElement("div", { key: row.key, className: "iwb-tree-msg", style: { ...style, position: "absolute", left: 0, right: 0 } }, t2("common.loading"));
       }
       if (row.kind === "error") {
-        return import_react4.default.createElement("div", { key: row.key, className: "itw-error-box", style: { ...style, position: "absolute", left: 8, right: 8 }, title: row.message }, row.message);
+        return import_react4.default.createElement("div", { key: row.key, className: "iwb-error-box", style: { ...style, position: "absolute", left: 8, right: 8 }, title: row.message }, row.message);
       }
       if (row.kind === "note") {
-        return import_react4.default.createElement("div", { key: row.key, className: "itw-tree-msg", style: { ...style, position: "absolute", left: 0, right: 0 } }, row.message);
+        return import_react4.default.createElement("div", { key: row.key, className: "iwb-tree-msg", style: { ...style, position: "absolute", left: 0, right: 0 } }, row.message);
       }
       const entry = row.entry;
       const selected = selection.has(entry.path);
@@ -5394,13 +5394,13 @@ function ProjectPanel({ store, state }) {
       const ignoredFile = status.ignored.has(entry.rel);
       const excludedEntry = isExcluded(entry.rel, excluded);
       const classes = [
-        "itw-vlist-row",
-        "itw-tree-row",
-        selected ? "itw-selected" : "",
+        "iwb-vlist-row",
+        "iwb-tree-row",
+        selected ? "iwb-selected" : "",
         kind !== void 0 ? statusClass(kind) : "",
-        ignoredFile ? "itw-git-ignored" : "",
-        excludedEntry ? "itw-excluded" : "",
-        dropTarget === entry.path ? "itw-drop-target" : ""
+        ignoredFile ? "iwb-git-ignored" : "",
+        excludedEntry ? "iwb-excluded" : "",
+        dropTarget === entry.path ? "iwb-drop-target" : ""
       ].filter(Boolean).join(" ");
       if (row.kind === "dir") {
         return import_react4.default.createElement(
@@ -5419,9 +5419,9 @@ function ProjectPanel({ store, state }) {
             onDrop: (event) => onDrop(event, row),
             onDragEnd
           },
-          import_react4.default.createElement("span", { className: "itw-tree-twisty" }, row.open ? import_react4.default.createElement(ChevronDown, null) : import_react4.default.createElement(ChevronRight, null)),
+          import_react4.default.createElement("span", { className: "iwb-tree-twisty" }, row.open ? import_react4.default.createElement(ChevronDown, null) : import_react4.default.createElement(ChevronRight, null)),
           import_react4.default.createElement(FileTypeIcon, { name: entry.name, isDir: true, open: row.open, size: 15 }),
-          import_react4.default.createElement("span", { className: "itw-tree-name itw-dir" }, entry.name)
+          import_react4.default.createElement("span", { className: "iwb-tree-name iwb-dir" }, entry.name)
         );
       }
       const active = state.tabs.find((tab3) => tab3.kind === "file" && tab3.path === entry.path && tab3.id === state.activeId);
@@ -5430,7 +5430,7 @@ function ProjectPanel({ store, state }) {
         "div",
         {
           key: row.key,
-          className: `${classes} ${active !== void 0 ? "itw-opened" : ""}`,
+          className: `${classes} ${active !== void 0 ? "iwb-opened" : ""}`,
           style,
           title: entry.rel,
           draggable: !editing,
@@ -5442,10 +5442,10 @@ function ProjectPanel({ store, state }) {
           onDrop: (event) => onDrop(event, row),
           onDragEnd
         },
-        import_react4.default.createElement("span", { className: "itw-tree-twisty" }),
+        import_react4.default.createElement("span", { className: "iwb-tree-twisty" }),
         import_react4.default.createElement(FileTypeIcon, { name: entry.name, size: 15 }),
         editing ? import_react4.default.createElement("input", {
-          className: "itw-rename-input",
+          className: "iwb-rename-input",
           autoFocus: true,
           value: renaming.value,
           onChange: (event) => setRenaming({ ...renaming, value: event.target.value }),
@@ -5463,30 +5463,30 @@ function ProjectPanel({ store, state }) {
           onBlur: commitRename,
           onClick: (event) => event.stopPropagation(),
           onDoubleClick: (event) => event.stopPropagation()
-        }) : import_react4.default.createElement("span", { className: "itw-tree-name" }, entry.name),
-        row.quick === true ? import_react4.default.createElement("span", { className: "itw-tree-relative" }, entry.rel) : null
+        }) : import_react4.default.createElement("span", { className: "iwb-tree-name" }, entry.name),
+        row.quick === true ? import_react4.default.createElement("span", { className: "iwb-tree-relative" }, entry.rel) : null
       );
     })
   );
   const favorites = state.settings?.favorites ?? [];
   const favoritesPanel = favoritesOpen && favorites.length > 0 ? import_react4.default.createElement(
     "div",
-    { className: "itw-favorites" },
+    { className: "iwb-favorites" },
     favorites.map((path2) => import_react4.default.createElement(
       "div",
       {
         key: path2,
-        className: "itw-favorite-row",
+        className: "iwb-favorite-row",
         title: path2,
         onClick: () => {
           void store.openFile(path2, { rel: path2, preview: false });
         }
       },
-      import_react4.default.createElement("span", { className: "itw-favorite-star" }, "\u2605"),
-      import_react4.default.createElement("span", { className: "itw-favorite-name" }, baseName(path2)),
+      import_react4.default.createElement("span", { className: "iwb-favorite-star" }, "\u2605"),
+      import_react4.default.createElement("span", { className: "iwb-favorite-name" }, baseName(path2)),
       import_react4.default.createElement("button", {
         type: "button",
-        className: "itw-iconbtn itw-favorite-remove",
+        className: "iwb-iconbtn iwb-favorite-remove",
         title: t2("project.removeFavorite"),
         onClick: (event) => {
           event.stopPropagation();
@@ -5500,35 +5500,35 @@ function ProjectPanel({ store, state }) {
     null,
     import_react4.default.createElement(
       "div",
-      { className: "itw-panel-header" },
-      import_react4.default.createElement("span", { className: "itw-panel-title" }, t2("project.title")),
+      { className: "iwb-panel-header" },
+      import_react4.default.createElement("span", { className: "iwb-panel-title" }, t2("project.title")),
       import_react4.default.createElement(
         "button",
         {
           type: "button",
-          className: "itw-project-sub-btn",
+          className: "iwb-project-sub-btn",
           title: `${t2("project.selectProject")} \u2014 ${state.root}`,
           onClick: () => store.openProjectPicker()
         },
-        import_react4.default.createElement("span", { className: "itw-project-sub-name" }, baseName(state.root) || t2("project.empty")),
+        import_react4.default.createElement("span", { className: "iwb-project-sub-name" }, baseName(state.root) || t2("project.empty")),
         import_react4.default.createElement(ChevronDown, { size: 11 })
       ),
-      import_react4.default.createElement("span", { className: "itw-spacer" }),
+      import_react4.default.createElement("span", { className: "iwb-spacer" }),
       import_react4.default.createElement("button", {
         type: "button",
-        className: `itw-iconbtn ${favoritesOpen ? "itw-on" : ""}`,
+        className: `iwb-iconbtn ${favoritesOpen ? "iwb-on" : ""}`,
         title: t2("project.favorites"),
         onClick: () => setFavoritesOpen(!favoritesOpen)
       }, "\u2605"),
       import_react4.default.createElement("button", {
         type: "button",
-        className: "itw-iconbtn",
+        className: "iwb-iconbtn",
         title: `${t2("search.title")} (${shortcutFor("findInFiles")})`,
         onClick: () => store.openSearchTab()
       }, import_react4.default.createElement("span", { style: { fontSize: 16, lineHeight: 1 } }, "\u2315")),
       import_react4.default.createElement("button", {
         type: "button",
-        className: `itw-iconbtn ${filterOpen ? "itw-on" : ""}`,
+        className: `iwb-iconbtn ${filterOpen ? "iwb-on" : ""}`,
         title: t2("project.filter"),
         onClick: () => {
           setFilterOpen(!filterOpen);
@@ -5537,13 +5537,13 @@ function ProjectPanel({ store, state }) {
       }, import_react4.default.createElement(IconSearch, { width: 14, height: 14 })),
       import_react4.default.createElement("button", {
         type: "button",
-        className: "itw-iconbtn",
+        className: "iwb-iconbtn",
         title: t2("project.newFile"),
         onClick: () => beginNew(state.root, false)
       }, "+"),
       import_react4.default.createElement("button", {
         type: "button",
-        className: "itw-iconbtn",
+        className: "iwb-iconbtn",
         title: t2("common.refresh"),
         onClick: () => {
           void store.sync();
@@ -5553,19 +5553,19 @@ function ProjectPanel({ store, state }) {
     favoritesPanel,
     filterOpen || state.filter !== "" ? import_react4.default.createElement(
       "div",
-      { className: "itw-filter" },
+      { className: "iwb-filter" },
       import_react4.default.createElement(
         "div",
-        { className: "itw-filter-mode", role: "group" },
+        { className: "iwb-filter-mode", role: "group" },
         import_react4.default.createElement("button", {
           type: "button",
-          className: filterMode === "files" ? "itw-on" : "",
+          className: filterMode === "files" ? "iwb-on" : "",
           title: t2("project.filterFiles"),
           onClick: () => store.setFilterMode("files")
         }, t2("project.filterFiles")),
         import_react4.default.createElement("button", {
           type: "button",
-          className: filterMode === "tree" ? "itw-on" : "",
+          className: filterMode === "tree" ? "iwb-on" : "",
           title: t2("project.filterTree"),
           onClick: () => store.setFilterMode("tree")
         }, t2("project.filterTree"))
@@ -5584,11 +5584,11 @@ function ProjectPanel({ store, state }) {
         }
       })
     ) : null,
-    filterMode === "tree" && state.filter.trim() !== "" ? import_react4.default.createElement("div", { className: "itw-filter-hint" }, t2("project.filterTreeHint")) : null,
-    filterMode === "files" && state.filter.trim() !== "" && state.fileIndexLoading === true ? import_react4.default.createElement("div", { className: "itw-filter-hint" }, t2("project.filterIndexing")) : null,
-    filterMode === "files" && state.filter.trim() !== "" && state.fileIndexError !== null ? import_react4.default.createElement("div", { className: "itw-filter-hint itw-error-text" }, t2("project.filterError")) : null,
+    filterMode === "tree" && state.filter.trim() !== "" ? import_react4.default.createElement("div", { className: "iwb-filter-hint" }, t2("project.filterTreeHint")) : null,
+    filterMode === "files" && state.filter.trim() !== "" && state.fileIndexLoading === true ? import_react4.default.createElement("div", { className: "iwb-filter-hint" }, t2("project.filterIndexing")) : null,
+    filterMode === "files" && state.filter.trim() !== "" && state.fileIndexError !== null ? import_react4.default.createElement("div", { className: "iwb-filter-hint iwb-error-text" }, t2("project.filterError")) : null,
     import_react4.default.createElement("div", {
-      className: "itw-panel-body itw-tree",
+      className: "iwb-panel-body iwb-tree",
       ref: scrollRef,
       tabIndex: 0,
       onKeyDown,
@@ -5602,16 +5602,16 @@ function ProjectPanel({ store, state }) {
     menu !== null ? import_react4.default.createElement(ContextMenu, { x: menu.x, y: menu.y, items: menuItems, onClose: () => setMenu(null) }) : null,
     dialog !== null && dialog.kind === "new" ? import_react4.default.createElement(
       "div",
-      { className: "itw-modal-backdrop", onMouseDown: (event) => {
+      { className: "iwb-modal-backdrop", onMouseDown: (event) => {
         if (event.target === event.currentTarget) setDialog(null);
       } },
       import_react4.default.createElement(
         "div",
-        { className: "itw-modal", role: "dialog", "aria-modal": "true" },
+        { className: "iwb-modal", role: "dialog", "aria-modal": "true" },
         import_react4.default.createElement("h2", null, dialog.isDir ? t2("project.newDir") : t2("project.newFile")),
         import_react4.default.createElement(
           "label",
-          { className: "itw-field" },
+          { className: "iwb-field" },
           import_react4.default.createElement("span", null, t2("project.nameLabel")),
           import_react4.default.createElement("input", {
             autoFocus: true,
@@ -5627,7 +5627,7 @@ function ProjectPanel({ store, state }) {
         ),
         !dialog.isDir ? import_react4.default.createElement(
           "label",
-          { className: "itw-field" },
+          { className: "iwb-field" },
           import_react4.default.createElement("span", null, t2("project.templateLabel")),
           import_react4.default.createElement("select", {
             value: dialog.template,
@@ -5641,25 +5641,25 @@ function ProjectPanel({ store, state }) {
         ) : null,
         import_react4.default.createElement(
           "div",
-          { className: "itw-modal-actions" },
-          import_react4.default.createElement("button", { type: "button", className: "itw-textbtn", onClick: () => setDialog(null) }, t2("common.cancel")),
-          import_react4.default.createElement("button", { type: "button", className: "itw-textbtn itw-primary", onClick: submitDialog }, t2("project.create"))
+          { className: "iwb-modal-actions" },
+          import_react4.default.createElement("button", { type: "button", className: "iwb-textbtn", onClick: () => setDialog(null) }, t2("common.cancel")),
+          import_react4.default.createElement("button", { type: "button", className: "iwb-textbtn iwb-primary", onClick: submitDialog }, t2("project.create"))
         )
       )
     ) : null,
     dialog !== null && dialog.kind === "move" ? import_react4.default.createElement(
       "div",
-      { className: "itw-modal-backdrop", onMouseDown: (event) => {
+      { className: "iwb-modal-backdrop", onMouseDown: (event) => {
         if (event.target === event.currentTarget) setDialog(null);
       } },
       import_react4.default.createElement(
         "div",
-        { className: "itw-modal", role: "dialog", "aria-modal": "true" },
+        { className: "iwb-modal", role: "dialog", "aria-modal": "true" },
         import_react4.default.createElement("h2", null, t2("project.moveTitle")),
         import_react4.default.createElement("p", null, dialog.paths.map((path2) => baseName(path2)).join(", ")),
         import_react4.default.createElement(
           "label",
-          { className: "itw-field" },
+          { className: "iwb-field" },
           import_react4.default.createElement("span", null, t2("project.moveTarget")),
           import_react4.default.createElement("input", {
             autoFocus: true,
@@ -5676,9 +5676,9 @@ function ProjectPanel({ store, state }) {
         ),
         import_react4.default.createElement(
           "div",
-          { className: "itw-modal-actions" },
-          import_react4.default.createElement("button", { type: "button", className: "itw-textbtn", onClick: () => setDialog(null) }, t2("common.cancel")),
-          import_react4.default.createElement("button", { type: "button", className: "itw-textbtn itw-primary", onClick: submitDialog }, t2("project.move"))
+          { className: "iwb-modal-actions" },
+          import_react4.default.createElement("button", { type: "button", className: "iwb-textbtn", onClick: () => setDialog(null) }, t2("common.cancel")),
+          import_react4.default.createElement("button", { type: "button", className: "iwb-textbtn iwb-primary", onClick: submitDialog }, t2("project.move"))
         )
       )
     ) : null
@@ -5689,12 +5689,12 @@ function ProjectPanel({ store, state }) {
 var import_react5 = __toESM(require("react"), 1);
 function LineStats({ stats }) {
   if (stats === void 0 || stats === null) return null;
-  if (stats.binary === true) return import_react5.default.createElement("span", { className: "itw-file-stat" }, "bin");
+  if (stats.binary === true) return import_react5.default.createElement("span", { className: "iwb-file-stat" }, "bin");
   return import_react5.default.createElement(
     "span",
-    { className: "itw-file-stat" },
-    import_react5.default.createElement("span", { className: "itw-additions" }, `+${stats.additions}`),
-    import_react5.default.createElement("span", { className: "itw-deletions" }, `-${stats.deletions}`)
+    { className: "iwb-file-stat" },
+    import_react5.default.createElement("span", { className: "iwb-additions" }, `+${stats.additions}`),
+    import_react5.default.createElement("span", { className: "iwb-deletions" }, `-${stats.deletions}`)
   );
 }
 function FileRow({ store, state, entry, checked, onOpen, onMenu }) {
@@ -5706,7 +5706,7 @@ function FileRow({ store, state, entry, checked, onOpen, onMenu }) {
   return import_react5.default.createElement(
     "div",
     {
-      className: `itw-file-row ${selected ? "itw-selected" : ""} ${entry.untracked === true ? "itw-file-untracked" : ""} ${entry.conflict === true ? "itw-file-conflict" : ""}`,
+      className: `iwb-file-row ${selected ? "iwb-selected" : ""} ${entry.untracked === true ? "iwb-file-untracked" : ""} ${entry.conflict === true ? "iwb-file-conflict" : ""}`,
       title: entry.path,
       onClick: () => store.patch("commit", { selectedPath: entry.path }),
       onDoubleClick: () => onOpen(entry),
@@ -5717,16 +5717,16 @@ function FileRow({ store, state, entry, checked, onOpen, onMenu }) {
       checked,
       disabled: entry.conflict === true,
       title: store.t("commit.check"),
-      style: { accentColor: "var(--itw-accent)", margin: 0 },
+      style: { accentColor: "var(--iwb-accent)", margin: 0 },
       onClick: (event) => event.stopPropagation(),
       onChange: () => {
         void store.toggleCommitEntry(entry);
       }
     }),
     import_react5.default.createElement(FileTypeIcon, { name: name2, size: 14 }),
-    import_react5.default.createElement("span", { className: "itw-file-name", style: entry.conflict === true ? { color: "var(--itw-error)" } : void 0 }, name2),
-    parent !== "" ? import_react5.default.createElement("span", { className: "itw-file-dir" }, parent) : null,
-    import_react5.default.createElement("span", { className: "itw-file-status" }, letter),
+    import_react5.default.createElement("span", { className: "iwb-file-name", style: entry.conflict === true ? { color: "var(--iwb-error)" } : void 0 }, name2),
+    parent !== "" ? import_react5.default.createElement("span", { className: "iwb-file-dir" }, parent) : null,
+    import_react5.default.createElement("span", { className: "iwb-file-status" }, letter),
     import_react5.default.createElement(LineStats, { stats })
   );
 }
@@ -5738,27 +5738,27 @@ function GroupHeader({ store, title, entries, checkedPaths }) {
   }, [tri]);
   return import_react5.default.createElement(
     "div",
-    { className: "itw-group-header" },
+    { className: "iwb-group-header" },
     import_react5.default.createElement("input", {
       ref,
       type: "checkbox",
       checked: tri === "all",
       disabled: entries.length === 0,
       title: tri === "all" ? store.t("commit.uncheckAll") : store.t("commit.checkAll"),
-      style: { accentColor: "var(--itw-accent)", margin: 0 },
+      style: { accentColor: "var(--iwb-accent)", margin: 0 },
       onChange: () => {
         void store.setCommitChecked(entries, tri !== "all");
       }
     }),
     import_react5.default.createElement("span", null, title),
-    import_react5.default.createElement("span", { className: "itw-count" }, entries.length)
+    import_react5.default.createElement("span", { className: "iwb-count" }, entries.length)
   );
 }
 function DirectorySection({ store, state, dir, entries, checkedPaths, onOpen, onMenu }) {
   return import_react5.default.createElement(
     "div",
-    { className: "itw-dir-section" },
-    import_react5.default.createElement("div", { className: "itw-dir-heading" }, dir === "" ? store.t("common.root") : dir),
+    { className: "iwb-dir-section" },
+    import_react5.default.createElement("div", { className: "iwb-dir-heading" }, dir === "" ? store.t("common.root") : dir),
     entries.map((entry) => import_react5.default.createElement(FileRow, {
       key: entry.path,
       store,
@@ -5883,24 +5883,24 @@ ${entries.length}`,
   };
   const activeList = changelists.active ?? DEFAULT_CHANGELIST;
   const visibleChanges = groups.changes.filter((entry) => changelistOf(entry.path, changelists.lists) === activeList);
-  const changesBody = visibleChanges.length === 0 ? import_react5.default.createElement("div", { className: "itw-group-empty" }, t2("commit.noChangesGroup")) : activeList === DEFAULT_CHANGELIST ? renderEntries(visibleChanges) : import_react5.default.createElement(
+  const changesBody = visibleChanges.length === 0 ? import_react5.default.createElement("div", { className: "iwb-group-empty" }, t2("commit.noChangesGroup")) : activeList === DEFAULT_CHANGELIST ? renderEntries(visibleChanges) : import_react5.default.createElement(
     "div",
-    { className: "itw-changelist" },
-    import_react5.default.createElement("div", { className: "itw-changelist-head" }, activeList, import_react5.default.createElement("span", { className: "itw-count" }, visibleChanges.length)),
+    { className: "iwb-changelist" },
+    import_react5.default.createElement("div", { className: "iwb-changelist-head" }, activeList, import_react5.default.createElement("span", { className: "iwb-count" }, visibleChanges.length)),
     renderEntries(visibleChanges)
   );
   return import_react5.default.createElement(
     "div",
-    { className: "itw-commit" },
+    { className: "iwb-commit" },
     import_react5.default.createElement(
       "div",
-      { className: "itw-panel-header" },
-      import_react5.default.createElement("span", { className: "itw-panel-title" }, t2("commit.title")),
-      state.status.isRepo === true ? import_react5.default.createElement("span", { className: "itw-panel-sub" }, state.status.detached === true ? t2("git.detached") : state.status.branch ?? "") : import_react5.default.createElement("span", { className: "itw-panel-sub" }, t2("welcome.noRepo")),
-      import_react5.default.createElement("span", { className: "itw-spacer" }),
+      { className: "iwb-panel-header" },
+      import_react5.default.createElement("span", { className: "iwb-panel-title" }, t2("commit.title")),
+      state.status.isRepo === true ? import_react5.default.createElement("span", { className: "iwb-panel-sub" }, state.status.detached === true ? t2("git.detached") : state.status.branch ?? "") : import_react5.default.createElement("span", { className: "iwb-panel-sub" }, t2("welcome.noRepo")),
+      import_react5.default.createElement("span", { className: "iwb-spacer" }),
       import_react5.default.createElement("button", {
         type: "button",
-        className: `itw-iconbtn ${groupByDir ? "itw-on" : ""}`,
+        className: `iwb-iconbtn ${groupByDir ? "iwb-on" : ""}`,
         title: t2("commit.groupByDirectoryHint"),
         onClick: () => {
           void store.setGroupByDirectory(!groupByDir);
@@ -5908,7 +5908,7 @@ ${entries.length}`,
       }, "\u25A4"),
       import_react5.default.createElement("button", {
         type: "button",
-        className: "itw-iconbtn",
+        className: "iwb-iconbtn",
         title: t2("common.refresh"),
         onClick: () => {
           void store.refreshStatus({ initial: true });
@@ -5918,17 +5918,17 @@ ${entries.length}`,
     ),
     state.status.isRepo !== true ? import_react5.default.createElement(
       "div",
-      { className: "itw-commit-hint" },
+      { className: "iwb-commit-hint" },
       import_react5.default.createElement("span", null, t2("project.noRepoHint")),
       import_react5.default.createElement("button", {
         type: "button",
-        className: "itw-textbtn itw-small",
+        className: "iwb-textbtn iwb-small",
         onClick: () => store.openProjectPicker()
       }, t2("project.chooseRepo"))
     ) : null,
     import_react5.default.createElement(
       "div",
-      { className: "itw-commit-message" },
+      { className: "iwb-commit-message" },
       import_react5.default.createElement("textarea", {
         ref: textareaRef,
         placeholder: state.settings?.git?.commitTemplate || t2("commit.messagePlaceholder"),
@@ -5944,10 +5944,10 @@ ${entries.length}`,
       }),
       import_react5.default.createElement(
         "div",
-        { className: "itw-commit-actions" },
+        { className: "iwb-commit-actions" },
         import_react5.default.createElement(
           "label",
-          { className: "itw-check", title: initial ? t2("commit.amendDisabled") : t2("commit.amend") },
+          { className: "iwb-check", title: initial ? t2("commit.amendDisabled") : t2("commit.amend") },
           import_react5.default.createElement("input", {
             type: "checkbox",
             checked: commit.amend,
@@ -5959,7 +5959,7 @@ ${entries.length}`,
         import_react5.default.createElement(
           "select",
           {
-            className: "itw-select",
+            className: "iwb-select",
             style: { maxWidth: 120 },
             value: "",
             title: t2("commit.history"),
@@ -5971,10 +5971,10 @@ ${entries.length}`,
           import_react5.default.createElement("option", { value: "" }, t2("commit.history")),
           history2.map((item) => import_react5.default.createElement("option", { key: item.value, value: item.value }, item.label))
         ),
-        import_react5.default.createElement("span", { className: "itw-spacer" }),
+        import_react5.default.createElement("span", { className: "iwb-spacer" }),
         import_react5.default.createElement("button", {
           type: "button",
-          className: "itw-textbtn itw-primary itw-small",
+          className: "iwb-textbtn iwb-primary iwb-small",
           disabled: !canCommit,
           onClick: () => {
             void store.commit(commit.message, commit.amend, false);
@@ -5982,7 +5982,7 @@ ${entries.length}`,
         }, commit.committing ? t2("common.loading") : t2("commit.commit")),
         import_react5.default.createElement("button", {
           type: "button",
-          className: "itw-textbtn itw-small",
+          className: "iwb-textbtn iwb-small",
           disabled: !canCommit,
           onClick: () => {
             void store.commit(commit.message, commit.amend, true);
@@ -5991,12 +5991,12 @@ ${entries.length}`,
       ),
       taskDefs.length > 0 ? import_react5.default.createElement(
         "div",
-        { className: "itw-commit-tasks" },
+        { className: "iwb-commit-tasks" },
         taskDefs.map(([key, label, command2]) => import_react5.default.createElement(
           "label",
           {
             key,
-            className: "itw-check",
+            className: "iwb-check",
             title: command2
           },
           import_react5.default.createElement("input", {
@@ -6007,15 +6007,15 @@ ${entries.length}`,
           label
         ))
       ) : null,
-      commit.error !== null && commit.error !== void 0 ? import_react5.default.createElement("div", { className: "itw-error-box", style: { margin: "8px 0 0" } }, commit.error) : null
+      commit.error !== null && commit.error !== void 0 ? import_react5.default.createElement("div", { className: "iwb-error-box", style: { margin: "8px 0 0" } }, commit.error) : null
     ),
     import_react5.default.createElement(
       "div",
-      { className: "itw-commit-toolbar" },
+      { className: "iwb-commit-toolbar" },
       import_react5.default.createElement(
         "select",
         {
-          className: "itw-select",
+          className: "iwb-select",
           value: changelists.active,
           title: t2("commit.changelist"),
           onChange: (event) => {
@@ -6027,13 +6027,13 @@ ${entries.length}`,
       ),
       import_react5.default.createElement("button", {
         type: "button",
-        className: "itw-textbtn itw-small",
+        className: "iwb-textbtn iwb-small",
         title: t2("commit.newChangelist"),
         onClick: () => setDialog({ kind: "changelist", name: "", paths: [] })
       }, "+"),
       activeList !== DEFAULT_CHANGELIST ? import_react5.default.createElement("button", {
         type: "button",
-        className: "itw-textbtn itw-small itw-danger",
+        className: "iwb-textbtn iwb-small iwb-danger",
         title: t2("commit.deleteChangelist"),
         onClick: () => store.askChoice(
           t2("commit.deleteChangelist"),
@@ -6052,10 +6052,10 @@ ${entries.length}`,
           ]
         )
       }, "\xD7") : null,
-      import_react5.default.createElement("span", { className: "itw-spacer" }),
+      import_react5.default.createElement("span", { className: "iwb-spacer" }),
       import_react5.default.createElement("button", {
         type: "button",
-        className: "itw-textbtn itw-small itw-danger",
+        className: "iwb-textbtn iwb-small iwb-danger",
         title: t2("commit.rollback"),
         disabled: checkedPaths.size === 0 && state.commit.selectedPath === "",
         onClick: rollback
@@ -6063,33 +6063,33 @@ ${entries.length}`,
     ),
     import_react5.default.createElement(
       "div",
-      { className: "itw-groups" },
+      { className: "iwb-groups" },
       import_react5.default.createElement(
         "div",
-        { className: "itw-group" },
+        { className: "iwb-group" },
         import_react5.default.createElement(GroupHeader, { store, title: t2("commit.changes"), entries: visibleChanges, checkedPaths }),
         changesBody
       ),
       import_react5.default.createElement(
         "div",
-        { className: "itw-group" },
+        { className: "iwb-group" },
         import_react5.default.createElement(GroupHeader, { store, title: t2("commit.unversioned"), entries: groups.unversioned, checkedPaths }),
-        groups.unversioned.length === 0 ? import_react5.default.createElement("div", { className: "itw-group-empty" }, t2("commit.noUnversioned")) : renderEntries(groups.unversioned)
+        groups.unversioned.length === 0 ? import_react5.default.createElement("div", { className: "iwb-group-empty" }, t2("commit.noUnversioned")) : renderEntries(groups.unversioned)
       )
     ),
     menu !== null ? import_react5.default.createElement(ContextMenu, { x: menu.x, y: menu.y, items: menuItems, onClose: () => setMenu(null) }) : null,
     dialog !== null ? import_react5.default.createElement(
       "div",
-      { className: "itw-modal-backdrop", onMouseDown: (event) => {
+      { className: "iwb-modal-backdrop", onMouseDown: (event) => {
         if (event.target === event.currentTarget) setDialog(null);
       } },
       import_react5.default.createElement(
         "div",
-        { className: "itw-modal", role: "dialog", "aria-modal": "true" },
+        { className: "iwb-modal", role: "dialog", "aria-modal": "true" },
         import_react5.default.createElement("h2", null, t2("commit.newChangelist")),
         import_react5.default.createElement(
           "label",
-          { className: "itw-field" },
+          { className: "iwb-field" },
           import_react5.default.createElement("span", null, t2("commit.changelistName")),
           import_react5.default.createElement("input", {
             autoFocus: true,
@@ -6109,11 +6109,11 @@ ${entries.length}`,
         ),
         import_react5.default.createElement(
           "div",
-          { className: "itw-modal-actions" },
-          import_react5.default.createElement("button", { type: "button", className: "itw-textbtn", onClick: () => setDialog(null) }, t2("common.cancel")),
+          { className: "iwb-modal-actions" },
+          import_react5.default.createElement("button", { type: "button", className: "iwb-textbtn", onClick: () => setDialog(null) }, t2("common.cancel")),
           import_react5.default.createElement("button", {
             type: "button",
-            className: "itw-textbtn itw-primary",
+            className: "iwb-textbtn iwb-primary",
             onClick: () => {
               const name2 = dialog.name.trim();
               setDialog(null);
@@ -6307,7 +6307,7 @@ function GraphCell({ row, width, height, offset }) {
     cy: height / 2,
     r: 3.4,
     fill: GRAPH_COLORS[lane % GRAPH_COLORS.length],
-    stroke: "var(--itw-bg)",
+    stroke: "var(--iwb-bg)",
     strokeWidth: 1.2
   }));
   if (row.mergeLanes.length > 0) {
@@ -6341,7 +6341,7 @@ function RefChip({ value }) {
       borderRadius: 3,
       fontSize: 10,
       background: isHead ? "rgba(76,154,255,.2)" : isRemote ? "rgba(127,127,127,.18)" : "rgba(79,180,119,.2)",
-      color: isHead ? "var(--itw-accent)" : isRemote ? "var(--itw-muted)" : "var(--itw-success)",
+      color: isHead ? "var(--iwb-accent)" : isRemote ? "var(--iwb-muted)" : "var(--iwb-success)",
       maxWidth: 110,
       overflow: "hidden",
       textOverflow: "ellipsis",
@@ -6371,10 +6371,10 @@ function diffFiles(diff) {
 function InlinePatch({ text }) {
   return import_react6.default.createElement(
     "div",
-    { className: "itw-git-inline-diff" },
+    { className: "iwb-git-inline-diff" },
     String(text ?? "").split("\n").map((line, index) => import_react6.default.createElement("div", {
       key: index,
-      className: `itw-git-inline-line ${line.startsWith("+") && !line.startsWith("+++") ? "itw-add" : ""} ${line.startsWith("-") && !line.startsWith("---") ? "itw-del" : ""} ${line.startsWith("@@") ? "itw-hunk" : ""}`
+      className: `iwb-git-inline-line ${line.startsWith("+") && !line.startsWith("+++") ? "iwb-add" : ""} ${line.startsWith("-") && !line.startsWith("---") ? "iwb-del" : ""} ${line.startsWith("@@") ? "iwb-hunk" : ""}`
     }, line === "" ? "\xA0" : line))
   );
 }
@@ -6400,13 +6400,13 @@ function BranchPopover({ store, state, x, y, onClose }) {
   return import_react6.default.createElement(
     "div",
     {
-      className: "itw-branch-popover",
+      className: "iwb-branch-popover",
       style: { left: `${x}px`, top: `${y}px` },
       onMouseDown: (event) => event.stopPropagation()
     },
     import_react6.default.createElement("input", {
       ref: inputRef,
-      className: "itw-input",
+      className: "iwb-input",
       style: { width: "100%" },
       placeholder: t2("git.searchBranch"),
       value: query,
@@ -6429,18 +6429,18 @@ function BranchPopover({ store, state, x, y, onClose }) {
     }),
     import_react6.default.createElement(
       "div",
-      { className: "itw-branch-list" },
-      names.length === 0 ? import_react6.default.createElement("div", { className: "itw-quick-empty" }, t2("quickOpen.empty")) : names.map((name2, position) => import_react6.default.createElement(
+      { className: "iwb-branch-list" },
+      names.length === 0 ? import_react6.default.createElement("div", { className: "iwb-quick-empty" }, t2("quickOpen.empty")) : names.map((name2, position) => import_react6.default.createElement(
         "button",
         {
           key: name2,
           type: "button",
-          className: `itw-branch-row ${position === index ? "itw-selected" : ""}`,
+          className: `iwb-branch-row ${position === index ? "iwb-selected" : ""}`,
           onMouseEnter: () => setIndex(position),
           onClick: () => choose(name2)
         },
-        import_react6.default.createElement("span", { className: "itw-branch-check" }, name2 === state.status.branch ? "\u2713" : ""),
-        import_react6.default.createElement("span", { className: "itw-branch-name" }, name2)
+        import_react6.default.createElement("span", { className: "iwb-branch-check" }, name2 === state.status.branch ? "\u2713" : ""),
+        import_react6.default.createElement("span", { className: "iwb-branch-name" }, name2)
       ))
     )
   );
@@ -6470,28 +6470,28 @@ function CommitDrawer({ store, state, narrow, width, onResizeStart, onClose }) {
   return import_react6.default.createElement(
     import_react6.default.Fragment,
     null,
-    narrow ? import_react6.default.createElement("div", { className: "itw-git-drawer-backdrop", onMouseDown: onClose }) : null,
+    narrow ? import_react6.default.createElement("div", { className: "iwb-git-drawer-backdrop", onMouseDown: onClose }) : null,
     import_react6.default.createElement(
       "aside",
       {
-        className: `itw-git-drawer ${narrow ? "itw-git-drawer-overlay" : ""}`,
+        className: `iwb-git-drawer ${narrow ? "iwb-git-drawer-overlay" : ""}`,
         style: narrow ? void 0 : { width: `${width}px` },
         role: "complementary",
         "aria-label": t2("git.detailTitle")
       },
-      narrow ? null : import_react6.default.createElement("div", { className: "itw-git-drawer-resizer", onPointerDown: onResizeStart }),
+      narrow ? null : import_react6.default.createElement("div", { className: "iwb-git-drawer-resizer", onPointerDown: onResizeStart }),
       import_react6.default.createElement(
         "div",
-        { className: "itw-git-drawer-head" },
+        { className: "iwb-git-drawer-head" },
         import_react6.default.createElement(
           "span",
-          { className: "itw-git-drawer-title", title: detail?.subject ?? "" },
+          { className: "iwb-git-drawer-title", title: detail?.subject ?? "" },
           detail?.subject ?? (git.detailLoading ? t2("common.loading") : "")
         ),
-        import_react6.default.createElement("span", { className: "itw-spacer" }),
+        import_react6.default.createElement("span", { className: "iwb-spacer" }),
         detail !== null ? import_react6.default.createElement("button", {
           type: "button",
-          className: "itw-iconbtn",
+          className: "iwb-iconbtn",
           title: t2("git.copySha"),
           onClick: () => {
             void copy(detail.hash);
@@ -6500,69 +6500,69 @@ function CommitDrawer({ store, state, narrow, width, onResizeStart, onClose }) {
         import_react6.default.createElement("button", {
           ref: closeRef,
           type: "button",
-          className: "itw-iconbtn",
+          className: "iwb-iconbtn",
           title: t2("git.closeDetail"),
           onClick: onClose
         }, import_react6.default.createElement(IconClose, { width: 13, height: 13 }))
       ),
-      detail === null && git.detailLoading === true ? import_react6.default.createElement("div", { className: "itw-git-drawer-body" }, import_react6.default.createElement("div", { className: "itw-empty" }, t2("common.loading"))) : detail === null ? import_react6.default.createElement("div", { className: "itw-git-drawer-body" }, import_react6.default.createElement("div", { className: "itw-empty" }, t2("git.selectCommit"))) : import_react6.default.createElement(
+      detail === null && git.detailLoading === true ? import_react6.default.createElement("div", { className: "iwb-git-drawer-body" }, import_react6.default.createElement("div", { className: "iwb-empty" }, t2("common.loading"))) : detail === null ? import_react6.default.createElement("div", { className: "iwb-git-drawer-body" }, import_react6.default.createElement("div", { className: "iwb-empty" }, t2("git.selectCommit"))) : import_react6.default.createElement(
         "div",
-        { className: "itw-git-drawer-body" },
+        { className: "iwb-git-drawer-body" },
         import_react6.default.createElement(
           "div",
-          { className: "itw-git-drawer-meta" },
-          import_react6.default.createElement("span", { className: "itw-git-drawer-sha", title: detail.hash }, detail.shortHash),
+          { className: "iwb-git-drawer-meta" },
+          import_react6.default.createElement("span", { className: "iwb-git-drawer-sha", title: detail.hash }, detail.shortHash),
           import_react6.default.createElement("span", null, detail.author),
-          detail.email !== "" ? import_react6.default.createElement("span", { className: "itw-git-detail-dim" }, detail.email) : null,
-          import_react6.default.createElement("span", { className: "itw-git-detail-dim" }, detail.date),
-          ...(detail.refs ?? []).map((ref) => import_react6.default.createElement("span", { key: ref, className: "itw-ref-chip" }, ref)),
-          detail.parents?.length > 0 ? import_react6.default.createElement("span", { className: "itw-git-detail-dim" }, `${t2("git.parents")}: ${detail.parents.map((parent) => parent.slice(0, 7)).join(", ")}`) : null
+          detail.email !== "" ? import_react6.default.createElement("span", { className: "iwb-git-detail-dim" }, detail.email) : null,
+          import_react6.default.createElement("span", { className: "iwb-git-detail-dim" }, detail.date),
+          ...(detail.refs ?? []).map((ref) => import_react6.default.createElement("span", { key: ref, className: "iwb-ref-chip" }, ref)),
+          detail.parents?.length > 0 ? import_react6.default.createElement("span", { className: "iwb-git-detail-dim" }, `${t2("git.parents")}: ${detail.parents.map((parent) => parent.slice(0, 7)).join(", ")}`) : null
         ),
         import_react6.default.createElement("button", {
           type: "button",
-          className: "itw-textbtn itw-small itw-git-open-full",
+          className: "iwb-textbtn iwb-small iwb-git-open-full",
           title: t2("git.openFull"),
           onClick: () => {
             void store.openCommit(detail.hash);
           }
         }, t2("git.openFull")),
-        detail.body !== "" ? import_react6.default.createElement("pre", { className: "itw-git-drawer-body-text" }, detail.body) : null,
+        detail.body !== "" ? import_react6.default.createElement("pre", { className: "iwb-git-drawer-body-text" }, detail.body) : null,
         import_react6.default.createElement(
           "div",
-          { className: "itw-git-drawer-section-title" },
+          { className: "iwb-git-drawer-section-title" },
           `${t2("git.fileList")} \xB7 ${files.length}`,
-          import_react6.default.createElement("span", { className: "itw-additions" }, ` +${additions}`),
-          import_react6.default.createElement("span", { className: "itw-deletions" }, ` -${deletions}`)
+          import_react6.default.createElement("span", { className: "iwb-additions" }, ` +${additions}`),
+          import_react6.default.createElement("span", { className: "iwb-deletions" }, ` -${deletions}`)
         ),
-        files.length === 0 ? import_react6.default.createElement("div", { className: "itw-git-detail-dim" }, t2("git.noFiles")) : import_react6.default.createElement(
+        files.length === 0 ? import_react6.default.createElement("div", { className: "iwb-git-detail-dim" }, t2("git.noFiles")) : import_react6.default.createElement(
           import_react6.default.Fragment,
           null,
           import_react6.default.createElement(
             "div",
-            { className: "itw-git-drawer-files" },
+            { className: "iwb-git-drawer-files" },
             files.map((file) => import_react6.default.createElement(
               "button",
               {
                 key: file.path,
                 type: "button",
-                className: `itw-git-drawer-file ${selected?.path === file.path ? "itw-selected" : ""}`,
+                className: `iwb-git-drawer-file ${selected?.path === file.path ? "iwb-selected" : ""}`,
                 title: file.path,
                 onClick: () => setSelectedFile(file.path),
                 onDoubleClick: () => {
                   void store.openCommitFile(detail.hash, file.path);
                 }
               },
-              import_react6.default.createElement("span", { className: `itw-git-file-status itw-status-${file.status}` }, file.status),
-              import_react6.default.createElement("span", { className: "itw-git-file-name" }, file.path.split("/").pop()),
-              import_react6.default.createElement("span", { className: "itw-git-file-dir" }, file.path.includes("/") ? file.path.slice(0, file.path.lastIndexOf("/")) : ""),
-              import_react6.default.createElement("span", { className: "itw-additions" }, `+${file.additions}`),
-              import_react6.default.createElement("span", { className: "itw-deletions" }, `-${file.deletions}`)
+              import_react6.default.createElement("span", { className: `iwb-git-file-status iwb-status-${file.status}` }, file.status),
+              import_react6.default.createElement("span", { className: "iwb-git-file-name" }, file.path.split("/").pop()),
+              import_react6.default.createElement("span", { className: "iwb-git-file-dir" }, file.path.includes("/") ? file.path.slice(0, file.path.lastIndexOf("/")) : ""),
+              import_react6.default.createElement("span", { className: "iwb-additions" }, `+${file.additions}`),
+              import_react6.default.createElement("span", { className: "iwb-deletions" }, `-${file.deletions}`)
             ))
           ),
           selected !== void 0 ? import_react6.default.createElement(
             "div",
-            { className: "itw-git-drawer-inline" },
-            import_react6.default.createElement("div", { className: "itw-git-drawer-section-title" }, selected.path),
+            { className: "iwb-git-drawer-inline" },
+            import_react6.default.createElement("div", { className: "iwb-git-drawer-section-title" }, selected.path),
             import_react6.default.createElement(InlinePatch, { text: selected.patch })
           ) : null
         )
@@ -6714,7 +6714,7 @@ ${commit.shortHash} ${commit.subject}`, t2("git.revert"), () => {
   (0, import_react6.useEffect)(() => {
     if (branchMenu === null) return void 0;
     const onDown = (event) => {
-      if (event.target instanceof Element && event.target.closest(".itw-branch-popover, .itw-branch-switch") !== null) return;
+      if (event.target instanceof Element && event.target.closest(".iwb-branch-popover, .iwb-branch-switch") !== null) return;
       setBranchMenu(null);
     };
     window.addEventListener("mousedown", onDown, true);
@@ -6743,15 +6743,15 @@ ${commit.shortHash} ${commit.subject}`, t2("git.revert"), () => {
   ];
   return import_react6.default.createElement(
     "div",
-    { className: "itw-git" },
+    { className: "iwb-git" },
     import_react6.default.createElement(
       "div",
-      { className: "itw-git-filters" },
+      { className: "iwb-git-filters" },
       import_react6.default.createElement(
         "button",
         {
           type: "button",
-          className: "itw-branch-switch",
+          className: "iwb-branch-switch",
           title: t2("git.switchBranchTitle"),
           onClick: (event) => {
             const rect = event.currentTarget.getBoundingClientRect();
@@ -6760,34 +6760,34 @@ ${commit.shortHash} ${commit.subject}`, t2("git.revert"), () => {
         },
         import_react6.default.createElement(IconBranch, { width: 13, height: 13 }),
         import_react6.default.createElement("span", null, state.status.detached === true ? t2("git.detached") : state.status.branch ?? "\u2014"),
-        import_react6.default.createElement("span", { className: "itw-branch-caret" }, "\u25BE")
+        import_react6.default.createElement("span", { className: "iwb-branch-caret" }, "\u25BE")
       ),
       (git.compare ?? []).length > 0 ? import_react6.default.createElement(
         "span",
-        { className: "itw-compare-chip", title: t2("git.compareHint") },
+        { className: "iwb-compare-chip", title: t2("git.compareHint") },
         (git.compare ?? []).map((hash3) => hash3.slice(0, 7)).join(" \u2194 "),
         import_react6.default.createElement("button", {
           type: "button",
-          className: "itw-path-chip-clear",
+          className: "iwb-path-chip-clear",
           title: t2("git.clearCompare"),
           onClick: () => store.patch("git", { compare: [] })
         }, "\xD7")
       ) : null,
       (git.compare ?? []).length === 2 ? import_react6.default.createElement("button", {
         type: "button",
-        className: "itw-textbtn itw-small itw-primary",
+        className: "iwb-textbtn iwb-small iwb-primary",
         onClick: () => store.compareSelected()
       }, t2("git.compare")) : null,
       import_react6.default.createElement("button", {
         type: "button",
-        className: `itw-textbtn itw-small ${git.filters.branch === "" ? "itw-primary" : ""}`,
+        className: `iwb-textbtn iwb-small ${git.filters.branch === "" ? "iwb-primary" : ""}`,
         title: t2("git.branchFilter"),
         onClick: () => store.setGitFilters({ branch: git.filters.branch === "" ? state.status.branch ?? "" : "" })
       }, git.filters.branch === "" ? t2("git.allBranches") : t2("git.currentBranchOnly")),
       import_react6.default.createElement(
         "select",
         {
-          className: "itw-select",
+          className: "iwb-select",
           title: t2("git.dateFilter"),
           value: git.filters.since ?? "",
           onChange: (event) => store.setGitFilters({ since: event.target.value })
@@ -6795,7 +6795,7 @@ ${commit.shortHash} ${commit.subject}`, t2("git.revert"), () => {
         dateOptions.map(([value, key]) => import_react6.default.createElement("option", { key: value, value }, t2(key)))
       ),
       import_react6.default.createElement("input", {
-        className: "itw-input",
+        className: "iwb-input",
         style: { width: 100 },
         placeholder: t2("git.authorFilter"),
         value: git.filters.author,
@@ -6806,7 +6806,7 @@ ${commit.shortHash} ${commit.subject}`, t2("git.revert"), () => {
         }
       }),
       import_react6.default.createElement("input", {
-        className: "itw-input",
+        className: "iwb-input",
         style: { flex: 1, minWidth: 100, width: "auto" },
         placeholder: t2("git.queryFilter"),
         value: git.filters.query,
@@ -6818,23 +6818,23 @@ ${commit.shortHash} ${commit.subject}`, t2("git.revert"), () => {
       }),
       git.filters.path !== void 0 && git.filters.path !== "" ? import_react6.default.createElement(
         "span",
-        { className: "itw-path-chip", title: git.filters.path },
-        import_react6.default.createElement("span", { className: "itw-path-chip-text" }, git.filters.path),
+        { className: "iwb-path-chip", title: git.filters.path },
+        import_react6.default.createElement("span", { className: "iwb-path-chip-text" }, git.filters.path),
         import_react6.default.createElement("button", {
           type: "button",
-          className: "itw-path-chip-clear",
+          className: "iwb-path-chip-clear",
           title: t2("git.clearPath"),
           onClick: () => store.setGitFilters({ path: "" })
         }, "\xD7")
       ) : null,
       git.selectedHash !== null && git.selectedHash !== void 0 && !drawerOpen ? import_react6.default.createElement("button", {
         type: "button",
-        className: "itw-textbtn itw-small",
+        className: "iwb-textbtn iwb-small",
         onClick: () => openDetail(git.selectedHash)
       }, t2("git.openDetails")) : null,
       import_react6.default.createElement("button", {
         type: "button",
-        className: "itw-iconbtn",
+        className: "iwb-iconbtn",
         title: t2("common.refresh"),
         onClick: () => {
           void store.loadLog(true);
@@ -6845,16 +6845,16 @@ ${commit.shortHash} ${commit.subject}`, t2("git.revert"), () => {
     ),
     import_react6.default.createElement(
       "div",
-      { className: `itw-git-main ${tableNarrow ? "itw-git-narrow" : ""}`, ref: mainRef },
+      { className: `iwb-git-main ${tableNarrow ? "iwb-git-narrow" : ""}`, ref: mainRef },
       import_react6.default.createElement(
         "div",
         {
-          className: "itw-git-table",
-          style: { "--itw-graph-w": `${graphWidth}px` }
+          className: "iwb-git-table",
+          style: { "--iwb-graph-w": `${graphWidth}px` }
         },
         import_react6.default.createElement(
           "div",
-          { className: "itw-git-head" },
+          { className: "iwb-git-head" },
           import_react6.default.createElement("span", null, ""),
           import_react6.default.createElement("span", null, "SHA"),
           import_react6.default.createElement("span", null, t2("git.message")),
@@ -6863,10 +6863,10 @@ ${commit.shortHash} ${commit.subject}`, t2("git.revert"), () => {
         ),
         import_react6.default.createElement(
           "div",
-          { className: "itw-git-scroll", ref: scrollRef, onScroll },
+          { className: "iwb-git-scroll", ref: scrollRef, onScroll },
           rows.length === 0 && git.loading !== true ? import_react6.default.createElement(
             "div",
-            { className: "itw-git-empty" },
+            { className: "iwb-git-empty" },
             import_react6.default.createElement(
               "div",
               null,
@@ -6874,15 +6874,15 @@ ${commit.shortHash} ${commit.subject}`, t2("git.revert"), () => {
             ),
             state.status.isRepo !== true ? import_react6.default.createElement("button", {
               type: "button",
-              className: "itw-textbtn itw-primary itw-small",
+              className: "iwb-textbtn iwb-primary iwb-small",
               style: { marginTop: 10 },
               onClick: () => store.openProjectPicker()
-            }, repoProjects.length > 0 ? t2("project.chooseRepo") : t2("project.selectProject")) : git.error !== null && git.error !== void 0 ? import_react6.default.createElement("button", { type: "button", className: "itw-textbtn itw-small", style: { marginTop: 10 }, onClick: () => {
+            }, repoProjects.length > 0 ? t2("project.chooseRepo") : t2("project.selectProject")) : git.error !== null && git.error !== void 0 ? import_react6.default.createElement("button", { type: "button", className: "iwb-textbtn iwb-small", style: { marginTop: 10 }, onClick: () => {
               void store.loadLog(true);
             } }, t2("common.retry")) : null
           ) : import_react6.default.createElement(
             "div",
-            { className: "itw-git-rows", style: { height: `${rows.length * ROW_HEIGHT2}px` } },
+            { className: "iwb-git-rows", style: { height: `${rows.length * ROW_HEIGHT2}px` } },
             rows.slice(start, end).map((row, index) => {
               const commit = row.commit;
               const top2 = (start + index) * ROW_HEIGHT2;
@@ -6896,7 +6896,7 @@ ${commit.shortHash} ${commit.subject}`, t2("git.revert"), () => {
                     if (element === null) rowRefs.current.delete(commit.hash);
                     else rowRefs.current.set(commit.hash, element);
                   },
-                  className: `itw-git-row ${selected ? "itw-selected" : ""} ${inCompare ? "itw-compare" : ""}`,
+                  className: `iwb-git-row ${selected ? "iwb-selected" : ""} ${inCompare ? "iwb-compare" : ""}`,
                   style: { top: `${top2}px` },
                   tabIndex: 0,
                   onClick: (event) => {
@@ -6909,13 +6909,13 @@ ${commit.shortHash} ${commit.subject}`, t2("git.revert"), () => {
                 },
                 import_react6.default.createElement(
                   "div",
-                  { className: "itw-git-graph" },
+                  { className: "iwb-git-graph" },
                   import_react6.default.createElement(GraphCell, { row, width: graphWidth, height: ROW_HEIGHT2, offset: 0 })
                 ),
-                import_react6.default.createElement("span", { className: "itw-sha" }, commit.shortHash),
+                import_react6.default.createElement("span", { className: "iwb-sha" }, commit.shortHash),
                 import_react6.default.createElement(
                   "span",
-                  { className: "itw-subject", style: { display: "flex", alignItems: "center", gap: 6, minWidth: 0 } },
+                  { className: "iwb-subject", style: { display: "flex", alignItems: "center", gap: 6, minWidth: 0 } },
                   commit.refs.length > 0 ? import_react6.default.createElement(
                     "span",
                     { style: { display: "inline-flex", gap: 4, flex: "0 0 auto" } },
@@ -6923,11 +6923,11 @@ ${commit.shortHash} ${commit.subject}`, t2("git.revert"), () => {
                   ) : null,
                   import_react6.default.createElement("span", { style: { overflow: "hidden", textOverflow: "ellipsis" } }, commit.subject)
                 ),
-                import_react6.default.createElement("span", { className: "itw-author", title: commit.email }, commit.author),
-                import_react6.default.createElement("span", { className: "itw-date" }, formatGitDate(commit.date, tableNarrow))
+                import_react6.default.createElement("span", { className: "iwb-author", title: commit.email }, commit.author),
+                import_react6.default.createElement("span", { className: "iwb-date" }, formatGitDate(commit.date, tableNarrow))
               );
             }),
-            git.loading === true ? import_react6.default.createElement("div", { style: { position: "absolute", left: 0, right: 0, bottom: -26, height: 26, display: "flex", alignItems: "center", justifyContent: "center", color: "var(--itw-muted)", fontSize: 11 } }, t2("common.loading")) : null
+            git.loading === true ? import_react6.default.createElement("div", { style: { position: "absolute", left: 0, right: 0, bottom: -26, height: 26, display: "flex", alignItems: "center", justifyContent: "center", color: "var(--iwb-muted)", fontSize: 11 } }, t2("common.loading")) : null
           )
         )
       ),
@@ -16094,7 +16094,7 @@ var o = class {
 
 // src/client/TerminalPanel.jsx
 function token(root, name2, fallback2) {
-  const element = root?.current ?? document.querySelector(".itw-root");
+  const element = root?.current ?? document.querySelector(".iwb-root");
   if (element === null) return fallback2;
   const value = getComputedStyle(element).getPropertyValue(name2).trim();
   return value === "" ? fallback2 : value;
@@ -16109,16 +16109,16 @@ function TerminalView({ store, state, session, active, visible }) {
   const rootRef = (0, import_react7.useRef)(null);
   (0, import_react7.useEffect)(() => {
     if (hostRef.current === null) return void 0;
-    rootRef.current = document.querySelector(".itw-root");
+    rootRef.current = document.querySelector(".iwb-root");
     const terminal = new Dl({
       cursorBlink: true,
       fontSize: state.settings?.terminal?.fontSize ?? 13,
       fontFamily: '"JetBrains Mono", "Cascadia Code", "SF Mono", Consolas, monospace',
       allowProposedApi: true,
       theme: {
-        background: token(rootRef, "--itw-bg", "#15171c"),
-        foreground: token(rootRef, "--itw-fg", "#d8dce3"),
-        cursor: token(rootRef, "--itw-accent", "#4c9aff"),
+        background: token(rootRef, "--iwb-bg", "#15171c"),
+        foreground: token(rootRef, "--iwb-fg", "#d8dce3"),
+        cursor: token(rootRef, "--iwb-accent", "#4c9aff"),
         selectionBackground: "rgba(76,154,255,.32)",
         black: "#1c1f26",
         red: "#e2686f",
@@ -16152,7 +16152,7 @@ function TerminalView({ store, state, session, active, visible }) {
       if (socket !== null && socket.readyState === WebSocket.OPEN) socket.send(JSON.stringify(frame));
     };
     const connect = () => {
-      const url = wsUrl("ide-toolwindows/ws/terminal");
+      const url = wsUrl("ide-workbench/ws/terminal");
       url.searchParams.set("root", state.root);
       if (session.cwd !== void 0 && session.cwd !== "") url.searchParams.set("cwd", session.cwd);
       if (session.shell !== void 0 && session.shell !== "") url.searchParams.set("shell", session.shell);
@@ -16271,15 +16271,15 @@ function TerminalView({ store, state, session, active, visible }) {
   if (error !== null) {
     return import_react7.default.createElement(
       "div",
-      { className: "itw-term-pane" },
-      import_react7.default.createElement("div", { className: "itw-term-error" }, `${t2("terminal.failed")}
+      { className: "iwb-term-pane" },
+      import_react7.default.createElement("div", { className: "iwb-term-error" }, `${t2("terminal.failed")}
 ${error}`)
     );
   }
   return import_react7.default.createElement(
     "div",
-    { className: `itw-term-pane ${active ? "" : "itw-hidden"}` },
-    import_react7.default.createElement("div", { className: "itw-term-host", ref: hostRef })
+    { className: `iwb-term-pane ${active ? "" : "iwb-hidden"}` },
+    import_react7.default.createElement("div", { className: "iwb-term-host", ref: hostRef })
   );
 }
 function TerminalPanel({ store, state, visible = true }) {
@@ -16296,15 +16296,15 @@ function TerminalPanel({ store, state, visible = true }) {
   };
   return import_react7.default.createElement(
     "div",
-    { className: "itw-term" },
+    { className: "iwb-term" },
     import_react7.default.createElement(
       "div",
-      { className: "itw-term-tabs" },
+      { className: "iwb-term-tabs" },
       sessions.map((session) => import_react7.default.createElement(
         "div",
         {
           key: session.key,
-          className: `itw-term-tab ${session.key === activeKey ? "itw-on" : ""}`,
+          className: `iwb-term-tab ${session.key === activeKey ? "iwb-on" : ""}`,
           onClick: () => store.activateTerminal(session.key),
           onDoubleClick: () => {
             setRenaming(session.key);
@@ -16314,7 +16314,7 @@ function TerminalPanel({ store, state, visible = true }) {
         },
         renaming === session.key ? import_react7.default.createElement("input", {
           autoFocus: true,
-          className: "itw-input",
+          className: "iwb-input",
           style: { height: 20, width: 120, padding: "0 4px" },
           value: renameValue,
           onClick: (event) => event.stopPropagation(),
@@ -16325,10 +16325,10 @@ function TerminalPanel({ store, state, visible = true }) {
             if (event.key === "Escape") setRenaming(null);
           }
         }) : import_react7.default.createElement("span", null, session.title),
-        import_react7.default.createElement("span", { className: `itw-term-dot ${session.status === "running" ? "" : "itw-exited"}` }),
+        import_react7.default.createElement("span", { className: `iwb-term-dot ${session.status === "running" ? "" : "iwb-exited"}` }),
         import_react7.default.createElement("button", {
           type: "button",
-          className: "itw-iconbtn",
+          className: "iwb-iconbtn",
           style: { width: 16, height: 16 },
           title: t2("terminal.close"),
           onClick: (event) => {
@@ -16339,13 +16339,13 @@ function TerminalPanel({ store, state, visible = true }) {
       )),
       import_react7.default.createElement("button", {
         type: "button",
-        className: "itw-iconbtn",
+        className: "iwb-iconbtn",
         title: t2("terminal.new"),
         onClick: () => store.addTerminal()
       }, import_react7.default.createElement(IconPlus, { width: 13, height: 13 })),
       import_react7.default.createElement("button", {
         type: "button",
-        className: "itw-iconbtn",
+        className: "iwb-iconbtn",
         title: t2("terminal.atFile"),
         onClick: () => {
           const active = state.tabs.find((tab3) => tab3.id === state.activeId);
@@ -16356,19 +16356,19 @@ function TerminalPanel({ store, state, visible = true }) {
       import_react7.default.createElement("span", { style: { flex: 1 } }),
       import_react7.default.createElement(
         "span",
-        { style: { color: "var(--itw-muted)", fontSize: 11, marginRight: 6 } },
+        { style: { color: "var(--iwb-muted)", fontSize: 11, marginRight: 6 } },
         activeKey !== null ? sessions.find((session) => session.key === activeKey)?.cwd ?? "" : ""
       )
     ),
     import_react7.default.createElement(
       "div",
-      { className: "itw-term-panes" },
+      { className: "iwb-term-panes" },
       sessions.length === 0 ? import_react7.default.createElement(
         "div",
-        { className: "itw-empty" },
+        { className: "iwb-empty" },
         import_react7.default.createElement(IconTerminal, { width: 22, height: 22 }),
-        import_react7.default.createElement("div", { className: "itw-empty-title" }, t2("terminal.hint")),
-        import_react7.default.createElement("button", { type: "button", className: "itw-textbtn itw-primary", onClick: () => store.addTerminal() }, t2("terminal.new"))
+        import_react7.default.createElement("div", { className: "iwb-empty-title" }, t2("terminal.hint")),
+        import_react7.default.createElement("button", { type: "button", className: "iwb-textbtn iwb-primary", onClick: () => store.addTerminal() }, t2("terminal.new"))
       ) : sessions.map((session) => import_react7.default.createElement(TerminalView, {
         key: session.key,
         store,
@@ -46806,29 +46806,29 @@ var HIGHLIGHT = HighlightStyle.define([
   { tag: tags.invalid, color: "#e2686f" }
 ]);
 var THEME = EditorView.theme({
-  "&": { height: "100%", backgroundColor: "var(--itw-bg)", color: "var(--itw-fg)" },
-  ".cm-scroller": { fontFamily: "var(--itw-mono)", fontSize: "13px", lineHeight: "1.6", overflow: "auto" },
-  ".cm-content": { caretColor: "var(--itw-accent)", padding: "10px 0" },
+  "&": { height: "100%", backgroundColor: "var(--iwb-bg)", color: "var(--iwb-fg)" },
+  ".cm-scroller": { fontFamily: "var(--iwb-mono)", fontSize: "13px", lineHeight: "1.6", overflow: "auto" },
+  ".cm-content": { caretColor: "var(--iwb-accent)", padding: "10px 0" },
   ".cm-line": { padding: "0 14px 0 6px" },
   ".cm-gutters": {
-    backgroundColor: "var(--itw-bg)",
-    color: "var(--itw-muted)",
+    backgroundColor: "var(--iwb-bg)",
+    color: "var(--iwb-muted)",
     border: "none",
-    borderRight: "1px solid var(--itw-border)",
+    borderRight: "1px solid var(--iwb-border)",
     paddingLeft: "6px",
     userSelect: "none"
   },
   ".cm-lineNumbers .cm-gutterElement": { minWidth: "34px", padding: "0 8px 0 4px" },
   ".cm-activeLine": { backgroundColor: "rgba(127,127,127,.075)" },
-  ".cm-activeLineGutter": { backgroundColor: "transparent", color: "var(--itw-fg)" },
+  ".cm-activeLineGutter": { backgroundColor: "transparent", color: "var(--iwb-fg)" },
   ".cm-selectionBackground, ::selection": { backgroundColor: "rgba(76,154,255,.24) !important" },
   ".cm-matchingBracket": { backgroundColor: "rgba(76,154,255,.25)", outline: "1px solid rgba(76,154,255,.5)" },
   ".cm-searchMatch": { backgroundColor: "rgba(215,162,74,.28)" },
-  ".cm-searchMatch.cm-searchMatch-selected": { backgroundColor: "rgba(76,154,255,.45)", outline: "1px solid var(--itw-accent)" },
-  ".cm-cursor, .cm-dropCursor": { borderLeftColor: "var(--itw-accent)" },
+  ".cm-searchMatch.cm-searchMatch-selected": { backgroundColor: "rgba(76,154,255,.45)", outline: "1px solid var(--iwb-accent)" },
+  ".cm-cursor, .cm-dropCursor": { borderLeftColor: "var(--iwb-accent)" },
   "&.cm-focused": { outline: "none" },
-  ".cm-panels": { backgroundColor: "var(--itw-panel)", color: "var(--itw-fg)" },
-  ".cm-tooltip": { backgroundColor: "var(--itw-overlay)", border: "1px solid var(--itw-border-strong)" }
+  ".cm-panels": { backgroundColor: "var(--iwb-panel)", color: "var(--iwb-fg)" },
+  ".cm-tooltip": { backgroundColor: "var(--iwb-overlay)", border: "1px solid var(--iwb-border-strong)" }
 }, { dark: true });
 function selectionOf(view, match) {
   return { anchor: match.from, head: match.to };
@@ -47020,7 +47020,7 @@ function CodeEditor({
     const line = view.state.doc.line(Math.min(revealLine, view.state.doc.lines));
     view.dispatch({ selection: { anchor: line.from }, scrollIntoView: true });
   }, [revealLine]);
-  return import_react8.default.createElement("div", { className: "itw-codemirror", ref: hostRef });
+  return import_react8.default.createElement("div", { className: "iwb-codemirror", ref: hostRef });
 }
 
 // src/client/MarkdownView.jsx
@@ -47067,7 +47067,7 @@ function textNodes(container) {
     acceptNode(node2) {
       const parent = node2.parentElement;
       if (parent === null) return NodeFilter.FILTER_REJECT;
-      if (parent.closest("script, style, .itw-outline, .itw-findbar")) return NodeFilter.FILTER_REJECT;
+      if (parent.closest("script, style, .iwb-outline, .iwb-findbar")) return NodeFilter.FILTER_REJECT;
       return node2.nodeValue === "" ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT;
     }
   });
@@ -47132,12 +47132,12 @@ function DomFindBar({ containerRef, t: t2, onClose }) {
   const paint = (ranges, index) => {
     rangesRef.current = ranges;
     if (typeof CSS === "undefined" || typeof Highlight === "undefined" || CSS.highlights === void 0) return;
-    CSS.highlights.delete("itw-dom-find");
-    CSS.highlights.delete("itw-dom-find-active");
+    CSS.highlights.delete("iwb-dom-find");
+    CSS.highlights.delete("iwb-dom-find-active");
     if (ranges.length === 0) return;
-    CSS.highlights.set("itw-dom-find", new Highlight(...ranges));
+    CSS.highlights.set("iwb-dom-find", new Highlight(...ranges));
     if (index >= 0 && ranges[index] !== void 0) {
-      CSS.highlights.set("itw-dom-find-active", new Highlight(ranges[index]));
+      CSS.highlights.set("iwb-dom-find-active", new Highlight(ranges[index]));
     }
   };
   const scrollTo = (index) => {
@@ -47186,8 +47186,8 @@ function DomFindBar({ containerRef, t: t2, onClose }) {
   }, [query, caseSensitive, wholeWord, regexp]);
   (0, import_react9.useEffect)(() => () => {
     if (typeof CSS !== "undefined" && CSS.highlights !== void 0) {
-      CSS.highlights.delete("itw-dom-find");
-      CSS.highlights.delete("itw-dom-find-active");
+      CSS.highlights.delete("iwb-dom-find");
+      CSS.highlights.delete("iwb-dom-find-active");
     }
   }, []);
   const move = (delta) => {
@@ -47203,7 +47203,7 @@ function DomFindBar({ containerRef, t: t2, onClose }) {
   };
   const flag = (on2, label, title, onClick) => import_react9.default.createElement("button", {
     type: "button",
-    className: `itw-find-flag ${on2 ? "itw-on" : ""}`,
+    className: `iwb-find-flag ${on2 ? "iwb-on" : ""}`,
     title,
     "aria-pressed": on2,
     onClick
@@ -47211,7 +47211,7 @@ function DomFindBar({ containerRef, t: t2, onClose }) {
   return import_react9.default.createElement(
     "div",
     {
-      className: "itw-findbar itw-dom-findbar",
+      className: "iwb-findbar iwb-dom-findbar",
       role: "search",
       onKeyDown: (event) => {
         if (event.key === "Escape") {
@@ -47229,25 +47229,25 @@ function DomFindBar({ containerRef, t: t2, onClose }) {
     },
     import_react9.default.createElement(
       "div",
-      { className: "itw-find-row" },
-      import_react9.default.createElement("span", { className: "itw-find-label" }, t2("editor.find")),
+      { className: "iwb-find-row" },
+      import_react9.default.createElement("span", { className: "iwb-find-label" }, t2("editor.find")),
       import_react9.default.createElement("input", {
         ref: inputRef,
-        className: `itw-find-input ${error !== null ? "itw-invalid" : ""}`,
+        className: `iwb-find-input ${error !== null ? "iwb-invalid" : ""}`,
         value: query,
         placeholder: t2("editor.findPlaceholder"),
         spellCheck: false,
         onChange: (event) => setQuery(event.target.value)
       }),
-      import_react9.default.createElement("span", { className: `itw-find-count ${error !== null ? "itw-invalid" : ""}` }, error !== null ? "!" : query === "" ? "0/0" : `${active + 1}/${total}`),
-      import_react9.default.createElement("button", { type: "button", className: "itw-find-btn", title: t2("editor.findPrevious"), disabled: total === 0, onClick: () => move(-1) }, "\u2191"),
-      import_react9.default.createElement("button", { type: "button", className: "itw-find-btn", title: t2("editor.findNext"), disabled: total === 0, onClick: () => move(1) }, "\u2193"),
+      import_react9.default.createElement("span", { className: `iwb-find-count ${error !== null ? "iwb-invalid" : ""}` }, error !== null ? "!" : query === "" ? "0/0" : `${active + 1}/${total}`),
+      import_react9.default.createElement("button", { type: "button", className: "iwb-find-btn", title: t2("editor.findPrevious"), disabled: total === 0, onClick: () => move(-1) }, "\u2191"),
+      import_react9.default.createElement("button", { type: "button", className: "iwb-find-btn", title: t2("editor.findNext"), disabled: total === 0, onClick: () => move(1) }, "\u2193"),
       flag(caseSensitive, "Aa", t2("editor.matchCase"), () => setCaseSensitive((value) => !value)),
       flag(wholeWord, "W", t2("editor.wholeWord"), () => setWholeWord((value) => !value)),
       flag(regexp, ".*", t2("editor.regexp"), () => setRegexp((value) => !value)),
       import_react9.default.createElement(
         "button",
-        { type: "button", className: "itw-find-btn", title: t2("common.close"), onClick: close },
+        { type: "button", className: "iwb-find-btn", title: t2("common.close"), onClick: close },
         import_react9.default.createElement(IconClose, { width: 12, height: 12 })
       )
     )
@@ -47358,7 +47358,7 @@ function FallbackMarkdown({ text }) {
     }
     blocks.push(import_react10.default.createElement("p", { key: key += 1 }, paragraph.join(" ")));
   }
-  return import_react10.default.createElement("div", { className: "itw-markdown-fallback" }, blocks);
+  return import_react10.default.createElement("div", { className: "iwb-markdown-fallback" }, blocks);
 }
 function MarkdownView({ text, outlineOpen, onToggleOutline, labels = {}, t: t2 = (key) => key }) {
   const MarkdownText = useMarkdownComponent();
@@ -47372,7 +47372,7 @@ function MarkdownView({ text, outlineOpen, onToggleOutline, labels = {}, t: t2 =
       if (!(event.ctrlKey || event.metaKey) || event.altKey || event.shiftKey) return;
       if (event.key.toLowerCase() !== "f") return;
       const target = event.target;
-      if (!(target instanceof Element) || target.closest(".itw-root") === null) return;
+      if (!(target instanceof Element) || target.closest(".iwb-root") === null) return;
       event.preventDefault();
       event.stopPropagation();
       setFindOpen(true);
@@ -47428,36 +47428,36 @@ function MarkdownView({ text, outlineOpen, onToggleOutline, labels = {}, t: t2 =
   };
   return import_react10.default.createElement(
     "div",
-    { className: "itw-markdown-wrap" },
+    { className: "iwb-markdown-wrap" },
     findOpen === true ? import_react10.default.createElement(DomFindBar, { containerRef, t: t2, onClose: () => setFindOpen(false) }) : null,
     import_react10.default.createElement(
       "div",
-      { className: "itw-markdown", ref: containerRef },
+      { className: "iwb-markdown", ref: containerRef },
       MarkdownText !== null ? import_react10.default.createElement(MarkdownText, { text, labels: markdownLabels(labels) }) : import_react10.default.createElement(FallbackMarkdown, { text })
     ),
     outlineOpen === true ? import_react10.default.createElement(
       "div",
-      { className: "itw-outline", role: "navigation", "aria-label": labels.outline ?? "Outline" },
+      { className: "iwb-outline", role: "navigation", "aria-label": labels.outline ?? "Outline" },
       import_react10.default.createElement(
         "div",
-        { className: "itw-outline-head" },
+        { className: "iwb-outline-head" },
         import_react10.default.createElement(IconOutline, { width: 13, height: 13 }),
         import_react10.default.createElement("span", null, labels.outline ?? "Outline"),
         import_react10.default.createElement("button", {
           type: "button",
-          className: "itw-iconbtn",
+          className: "iwb-iconbtn",
           style: { width: 20, height: 20, marginLeft: "auto" },
           onClick: onToggleOutline,
           title: labels.close ?? "Close"
         }, import_react10.default.createElement("span", { style: { fontSize: 14, lineHeight: 1 } }, "\xD7"))
       ),
-      headings.length === 0 ? import_react10.default.createElement("div", { className: "itw-outline-empty" }, labels.empty ?? "No headings") : import_react10.default.createElement(
+      headings.length === 0 ? import_react10.default.createElement("div", { className: "iwb-outline-empty" }, labels.empty ?? "No headings") : import_react10.default.createElement(
         "div",
-        { className: "itw-outline-list" },
+        { className: "iwb-outline-list" },
         headings.map((heading2, index) => import_react10.default.createElement("button", {
           key: `${heading2.slug}-${index}`,
           type: "button",
-          className: `itw-outline-item ${activeSlug === heading2.slug ? "itw-active" : ""}`,
+          className: `iwb-outline-item ${activeSlug === heading2.slug ? "iwb-active" : ""}`,
           style: { paddingLeft: `${8 + (heading2.level - 1) * 12}px` },
           onClick: () => jump(heading2.slug)
         }, heading2.text))
@@ -47825,7 +47825,7 @@ function FindBar({ store, editor, readOnly: readOnly2 = false, initialQuery = ""
   };
   const flag = (on2, label, title, onClick) => import_react11.default.createElement("button", {
     type: "button",
-    className: `itw-find-flag ${on2 ? "itw-on" : ""}`,
+    className: `iwb-find-flag ${on2 ? "iwb-on" : ""}`,
     title,
     "aria-pressed": on2,
     onClick
@@ -47833,7 +47833,7 @@ function FindBar({ store, editor, readOnly: readOnly2 = false, initialQuery = ""
   return import_react11.default.createElement(
     "div",
     {
-      className: "itw-findbar",
+      className: "iwb-findbar",
       role: "search",
       onKeyDown: (event) => {
         if (event.key === "Escape") {
@@ -47851,11 +47851,11 @@ function FindBar({ store, editor, readOnly: readOnly2 = false, initialQuery = ""
     },
     import_react11.default.createElement(
       "div",
-      { className: "itw-find-row" },
-      import_react11.default.createElement("span", { className: "itw-find-label" }, t2("editor.find")),
+      { className: "iwb-find-row" },
+      import_react11.default.createElement("span", { className: "iwb-find-label" }, t2("editor.find")),
       import_react11.default.createElement("input", {
         ref: inputRef,
-        className: `itw-find-input ${error !== null ? "itw-invalid" : ""}`,
+        className: `iwb-find-input ${error !== null ? "iwb-invalid" : ""}`,
         value: query,
         placeholder: t2("editor.findPlaceholder"),
         spellCheck: false,
@@ -47868,19 +47868,19 @@ function FindBar({ store, editor, readOnly: readOnly2 = false, initialQuery = ""
         }
       }),
       import_react11.default.createElement("span", {
-        className: `itw-find-count ${error !== null ? "itw-invalid" : ""}`,
+        className: `iwb-find-count ${error !== null ? "iwb-invalid" : ""}`,
         title: error ?? ""
       }, error !== null ? "!" : query === "" ? "0/0" : `${active + 1}/${total}`),
       import_react11.default.createElement("button", {
         type: "button",
-        className: "itw-find-btn",
+        className: "iwb-find-btn",
         title: t2("editor.findPrevious"),
         disabled: total === 0,
         onClick: () => move(-1)
       }, "\u2191"),
       import_react11.default.createElement("button", {
         type: "button",
-        className: "itw-find-btn",
+        className: "iwb-find-btn",
         title: t2("editor.findNext"),
         disabled: total === 0,
         onClick: () => move(1)
@@ -47890,17 +47890,17 @@ function FindBar({ store, editor, readOnly: readOnly2 = false, initialQuery = ""
       flag(regexp, ".*", t2("editor.regexp"), () => setRegexp((value) => !value)),
       import_react11.default.createElement("button", {
         type: "button",
-        className: "itw-find-btn",
+        className: "iwb-find-btn",
         title: t2("common.close"),
         onClick: close
       }, import_react11.default.createElement(IconClose, { width: 12, height: 12 }))
     ),
     readOnly2 !== true ? import_react11.default.createElement(
       "div",
-      { className: "itw-find-row" },
-      import_react11.default.createElement("span", { className: "itw-find-label" }, t2("editor.replace")),
+      { className: "iwb-find-row" },
+      import_react11.default.createElement("span", { className: "iwb-find-label" }, t2("editor.replace")),
       import_react11.default.createElement("input", {
-        className: "itw-find-input",
+        className: "iwb-find-input",
         value: replacement,
         placeholder: t2("editor.replacePlaceholder"),
         spellCheck: false,
@@ -47914,13 +47914,13 @@ function FindBar({ store, editor, readOnly: readOnly2 = false, initialQuery = ""
       }),
       import_react11.default.createElement("button", {
         type: "button",
-        className: "itw-textbtn itw-small",
+        className: "iwb-textbtn iwb-small",
         disabled: total === 0,
         onClick: replaceCurrent
       }, t2("editor.replaceOne")),
       import_react11.default.createElement("button", {
         type: "button",
-        className: "itw-textbtn itw-small",
+        className: "iwb-textbtn iwb-small",
         disabled: total === 0,
         onClick: replaceAll2
       }, t2("editor.replaceAll"))
@@ -48049,7 +48049,7 @@ function DiffView({ store, state, tab: tab3 }) {
       if (!(event.ctrlKey || event.metaKey) || event.altKey || event.shiftKey) return;
       if (event.key.toLowerCase() !== "f") return;
       const target = event.target;
-      if (!(target instanceof Element) || target.closest(".itw-root") === null) return;
+      if (!(target instanceof Element) || target.closest(".iwb-root") === null) return;
       event.preventDefault();
       event.stopPropagation();
       setFindOpen(true);
@@ -48189,31 +48189,31 @@ ${row.right?.text ?? ""}`;
         "div",
         {
           key: `file:${row.text}:${offset}`,
-          className: "itw-diff-hunk",
-          style: { ...rowStyle(offset), background: "var(--itw-panel-2)", color: "var(--itw-fg)" }
+          className: "iwb-diff-hunk",
+          style: { ...rowStyle(offset), background: "var(--iwb-panel-2)", color: "var(--iwb-fg)" }
         },
-        import_react12.default.createElement("span", { className: "itw-hunk-text", style: { fontWeight: 600 } }, row.text),
-        import_react12.default.createElement("span", { className: "itw-additions", style: { marginRight: 10 } }, `+${row.additions}`),
-        import_react12.default.createElement("span", { className: "itw-deletions", style: { marginRight: 10 } }, `-${row.deletions}`)
+        import_react12.default.createElement("span", { className: "iwb-hunk-text", style: { fontWeight: 600 } }, row.text),
+        import_react12.default.createElement("span", { className: "iwb-additions", style: { marginRight: 10 } }, `+${row.additions}`),
+        import_react12.default.createElement("span", { className: "iwb-deletions", style: { marginRight: 10 } }, `-${row.deletions}`)
       );
     }
     if (row.kind === "binary") {
       return import_react12.default.createElement(
         "div",
-        { key: `bin:${offset}`, className: "itw-diff-hunk", style: rowStyle(offset) },
-        import_react12.default.createElement("span", { className: "itw-hunk-text" }, row.text)
+        { key: `bin:${offset}`, className: "iwb-diff-hunk", style: rowStyle(offset) },
+        import_react12.default.createElement("span", { className: "iwb-hunk-text" }, row.text)
       );
     }
     return import_react12.default.createElement(
       "div",
-      { key: `hunk:${offset}`, className: "itw-diff-hunk", style: rowStyle(offset) },
-      import_react12.default.createElement("span", { className: "itw-hunk-text" }, row.text),
+      { key: `hunk:${offset}`, className: "iwb-diff-hunk", style: rowStyle(offset) },
+      import_react12.default.createElement("span", { className: "iwb-hunk-text" }, row.text),
       source.stageable ? import_react12.default.createElement(
         "span",
-        { className: "itw-hunk-actions" },
+        { className: "iwb-hunk-actions" },
         import_react12.default.createElement("button", {
           type: "button",
-          className: "itw-textbtn itw-small",
+          className: "iwb-textbtn iwb-small",
           disabled: applying,
           onClick: () => {
             void applySelection(hunkChangeIndexes(row.file, row.hunkIndex), hunkLabel);
@@ -48225,16 +48225,16 @@ ${row.right?.text ?? ""}`;
   const renderUnifiedRow = (row, offset) => {
     if (row.kind === "file" || row.kind === "binary" || row.kind === "hunk") return renderChromeRow(row, offset);
     const selected = typeof row.index === "number" && selection.has(row.index);
-    const cls = row.kind === "add" ? "itw-add" : row.kind === "del" ? "itw-del" : "";
+    const cls = row.kind === "add" ? "iwb-add" : row.kind === "del" ? "iwb-del" : "";
     return import_react12.default.createElement(
       "div",
       {
         key: `line:${row.index}`,
-        className: `itw-diff-row ${cls} ${selected ? "itw-selected" : ""} ${findRows.has(offset) ? "itw-diff-find" : ""} ${findActiveRow === offset ? "itw-diff-find-active" : ""}`,
+        className: `iwb-diff-row ${cls} ${selected ? "iwb-selected" : ""} ${findRows.has(offset) ? "iwb-diff-find" : ""} ${findActiveRow === offset ? "iwb-diff-find-active" : ""}`,
         style: rowStyle(offset)
       },
       import_react12.default.createElement("span", {
-        className: "itw-diff-gutter",
+        className: "iwb-diff-gutter",
         onMouseDown: (event) => {
           if (source.stageable && row.kind !== "context") onGutterDown(event, row.index);
         },
@@ -48242,29 +48242,29 @@ ${row.right?.text ?? ""}`;
           if (source.stageable && row.kind !== "context") onGutterEnter(row.index);
         }
       }, row.kind === "add" ? "+" : row.kind === "del" ? "\u2212" : ""),
-      import_react12.default.createElement("span", { className: "itw-diff-num" }, row.oldNo ?? ""),
-      import_react12.default.createElement("span", { className: "itw-diff-num" }, row.newNo ?? ""),
-      import_react12.default.createElement("span", { className: "itw-diff-sign" }, row.kind === "add" ? "+" : row.kind === "del" ? "-" : " "),
-      import_react12.default.createElement("span", { className: "itw-diff-text" }, row.text === "" ? "\xA0" : row.text)
+      import_react12.default.createElement("span", { className: "iwb-diff-num" }, row.oldNo ?? ""),
+      import_react12.default.createElement("span", { className: "iwb-diff-num" }, row.newNo ?? ""),
+      import_react12.default.createElement("span", { className: "iwb-diff-sign" }, row.kind === "add" ? "+" : row.kind === "del" ? "-" : " "),
+      import_react12.default.createElement("span", { className: "iwb-diff-text" }, row.text === "" ? "\xA0" : row.text)
     );
   };
   const renderSideCell = (side, isLeft, segments) => {
     if (side === null || side === void 0) {
       return import_react12.default.createElement(
         "div",
-        { className: "itw-diff-side-cell itw-blank" },
-        import_react12.default.createElement("span", { className: "itw-diff-num" }),
-        import_react12.default.createElement("span", { className: "itw-diff-text" })
+        { className: "iwb-diff-side-cell iwb-blank" },
+        import_react12.default.createElement("span", { className: "iwb-diff-num" }),
+        import_react12.default.createElement("span", { className: "iwb-diff-text" })
       );
     }
     const selected = typeof side.index === "number" && selection.has(side.index);
     return import_react12.default.createElement(
       "div",
       {
-        className: `itw-diff-side-cell ${isLeft ? "itw-del" : "itw-add"} ${selected ? "itw-selected" : ""}`
+        className: `iwb-diff-side-cell ${isLeft ? "iwb-del" : "iwb-add"} ${selected ? "iwb-selected" : ""}`
       },
       import_react12.default.createElement("span", {
-        className: "itw-diff-gutter",
+        className: "iwb-diff-gutter",
         onMouseDown: (event) => {
           if (source.stageable) onGutterDown(event, side.index);
         },
@@ -48272,11 +48272,11 @@ ${row.right?.text ?? ""}`;
           if (source.stageable) onGutterEnter(side.index);
         }
       }, isLeft ? "\u2212" : "+"),
-      import_react12.default.createElement("span", { className: "itw-diff-num" }, side.no ?? ""),
+      import_react12.default.createElement("span", { className: "iwb-diff-num" }, side.no ?? ""),
       import_react12.default.createElement(
         "span",
-        { className: "itw-diff-text" },
-        segments === null || segments === void 0 ? side.text === "" ? "\xA0" : side.text : segments.map((segment, index) => segment.changed ? import_react12.default.createElement("span", { key: index, className: isLeft ? "itw-word-del" : "itw-word-add" }, segment.text) : segment.text)
+        { className: "iwb-diff-text" },
+        segments === null || segments === void 0 ? side.text === "" ? "\xA0" : side.text : segments.map((segment, index) => segment.changed ? import_react12.default.createElement("span", { key: index, className: isLeft ? "iwb-word-del" : "iwb-word-add" }, segment.text) : segment.text)
       )
     );
   };
@@ -48285,41 +48285,41 @@ ${row.right?.text ?? ""}`;
     const segments = wordLevel && row.kind === "change" ? wordSegments(row.left?.text ?? "", row.right?.text ?? "") : null;
     return import_react12.default.createElement("div", {
       key: `side:${row.left?.index ?? "x"}:${row.right?.index ?? "y"}`,
-      className: `itw-diff-side ${findRows.has(offset) ? "itw-diff-find" : ""} ${findActiveRow === offset ? "itw-diff-find-active" : ""}`,
+      className: `iwb-diff-side ${findRows.has(offset) ? "iwb-diff-find" : ""} ${findActiveRow === offset ? "iwb-diff-find-active" : ""}`,
       style: { ...rowStyle(offset), display: "grid" }
     }, renderSideCell(row.left, true, segments?.left), renderSideCell(row.right, false, segments?.right));
   };
   const toolbar = import_react12.default.createElement(
     "div",
-    { className: "itw-diff-toolbar" },
+    { className: "iwb-diff-toolbar" },
     import_react12.default.createElement(IconRefresh, { width: 13, height: 13 }),
-    import_react12.default.createElement("span", { style: { color: "var(--itw-fg)", marginLeft: 2 } }, source.path ?? ""),
-    import_react12.default.createElement("span", { className: "itw-additions" }, `+${additions}`),
-    import_react12.default.createElement("span", { className: "itw-deletions" }, `-${deletions}`),
-    import_react12.default.createElement("span", { className: "itw-spacer" }),
+    import_react12.default.createElement("span", { style: { color: "var(--iwb-fg)", marginLeft: 2 } }, source.path ?? ""),
+    import_react12.default.createElement("span", { className: "iwb-additions" }, `+${additions}`),
+    import_react12.default.createElement("span", { className: "iwb-deletions" }, `-${deletions}`),
+    import_react12.default.createElement("span", { className: "iwb-spacer" }),
     tab3.kind !== "commit" ? import_react12.default.createElement(
       "div",
-      { className: "itw-seg" },
+      { className: "iwb-seg" },
       import_react12.default.createElement("button", {
         type: "button",
-        className: mode === "side" ? "itw-on" : "",
+        className: mode === "side" ? "iwb-on" : "",
         onClick: () => store.setDiffMode("side")
       }, t2("commit.sideBySide")),
       import_react12.default.createElement("button", {
         type: "button",
-        className: mode === "unified" ? "itw-on" : "",
+        className: mode === "unified" ? "iwb-on" : "",
         onClick: () => store.setDiffMode("unified")
       }, t2("commit.unified"))
     ) : null,
     import_react12.default.createElement("button", {
       type: "button",
-      className: `itw-textbtn itw-small ${wordLevel ? "itw-primary" : ""}`,
+      className: `iwb-textbtn iwb-small ${wordLevel ? "iwb-primary" : ""}`,
       title: t2("commit.wordLevel"),
       onClick: () => setWordLevel((value) => !value)
     }, "Aa"),
     source.stageable && selection.size > 0 ? import_react12.default.createElement("button", {
       type: "button",
-      className: "itw-textbtn itw-primary itw-small",
+      className: "iwb-textbtn iwb-primary iwb-small",
       disabled: applying,
       onClick: () => {
         void applySelection([...selection], stageLabel);
@@ -48327,7 +48327,7 @@ ${row.right?.text ?? ""}`;
     }, `${stageLabel} (${selection.size})`) : null,
     source.stageable && singleFile !== null ? import_react12.default.createElement("button", {
       type: "button",
-      className: "itw-textbtn itw-small",
+      className: "iwb-textbtn iwb-small",
       onClick: () => {
         void applySelection(singleFile.hunks.flatMap((_2, index) => hunkChangeIndexes(singleFile, index)), hunkLabel);
       }
@@ -48336,19 +48336,19 @@ ${row.right?.text ?? ""}`;
   const body = import_react12.default.createElement(
     "div",
     {
-      className: "itw-diff-scroll",
+      className: "iwb-diff-scroll",
       ref: scrollRef,
       onScroll: (event) => setScrollTop(event.currentTarget.scrollTop)
     },
-    viewRows.length === 0 ? import_react12.default.createElement("div", { className: "itw-empty" }, t2("commit.selectFile")) : import_react12.default.createElement(
+    viewRows.length === 0 ? import_react12.default.createElement("div", { className: "iwb-empty" }, t2("commit.selectFile")) : import_react12.default.createElement(
       "div",
-      { className: "itw-diff-inner", style: { height: `${viewRows.length * LINE_HEIGHT}px` } },
+      { className: "iwb-diff-inner", style: { height: `${viewRows.length * LINE_HEIGHT}px` } },
       viewRows.slice(start, end).map((row, index) => {
         const offset = start + index;
         if (row.kind === "collapsed") {
           return import_react12.default.createElement("div", {
             key: row.blockKey,
-            className: "itw-diff-collapsed",
+            className: "iwb-diff-collapsed",
             onClick: () => setOpenBlocks((previous) => /* @__PURE__ */ new Set([...previous, row.blockKey]))
           }, `\u22EF ${row.count} ${t2("diff.collapsedLines")}`);
         }
@@ -48358,7 +48358,7 @@ ${row.right?.text ?? ""}`;
   );
   return import_react12.default.createElement(
     "div",
-    { className: "itw-diff" },
+    { className: "iwb-diff" },
     toolbar,
     findOpen === true ? import_react12.default.createElement(FindBar, {
       store,
@@ -48375,7 +48375,7 @@ var import_react13 = __toESM(require("react"), 1);
 function Flag({ on: on2, label, title, onClick }) {
   return import_react13.default.createElement("button", {
     type: "button",
-    className: `itw-find-flag ${on2 ? "itw-on" : ""}`,
+    className: `iwb-find-flag ${on2 ? "iwb-on" : ""}`,
     title,
     "aria-pressed": on2,
     onClick
@@ -48434,14 +48434,14 @@ function SearchView({ store, state }) {
   }, [search2.results, store]);
   return import_react13.default.createElement(
     "div",
-    { className: "itw-search" },
+    { className: "iwb-search" },
     import_react13.default.createElement(
       "div",
-      { className: "itw-search-head" },
-      import_react13.default.createElement(IconSearch, { width: 14, height: 14, style: { color: "var(--itw-muted)" } }),
+      { className: "iwb-search-head" },
+      import_react13.default.createElement(IconSearch, { width: 14, height: 14, style: { color: "var(--iwb-muted)" } }),
       import_react13.default.createElement("input", {
         ref: inputRef,
-        className: "itw-search-input",
+        className: "iwb-search-input",
         value: query,
         placeholder: t2("search.placeholder"),
         spellCheck: false,
@@ -48464,34 +48464,34 @@ function SearchView({ store, state }) {
     ),
     import_react13.default.createElement(
       "div",
-      { className: "itw-search-meta" },
+      { className: "iwb-search-meta" },
       search2.loading === true ? t2("search.searching") : query === "" ? t2("search.empty") : search2.error !== null ? search2.error : `${totals.matches} ${t2("search.resultCount")} \xB7 ${totals.files} \xB7 ${search2.tookMs} ${t2("search.took")}`,
-      search2.truncated === true ? import_react13.default.createElement("span", { className: "itw-search-warn" }, t2("search.truncated")) : null
+      search2.truncated === true ? import_react13.default.createElement("span", { className: "iwb-search-warn" }, t2("search.truncated")) : null
     ),
     import_react13.default.createElement(
       "div",
-      { className: "itw-search-results" },
-      search2.error !== null && query !== "" ? import_react13.default.createElement("div", { className: "itw-search-error" }, search2.error) : search2.results.length === 0 && query !== "" && search2.loading !== true ? import_react13.default.createElement("div", { className: "itw-empty" }, t2("search.noResults")) : search2.results.map((file) => import_react13.default.createElement(
+      { className: "iwb-search-results" },
+      search2.error !== null && query !== "" ? import_react13.default.createElement("div", { className: "iwb-search-error" }, search2.error) : search2.results.length === 0 && query !== "" && search2.loading !== true ? import_react13.default.createElement("div", { className: "iwb-empty" }, t2("search.noResults")) : search2.results.map((file) => import_react13.default.createElement(
         "div",
-        { key: file.path, className: "itw-search-file" },
+        { key: file.path, className: "iwb-search-file" },
         import_react13.default.createElement(
           "div",
-          { className: "itw-search-file-head", title: file.path },
-          import_react13.default.createElement("span", { className: "itw-search-file-name" }, file.path.split("/").pop()),
-          import_react13.default.createElement("span", { className: "itw-search-file-dir" }, file.path.includes("/") ? file.path.slice(0, file.path.lastIndexOf("/")) : ""),
-          import_react13.default.createElement("span", { className: "itw-count" }, file.matches.length)
+          { className: "iwb-search-file-head", title: file.path },
+          import_react13.default.createElement("span", { className: "iwb-search-file-name" }, file.path.split("/").pop()),
+          import_react13.default.createElement("span", { className: "iwb-search-file-dir" }, file.path.includes("/") ? file.path.slice(0, file.path.lastIndexOf("/")) : ""),
+          import_react13.default.createElement("span", { className: "iwb-count" }, file.matches.length)
         ),
         file.matches.map((match, index) => import_react13.default.createElement(
           "button",
           {
             key: `${file.path}:${match.line}:${match.column}:${index}`,
             type: "button",
-            className: "itw-search-hit",
+            className: "iwb-search-hit",
             title: t2("search.openResult"),
             onClick: () => open(file, match)
           },
-          import_react13.default.createElement("span", { className: "itw-search-line" }, match.line),
-          import_react13.default.createElement("span", { className: "itw-search-preview" }, match.preview)
+          import_react13.default.createElement("span", { className: "iwb-search-line" }, match.line),
+          import_react13.default.createElement("span", { className: "iwb-search-preview" }, match.preview)
         ))
       ))
     )
@@ -48512,21 +48512,21 @@ function Welcome({ store, state }) {
   ];
   return import_react14.default.createElement(
     "div",
-    { className: "itw-welcome" },
+    { className: "iwb-welcome" },
     import_react14.default.createElement(
       "div",
-      { className: "itw-welcome-card" },
-      import_react14.default.createElement("h1", { className: "itw-welcome-title" }, t2("welcome.title")),
-      import_react14.default.createElement("p", { className: "itw-welcome-sub" }, t2("welcome.subtitle")),
+      { className: "iwb-welcome-card" },
+      import_react14.default.createElement("h1", { className: "iwb-welcome-title" }, t2("welcome.title")),
+      import_react14.default.createElement("p", { className: "iwb-welcome-sub" }, t2("welcome.subtitle")),
       import_react14.default.createElement(
         "div",
-        { className: "itw-welcome-grid" },
+        { className: "iwb-welcome-grid" },
         actions.map((action) => import_react14.default.createElement(
           "button",
           {
             key: action.key,
             type: "button",
-            className: "itw-welcome-action",
+            className: "iwb-welcome-action",
             onClick: action.onClick
           },
           import_react14.default.createElement(StripeIcon, { tool: action.icon, size: 17 }),
@@ -48536,17 +48536,17 @@ function Welcome({ store, state }) {
       ),
       import_react14.default.createElement(
         "div",
-        { className: "itw-welcome-meta" },
+        { className: "iwb-welcome-meta" },
         state.status.isRepo === true ? import_react14.default.createElement("span", null, `${t2("welcome.branch")}: ${state.status.detached === true ? t2("git.detached") : branch ?? "HEAD"}`) : import_react14.default.createElement("span", null, t2("welcome.noRepo")),
         import_react14.default.createElement("span", null, state.root)
       ),
       state.status.isRepo !== true && repoProjects.length > 0 ? import_react14.default.createElement(
         "div",
-        { className: "itw-welcome-hint" },
+        { className: "iwb-welcome-hint" },
         import_react14.default.createElement("span", null, t2("project.noRepoHint")),
         import_react14.default.createElement("button", {
           type: "button",
-          className: "itw-textbtn itw-small",
+          className: "iwb-textbtn iwb-small",
           onClick: () => store.openProjectPicker()
         }, t2("project.chooseRepo"))
       ) : null
@@ -48567,29 +48567,29 @@ function FilePreview({ store, state, tab: tab3, onEditorReady, onFindRequest, on
     }, 400);
   };
   if (tab3.loading === true && tab3.payload === void 0) {
-    return import_react14.default.createElement("div", { className: "itw-editor-empty" }, t2("common.loading"));
+    return import_react14.default.createElement("div", { className: "iwb-editor-empty" }, t2("common.loading"));
   }
   if (tab3.error !== null && tab3.error !== void 0) {
-    return import_react14.default.createElement("div", { className: "itw-editor-empty" }, import_react14.default.createElement("div", { className: "itw-error-box" }, tab3.error));
+    return import_react14.default.createElement("div", { className: "iwb-editor-empty" }, import_react14.default.createElement("div", { className: "iwb-error-box" }, tab3.error));
   }
   const payload = tab3.payload;
   if (payload === void 0 || payload === null) return null;
   if (payload.kind === "image") {
     return import_react14.default.createElement(
       "div",
-      { className: "itw-editor-empty", style: { flexDirection: "column", gap: 12 } },
-      import_react14.default.createElement("img", { src: payload.dataUrl, alt: tab3.name, style: { maxWidth: "92%", maxHeight: "82%", objectFit: "contain", borderRadius: 6, border: "1px solid var(--itw-border)" } }),
+      { className: "iwb-editor-empty", style: { flexDirection: "column", gap: 12 } },
+      import_react14.default.createElement("img", { src: payload.dataUrl, alt: tab3.name, style: { maxWidth: "92%", maxHeight: "82%", objectFit: "contain", borderRadius: 6, border: "1px solid var(--iwb-border)" } }),
       import_react14.default.createElement("span", null, `${tab3.rel} \xB7 ${payload.size} B`)
     );
   }
   if (payload.kind === "binary") {
-    return import_react14.default.createElement("div", { className: "itw-editor-empty" }, t2("common.binary"));
+    return import_react14.default.createElement("div", { className: "iwb-editor-empty" }, t2("common.binary"));
   }
   if (payload.kind === "too-large") {
-    return import_react14.default.createElement("div", { className: "itw-editor-empty" }, t2("common.tooLarge"));
+    return import_react14.default.createElement("div", { className: "iwb-editor-empty" }, t2("common.tooLarge"));
   }
   if (payload.kind !== "text") {
-    return import_react14.default.createElement("div", { className: "itw-editor-empty" }, t2("common.binary"));
+    return import_react14.default.createElement("div", { className: "iwb-editor-empty" }, t2("common.binary"));
   }
   const saved = payload.content ?? "";
   const text = tab3.dirty === true ? tab3.draft ?? saved : saved;
@@ -48651,12 +48651,12 @@ function TabBar({ store, state }) {
   const activeIndex = state.tabs.findIndex((tab3) => tab3.id === state.activeId);
   return import_react14.default.createElement(
     "div",
-    { className: "itw-tabbar" },
+    { className: "iwb-tabbar" },
     state.tabs.map((tab3) => import_react14.default.createElement(
       "div",
       {
         key: tab3.id,
-        className: `itw-tab ${tab3.id === state.activeId ? "itw-active" : ""} ${tab3.preview ? "itw-preview" : ""} ${tab3.dirty ? "itw-dirty" : ""}`,
+        className: `iwb-tab ${tab3.id === state.activeId ? "iwb-active" : ""} ${tab3.preview ? "iwb-preview" : ""} ${tab3.dirty ? "iwb-dirty" : ""}`,
         title: tab3.path,
         onClick: () => store.activateTab(tab3.id),
         onDoubleClick: () => {
@@ -48671,11 +48671,11 @@ function TabBar({ store, state }) {
         }
       },
       tab3.kind === "commit" ? import_react14.default.createElement(IconMore, { width: 12, height: 12 }) : import_react14.default.createElement(FileTypeIcon, { name: tab3.name, isDir: false, size: 14 }),
-      import_react14.default.createElement("span", { className: "itw-tab-name" }, tab3.kind === "commit" ? tab3.hash.slice(0, 8) : tab3.name),
-      tab3.dirty === true ? import_react14.default.createElement("span", { className: "itw-tab-dirty", title: t2("editor.dirty") }) : tab3.preview ? import_react14.default.createElement("span", { className: "itw-tab-dot", title: t2("common.preview") }) : null,
+      import_react14.default.createElement("span", { className: "iwb-tab-name" }, tab3.kind === "commit" ? tab3.hash.slice(0, 8) : tab3.name),
+      tab3.dirty === true ? import_react14.default.createElement("span", { className: "iwb-tab-dirty", title: t2("editor.dirty") }) : tab3.preview ? import_react14.default.createElement("span", { className: "iwb-tab-dot", title: t2("common.preview") }) : null,
       import_react14.default.createElement("button", {
         type: "button",
-        className: "itw-tab-close",
+        className: "iwb-tab-close",
         title: t2("common.closeTab"),
         onClick: (event) => {
           event.stopPropagation();
@@ -48685,10 +48685,10 @@ function TabBar({ store, state }) {
     )),
     import_react14.default.createElement(
       "div",
-      { className: "itw-tabbar-actions" },
+      { className: "iwb-tabbar-actions" },
       activeIndex >= 0 && state.tabs[activeIndex]?.kind === "file" && state.tabs[activeIndex]?.preview ? import_react14.default.createElement("button", {
         type: "button",
-        className: "itw-iconbtn",
+        className: "iwb-iconbtn",
         title: t2("common.pinTab"),
         onClick: () => store.pinTab(state.tabs[activeIndex].id)
       }, import_react14.default.createElement(IconPin, { width: 14, height: 14 })) : null
@@ -48749,34 +48749,34 @@ function EditorToolbar({ store, state, tab: tab3 }) {
       null,
       import_react14.default.createElement(
         "div",
-        { className: "itw-editor-toolbar" },
+        { className: "iwb-editor-toolbar" },
         import_react14.default.createElement(
           "div",
-          { className: "itw-breadcrumb" },
+          { className: "iwb-breadcrumb" },
           import_react14.default.createElement("span", null, t2("commit.title")),
-          import_react14.default.createElement("span", { className: "itw-sep" }, "\u203A"),
+          import_react14.default.createElement("span", { className: "iwb-sep" }, "\u203A"),
           import_react14.default.createElement("b", null, variant),
-          import_react14.default.createElement("span", { className: "itw-sep" }, "\u203A"),
+          import_react14.default.createElement("span", { className: "iwb-sep" }, "\u203A"),
           import_react14.default.createElement("b", null, baseName(tab3.rel))
         ),
-        import_react14.default.createElement("div", { className: "itw-spacer" }),
+        import_react14.default.createElement("div", { className: "iwb-spacer" }),
         readOnly2 ? null : import_react14.default.createElement(
           import_react14.default.Fragment,
           null,
           import_react14.default.createElement("button", {
             type: "button",
-            className: "itw-textbtn itw-small",
+            className: "iwb-textbtn iwb-small",
             onClick: anchor
           }, t2("commit.showDiffWith"), " \u25BE"),
           import_react14.default.createElement("button", {
             type: "button",
-            className: "itw-textbtn itw-small",
+            className: "iwb-textbtn iwb-small",
             title: t2("commit.jumpToSource"),
             onClick: () => store.jumpToSource(tab3.rel)
           }, t2("commit.jumpToSource")),
           import_react14.default.createElement("button", {
             type: "button",
-            className: "itw-textbtn itw-small itw-danger",
+            className: "iwb-textbtn iwb-small iwb-danger",
             onClick: () => store.revertChange({ path: tab3.rel, untracked: tab3.untracked === true })
           }, t2("commit.revert"))
         )
@@ -48796,15 +48796,15 @@ function EditorToolbar({ store, state, tab: tab3 }) {
   if (tab3.kind === "commit") {
     return import_react14.default.createElement(
       "div",
-      { className: "itw-editor-toolbar" },
+      { className: "iwb-editor-toolbar" },
       import_react14.default.createElement(
         "div",
-        { className: "itw-breadcrumb" },
+        { className: "iwb-breadcrumb" },
         import_react14.default.createElement("b", null, t2("git.details")),
-        import_react14.default.createElement("span", { className: "itw-sep" }, "\u203A"),
-        import_react14.default.createElement("b", { style: { fontFamily: "var(--itw-mono)" } }, tab3.hash.slice(0, 10))
+        import_react14.default.createElement("span", { className: "iwb-sep" }, "\u203A"),
+        import_react14.default.createElement("b", { style: { fontFamily: "var(--iwb-mono)" } }, tab3.hash.slice(0, 10))
       ),
-      import_react14.default.createElement("div", { className: "itw-spacer" })
+      import_react14.default.createElement("div", { className: "iwb-spacer" })
     );
   }
   const segments = tab3.rel.split(/[\\/]/);
@@ -48817,59 +48817,59 @@ function EditorToolbar({ store, state, tab: tab3 }) {
   const saving = tab3.saving === true;
   return import_react14.default.createElement(
     "div",
-    { className: "itw-editor-toolbar" },
+    { className: "iwb-editor-toolbar" },
     import_react14.default.createElement(
       "div",
-      { className: "itw-breadcrumb", title: tab3.path },
+      { className: "iwb-breadcrumb", title: tab3.path },
       segments.slice(0, -1).map((segment, index) => import_react14.default.createElement(
         import_react14.default.Fragment,
         { key: index },
         import_react14.default.createElement("span", null, segment),
-        import_react14.default.createElement("span", { className: "itw-sep" }, "\u203A")
+        import_react14.default.createElement("span", { className: "iwb-sep" }, "\u203A")
       )),
       import_react14.default.createElement("b", null, segments[segments.length - 1]),
-      dirty ? import_react14.default.createElement("span", { className: "itw-toolbar-dirty", title: t2("editor.dirty") }, t2("editor.dirty")) : null,
+      dirty ? import_react14.default.createElement("span", { className: "iwb-toolbar-dirty", title: t2("editor.dirty") }, t2("editor.dirty")) : null,
       tab3.conflict !== null && tab3.conflict !== void 0 ? import_react14.default.createElement(
         "span",
-        { className: "itw-conflict-chip", title: tab3.conflict.message ?? "" },
+        { className: "iwb-conflict-chip", title: tab3.conflict.message ?? "" },
         t2("editor.externalChanged"),
         import_react14.default.createElement("button", {
           type: "button",
-          className: "itw-textbtn itw-small",
+          className: "iwb-textbtn iwb-small",
           onClick: () => {
             void store.reloadTab(tab3.id);
           }
         }, t2("editor.reloadFromDisk")),
         import_react14.default.createElement("button", {
           type: "button",
-          className: "itw-textbtn itw-small",
+          className: "iwb-textbtn iwb-small",
           onClick: () => {
             void store.saveTab(tab3.id, { force: true });
           }
         }, t2("editor.overwriteDisk"))
       ) : null
     ),
-    import_react14.default.createElement("div", { className: "itw-spacer" }),
-    payload?.truncated === true ? import_react14.default.createElement("span", { style: { color: "var(--itw-warn)" } }, t2("editor.truncated")) : null,
+    import_react14.default.createElement("div", { className: "iwb-spacer" }),
+    payload?.truncated === true ? import_react14.default.createElement("span", { style: { color: "var(--iwb-warn)" } }, t2("editor.truncated")) : null,
     isText2 && markdown2 && !editing ? import_react14.default.createElement(
       "div",
-      { className: "itw-seg" },
+      { className: "iwb-seg" },
       import_react14.default.createElement("button", {
         type: "button",
-        className: view === "preview" ? "itw-on" : "",
+        className: view === "preview" ? "iwb-on" : "",
         title: t2("editor.preview"),
         onClick: () => store.setTabView(tab3.id, "preview")
       }, import_react14.default.createElement(IconEye, { width: 12, height: 12 }), t2("editor.preview")),
       import_react14.default.createElement("button", {
         type: "button",
-        className: view === "code" ? "itw-on" : "",
+        className: view === "code" ? "iwb-on" : "",
         title: t2("editor.source"),
         onClick: () => store.setTabView(tab3.id, "code")
       }, import_react14.default.createElement(IconCode, { width: 12, height: 12 }), t2("editor.source"))
     ) : null,
     isText2 && markdown2 && !editing && view === "preview" ? import_react14.default.createElement("button", {
       type: "button",
-      className: `itw-iconbtn ${tab3.outlineOpen === true ? "itw-on" : ""}`,
+      className: `iwb-iconbtn ${tab3.outlineOpen === true ? "iwb-on" : ""}`,
       title: t2("editor.outline"),
       onClick: () => store.updateActiveTab({ outlineOpen: tab3.outlineOpen !== true })
     }, import_react14.default.createElement(IconOutline, { width: 14, height: 14 })) : null,
@@ -48877,7 +48877,7 @@ function EditorToolbar({ store, state, tab: tab3 }) {
       "button",
       {
         type: "button",
-        className: "itw-textbtn itw-small",
+        className: "iwb-textbtn iwb-small",
         title: editing ? t2("editor.toReadOnly") : t2("editor.toEdit"),
         onClick: () => store.setTabEditing(tab3.id, !editing)
       },
@@ -48889,7 +48889,7 @@ function EditorToolbar({ store, state, tab: tab3 }) {
       null,
       import_react14.default.createElement("button", {
         type: "button",
-        className: `itw-textbtn itw-small ${dirty ? "itw-primary" : ""}`,
+        className: `iwb-textbtn iwb-small ${dirty ? "iwb-primary" : ""}`,
         disabled: !dirty || saving,
         title: "Ctrl+S",
         onClick: () => {
@@ -48898,7 +48898,7 @@ function EditorToolbar({ store, state, tab: tab3 }) {
       }, import_react14.default.createElement(IconSave, { width: 12, height: 12 }), saving ? t2("editor.saving") : t2("editor.save")),
       import_react14.default.createElement("button", {
         type: "button",
-        className: "itw-iconbtn",
+        className: "iwb-iconbtn",
         disabled: !dirty,
         title: t2("editor.restore"),
         onClick: () => store.discardDraft(tab3.id)
@@ -48908,7 +48908,7 @@ function EditorToolbar({ store, state, tab: tab3 }) {
       null,
       import_react14.default.createElement("button", {
         type: "button",
-        className: "itw-textbtn itw-primary itw-small",
+        className: "iwb-textbtn iwb-primary iwb-small",
         disabled: saving,
         title: "Ctrl+S",
         onClick: () => {
@@ -48917,7 +48917,7 @@ function EditorToolbar({ store, state, tab: tab3 }) {
       }, import_react14.default.createElement(IconSave, { width: 12, height: 12 }), saving ? t2("editor.saving") : t2("editor.save")),
       import_react14.default.createElement("button", {
         type: "button",
-        className: "itw-iconbtn",
+        className: "iwb-iconbtn",
         title: t2("editor.restore"),
         onClick: () => store.discardDraft(tab3.id)
       }, import_react14.default.createElement(IconRestore, { width: 14, height: 14 }))
@@ -48933,10 +48933,10 @@ function HtmlPreviewActions({ store, tab: tab3 }) {
   if (tab3.kind !== "file" || !isHtmlPath(tab3.path)) return null;
   return import_react14.default.createElement(
     "div",
-    { className: "itw-html-actions" },
+    { className: "iwb-html-actions" },
     import_react14.default.createElement("button", {
       type: "button",
-      className: "itw-html-action",
+      className: "iwb-html-action",
       title: t2("editor.htmlPreviewSidebar"),
       "aria-label": t2("editor.htmlPreviewSidebar"),
       onClick: () => {
@@ -48945,7 +48945,7 @@ function HtmlPreviewActions({ store, tab: tab3 }) {
     }, import_react14.default.createElement(IconGlobe, { width: 15, height: 15 })),
     import_react14.default.createElement("button", {
       type: "button",
-      className: "itw-html-action itw-chrome",
+      className: "iwb-html-action iwb-chrome",
       title: t2("editor.htmlPreviewBrowser"),
       "aria-label": t2("editor.htmlPreviewBrowser"),
       onClick: () => {
@@ -48969,7 +48969,7 @@ function EditorArea({ store, state }) {
     const onKeyDown = (event) => {
       if (store.state.active !== true) return;
       const target = event.target;
-      if (target instanceof HTMLElement && target.closest(".itw-search")) return;
+      if (target instanceof HTMLElement && target.closest(".iwb-search")) return;
       const mod = event.ctrlKey || event.metaKey;
       const key = event.key.toLowerCase();
       if (mod && (event.shiftKey && !event.altKey || event.altKey && !event.shiftKey) && key === "f") {
@@ -49004,8 +49004,8 @@ function EditorArea({ store, state }) {
     const onKeyDown = (event) => {
       if (!(event.ctrlKey || event.metaKey) || event.altKey) return;
       const target = event.target;
-      if (!(target instanceof Element) || target.closest(".itw-root") === null) return;
-      if (target.closest(".itw-commit, .itw-term, .itw-term-host, .itw-diff, .itw-search") !== null) return;
+      if (!(target instanceof Element) || target.closest(".iwb-root") === null) return;
+      if (target.closest(".iwb-commit, .iwb-term, .iwb-term-host, .iwb-diff, .iwb-search") !== null) return;
       if (event.key.toLowerCase() === "w" && !event.shiftKey) {
         event.preventDefault();
         event.stopPropagation();
@@ -49026,7 +49026,7 @@ function EditorArea({ store, state }) {
   if (active === void 0) {
     return import_react14.default.createElement(
       "div",
-      { className: "itw-editor" },
+      { className: "iwb-editor" },
       import_react14.default.createElement(TabBar, { store, state }),
       import_react14.default.createElement(Welcome, { store, state })
     );
@@ -49034,7 +49034,7 @@ function EditorArea({ store, state }) {
   if (active.kind === "search") {
     return import_react14.default.createElement(
       "div",
-      { className: "itw-editor" },
+      { className: "iwb-editor" },
       import_react14.default.createElement(TabBar, { store, state }),
       import_react14.default.createElement(SearchView, { store, state })
     );
@@ -49046,10 +49046,10 @@ function EditorArea({ store, state }) {
     onEditorReady: setEditorApi,
     onFindRequest: () => setFindOpen(true),
     onFindInFiles: () => store.openSearchTab()
-  }) : active.loading === true ? import_react14.default.createElement("div", { className: "itw-editor-empty" }, store.t("common.loading")) : active.error !== null && active.error !== void 0 ? import_react14.default.createElement("div", { className: "itw-editor-empty" }, import_react14.default.createElement("div", { className: "itw-error-box" }, active.error)) : import_react14.default.createElement(DiffView, { store, state, tab: active });
+  }) : active.loading === true ? import_react14.default.createElement("div", { className: "iwb-editor-empty" }, store.t("common.loading")) : active.error !== null && active.error !== void 0 ? import_react14.default.createElement("div", { className: "iwb-editor-empty" }, import_react14.default.createElement("div", { className: "iwb-error-box" }, active.error)) : import_react14.default.createElement(DiffView, { store, state, tab: active });
   return import_react14.default.createElement(
     "div",
-    { className: "itw-editor" },
+    { className: "iwb-editor" },
     import_react14.default.createElement(TabBar, { store, state }),
     import_react14.default.createElement(EditorToolbar, { store, state, tab: active }),
     findOpen === true && textTab && editorApi !== null ? import_react14.default.createElement(FindBar, {
@@ -49079,23 +49079,23 @@ var SHORTCUT_FIELDS = [
 function Group({ title, description, children }) {
   return import_react15.default.createElement(
     "section",
-    { className: "itw-settings-group" },
-    import_react15.default.createElement("h3", { className: "itw-settings-group-title" }, title),
-    description !== void 0 ? import_react15.default.createElement("p", { className: "itw-settings-group-desc" }, description) : null,
-    import_react15.default.createElement("div", { className: "itw-settings-rows" }, children)
+    { className: "iwb-settings-group" },
+    import_react15.default.createElement("h3", { className: "iwb-settings-group-title" }, title),
+    description !== void 0 ? import_react15.default.createElement("p", { className: "iwb-settings-group-desc" }, description) : null,
+    import_react15.default.createElement("div", { className: "iwb-settings-rows" }, children)
   );
 }
 function Row({ label, hint, children }) {
   return import_react15.default.createElement(
     "div",
-    { className: "itw-settings-row" },
+    { className: "iwb-settings-row" },
     import_react15.default.createElement(
       "div",
-      { className: "itw-settings-label" },
-      import_react15.default.createElement("div", { className: "itw-settings-title" }, label),
-      hint !== void 0 ? import_react15.default.createElement("div", { className: "itw-settings-hint" }, hint) : null
+      { className: "iwb-settings-label" },
+      import_react15.default.createElement("div", { className: "iwb-settings-title" }, label),
+      hint !== void 0 ? import_react15.default.createElement("div", { className: "iwb-settings-hint" }, hint) : null
     ),
-    import_react15.default.createElement("div", { className: "itw-settings-control" }, children)
+    import_react15.default.createElement("div", { className: "iwb-settings-control" }, children)
   );
 }
 function SettingsForm({ store, state, compact }) {
@@ -49171,7 +49171,7 @@ function SettingsForm({ store, state, compact }) {
   };
   return import_react15.default.createElement(
     "div",
-    { className: "itw-settings", ref: rootRef },
+    { className: "iwb-settings", ref: rootRef },
     import_react15.default.createElement(
       Group,
       {
@@ -49204,7 +49204,7 @@ function SettingsForm({ store, state, compact }) {
         import_react15.default.createElement(
           "select",
           {
-            className: "itw-select",
+            className: "iwb-select",
             value: draft.terminal?.shell ?? "auto",
             onChange: (event) => update({ terminal: { shell: event.target.value } })
           },
@@ -49278,7 +49278,7 @@ function SettingsForm({ store, state, compact }) {
         import_react15.default.createElement(
           "select",
           {
-            className: "itw-select",
+            className: "iwb-select",
             value: draft.links?.chatFiles === "sidebar" ? "sidebar" : "ide",
             onChange: (event) => update({ links: { chatFiles: event.target.value } })
           },
@@ -49322,7 +49322,7 @@ function SettingsForm({ store, state, compact }) {
         { key: ide.id, label: ide.title },
         import_react15.default.createElement("input", {
           type: "text",
-          className: "itw-input",
+          className: "iwb-input",
           "aria-label": ide.title,
           value: draft[ide.id]?.path ?? "",
           placeholder: t2("settings.ideAuto"),
@@ -49450,15 +49450,15 @@ function SettingsForm({ store, state, compact }) {
       import_react15.default.createElement(
         Row,
         { label: t2("settings.language"), hint: t2("settings.languageHint") },
-        import_react15.default.createElement("span", { className: "itw-settings-value" }, t2("settings.followDsh"))
+        import_react15.default.createElement("span", { className: "iwb-settings-value" }, t2("settings.followDsh"))
       )
     ),
     import_react15.default.createElement(
       "div",
-      { className: "itw-settings-footer" },
+      { className: "iwb-settings-footer" },
       compact === true ? null : import_react15.default.createElement("button", {
         type: "button",
-        className: "itw-textbtn itw-small itw-settings-reset",
+        className: "iwb-textbtn iwb-small iwb-settings-reset",
         onClick: () => {
           const reset = {
             git: { path: "", colors: true, commitTemplate: "" },
@@ -49488,14 +49488,14 @@ function SettingsForm({ store, state, compact }) {
           commit(reset);
         }
       }, t2("settings.reset")),
-      saved === true ? import_react15.default.createElement("div", { className: "itw-settings-saved", role: "status" }, t2("settings.saved")) : null
+      saved === true ? import_react15.default.createElement("div", { className: "iwb-settings-saved", role: "status" }, t2("settings.saved")) : null
     )
   );
 }
 function SettingsSection({ store, state }) {
   return import_react15.default.createElement(
     "div",
-    { className: "itw-settings-section" },
+    { className: "iwb-settings-section" },
     import_react15.default.createElement(SettingsForm, { store, state })
   );
 }
@@ -49549,21 +49549,21 @@ function QuickOpen({ store, state }) {
   return import_react16.default.createElement(
     "div",
     {
-      className: "itw-quick-backdrop",
+      className: "iwb-quick-backdrop",
       onMouseDown: (event) => {
         if (event.target === event.currentTarget) store.closeQuickOpen();
       }
     },
     import_react16.default.createElement(
       "div",
-      { className: "itw-quick", role: "dialog", "aria-modal": "true", "aria-label": t2("quickOpen.title") },
+      { className: "iwb-quick", role: "dialog", "aria-modal": "true", "aria-label": t2("quickOpen.title") },
       import_react16.default.createElement(
         "div",
-        { className: "itw-quick-head" },
-        import_react16.default.createElement("span", { className: "itw-quick-title" }, t2("quickOpen.title")),
+        { className: "iwb-quick-head" },
+        import_react16.default.createElement("span", { className: "iwb-quick-title" }, t2("quickOpen.title")),
         import_react16.default.createElement("input", {
           ref: inputRef,
-          className: "itw-quick-input",
+          className: "iwb-quick-input",
           value: state.quickOpenQuery,
           placeholder: t2("quickOpen.placeholder"),
           spellCheck: false,
@@ -49587,23 +49587,23 @@ function QuickOpen({ store, state }) {
       ),
       import_react16.default.createElement(
         "div",
-        { className: "itw-quick-list" },
-        state.fileIndexLoading === true && state.fileIndex.length === 0 ? import_react16.default.createElement("div", { className: "itw-quick-empty" }, t2("common.loading")) : results.length === 0 ? import_react16.default.createElement("div", { className: "itw-quick-empty" }, t2("quickOpen.empty")) : results.map((path2, position) => import_react16.default.createElement(
+        { className: "iwb-quick-list" },
+        state.fileIndexLoading === true && state.fileIndex.length === 0 ? import_react16.default.createElement("div", { className: "iwb-quick-empty" }, t2("common.loading")) : results.length === 0 ? import_react16.default.createElement("div", { className: "iwb-quick-empty" }, t2("quickOpen.empty")) : results.map((path2, position) => import_react16.default.createElement(
           "button",
           {
             key: path2,
             type: "button",
-            className: `itw-quick-row ${position === active ? "itw-selected" : ""}`,
+            className: `iwb-quick-row ${position === active ? "iwb-selected" : ""}`,
             onMouseEnter: () => store.set({ quickOpenIndex: position }),
             onClick: () => open(path2)
           },
-          import_react16.default.createElement("span", { className: "itw-quick-name" }, path2.slice(path2.lastIndexOf("/") + 1)),
-          import_react16.default.createElement("span", { className: "itw-quick-dir" }, path2.includes("/") ? path2.slice(0, path2.lastIndexOf("/")) : "")
+          import_react16.default.createElement("span", { className: "iwb-quick-name" }, path2.slice(path2.lastIndexOf("/") + 1)),
+          import_react16.default.createElement("span", { className: "iwb-quick-dir" }, path2.includes("/") ? path2.slice(0, path2.lastIndexOf("/")) : "")
         ))
       ),
       import_react16.default.createElement(
         "div",
-        { className: "itw-quick-foot" },
+        { className: "iwb-quick-foot" },
         `${results.length} \xB7 ${t2("quickOpen.hint")}`,
         state.fileIndexError !== null ? ` \xB7 ${state.fileIndexError}` : ""
       )
@@ -49626,43 +49626,43 @@ function TopBar({ store, state, fullscreen, onOpenSettings }) {
   const [menu, setMenu] = (0, import_react17.useState)(null);
   return import_react17.default.createElement(
     "div",
-    { className: "itw-topbar" },
+    { className: "iwb-topbar" },
     import_react17.default.createElement(
       "button",
       {
         type: "button",
-        className: "itw-project-select",
+        className: "iwb-project-select",
         title: state.workspaceRoot,
         onClick: (event) => setMenu({ x: event.clientX, y: event.clientY + 8 })
       },
       import_react17.default.createElement(StripeIcon, { tool: "project", size: 16 }),
       import_react17.default.createElement(
         "span",
-        { className: "itw-project-name" },
+        { className: "iwb-project-name" },
         workspaceTitle,
-        showProject ? import_react17.default.createElement("span", { className: "itw-project-current" }, ` / ${projectTitle}`) : null
+        showProject ? import_react17.default.createElement("span", { className: "iwb-project-current" }, ` / ${projectTitle}`) : null
       ),
-      import_react17.default.createElement("span", { className: "itw-project-path" }, state.root || state.workspaceRoot)
+      import_react17.default.createElement("span", { className: "iwb-project-path" }, state.root || state.workspaceRoot)
     ),
     state.status.isRepo === true ? import_react17.default.createElement(
       "span",
-      { className: "itw-branch-chip", title: state.status.upstream ?? "" },
+      { className: "iwb-branch-chip", title: state.status.upstream ?? "" },
       import_react17.default.createElement(IconGit, { width: 12, height: 12 }),
-      import_react17.default.createElement("span", { className: "itw-branch-name" }, detached ? (state.status.oid ?? "HEAD").slice(0, 7) : branch ?? "HEAD"),
-      detached ? import_react17.default.createElement("span", { className: "itw-behind" }, t2("git.detached")) : null,
-      typeof state.status.ahead === "number" && state.status.ahead > 0 ? import_react17.default.createElement("span", { className: "itw-ahead" }, `\u2191${state.status.ahead}`) : null,
-      typeof state.status.behind === "number" && state.status.behind > 0 ? import_react17.default.createElement("span", { className: "itw-behind" }, `\u2193${state.status.behind}`) : null
+      import_react17.default.createElement("span", { className: "iwb-branch-name" }, detached ? (state.status.oid ?? "HEAD").slice(0, 7) : branch ?? "HEAD"),
+      detached ? import_react17.default.createElement("span", { className: "iwb-behind" }, t2("git.detached")) : null,
+      typeof state.status.ahead === "number" && state.status.ahead > 0 ? import_react17.default.createElement("span", { className: "iwb-ahead" }, `\u2191${state.status.ahead}`) : null,
+      typeof state.status.behind === "number" && state.status.behind > 0 ? import_react17.default.createElement("span", { className: "iwb-behind" }, `\u2193${state.status.behind}`) : null
     ) : null,
-    import_react17.default.createElement("div", { className: "itw-top-spacer" }),
+    import_react17.default.createElement("div", { className: "iwb-top-spacer" }),
     import_react17.default.createElement("button", {
       type: "button",
-      className: "itw-iconbtn",
+      className: "iwb-iconbtn",
       title: t2("layout.hideAll"),
       onClick: () => store.toggleHideAll()
     }, "\u229F"),
     import_react17.default.createElement("button", {
       type: "button",
-      className: `itw-iconbtn ${fullscreen ? "itw-on" : ""}`,
+      className: `iwb-iconbtn ${fullscreen ? "iwb-on" : ""}`,
       title: t2(fullscreen ? "layout.exitFullscreen" : "layout.fullscreen"),
       "aria-label": t2(fullscreen ? "layout.exitFullscreen" : "layout.fullscreen"),
       "aria-pressed": fullscreen,
@@ -49670,13 +49670,13 @@ function TopBar({ store, state, fullscreen, onOpenSettings }) {
     }, "\u26F6"),
     import_react17.default.createElement("button", {
       type: "button",
-      className: "itw-iconbtn",
+      className: "iwb-iconbtn",
       title: `${t2("search.title")} (${state.settings?.shortcuts?.findInFiles ?? "Ctrl+Shift+F"})`,
       onClick: () => store.openSearchTab()
     }, import_react17.default.createElement(IconSearch, { width: 15, height: 15 })),
     import_react17.default.createElement("button", {
       type: "button",
-      className: "itw-iconbtn",
+      className: "iwb-iconbtn",
       title: t2("common.refresh"),
       onClick: () => {
         void store.reloadTree();
@@ -49686,7 +49686,7 @@ function TopBar({ store, state, fullscreen, onOpenSettings }) {
     }, import_react17.default.createElement(IconRefresh, { width: 15, height: 15 })),
     import_react17.default.createElement("button", {
       type: "button",
-      className: "itw-iconbtn",
+      className: "iwb-iconbtn",
       title: t2("common.settings"),
       onClick: onOpenSettings
     }, import_react17.default.createElement(IconGear, { width: 15, height: 15 })),
@@ -49699,7 +49699,7 @@ function TopBar({ store, state, fullscreen, onOpenSettings }) {
         ...state.workspaces.length > 0 ? state.workspaces.map((workspace) => ({
           key: workspace.path,
           text: workspace.title,
-          icon: workspace.path === state.workspaceRoot ? import_react17.default.createElement("span", { style: { color: "var(--itw-accent)" } }, "\u25CF") : null,
+          icon: workspace.path === state.workspaceRoot ? import_react17.default.createElement("span", { style: { color: "var(--iwb-accent)" } }, "\u25CF") : null,
           action: () => {
             void store.setRoot(workspace.path);
           }
@@ -49716,13 +49716,13 @@ function Stripe({ store, state }) {
   const sessions = state.terminal.sessions.length;
   const button = (tool, active, children) => import_react17.default.createElement("button", {
     type: "button",
-    className: `itw-stripe-btn ${active ? "itw-on" : ""}`,
+    className: `iwb-stripe-btn ${active ? "iwb-on" : ""}`,
     title: `${t2(`${tool}.title`)} (${state.settings?.shortcuts?.[tool] ?? ""})`,
     onClick: () => store.toggleTool(tool)
   }, children);
   return import_react17.default.createElement(
     "div",
-    { className: "itw-stripe" },
+    { className: "iwb-stripe" },
     button(
       "project",
       state.layout.left === "project",
@@ -49735,10 +49735,10 @@ function Stripe({ store, state }) {
         "span",
         null,
         import_react17.default.createElement(StripeIcon, { tool: "commit", size: 20 }),
-        state.changeCount > 0 ? import_react17.default.createElement("span", { className: "itw-badge" }, state.changeCount > 99 ? "99+" : state.changeCount) : null
+        state.changeCount > 0 ? import_react17.default.createElement("span", { className: "iwb-badge" }, state.changeCount > 99 ? "99+" : state.changeCount) : null
       )
     ),
-    import_react17.default.createElement("div", { className: "itw-stripe-spacer" }),
+    import_react17.default.createElement("div", { className: "iwb-stripe-spacer" }),
     button(
       "git",
       state.layout.bottom === "git",
@@ -49751,7 +49751,7 @@ function Stripe({ store, state }) {
         "span",
         null,
         import_react17.default.createElement(StripeIcon, { tool: "terminal", size: 20 }),
-        sessions > 0 ? import_react17.default.createElement("span", { className: "itw-badge itw-badge-dirty" }, sessions) : null
+        sessions > 0 ? import_react17.default.createElement("span", { className: "iwb-badge iwb-badge-dirty" }, sessions) : null
       )
     )
   );
@@ -49762,26 +49762,26 @@ function BottomTabs({ store, state }) {
   if (tool === null || tool === void 0) return null;
   return import_react17.default.createElement(
     "div",
-    { className: "itw-bottom-tabs" },
+    { className: "iwb-bottom-tabs" },
     import_react17.default.createElement(
       "button",
       {
         type: "button",
-        className: `itw-bottom-tab ${tool === "terminal" ? "itw-on" : ""}`,
+        className: `iwb-bottom-tab ${tool === "terminal" ? "iwb-on" : ""}`,
         onClick: () => store.showTool("terminal")
       },
       import_react17.default.createElement(IconTerminal, { width: 13, height: 13 }),
       t2("terminal.title"),
-      state.terminal.sessions.length > 0 ? import_react17.default.createElement("span", { className: "itw-badge" }, state.terminal.sessions.length) : null
+      state.terminal.sessions.length > 0 ? import_react17.default.createElement("span", { className: "iwb-badge" }, state.terminal.sessions.length) : null
     ),
     import_react17.default.createElement("button", {
       type: "button",
-      className: `itw-bottom-tab ${tool === "git" ? "itw-on" : ""}`,
+      className: `iwb-bottom-tab ${tool === "git" ? "iwb-on" : ""}`,
       onClick: () => store.showTool("git")
     }, import_react17.default.createElement(IconGit, { width: 13, height: 13 }), t2("git.title")),
     import_react17.default.createElement("button", {
       type: "button",
-      className: "itw-iconbtn itw-bottom-close",
+      className: "iwb-iconbtn iwb-bottom-close",
       title: t2("common.close"),
       onClick: () => store.setLayout({ bottom: null })
     }, import_react17.default.createElement("span", { style: { fontSize: 16, lineHeight: 1 } }, "\xD7"))
@@ -49798,28 +49798,28 @@ function StatusBar({ store, state }) {
   const cursor = state.cursor !== null && state.cursor !== void 0 && active?.editing === true ? state.cursor : null;
   return import_react17.default.createElement(
     "div",
-    { className: "itw-statusbar" },
+    { className: "iwb-statusbar" },
     import_react17.default.createElement(
       "span",
-      { className: "itw-status-item" },
-      import_react17.default.createElement("span", { className: `itw-status-dot ${state.statusError !== null ? "itw-busy" : ""}` }),
+      { className: "iwb-status-item" },
+      import_react17.default.createElement("span", { className: `iwb-status-dot ${state.statusError !== null ? "iwb-busy" : ""}` }),
       state.status.isRepo === true ? t2("status.ready") : t2("welcome.noRepo")
     ),
-    summary.branch !== void 0 ? import_react17.default.createElement("span", { className: "itw-status-item", style: { cursor: "pointer" }, onClick: () => store.showTool("git") }, summary.branch) : null,
-    summary.changes > 0 ? import_react17.default.createElement("span", { className: "itw-status-item", style: { cursor: "pointer" }, onClick: () => store.showTool("commit") }, `${summary.changes} ${t2("status.changes")}`) : null,
-    import_react17.default.createElement("div", { className: "itw-spacer" }),
-    cursor !== null ? import_react17.default.createElement("span", { className: "itw-status-item" }, `${t2("editor.line")} ${cursor.line}:${cursor.col}`) : null,
-    lines !== void 0 ? import_react17.default.createElement("span", { className: "itw-status-item" }, `${lines} ${t2("editor.lines")}`) : null,
-    encoding !== void 0 ? import_react17.default.createElement("span", { className: "itw-status-item" }, `${encoding} ${eol2}`) : null,
+    summary.branch !== void 0 ? import_react17.default.createElement("span", { className: "iwb-status-item", style: { cursor: "pointer" }, onClick: () => store.showTool("git") }, summary.branch) : null,
+    summary.changes > 0 ? import_react17.default.createElement("span", { className: "iwb-status-item", style: { cursor: "pointer" }, onClick: () => store.showTool("commit") }, `${summary.changes} ${t2("status.changes")}`) : null,
+    import_react17.default.createElement("div", { className: "iwb-spacer" }),
+    cursor !== null ? import_react17.default.createElement("span", { className: "iwb-status-item" }, `${t2("editor.line")} ${cursor.line}:${cursor.col}`) : null,
+    lines !== void 0 ? import_react17.default.createElement("span", { className: "iwb-status-item" }, `${lines} ${t2("editor.lines")}`) : null,
+    encoding !== void 0 ? import_react17.default.createElement("span", { className: "iwb-status-item" }, `${encoding} ${eol2}`) : null,
     import_react17.default.createElement(
       "span",
-      { className: "itw-status-item" },
+      { className: "iwb-status-item" },
       import_react17.default.createElement(Kbd, null, state.settings?.shortcuts?.project ?? "Alt+1"),
       import_react17.default.createElement("span", { style: { marginLeft: 4 } }, t2("project.title"))
     ),
     import_react17.default.createElement(
       "span",
-      { className: "itw-status-item" },
+      { className: "iwb-status-item" },
       import_react17.default.createElement(Kbd, null, state.settings?.shortcuts?.terminal ?? "Alt+F12"),
       import_react17.default.createElement("span", { style: { marginLeft: 4 } }, t2("terminal.title"))
     )
@@ -49831,25 +49831,25 @@ function RootPicker({ store, state }) {
   if (state.rootPicker !== true) return null;
   return import_react17.default.createElement(
     "div",
-    { className: "itw-modal-backdrop", onMouseDown: (event) => {
+    { className: "iwb-modal-backdrop", onMouseDown: (event) => {
       if (event.target === event.currentTarget) store.closeRootPicker();
     } },
     import_react17.default.createElement(
       "div",
-      { className: "itw-modal", role: "dialog", "aria-modal": "true" },
+      { className: "iwb-modal", role: "dialog", "aria-modal": "true" },
       import_react17.default.createElement("h2", null, t2("project.openWorkspace")),
       import_react17.default.createElement(
         "div",
-        { className: "itw-root-picker" },
+        { className: "iwb-root-picker" },
         import_react17.default.createElement(
           "div",
-          { className: "itw-root-list" },
+          { className: "iwb-root-list" },
           state.workspaces.map((workspace) => import_react17.default.createElement(
             "button",
             {
               key: workspace.path,
               type: "button",
-              className: "itw-root-item",
+              className: "iwb-root-item",
               onClick: () => {
                 store.closeRootPicker();
                 void store.setRoot(workspace.path);
@@ -49860,7 +49860,7 @@ function RootPicker({ store, state }) {
               "span",
               { style: { display: "flex", flexDirection: "column", minWidth: 0 } },
               import_react17.default.createElement("b", null, workspace.title),
-              import_react17.default.createElement("span", { className: "itw-root-path" }, workspace.path)
+              import_react17.default.createElement("span", { className: "iwb-root-path" }, workspace.path)
             )
           ))
         ),
@@ -49868,7 +49868,7 @@ function RootPicker({ store, state }) {
           "div",
           { style: { display: "flex", gap: 8, marginTop: 4 } },
           import_react17.default.createElement("input", {
-            className: "itw-input",
+            className: "iwb-input",
             style: { flex: 1, width: "auto" },
             placeholder: t2("project.workspacePath"),
             value: path2,
@@ -49881,7 +49881,7 @@ function RootPicker({ store, state }) {
           }),
           import_react17.default.createElement("button", {
             type: "button",
-            className: "itw-textbtn itw-primary",
+            className: "iwb-textbtn iwb-primary",
             disabled: path2.trim() === "",
             onClick: () => {
               void store.addWorkspace(path2.trim());
@@ -49891,8 +49891,8 @@ function RootPicker({ store, state }) {
       ),
       import_react17.default.createElement(
         "div",
-        { className: "itw-modal-actions", style: { marginTop: 16 } },
-        import_react17.default.createElement("button", { type: "button", className: "itw-textbtn", onClick: () => store.closeRootPicker() }, t2("common.cancel"))
+        { className: "iwb-modal-actions", style: { marginTop: 16 } },
+        import_react17.default.createElement("button", { type: "button", className: "iwb-textbtn", onClick: () => store.closeRootPicker() }, t2("common.cancel"))
       )
     )
   );
@@ -49908,7 +49908,7 @@ function ProjectPicker({ store, state }) {
     {
       key: project.path,
       type: "button",
-      className: `itw-project-choice ${project.path === state.root ? "itw-current" : ""}`,
+      className: `iwb-project-choice ${project.path === state.root ? "iwb-current" : ""}`,
       title: project.path,
       onClick: () => {
         void store.selectProject(project.path);
@@ -49916,22 +49916,22 @@ function ProjectPicker({ store, state }) {
     },
     import_react17.default.createElement(
       "span",
-      { className: "itw-project-choice-icon" },
+      { className: "iwb-project-choice-icon" },
       project.isRepo === true ? import_react17.default.createElement(IconGit, { width: 15, height: 15 }) : import_react17.default.createElement(IconFolder, { size: 15 })
     ),
     import_react17.default.createElement(
       "span",
-      { className: "itw-project-choice-text" },
+      { className: "iwb-project-choice-text" },
       import_react17.default.createElement("b", null, project.name),
-      import_react17.default.createElement("span", { className: "itw-project-choice-path" }, project.path)
+      import_react17.default.createElement("span", { className: "iwb-project-choice-path" }, project.path)
     ),
-    project.isRepo === true ? import_react17.default.createElement("span", { className: "itw-project-repo-badge" }, t2("project.gitRepo")) : null,
-    project.path === state.root ? import_react17.default.createElement("span", { className: "itw-project-current-badge" }, t2("project.current")) : null
+    project.isRepo === true ? import_react17.default.createElement("span", { className: "iwb-project-repo-badge" }, t2("project.gitRepo")) : null,
+    project.path === state.root ? import_react17.default.createElement("span", { className: "iwb-project-current-badge" }, t2("project.current")) : null
   );
   return import_react17.default.createElement(
     "div",
     {
-      className: "itw-modal-backdrop",
+      className: "iwb-modal-backdrop",
       onMouseDown: (event) => {
         if (event.target === event.currentTarget) store.closeProjectPicker();
       }
@@ -49939,33 +49939,33 @@ function ProjectPicker({ store, state }) {
     import_react17.default.createElement(
       "div",
       {
-        className: "itw-modal itw-project-picker",
+        className: "iwb-modal iwb-project-picker",
         role: "dialog",
         "aria-modal": "true"
       },
       import_react17.default.createElement("h2", null, t2("project.selectProject")),
-      import_react17.default.createElement("p", { className: "itw-modal-hint" }, t2("project.selectProjectHint")),
+      import_react17.default.createElement("p", { className: "iwb-modal-hint" }, t2("project.selectProjectHint")),
       import_react17.default.createElement(
         "div",
-        { className: "itw-project-picker-list" },
-        import_react17.default.createElement("div", { className: "itw-project-group" }, t2("project.workspaceRoot")),
+        { className: "iwb-project-picker-list" },
+        import_react17.default.createElement("div", { className: "iwb-project-group" }, t2("project.workspaceRoot")),
         ...root.map(choice),
-        import_react17.default.createElement("div", { className: "itw-project-group" }, t2("project.subdirectories")),
-        children.length === 0 ? import_react17.default.createElement("div", { className: "itw-project-empty" }, t2("project.noSubdirectories")) : children.map(choice)
+        import_react17.default.createElement("div", { className: "iwb-project-group" }, t2("project.subdirectories")),
+        children.length === 0 ? import_react17.default.createElement("div", { className: "iwb-project-empty" }, t2("project.noSubdirectories")) : children.map(choice)
       ),
       import_react17.default.createElement(
         "div",
-        { className: "itw-modal-actions" },
+        { className: "iwb-modal-actions" },
         import_react17.default.createElement("button", {
           type: "button",
-          className: "itw-textbtn",
+          className: "iwb-textbtn",
           onClick: () => {
             void store.loadProjects();
           }
         }, import_react17.default.createElement(IconRefresh, { width: 12, height: 12 }), t2("project.refreshProjects")),
         import_react17.default.createElement("button", {
           type: "button",
-          className: "itw-textbtn",
+          className: "iwb-textbtn",
           onClick: () => store.closeProjectPicker()
         }, t2("common.cancel"))
       )
@@ -49975,18 +49975,18 @@ function ProjectPicker({ store, state }) {
 function SettingsModal({ store, state, onClose }) {
   return import_react17.default.createElement(
     "div",
-    { className: "itw-modal-backdrop", onMouseDown: (event) => {
+    { className: "iwb-modal-backdrop", onMouseDown: (event) => {
       if (event.target === event.currentTarget) onClose();
     } },
     import_react17.default.createElement(
       "div",
-      { className: "itw-modal", style: { width: "min(620px, calc(100% - 40px))", maxHeight: "80%", overflow: "auto" }, role: "dialog", "aria-modal": "true" },
+      { className: "iwb-modal", style: { width: "min(620px, calc(100% - 40px))", maxHeight: "80%", overflow: "auto" }, role: "dialog", "aria-modal": "true" },
       import_react17.default.createElement("h2", null, store.t("settings.title")),
       import_react17.default.createElement(SettingsForm, { store, state, compact: true }),
       import_react17.default.createElement(
         "div",
-        { className: "itw-modal-actions" },
-        import_react17.default.createElement("button", { type: "button", className: "itw-textbtn", onClick: onClose }, store.t("common.close"))
+        { className: "iwb-modal-actions" },
+        import_react17.default.createElement("button", { type: "button", className: "iwb-textbtn", onClick: onClose }, store.t("common.close"))
       )
     )
   );
@@ -50049,12 +50049,12 @@ function Workbench({ store, visible = true, fullscreen = false }) {
     left = import_react17.default.createElement(
       "div",
       {
-        className: "itw-left",
+        className: "iwb-left",
         ref: leftRef,
-        style: { "--itw-left-width": `${state.layout.leftWidth}px` }
+        style: { "--iwb-left-width": `${state.layout.leftWidth}px` }
       },
       state.layout.left === "project" ? import_react17.default.createElement(ProjectPanel, { store, state }) : import_react17.default.createElement(CommitPanel, { store, state }),
-      import_react17.default.createElement("div", { className: "itw-left-resizer", onPointerDown: startLeftResize })
+      import_react17.default.createElement("div", { className: "iwb-left-resizer", onPointerDown: startLeftResize })
     );
   }
   const bottom = state.layout.bottom !== null && state.layout.bottom !== void 0 ? state.layout.bottom : null;
@@ -50062,54 +50062,54 @@ function Workbench({ store, visible = true, fullscreen = false }) {
   const bottomNode = bottom !== null || terminalKeep ? import_react17.default.createElement(
     "div",
     {
-      className: `itw-bottom ${bottom === null ? "itw-bottom-hidden" : ""}`,
+      className: `iwb-bottom ${bottom === null ? "iwb-bottom-hidden" : ""}`,
       style: { height: bottom === null ? 0 : state.layout.bottomHeight }
     },
     bottom !== null ? import_react17.default.createElement(
       import_react17.default.Fragment,
       null,
-      import_react17.default.createElement("div", { className: "itw-bottom-resizer", onPointerDown: startBottomResize }),
+      import_react17.default.createElement("div", { className: "iwb-bottom-resizer", onPointerDown: startBottomResize }),
       import_react17.default.createElement(BottomTabs, { store, state })
     ) : null,
     import_react17.default.createElement(
       "div",
-      { className: "itw-bottom-body" },
+      { className: "iwb-bottom-body" },
       bottom === "git" ? import_react17.default.createElement(GitPanel, { store, state }) : null,
       terminalKeep ? import_react17.default.createElement("div", {
-        className: bottom === "terminal" ? "itw-bottom-content" : "itw-term-hidden"
+        className: bottom === "terminal" ? "iwb-bottom-content" : "iwb-term-hidden"
       }, import_react17.default.createElement(TerminalPanel, { store, state, visible: bottom === "terminal" })) : bottom === "terminal" ? import_react17.default.createElement(TerminalPanel, { store, state, visible: true }) : null
     )
   ) : null;
   return import_react17.default.createElement(
     "div",
-    { className: "itw-root", ref: rootRef },
+    { className: "iwb-root", ref: rootRef },
     import_react17.default.createElement(TopBar, { store, state, fullscreen, onOpenSettings: () => setSettingsOpen(true) }),
     import_react17.default.createElement(
       "div",
-      { className: "itw-body" },
+      { className: "iwb-body" },
       import_react17.default.createElement(Stripe, { store, state }),
       left,
       import_react17.default.createElement(
         "div",
-        { className: "itw-center" },
+        { className: "iwb-center" },
         import_react17.default.createElement(EditorArea, { store, state }),
         bottomNode
       )
     ),
     import_react17.default.createElement(StatusBar, { store, state }),
-    state.phase === "booting" ? import_react17.default.createElement("div", { className: "itw-empty", style: { position: "absolute", inset: 0, background: "var(--itw-bg)" } }, store.t("common.loading")) : null,
+    state.phase === "booting" ? import_react17.default.createElement("div", { className: "iwb-empty", style: { position: "absolute", inset: 0, background: "var(--iwb-bg)" } }, store.t("common.loading")) : null,
     state.fatal !== null && state.fatal !== void 0 ? import_react17.default.createElement(
       "div",
-      { className: "itw-modal-backdrop" },
+      { className: "iwb-modal-backdrop" },
       import_react17.default.createElement(
         "div",
-        { className: "itw-modal" },
+        { className: "iwb-modal" },
         import_react17.default.createElement("h2", null, store.t("common.error")),
         import_react17.default.createElement("p", null, state.fatal),
         import_react17.default.createElement(
           "div",
-          { className: "itw-modal-actions" },
-          import_react17.default.createElement("button", { type: "button", className: "itw-textbtn itw-primary", onClick: () => {
+          { className: "iwb-modal-actions" },
+          import_react17.default.createElement("button", { type: "button", className: "iwb-textbtn iwb-primary", onClick: () => {
             store.set({ fatal: null });
             void store.init();
           } }, store.t("common.retry"))
@@ -50127,37 +50127,37 @@ function Workbench({ store, visible = true, fullscreen = false }) {
 
 // src/client/styles.js
 var CSS2 = `
-.itw-root, .itw-settings, .itw-link-shell {
-  --itw-bg: var(--dsw-alias-bg-base, #15171c);
-  --itw-panel: var(--dsw-alias-bg-layer-1, #1b1e24);
-  --itw-panel-2: var(--dsw-alias-bg-layer-2, #22262e);
-  --itw-overlay: var(--dsw-alias-bg-overlay, #262b34);
-  --itw-border: var(--dsw-alias-border-l1, #2c313a);
-  --itw-border-strong: var(--dsw-alias-border-l2, #3b424e);
-  --itw-divider: var(--dsw-alias-border-l2, #3b424e);
-  --itw-fg: var(--dsw-alias-label-primary, #d8dce3);
-  --itw-muted: var(--dsw-alias-label-secondary, #8a93a1);
-  --itw-accent: var(--dsw-alias-brand-primary, #4c9aff);
-  --itw-error: var(--dsw-alias-state-error-primary, #e2686f);
-  --itw-success: var(--dsw-alias-state-success-primary, #4fb477);
-  --itw-warn: var(--dsw-alias-state-warn-primary, #d7a24a);
-  --itw-sidebar: var(--dsw-specific-sidebar-fill, #181b21);
-  --itw-mod: #4c9aff;
-  --itw-add: #4fb477;
-  --itw-del: #e2686f;
-  --itw-conflict: #e2686f;
+.iwb-root, .iwb-settings, .iwb-link-shell {
+  --iwb-bg: var(--dsw-alias-bg-base, #15171c);
+  --iwb-panel: var(--dsw-alias-bg-layer-1, #1b1e24);
+  --iwb-panel-2: var(--dsw-alias-bg-layer-2, #22262e);
+  --iwb-overlay: var(--dsw-alias-bg-overlay, #262b34);
+  --iwb-border: var(--dsw-alias-border-l1, #2c313a);
+  --iwb-border-strong: var(--dsw-alias-border-l2, #3b424e);
+  --iwb-divider: var(--dsw-alias-border-l2, #3b424e);
+  --iwb-fg: var(--dsw-alias-label-primary, #d8dce3);
+  --iwb-muted: var(--dsw-alias-label-secondary, #8a93a1);
+  --iwb-accent: var(--dsw-alias-brand-primary, #4c9aff);
+  --iwb-error: var(--dsw-alias-state-error-primary, #e2686f);
+  --iwb-success: var(--dsw-alias-state-success-primary, #4fb477);
+  --iwb-warn: var(--dsw-alias-state-warn-primary, #d7a24a);
+  --iwb-sidebar: var(--dsw-specific-sidebar-fill, #181b21);
+  --iwb-mod: #4c9aff;
+  --iwb-add: #4fb477;
+  --iwb-del: #e2686f;
+  --iwb-conflict: #e2686f;
   /* JetBrains default VCS highlights (IntelliJ Light / Darcula semantics). */
-  --itw-git-untracked: #e2686f;
-  --itw-git-added: #4fb477;
-  --itw-git-modified: #4c9aff;
-  --itw-git-deleted: #e2686f;
-  --itw-git-conflict: #f14c4c;
-  --itw-git-ignored: #b08b4f;
-  --itw-excluded-bg: rgba(176, 139, 79, .16);
-  --itw-font: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei UI", "PingFang SC", sans-serif;
-  --itw-mono: "JetBrains Mono", "Cascadia Code", "SF Mono", Consolas, "Courier New", monospace;
+  --iwb-git-untracked: #e2686f;
+  --iwb-git-added: #4fb477;
+  --iwb-git-modified: #4c9aff;
+  --iwb-git-deleted: #e2686f;
+  --iwb-git-conflict: #f14c4c;
+  --iwb-git-ignored: #b08b4f;
+  --iwb-excluded-bg: rgba(176, 139, 79, .16);
+  --iwb-font: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei UI", "PingFang SC", sans-serif;
+  --iwb-mono: "JetBrains Mono", "Cascadia Code", "SF Mono", Consolas, "Courier New", monospace;
 }
-.itw-root {
+.iwb-root {
   container-type: inline-size;
   container-name: ide-workbench;
   position: relative;
@@ -50172,903 +50172,903 @@ var CSS2 = `
   min-width: 0;
   min-height: 0;
   overflow: hidden;
-  background: var(--itw-bg);
-  color: var(--itw-fg);
-  font-family: var(--itw-font);
+  background: var(--iwb-bg);
+  color: var(--iwb-fg);
+  font-family: var(--iwb-font);
   font-size: 13px;
   line-height: 1.45;
   user-select: none;
   -webkit-app-region: no-drag;
 }
-.itw-root *, .itw-root *::before, .itw-root *::after { box-sizing: border-box; }
-.itw-root button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
-.itw-root input, .itw-root textarea, .itw-root select { font: inherit; color: inherit; }
-.itw-root ::-webkit-scrollbar { width: 10px; height: 10px; }
-.itw-root ::-webkit-scrollbar-thumb { background: var(--itw-border-strong); border-radius: 6px; border: 2px solid transparent; background-clip: content-box; }
-.itw-root ::-webkit-scrollbar-thumb:hover { background: var(--itw-muted); border: 2px solid transparent; background-clip: content-box; }
-.itw-root ::-webkit-scrollbar-track { background: transparent; }
-.itw-root ::-webkit-scrollbar-corner { background: transparent; }
+.iwb-root *, .iwb-root *::before, .iwb-root *::after { box-sizing: border-box; }
+.iwb-root button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+.iwb-root input, .iwb-root textarea, .iwb-root select { font: inherit; color: inherit; }
+.iwb-root ::-webkit-scrollbar { width: 10px; height: 10px; }
+.iwb-root ::-webkit-scrollbar-thumb { background: var(--iwb-border-strong); border-radius: 6px; border: 2px solid transparent; background-clip: content-box; }
+.iwb-root ::-webkit-scrollbar-thumb:hover { background: var(--iwb-muted); border: 2px solid transparent; background-clip: content-box; }
+.iwb-root ::-webkit-scrollbar-track { background: transparent; }
+.iwb-root ::-webkit-scrollbar-corner { background: transparent; }
 
-.itw-topbar {
+.iwb-topbar {
   height: 36px; flex: 0 0 36px; display: flex; align-items: center; gap: 8px;
-  padding: 0 10px; border-bottom: 1px solid var(--itw-border); background: var(--itw-panel);
+  padding: 0 10px; border-bottom: 1px solid var(--iwb-border); background: var(--iwb-panel);
   position: relative; z-index: 6;
 }
-.itw-topbar button { position: relative; z-index: 7; }
-.itw-project-select {
+.iwb-topbar button { position: relative; z-index: 7; }
+.iwb-project-select {
   display: flex; align-items: center; gap: 6px; height: 26px; padding: 0 8px;
   border-radius: 6px; max-width: 320px; min-width: 0; cursor: pointer;
 }
-.itw-project-select:hover { background: rgba(127, 127, 127, .12); }
-.itw-project-select .itw-project-name { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.itw-project-select .itw-project-path { color: var(--itw-muted); font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.itw-branch-chip {
+.iwb-project-select:hover { background: rgba(127, 127, 127, .12); }
+.iwb-project-select .iwb-project-name { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.iwb-project-select .iwb-project-path { color: var(--iwb-muted); font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.iwb-branch-chip {
   display: inline-flex; align-items: center; gap: 5px; height: 22px; padding: 0 8px;
-  border: 1px solid var(--itw-border); border-radius: 999px; color: var(--itw-muted); font-size: 11.5px;
+  border: 1px solid var(--iwb-border); border-radius: 999px; color: var(--iwb-muted); font-size: 11.5px;
   max-width: 240px; overflow: hidden;
 }
-.itw-branch-chip .itw-branch-name { color: var(--itw-fg); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.itw-ahead { color: var(--itw-success); font-variant-numeric: tabular-nums; }
-.itw-behind { color: var(--itw-warn); font-variant-numeric: tabular-nums; }
-.itw-top-spacer { flex: 1; }
-.itw-iconbtn {
+.iwb-branch-chip .iwb-branch-name { color: var(--iwb-fg); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.iwb-ahead { color: var(--iwb-success); font-variant-numeric: tabular-nums; }
+.iwb-behind { color: var(--iwb-warn); font-variant-numeric: tabular-nums; }
+.iwb-top-spacer { flex: 1; }
+.iwb-iconbtn {
   width: 26px; height: 26px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center;
-  color: var(--itw-muted);
+  color: var(--iwb-muted);
 }
-.itw-iconbtn:hover { background: rgba(127, 127, 127, .14); color: var(--itw-fg); }
-.itw-iconbtn:disabled { opacity: .4; cursor: default; }
-.itw-iconbtn.itw-on { color: var(--itw-accent); }
-.itw-textbtn {
+.iwb-iconbtn:hover { background: rgba(127, 127, 127, .14); color: var(--iwb-fg); }
+.iwb-iconbtn:disabled { opacity: .4; cursor: default; }
+.iwb-iconbtn.iwb-on { color: var(--iwb-accent); }
+.iwb-textbtn {
   height: 26px; padding: 0 10px; border-radius: 6px; display: inline-flex; align-items: center; gap: 6px;
-  border: 1px solid var(--itw-border); color: var(--itw-fg); background: var(--itw-panel-2);
+  border: 1px solid var(--iwb-border); color: var(--iwb-fg); background: var(--iwb-panel-2);
 }
-.itw-textbtn:hover { border-color: var(--itw-border-strong); }
-.itw-textbtn.itw-primary { background: var(--itw-accent); border-color: transparent; color: #fff; }
-.itw-textbtn.itw-primary:hover { filter: brightness(1.08); }
-.itw-textbtn:disabled { opacity: .45; cursor: default; }
-.itw-textbtn.itw-danger { color: var(--itw-error); }
-.itw-textbtn.itw-danger-solid { background: var(--itw-error); color: #fff; border-color: transparent; }
-.itw-textbtn.itw-small { height: 22px; padding: 0 8px; font-size: 11.5px; }
+.iwb-textbtn:hover { border-color: var(--iwb-border-strong); }
+.iwb-textbtn.iwb-primary { background: var(--iwb-accent); border-color: transparent; color: #fff; }
+.iwb-textbtn.iwb-primary:hover { filter: brightness(1.08); }
+.iwb-textbtn:disabled { opacity: .45; cursor: default; }
+.iwb-textbtn.iwb-danger { color: var(--iwb-error); }
+.iwb-textbtn.iwb-danger-solid { background: var(--iwb-error); color: #fff; border-color: transparent; }
+.iwb-textbtn.iwb-small { height: 22px; padding: 0 8px; font-size: 11.5px; }
 
-.itw-body { flex: 1; min-height: 0; display: flex; }
-.itw-stripe {
-  width: 44px; flex: 0 0 44px; background: var(--itw-sidebar); border-right: 1px solid var(--itw-border);
+.iwb-body { flex: 1; min-height: 0; display: flex; }
+.iwb-stripe {
+  width: 44px; flex: 0 0 44px; background: var(--iwb-sidebar); border-right: 1px solid var(--iwb-border);
   display: flex; flex-direction: column; align-items: center; padding: 6px 0; gap: 4px;
 }
-.itw-stripe-spacer { flex: 1; }
-.itw-stripe-btn {
+.iwb-stripe-spacer { flex: 1; }
+.iwb-stripe-btn {
   position: relative; width: 34px; height: 34px; border-radius: 7px; display: flex; align-items: center; justify-content: center;
-  color: var(--itw-muted);
+  color: var(--iwb-muted);
 }
-.itw-stripe-btn:hover { background: rgba(127, 127, 127, .12); color: var(--itw-fg); }
-.itw-stripe-btn.itw-on { color: var(--itw-accent); background: rgba(76, 154, 255, .13); }
-.itw-stripe-btn.itw-on::before {
-  content: ''; position: absolute; left: -6px; top: 8px; bottom: 8px; width: 2px; border-radius: 2px; background: var(--itw-accent);
+.iwb-stripe-btn:hover { background: rgba(127, 127, 127, .12); color: var(--iwb-fg); }
+.iwb-stripe-btn.iwb-on { color: var(--iwb-accent); background: rgba(76, 154, 255, .13); }
+.iwb-stripe-btn.iwb-on::before {
+  content: ''; position: absolute; left: -6px; top: 8px; bottom: 8px; width: 2px; border-radius: 2px; background: var(--iwb-accent);
 }
-.itw-badge {
+.iwb-badge {
   position: absolute; top: 2px; right: 1px; min-width: 15px; height: 15px; padding: 0 4px;
-  border-radius: 999px; background: var(--itw-accent); color: #fff; font-size: 10px; font-weight: 700;
+  border-radius: 999px; background: var(--iwb-accent); color: #fff; font-size: 10px; font-weight: 700;
   display: inline-flex; align-items: center; justify-content: center; line-height: 1;
 }
-.itw-badge.itw-badge-dirty { background: var(--itw-success); }
+.iwb-badge.iwb-badge-dirty { background: var(--iwb-success); }
 
-.itw-left {
-  position: relative; flex: 0 0 auto; width: var(--itw-left-width, 300px);
+.iwb-left {
+  position: relative; flex: 0 0 auto; width: var(--iwb-left-width, 300px);
   min-width: 200px; max-width: 640px; display: flex; flex-direction: column;
-  background: var(--itw-panel); border-right: 1px solid var(--itw-border);
+  background: var(--iwb-panel); border-right: 1px solid var(--iwb-border);
 }
-.itw-left-resizer {
+.iwb-left-resizer {
   position: absolute; top: 0; right: -3px; bottom: 0; width: 6px; cursor: col-resize; z-index: 5;
 }
-.itw-left-resizer:hover { background: rgba(76, 154, 255, .25); }
-.itw-panel-header {
+.iwb-left-resizer:hover { background: rgba(76, 154, 255, .25); }
+.iwb-panel-header {
   height: 32px; flex: 0 0 32px; display: flex; align-items: center; gap: 6px; padding: 0 8px 0 12px;
-  border-bottom: 1px solid var(--itw-border); background: var(--itw-panel);
+  border-bottom: 1px solid var(--iwb-border); background: var(--iwb-panel);
 }
-.itw-panel-title { font-size: 12px; font-weight: 700; letter-spacing: .02em; }
-.itw-panel-sub { color: var(--itw-muted); font-size: 11px; }
-.itw-project-sub-btn {
+.iwb-panel-title { font-size: 12px; font-weight: 700; letter-spacing: .02em; }
+.iwb-panel-sub { color: var(--iwb-muted); font-size: 11px; }
+.iwb-project-sub-btn {
   display: flex; align-items: center; gap: 4px; min-width: 0; max-width: 64%; padding: 2px 5px;
-  border-radius: 5px; color: var(--itw-muted); font-size: 11px; text-align: left;
+  border-radius: 5px; color: var(--iwb-muted); font-size: 11px; text-align: left;
 }
-.itw-project-sub-btn:hover { background: rgba(127, 127, 127, .12); color: var(--itw-fg); }
-.itw-project-workspace-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 110px; }
-.itw-project-sep { opacity: .55; }
-.itw-project-sub-name { color: var(--itw-fg); font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.itw-project-current { color: var(--itw-accent); font-weight: 500; }
-.itw-panel-header .itw-spacer { flex: 1; }
-.itw-panel-body { flex: 1; min-height: 0; overflow: auto; position: relative; }
+.iwb-project-sub-btn:hover { background: rgba(127, 127, 127, .12); color: var(--iwb-fg); }
+.iwb-project-workspace-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 110px; }
+.iwb-project-sep { opacity: .55; }
+.iwb-project-sub-name { color: var(--iwb-fg); font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.iwb-project-current { color: var(--iwb-accent); font-weight: 500; }
+.iwb-panel-header .iwb-spacer { flex: 1; }
+.iwb-panel-body { flex: 1; min-height: 0; overflow: auto; position: relative; }
 
-.itw-center { flex: 1; min-width: 0; display: flex; flex-direction: column; background: var(--itw-bg); }
-.itw-tabbar {
-  height: 34px; flex: 0 0 34px; display: flex; align-items: stretch; border-bottom: 1px solid var(--itw-border);
-  background: var(--itw-panel); overflow-x: auto; overflow-y: hidden; scrollbar-width: none;
+.iwb-center { flex: 1; min-width: 0; display: flex; flex-direction: column; background: var(--iwb-bg); }
+.iwb-tabbar {
+  height: 34px; flex: 0 0 34px; display: flex; align-items: stretch; border-bottom: 1px solid var(--iwb-border);
+  background: var(--iwb-panel); overflow-x: auto; overflow-y: hidden; scrollbar-width: none;
 }
-.itw-tabbar::-webkit-scrollbar { height: 0; }
-.itw-tab {
+.iwb-tabbar::-webkit-scrollbar { height: 0; }
+.iwb-tab {
   display: flex; align-items: center; gap: 6px; padding: 0 8px 0 10px; min-width: 90px; max-width: 220px;
-  border-right: 1px solid var(--itw-border); color: var(--itw-muted); position: relative; cursor: pointer; flex: 0 0 auto;
+  border-right: 1px solid var(--iwb-border); color: var(--iwb-muted); position: relative; cursor: pointer; flex: 0 0 auto;
 }
-.itw-tab:hover { background: rgba(127, 127, 127, .07); }
-.itw-tab.itw-active { background: var(--itw-bg); color: var(--itw-fg); }
-.itw-tab.itw-active::after { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 2px; background: var(--itw-accent); }
-.itw-tab .itw-tab-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12.5px; }
-.itw-tab.itw-preview .itw-tab-name { font-style: italic; }
-.itw-tab .itw-tab-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--itw-muted); flex: 0 0 6px; }
-.itw-tab.itw-preview .itw-tab-dot { background: var(--itw-accent); }
-.itw-tab .itw-tab-dirty { width: 7px; height: 7px; border-radius: 50%; background: var(--itw-warn); flex: 0 0 7px; box-shadow: 0 0 0 2px rgba(215, 162, 74, .18); }
-.itw-toolbar-dirty { color: var(--itw-warn); font-size: 10.5px; margin-left: 6px; }
-.itw-tab .itw-tab-close {
+.iwb-tab:hover { background: rgba(127, 127, 127, .07); }
+.iwb-tab.iwb-active { background: var(--iwb-bg); color: var(--iwb-fg); }
+.iwb-tab.iwb-active::after { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 2px; background: var(--iwb-accent); }
+.iwb-tab .iwb-tab-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12.5px; }
+.iwb-tab.iwb-preview .iwb-tab-name { font-style: italic; }
+.iwb-tab .iwb-tab-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--iwb-muted); flex: 0 0 6px; }
+.iwb-tab.iwb-preview .iwb-tab-dot { background: var(--iwb-accent); }
+.iwb-tab .iwb-tab-dirty { width: 7px; height: 7px; border-radius: 50%; background: var(--iwb-warn); flex: 0 0 7px; box-shadow: 0 0 0 2px rgba(215, 162, 74, .18); }
+.iwb-toolbar-dirty { color: var(--iwb-warn); font-size: 10.5px; margin-left: 6px; }
+.iwb-tab .iwb-tab-close {
   width: 18px; height: 18px; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center;
-  color: var(--itw-muted); opacity: 0; margin-left: auto; flex: 0 0 18px;
+  color: var(--iwb-muted); opacity: 0; margin-left: auto; flex: 0 0 18px;
 }
-.itw-tab:hover .itw-tab-close, .itw-tab.itw-active .itw-tab-close { opacity: 1; }
-.itw-tab .itw-tab-close:hover { background: rgba(127, 127, 127, .2); color: var(--itw-fg); }
-.itw-tabbar-actions { display: flex; align-items: center; gap: 2px; padding: 0 6px; margin-left: auto; position: sticky; right: 0; background: var(--itw-panel); }
+.iwb-tab:hover .iwb-tab-close, .iwb-tab.iwb-active .iwb-tab-close { opacity: 1; }
+.iwb-tab .iwb-tab-close:hover { background: rgba(127, 127, 127, .2); color: var(--iwb-fg); }
+.iwb-tabbar-actions { display: flex; align-items: center; gap: 2px; padding: 0 6px; margin-left: auto; position: sticky; right: 0; background: var(--iwb-panel); }
 
-.itw-editor { flex: 1; min-height: 0; display: flex; flex-direction: column; position: relative; overflow: hidden; }
+.iwb-editor { flex: 1; min-height: 0; display: flex; flex-direction: column; position: relative; overflow: hidden; }
 /* Floating HTML preview actions, top-right of the content area. */
-.itw-html-actions {
+.iwb-html-actions {
   position: absolute; top: 70px; right: 14px; z-index: 12;
-  display: flex; gap: 4px; padding: 4px; color: var(--itw-muted);
-  border: 1px solid var(--itw-border); border-radius: 8px;
-  background: var(--itw-overlay); box-shadow: 0 6px 18px rgba(0, 0, 0, .18);
+  display: flex; gap: 4px; padding: 4px; color: var(--iwb-muted);
+  border: 1px solid var(--iwb-border); border-radius: 8px;
+  background: var(--iwb-overlay); box-shadow: 0 6px 18px rgba(0, 0, 0, .18);
 }
-.itw-html-action {
+.iwb-html-action {
   width: 28px; height: 28px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center;
 }
-.itw-html-action:hover { color: var(--itw-fg); background: rgba(127, 127, 127, .14); }
-.itw-html-action.itw-chrome { color: #4285f4; }
-.itw-html-action.itw-chrome:hover { color: #4285f4; filter: brightness(1.12); }
-.itw-editor-toolbar {
+.iwb-html-action:hover { color: var(--iwb-fg); background: rgba(127, 127, 127, .14); }
+.iwb-html-action.iwb-chrome { color: #4285f4; }
+.iwb-html-action.iwb-chrome:hover { color: #4285f4; filter: brightness(1.12); }
+.iwb-editor-toolbar {
   height: 30px; flex: 0 0 30px; display: flex; align-items: center; gap: 8px; padding: 0 10px;
-  border-bottom: 1px solid var(--itw-border); background: var(--itw-bg); color: var(--itw-muted); font-size: 11.5px;
+  border-bottom: 1px solid var(--iwb-border); background: var(--iwb-bg); color: var(--iwb-muted); font-size: 11.5px;
 }
-.itw-breadcrumb { display: flex; align-items: center; gap: 4px; min-width: 0; overflow: hidden; }
-.itw-breadcrumb .itw-sep { opacity: .5; }
-.itw-breadcrumb b { color: var(--itw-fg); font-weight: 600; }
-.itw-editor-toolbar .itw-spacer { flex: 1; }
-.itw-seg {
-  display: inline-flex; border: 1px solid var(--itw-border); border-radius: 6px; overflow: hidden; background: var(--itw-panel);
+.iwb-breadcrumb { display: flex; align-items: center; gap: 4px; min-width: 0; overflow: hidden; }
+.iwb-breadcrumb .iwb-sep { opacity: .5; }
+.iwb-breadcrumb b { color: var(--iwb-fg); font-weight: 600; }
+.iwb-editor-toolbar .iwb-spacer { flex: 1; }
+.iwb-seg {
+  display: inline-flex; border: 1px solid var(--iwb-border); border-radius: 6px; overflow: hidden; background: var(--iwb-panel);
 }
-.itw-seg button { height: 22px; padding: 0 8px; font-size: 11.5px; color: var(--itw-muted); }
-.itw-seg button.itw-on { background: var(--itw-active-bg, rgba(76,154,255,.16)); color: var(--itw-fg); }
-.itw-seg button + button { border-left: 1px solid var(--itw-border); }
+.iwb-seg button { height: 22px; padding: 0 8px; font-size: 11.5px; color: var(--iwb-muted); }
+.iwb-seg button.iwb-on { background: var(--iwb-active-bg, rgba(76,154,255,.16)); color: var(--iwb-fg); }
+.iwb-seg button + button { border-left: 1px solid var(--iwb-border); }
 
-.itw-code {
-  flex: 1; min-height: 0; overflow: auto; font-family: var(--itw-mono); font-size: 12.5px; line-height: var(--itw-line, 20px);
-  background: var(--itw-bg);
+.iwb-code {
+  flex: 1; min-height: 0; overflow: auto; font-family: var(--iwb-mono); font-size: 12.5px; line-height: var(--iwb-line, 20px);
+  background: var(--iwb-bg);
 }
-.itw-code-inner { position: relative; min-width: 100%; }
-.itw-code-line { display: flex; align-items: flex-start; height: var(--itw-line, 20px); white-space: pre; }
-.itw-code-line:hover { background: rgba(127, 127, 127, .055); }
-.itw-ln {
-  flex: 0 0 var(--itw-gutter, 52px); width: var(--itw-gutter, 52px); text-align: right; padding-right: 12px;
-  color: var(--itw-muted); opacity: .65; font-variant-numeric: tabular-nums; user-select: none;
+.iwb-code-inner { position: relative; min-width: 100%; }
+.iwb-code-line { display: flex; align-items: flex-start; height: var(--iwb-line, 20px); white-space: pre; }
+.iwb-code-line:hover { background: rgba(127, 127, 127, .055); }
+.iwb-ln {
+  flex: 0 0 var(--iwb-gutter, 52px); width: var(--iwb-gutter, 52px); text-align: right; padding-right: 12px;
+  color: var(--iwb-muted); opacity: .65; font-variant-numeric: tabular-nums; user-select: none;
 }
-.itw-code-text { flex: 1; padding-right: 24px; tab-size: 4; }
-.itw-tok-comment { color: #7a8596; font-style: italic; }
-.itw-tok-string { color: #5f8f3f; }
-.itw-tok-number { color: #b57a2a; }
-.itw-tok-keyword { color: #a15fb0; }
-.itw-tok-type { color: #2f8f83; }
-.itw-tok-fn { color: #8a6a1f; }
-.itw-tok-tag { color: #c05a63; }
-.itw-tok-attr { color: #3f6f9f; }
-.itw-editor-empty { flex: 1; display: flex; align-items: center; justify-content: center; color: var(--itw-muted); padding: 24px; text-align: center; }
+.iwb-code-text { flex: 1; padding-right: 24px; tab-size: 4; }
+.iwb-tok-comment { color: #7a8596; font-style: italic; }
+.iwb-tok-string { color: #5f8f3f; }
+.iwb-tok-number { color: #b57a2a; }
+.iwb-tok-keyword { color: #a15fb0; }
+.iwb-tok-type { color: #2f8f83; }
+.iwb-tok-fn { color: #8a6a1f; }
+.iwb-tok-tag { color: #c05a63; }
+.iwb-tok-attr { color: #3f6f9f; }
+.iwb-editor-empty { flex: 1; display: flex; align-items: center; justify-content: center; color: var(--iwb-muted); padding: 24px; text-align: center; }
 
-.itw-codemirror { flex: 1; min-height: 0; min-width: 0; display: flex; }
-.itw-codemirror .cm-content, .itw-codemirror .cm-line { user-select: text; }
-.itw-codemirror > .cm-editor { flex: 1; min-width: 0; height: 100%; }
-.itw-markdown-wrap { flex: 1; min-height: 0; min-width: 0; position: relative; display: flex; }
-.itw-markdown {
+.iwb-codemirror { flex: 1; min-height: 0; min-width: 0; display: flex; }
+.iwb-codemirror .cm-content, .iwb-codemirror .cm-line { user-select: text; }
+.iwb-codemirror > .cm-editor { flex: 1; min-width: 0; height: 100%; }
+.iwb-markdown-wrap { flex: 1; min-height: 0; min-width: 0; position: relative; display: flex; }
+.iwb-markdown {
   flex: 1; min-width: 0; overflow: auto; padding: 22px max(24px, calc((100% - 920px) / 2)) 80px;
-  font-size: 13.5px; line-height: 1.72; color: var(--itw-fg); user-select: text;
+  font-size: 13.5px; line-height: 1.72; color: var(--iwb-fg); user-select: text;
 }
-.itw-markdown img { max-width: 100%; height: auto; }
-.itw-markdown table { border-collapse: collapse; }
-.itw-markdown .itw-markdown-fallback h1, .itw-markdown .itw-markdown-fallback h2, .itw-markdown .itw-markdown-fallback h3 { margin: 1.2em 0 .5em; }
-.itw-markdown .itw-markdown-fallback p { margin: .7em 0; }
-.itw-markdown .itw-markdown-fallback pre { background: var(--itw-panel); border: 1px solid var(--itw-border); border-radius: 7px; padding: 10px 12px; overflow: auto; }
-.itw-markdown .itw-markdown-fallback code { font-family: var(--itw-mono); font-size: 11.5px; }
-.itw-outline {
+.iwb-markdown img { max-width: 100%; height: auto; }
+.iwb-markdown table { border-collapse: collapse; }
+.iwb-markdown .iwb-markdown-fallback h1, .iwb-markdown .iwb-markdown-fallback h2, .iwb-markdown .iwb-markdown-fallback h3 { margin: 1.2em 0 .5em; }
+.iwb-markdown .iwb-markdown-fallback p { margin: .7em 0; }
+.iwb-markdown .iwb-markdown-fallback pre { background: var(--iwb-panel); border: 1px solid var(--iwb-border); border-radius: 7px; padding: 10px 12px; overflow: auto; }
+.iwb-markdown .iwb-markdown-fallback code { font-family: var(--iwb-mono); font-size: 11.5px; }
+.iwb-outline {
   position: absolute; top: 10px; right: 14px; width: 274px; max-height: min(62%, 520px); z-index: 12;
-  display: flex; flex-direction: column; border-radius: 8px; border: 1px solid var(--itw-border-strong);
-  background: var(--itw-overlay); box-shadow: 0 14px 40px rgba(0, 0, 0, .35); overflow: hidden;
+  display: flex; flex-direction: column; border-radius: 8px; border: 1px solid var(--iwb-border-strong);
+  background: var(--iwb-overlay); box-shadow: 0 14px 40px rgba(0, 0, 0, .35); overflow: hidden;
 }
-.itw-outline-head { display: flex; align-items: center; gap: 6px; padding: 6px 6px 6px 10px; color: var(--itw-muted); font-size: 11px; border-bottom: 1px solid var(--itw-border); }
-.itw-outline-list { overflow: auto; padding: 4px; }
-.itw-outline-item {
+.iwb-outline-head { display: flex; align-items: center; gap: 6px; padding: 6px 6px 6px 10px; color: var(--iwb-muted); font-size: 11px; border-bottom: 1px solid var(--iwb-border); }
+.iwb-outline-list { overflow: auto; padding: 4px; }
+.iwb-outline-item {
   display: block; width: 100%; text-align: left; padding: 4px 8px; border-radius: 5px;
-  color: var(--itw-fg); font-size: 11.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  color: var(--iwb-fg); font-size: 11.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
-.itw-outline-item:hover { background: rgba(127, 127, 127, .14); }
-.itw-outline-item.itw-active { background: rgba(76, 154, 255, .16); color: var(--itw-accent); }
-.itw-outline-empty { padding: 14px; color: var(--itw-muted); font-size: 11.5px; text-align: center; }
+.iwb-outline-item:hover { background: rgba(127, 127, 127, .14); }
+.iwb-outline-item.iwb-active { background: rgba(76, 154, 255, .16); color: var(--iwb-accent); }
+.iwb-outline-empty { padding: 14px; color: var(--iwb-muted); font-size: 11.5px; text-align: center; }
 
-.itw-welcome { flex: 1; display: flex; align-items: center; justify-content: center; padding: 32px; overflow: auto; }
-.itw-welcome-card { max-width: 560px; width: 100%; }
-.itw-welcome-title { font-size: 26px; font-weight: 700; letter-spacing: -.01em; margin: 0 0 6px; }
-.itw-welcome-sub { color: var(--itw-muted); margin: 0 0 22px; font-size: 13px; }
-.itw-welcome-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 20px; }
-.itw-welcome-action {
-  display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 1px solid var(--itw-border);
-  border-radius: 8px; background: var(--itw-panel); color: var(--itw-fg); text-align: left;
+.iwb-welcome { flex: 1; display: flex; align-items: center; justify-content: center; padding: 32px; overflow: auto; }
+.iwb-welcome-card { max-width: 560px; width: 100%; }
+.iwb-welcome-title { font-size: 26px; font-weight: 700; letter-spacing: -.01em; margin: 0 0 6px; }
+.iwb-welcome-sub { color: var(--iwb-muted); margin: 0 0 22px; font-size: 13px; }
+.iwb-welcome-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 20px; }
+.iwb-welcome-action {
+  display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 1px solid var(--iwb-border);
+  border-radius: 8px; background: var(--iwb-panel); color: var(--iwb-fg); text-align: left;
 }
-.itw-welcome-action:hover { border-color: var(--itw-border-strong); background: var(--itw-panel-2); }
-.itw-welcome-action .itw-kbd { margin-left: auto; }
-.itw-welcome-meta { display: flex; gap: 16px; color: var(--itw-muted); font-size: 12px; border-top: 1px solid var(--itw-border); padding-top: 14px; }
-.itw-welcome-hint { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 12px; padding: 8px 10px; border: 1px solid var(--itw-border); border-radius: 7px; color: var(--itw-muted); font-size: 12px; }
-.itw-commit-hint { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 7px 10px; border-bottom: 1px solid var(--itw-border); color: var(--itw-muted); font-size: 11.5px; background: var(--itw-panel-2); }
-.itw-kbd {
+.iwb-welcome-action:hover { border-color: var(--iwb-border-strong); background: var(--iwb-panel-2); }
+.iwb-welcome-action .iwb-kbd { margin-left: auto; }
+.iwb-welcome-meta { display: flex; gap: 16px; color: var(--iwb-muted); font-size: 12px; border-top: 1px solid var(--iwb-border); padding-top: 14px; }
+.iwb-welcome-hint { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 12px; padding: 8px 10px; border: 1px solid var(--iwb-border); border-radius: 7px; color: var(--iwb-muted); font-size: 12px; }
+.iwb-commit-hint { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 7px 10px; border-bottom: 1px solid var(--iwb-border); color: var(--iwb-muted); font-size: 11.5px; background: var(--iwb-panel-2); }
+.iwb-kbd {
   display: inline-flex; align-items: center; height: 19px; padding: 0 6px; border-radius: 4px;
-  border: 1px solid var(--itw-border-strong); border-bottom-width: 2px; background: var(--itw-panel-2);
-  color: var(--itw-muted); font-size: 10.5px; font-family: var(--itw-mono); white-space: nowrap;
+  border: 1px solid var(--iwb-border-strong); border-bottom-width: 2px; background: var(--iwb-panel-2);
+  color: var(--iwb-muted); font-size: 10.5px; font-family: var(--iwb-mono); white-space: nowrap;
 }
 
-.itw-bottom {
+.iwb-bottom {
   position: relative; flex: 0 0 auto; display: flex; flex-direction: column; min-height: 90px;
-  border-top: 1px solid var(--itw-border); background: var(--itw-panel);
+  border-top: 1px solid var(--iwb-border); background: var(--iwb-panel);
 }
-.itw-bottom-resizer {
+.iwb-bottom-resizer {
   position: absolute; top: -3px; left: 0; right: 0; height: 6px; cursor: row-resize; z-index: 5;
 }
-.itw-bottom-resizer:hover { background: rgba(76, 154, 255, .22); }
-.itw-bottom-tabs {
+.iwb-bottom-resizer:hover { background: rgba(76, 154, 255, .22); }
+.iwb-bottom-tabs {
   height: 30px; flex: 0 0 30px; display: flex; align-items: stretch; gap: 2px; padding: 0 8px;
-  border-bottom: 1px solid var(--itw-border); background: var(--itw-panel);
+  border-bottom: 1px solid var(--iwb-border); background: var(--iwb-panel);
 }
-.itw-bottom-tab {
+.iwb-bottom-tab {
   display: inline-flex; align-items: center; gap: 6px; padding: 0 10px; border-radius: 6px 6px 0 0;
-  color: var(--itw-muted); font-size: 12px; border-bottom: 2px solid transparent; margin-bottom: -1px;
+  color: var(--iwb-muted); font-size: 12px; border-bottom: 2px solid transparent; margin-bottom: -1px;
 }
-.itw-bottom-tab:hover { color: var(--itw-fg); background: rgba(127, 127, 127, .07); }
-.itw-bottom-tab.itw-on { color: var(--itw-fg); border-bottom-color: var(--itw-accent); }
-.itw-bottom-tab .itw-badge { position: static; margin-left: 2px; }
-.itw-bottom-body { flex: 1; min-height: 0; display: flex; }
-.itw-bottom-content { flex: 1; min-width: 0; min-height: 0; display: flex; flex-direction: column; }
-.itw-bottom-hidden { min-height: 0 !important; border-top: 0 !important; overflow: hidden; }
-.itw-bottom-hidden .itw-bottom-body { display: none; }
-.itw-term-hidden { display: none; }
-.itw-bottom-close { margin-left: auto; align-self: center; }
+.iwb-bottom-tab:hover { color: var(--iwb-fg); background: rgba(127, 127, 127, .07); }
+.iwb-bottom-tab.iwb-on { color: var(--iwb-fg); border-bottom-color: var(--iwb-accent); }
+.iwb-bottom-tab .iwb-badge { position: static; margin-left: 2px; }
+.iwb-bottom-body { flex: 1; min-height: 0; display: flex; }
+.iwb-bottom-content { flex: 1; min-width: 0; min-height: 0; display: flex; flex-direction: column; }
+.iwb-bottom-hidden { min-height: 0 !important; border-top: 0 !important; overflow: hidden; }
+.iwb-bottom-hidden .iwb-bottom-body { display: none; }
+.iwb-term-hidden { display: none; }
+.iwb-bottom-close { margin-left: auto; align-self: center; }
 
-.itw-statusbar {
+.iwb-statusbar {
   height: 22px; flex: 0 0 22px; display: flex; align-items: center; gap: 12px; padding: 0 10px;
-  border-top: 1px solid var(--itw-border); background: var(--itw-sidebar); color: var(--itw-muted); font-size: 11px;
+  border-top: 1px solid var(--iwb-border); background: var(--iwb-sidebar); color: var(--iwb-muted); font-size: 11px;
 }
-.itw-statusbar .itw-spacer { flex: 1; }
-.itw-status-item { display: inline-flex; align-items: center; gap: 4px; }
-.itw-status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--itw-success); }
-.itw-status-dot.itw-busy { background: var(--itw-warn); }
+.iwb-statusbar .iwb-spacer { flex: 1; }
+.iwb-status-item { display: inline-flex; align-items: center; gap: 4px; }
+.iwb-status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--iwb-success); }
+.iwb-status-dot.iwb-busy { background: var(--iwb-warn); }
 
-.itw-tree { padding: 4px 0 12px; font-size: 12.5px; }
-.itw-tree-row {
+.iwb-tree { padding: 4px 0 12px; font-size: 12.5px; }
+.iwb-tree-row {
   display: flex; align-items: center; gap: 5px; height: 22px; padding-right: 8px; white-space: nowrap;
   cursor: pointer; position: relative;
 }
-.itw-tree-row:hover { background: rgba(127, 127, 127, .1); }
-.itw-tree-row.itw-selected { background: rgba(76, 154, 255, .18); }
-.itw-tree:focus { outline: none; }
-.itw-tree:focus-visible { outline: 1px solid rgba(76, 154, 255, .35); outline-offset: -1px; }
-.itw-tree-twisty { width: 16px; flex: 0 0 16px; display: inline-flex; align-items: center; justify-content: center; color: var(--itw-muted); }
-.itw-tree-name { overflow: hidden; text-overflow: ellipsis; }
-.itw-tree-name.itw-dir { font-weight: 500; }
-.itw-tree-row.itw-git-untracked .itw-tree-name { color: var(--itw-git-untracked); }
-.itw-tree-row.itw-git-added .itw-tree-name { color: var(--itw-git-added); }
-.itw-tree-row.itw-git-modified .itw-tree-name { color: var(--itw-git-modified); }
-.itw-tree-row.itw-git-conflict .itw-tree-name { color: var(--itw-git-conflict); font-weight: 600; }
-.itw-tree-row.itw-git-conflict .itw-tree-name::after { content: ' !'; color: var(--itw-git-conflict); font-weight: 700; }
-.itw-tree-row.itw-git-deleted .itw-tree-name { color: var(--itw-git-deleted); text-decoration: line-through; }
-.itw-tree-row.itw-git-ignored .itw-tree-name { color: var(--itw-git-ignored); }
-.itw-tree-row.itw-git-ignored { opacity: .65; }
-.itw-tree-row.itw-excluded { background: var(--itw-excluded-bg); }
-.itw-tree-row.itw-excluded .itw-tree-name { color: var(--itw-git-ignored); }
-.itw-tree-row.itw-drop-target { outline: 1px solid var(--itw-accent); outline-offset: -1px; background: rgba(76, 154, 255, .12); }
-.itw-rename-input {
-  flex: 1; min-width: 0; height: 18px; padding: 0 4px; border: 1px solid var(--itw-accent); border-radius: 3px;
-  background: var(--itw-panel-2); color: var(--itw-fg); font-size: 12px; outline: none;
+.iwb-tree-row:hover { background: rgba(127, 127, 127, .1); }
+.iwb-tree-row.iwb-selected { background: rgba(76, 154, 255, .18); }
+.iwb-tree:focus { outline: none; }
+.iwb-tree:focus-visible { outline: 1px solid rgba(76, 154, 255, .35); outline-offset: -1px; }
+.iwb-tree-twisty { width: 16px; flex: 0 0 16px; display: inline-flex; align-items: center; justify-content: center; color: var(--iwb-muted); }
+.iwb-tree-name { overflow: hidden; text-overflow: ellipsis; }
+.iwb-tree-name.iwb-dir { font-weight: 500; }
+.iwb-tree-row.iwb-git-untracked .iwb-tree-name { color: var(--iwb-git-untracked); }
+.iwb-tree-row.iwb-git-added .iwb-tree-name { color: var(--iwb-git-added); }
+.iwb-tree-row.iwb-git-modified .iwb-tree-name { color: var(--iwb-git-modified); }
+.iwb-tree-row.iwb-git-conflict .iwb-tree-name { color: var(--iwb-git-conflict); font-weight: 600; }
+.iwb-tree-row.iwb-git-conflict .iwb-tree-name::after { content: ' !'; color: var(--iwb-git-conflict); font-weight: 700; }
+.iwb-tree-row.iwb-git-deleted .iwb-tree-name { color: var(--iwb-git-deleted); text-decoration: line-through; }
+.iwb-tree-row.iwb-git-ignored .iwb-tree-name { color: var(--iwb-git-ignored); }
+.iwb-tree-row.iwb-git-ignored { opacity: .65; }
+.iwb-tree-row.iwb-excluded { background: var(--iwb-excluded-bg); }
+.iwb-tree-row.iwb-excluded .iwb-tree-name { color: var(--iwb-git-ignored); }
+.iwb-tree-row.iwb-drop-target { outline: 1px solid var(--iwb-accent); outline-offset: -1px; background: rgba(76, 154, 255, .12); }
+.iwb-rename-input {
+  flex: 1; min-width: 0; height: 18px; padding: 0 4px; border: 1px solid var(--iwb-accent); border-radius: 3px;
+  background: var(--iwb-panel-2); color: var(--iwb-fg); font-size: 12px; outline: none;
 }
-.itw-tree-msg { color: var(--itw-muted); font-style: italic; padding: 2px 8px 2px 30px; font-size: 11.5px; }
-.itw-vlist { position: relative; }
-.itw-vlist-row { position: absolute; left: 0; right: 0; height: 22px; }
+.iwb-tree-msg { color: var(--iwb-muted); font-style: italic; padding: 2px 8px 2px 30px; font-size: 11.5px; }
+.iwb-vlist { position: relative; }
+.iwb-vlist-row { position: absolute; left: 0; right: 0; height: 22px; }
 
-.itw-filter {
+.iwb-filter {
   display: flex; align-items: center; gap: 6px; margin: 6px 8px; height: 26px; padding: 0 8px;
-  border: 1px solid var(--itw-border); border-radius: 6px; background: var(--itw-panel-2); color: var(--itw-muted);
+  border: 1px solid var(--iwb-border); border-radius: 6px; background: var(--iwb-panel-2); color: var(--iwb-muted);
 }
-.itw-filter input { flex: 1; min-width: 0; background: none; border: 0; outline: none; color: var(--itw-fg); font-size: 12px; }
-.itw-filter input::placeholder { color: var(--itw-muted); }
+.iwb-filter input { flex: 1; min-width: 0; background: none; border: 0; outline: none; color: var(--iwb-fg); font-size: 12px; }
+.iwb-filter input::placeholder { color: var(--iwb-muted); }
 
-.itw-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 26px 20px; color: var(--itw-muted); text-align: center; font-size: 12px; }
-.itw-empty-title { color: var(--itw-fg); font-size: 13px; font-weight: 600; }
+.iwb-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 26px 20px; color: var(--iwb-muted); text-align: center; font-size: 12px; }
+.iwb-empty-title { color: var(--iwb-fg); font-size: 13px; font-weight: 600; }
 /* The file-link carrier tab is not inside the workbench root, so it carries
    its own token scope and a centered dialog card. Without this the primary
    button's white label sits on an unresolved (transparent) accent background. */
-.itw-link-shell {
+.iwb-link-shell {
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   flex: 1 1 auto; width: 100%; height: 100%; min-height: 0; padding: 16px; overflow: auto;
-  background: var(--itw-bg); color: var(--itw-fg);
-  font-family: var(--itw-font); font-size: 13px; line-height: 1.45;
+  background: var(--iwb-bg); color: var(--iwb-fg);
+  font-family: var(--iwb-font); font-size: 13px; line-height: 1.45;
   -webkit-app-region: no-drag;
 }
-.itw-link-shell *, .itw-link-shell *::before, .itw-link-shell *::after { box-sizing: border-box; }
-.itw-link-shell .itw-textbtn { font: inherit; cursor: pointer; }
-.itw-link-prompt {
+.iwb-link-shell *, .iwb-link-shell *::before, .iwb-link-shell *::after { box-sizing: border-box; }
+.iwb-link-shell .iwb-textbtn { font: inherit; cursor: pointer; }
+.iwb-link-prompt {
   width: 100%; max-width: 480px; padding: 22px 20px;
-  border: 1px solid var(--itw-border); border-radius: 12px;
-  background: var(--itw-panel); box-shadow: 0 12px 32px rgba(0, 0, 0, .18);
+  border: 1px solid var(--iwb-border); border-radius: 12px;
+  background: var(--iwb-panel); box-shadow: 0 12px 32px rgba(0, 0, 0, .18);
 }
-.itw-link-body { color: var(--itw-fg); font-size: 12.5px; line-height: 1.5; }
-.itw-link-path {
-  max-width: 100%; color: var(--itw-muted); font-family: var(--itw-mono, ui-monospace, Consolas, monospace);
+.iwb-link-body { color: var(--iwb-fg); font-size: 12.5px; line-height: 1.5; }
+.iwb-link-path {
+  max-width: 100%; color: var(--iwb-muted); font-family: var(--iwb-mono, ui-monospace, Consolas, monospace);
   font-size: 11px; line-height: 1.45; word-break: break-all; user-select: text;
 }
-.itw-link-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 2px; }
-.itw-link-actions .itw-textbtn { height: auto; min-height: 28px; padding: 5px 14px; white-space: normal; text-align: center; }
-.itw-error-box { margin: 8px; padding: 8px 10px; border: 1px solid rgba(226, 104, 111, .4); border-radius: 6px; background: rgba(226, 104, 111, .08); color: var(--itw-error); font-size: 11.5px; white-space: pre-wrap; word-break: break-word; user-select: text; }
+.iwb-link-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 2px; }
+.iwb-link-actions .iwb-textbtn { height: auto; min-height: 28px; padding: 5px 14px; white-space: normal; text-align: center; }
+.iwb-error-box { margin: 8px; padding: 8px 10px; border: 1px solid rgba(226, 104, 111, .4); border-radius: 6px; background: rgba(226, 104, 111, .08); color: var(--iwb-error); font-size: 11.5px; white-space: pre-wrap; word-break: break-word; user-select: text; }
 
-.itw-menu {
+.iwb-menu {
   position: fixed; z-index: 40; padding: 4px; border-radius: 8px;
-  border: 1px solid var(--itw-border-strong); background: var(--itw-overlay);
+  border: 1px solid var(--iwb-border-strong); background: var(--iwb-overlay);
   box-shadow: 0 12px 32px rgba(0, 0, 0, .38);
   max-height: calc(100vh - 12px); overflow-y: auto; overflow-x: hidden;
 }
-.itw-menu-sub { z-index: 41; }
-.itw-menu .itw-menu-item {
+.iwb-menu-sub { z-index: 41; }
+.iwb-menu .iwb-menu-item {
   display: flex; align-items: center; gap: 6px; width: 100%; padding: 5px 6px 5px 4px; border-radius: 5px;
-  text-align: left; font-size: 12px; color: var(--itw-fg); white-space: nowrap;
+  text-align: left; font-size: 12px; color: var(--iwb-fg); white-space: nowrap;
 }
-.itw-menu .itw-menu-item:hover:not(:disabled) { background: rgba(127, 127, 127, .16); }
-.itw-menu .itw-menu-item:disabled { opacity: .4; }
-.itw-menu .itw-menu-item.itw-menu-danger { color: var(--itw-error); }
-.itw-menu-check { width: 12px; flex: 0 0 12px; text-align: center; color: var(--itw-accent); }
-.itw-menu-icon { width: 14px; flex: 0 0 14px; display: inline-flex; align-items: center; justify-content: center; }
-.itw-menu-text { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
-.itw-menu-shortcut { flex: 0 0 auto; margin-left: 22px; color: var(--itw-muted); font-size: 10.5px; font-family: var(--itw-font); letter-spacing: .01em; }
-.itw-menu-arrow { width: 10px; flex: 0 0 10px; text-align: right; color: var(--itw-muted); }
-.itw-menu .itw-menu-sep { height: 1px; margin: 4px 2px; background: var(--itw-border); }
-.itw-menu .itw-menu-label { padding: 5px 8px; color: var(--itw-muted); font-size: 10.5px; text-transform: uppercase; letter-spacing: .06em; }
+.iwb-menu .iwb-menu-item:hover:not(:disabled) { background: rgba(127, 127, 127, .16); }
+.iwb-menu .iwb-menu-item:disabled { opacity: .4; }
+.iwb-menu .iwb-menu-item.iwb-menu-danger { color: var(--iwb-error); }
+.iwb-menu-check { width: 12px; flex: 0 0 12px; text-align: center; color: var(--iwb-accent); }
+.iwb-menu-icon { width: 14px; flex: 0 0 14px; display: inline-flex; align-items: center; justify-content: center; }
+.iwb-menu-text { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.iwb-menu-shortcut { flex: 0 0 auto; margin-left: 22px; color: var(--iwb-muted); font-size: 10.5px; font-family: var(--iwb-font); letter-spacing: .01em; }
+.iwb-menu-arrow { width: 10px; flex: 0 0 10px; text-align: right; color: var(--iwb-muted); }
+.iwb-menu .iwb-menu-sep { height: 1px; margin: 4px 2px; background: var(--iwb-border); }
+.iwb-menu .iwb-menu-label { padding: 5px 8px; color: var(--iwb-muted); font-size: 10.5px; text-transform: uppercase; letter-spacing: .06em; }
 
-.itw-favorites { max-height: 160px; overflow: auto; border-bottom: 1px solid var(--itw-border); padding: 4px 6px; }
-.itw-favorite-row { display: flex; align-items: center; gap: 6px; height: 22px; padding: 0 4px; border-radius: 4px; cursor: pointer; font-size: 12px; }
-.itw-favorite-row:hover { background: rgba(127, 127, 127, .1); }
-.itw-favorite-star { color: var(--itw-warn); }
-.itw-favorite-name { flex: 1; overflow: hidden; text-overflow: ellipsis; }
-.itw-favorite-remove { width: 18px; height: 18px; opacity: .6; }
-.itw-field { display: flex; flex-direction: column; gap: 5px; margin: 10px 0; font-size: 12px; color: var(--itw-muted); }
-.itw-field input, .itw-field select {
-  height: 30px; padding: 0 9px; border-radius: 6px; border: 1px solid var(--itw-border);
-  background: var(--itw-panel-2); color: var(--itw-fg); font-size: 12.5px; outline: none;
+.iwb-favorites { max-height: 160px; overflow: auto; border-bottom: 1px solid var(--iwb-border); padding: 4px 6px; }
+.iwb-favorite-row { display: flex; align-items: center; gap: 6px; height: 22px; padding: 0 4px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+.iwb-favorite-row:hover { background: rgba(127, 127, 127, .1); }
+.iwb-favorite-star { color: var(--iwb-warn); }
+.iwb-favorite-name { flex: 1; overflow: hidden; text-overflow: ellipsis; }
+.iwb-favorite-remove { width: 18px; height: 18px; opacity: .6; }
+.iwb-field { display: flex; flex-direction: column; gap: 5px; margin: 10px 0; font-size: 12px; color: var(--iwb-muted); }
+.iwb-field input, .iwb-field select {
+  height: 30px; padding: 0 9px; border-radius: 6px; border: 1px solid var(--iwb-border);
+  background: var(--iwb-panel-2); color: var(--iwb-fg); font-size: 12.5px; outline: none;
 }
-.itw-field input:focus, .itw-field select:focus { border-color: var(--itw-accent); }
+.iwb-field input:focus, .iwb-field select:focus { border-color: var(--iwb-accent); }
 
-.itw-commit { display: flex; flex-direction: column; min-height: 0; height: 100%; }
-.itw-commit-message { padding: 8px; border-bottom: 1px solid var(--itw-border); }
-.itw-commit-message textarea {
+.iwb-commit { display: flex; flex-direction: column; min-height: 0; height: 100%; }
+.iwb-commit-message { padding: 8px; border-bottom: 1px solid var(--iwb-border); }
+.iwb-commit-message textarea {
   width: 100%; resize: vertical; min-height: 76px; max-height: 220px; padding: 8px 10px; border-radius: 6px;
-  border: 1px solid var(--itw-border); background: var(--itw-panel-2); outline: none; font-size: 12.5px;
+  border: 1px solid var(--iwb-border); background: var(--iwb-panel-2); outline: none; font-size: 12.5px;
   line-height: 1.5; user-select: text;
 }
-.itw-commit-message textarea:focus { border-color: var(--itw-accent); }
-.itw-commit-actions { display: flex; align-items: center; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
-.itw-commit-actions .itw-spacer { flex: 1; }
-.itw-commit-tasks { display: flex; align-items: center; gap: 14px; margin-top: 6px; flex-wrap: wrap; }
-.itw-check { display: inline-flex; align-items: center; gap: 5px; color: var(--itw-muted); font-size: 12px; cursor: pointer; }
-.itw-check input { accent-color: var(--itw-accent); }
-.itw-groups { flex: 1; min-height: 0; overflow: auto; padding-bottom: 8px; }
-.itw-group { border-bottom: 1px solid var(--itw-border); }
-.itw-group-header {
-  display: flex; align-items: center; gap: 6px; height: 27px; padding: 0 8px; color: var(--itw-muted);
+.iwb-commit-message textarea:focus { border-color: var(--iwb-accent); }
+.iwb-commit-actions { display: flex; align-items: center; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+.iwb-commit-actions .iwb-spacer { flex: 1; }
+.iwb-commit-tasks { display: flex; align-items: center; gap: 14px; margin-top: 6px; flex-wrap: wrap; }
+.iwb-check { display: inline-flex; align-items: center; gap: 5px; color: var(--iwb-muted); font-size: 12px; cursor: pointer; }
+.iwb-check input { accent-color: var(--iwb-accent); }
+.iwb-groups { flex: 1; min-height: 0; overflow: auto; padding-bottom: 8px; }
+.iwb-group { border-bottom: 1px solid var(--iwb-border); }
+.iwb-group-header {
+  display: flex; align-items: center; gap: 6px; height: 27px; padding: 0 8px; color: var(--iwb-muted);
   font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; position: sticky; top: 0;
-  background: var(--itw-panel); z-index: 2;
+  background: var(--iwb-panel); z-index: 2;
 }
-.itw-group-header .itw-count {
+.iwb-group-header .iwb-count {
   min-width: 16px; height: 16px; padding: 0 5px; border-radius: 999px; background: rgba(127, 127, 127, .18);
-  color: var(--itw-fg); font-size: 10px; display: inline-flex; align-items: center; justify-content: center;
+  color: var(--iwb-fg); font-size: 10px; display: inline-flex; align-items: center; justify-content: center;
 }
-.itw-group-header .itw-spacer { flex: 1; }
-.itw-file-row {
+.iwb-group-header .iwb-spacer { flex: 1; }
+.iwb-file-row {
   display: flex; align-items: center; gap: 6px; height: 23px; padding: 0 8px 0 12px; cursor: pointer; font-size: 12px;
 }
-.itw-file-row:hover { background: rgba(127, 127, 127, .1); }
-.itw-file-row.itw-active { background: rgba(76, 154, 255, .16); }
-.itw-file-row.itw-selected { background: rgba(76, 154, 255, .16); }
-.itw-file-row.itw-file-untracked .itw-file-name { color: var(--itw-git-untracked); }
-.itw-file-row.itw-file-conflict .itw-file-name { color: var(--itw-git-conflict); font-weight: 600; }
-.itw-file-row .itw-file-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.itw-file-row .itw-file-dir { color: var(--itw-muted); font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.itw-file-row .itw-file-status { color: var(--itw-muted); font-size: 10px; width: 12px; text-align: center; font-family: var(--itw-mono); }
-.itw-group-empty { padding: 8px 12px; color: var(--itw-muted); font-size: 11.5px; font-style: italic; }
-.itw-commit-toolbar { display: flex; align-items: center; gap: 6px; padding: 6px 8px; border-top: 1px solid var(--itw-border); border-bottom: 1px solid var(--itw-border); }
-.itw-changelist-head { height: 24px; display: flex; align-items: center; gap: 6px; padding: 0 10px; color: var(--itw-muted); font-size: 11px; background: rgba(127, 127, 127, .06); }
-.itw-changelist-head .itw-count { font-size: 10px; }
-.itw-dir-heading { height: 22px; display: flex; align-items: center; padding: 0 10px 0 22px; color: var(--itw-muted); font-size: 11px; }
-.itw-file-row .itw-file-stat { margin-left: auto; display: flex; gap: 5px; font-size: 10.5px; font-variant-numeric: tabular-nums; }
-.itw-additions { color: var(--itw-add); }
-.itw-deletions { color: var(--itw-del); }
-.itw-file-row .itw-row-actions { display: none; margin-left: auto; gap: 2px; }
-.itw-file-row:hover .itw-row-actions { display: flex; }
-.itw-file-row:hover .itw-file-stat { display: none; }
+.iwb-file-row:hover { background: rgba(127, 127, 127, .1); }
+.iwb-file-row.iwb-active { background: rgba(76, 154, 255, .16); }
+.iwb-file-row.iwb-selected { background: rgba(76, 154, 255, .16); }
+.iwb-file-row.iwb-file-untracked .iwb-file-name { color: var(--iwb-git-untracked); }
+.iwb-file-row.iwb-file-conflict .iwb-file-name { color: var(--iwb-git-conflict); font-weight: 600; }
+.iwb-file-row .iwb-file-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.iwb-file-row .iwb-file-dir { color: var(--iwb-muted); font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.iwb-file-row .iwb-file-status { color: var(--iwb-muted); font-size: 10px; width: 12px; text-align: center; font-family: var(--iwb-mono); }
+.iwb-group-empty { padding: 8px 12px; color: var(--iwb-muted); font-size: 11.5px; font-style: italic; }
+.iwb-commit-toolbar { display: flex; align-items: center; gap: 6px; padding: 6px 8px; border-top: 1px solid var(--iwb-border); border-bottom: 1px solid var(--iwb-border); }
+.iwb-changelist-head { height: 24px; display: flex; align-items: center; gap: 6px; padding: 0 10px; color: var(--iwb-muted); font-size: 11px; background: rgba(127, 127, 127, .06); }
+.iwb-changelist-head .iwb-count { font-size: 10px; }
+.iwb-dir-heading { height: 22px; display: flex; align-items: center; padding: 0 10px 0 22px; color: var(--iwb-muted); font-size: 11px; }
+.iwb-file-row .iwb-file-stat { margin-left: auto; display: flex; gap: 5px; font-size: 10.5px; font-variant-numeric: tabular-nums; }
+.iwb-additions { color: var(--iwb-add); }
+.iwb-deletions { color: var(--iwb-del); }
+.iwb-file-row .iwb-row-actions { display: none; margin-left: auto; gap: 2px; }
+.iwb-file-row:hover .iwb-row-actions { display: flex; }
+.iwb-file-row:hover .iwb-file-stat { display: none; }
 
-.itw-diff { flex: 1; min-height: 0; display: flex; flex-direction: column; }
-.itw-diff-scroll { flex: 1; min-height: 0; overflow: auto; font-family: var(--itw-mono); font-size: 12.5px; line-height: 20px; position: relative; }
-.itw-diff-inner { position: relative; min-width: 100%; }
-.itw-diff-row { display: flex; height: 20px; white-space: pre; }
-.itw-diff-row.itw-add { background: rgba(79, 180, 119, .12); }
-.itw-diff-row.itw-del { background: rgba(226, 104, 111, .12); }
-.itw-diff-row .itw-diff-gutter {
-  width: 22px; flex: 0 0 22px; display: flex; align-items: center; justify-content: center; color: var(--itw-muted);
+.iwb-diff { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.iwb-diff-scroll { flex: 1; min-height: 0; overflow: auto; font-family: var(--iwb-mono); font-size: 12.5px; line-height: 20px; position: relative; }
+.iwb-diff-inner { position: relative; min-width: 100%; }
+.iwb-diff-row { display: flex; height: 20px; white-space: pre; }
+.iwb-diff-row.iwb-add { background: rgba(79, 180, 119, .12); }
+.iwb-diff-row.iwb-del { background: rgba(226, 104, 111, .12); }
+.iwb-diff-row .iwb-diff-gutter {
+  width: 22px; flex: 0 0 22px; display: flex; align-items: center; justify-content: center; color: var(--iwb-muted);
   cursor: pointer; user-select: none; font-size: 11px;
 }
-.itw-diff-row.itw-add:hover .itw-diff-gutter { color: var(--itw-add); background: rgba(79, 180, 119, .2); }
-.itw-diff-row.itw-del:hover .itw-diff-gutter { color: var(--itw-del); background: rgba(226, 104, 111, .2); }
-.itw-diff-num {
-  width: 44px; flex: 0 0 44px; text-align: right; padding-right: 8px; color: var(--itw-muted); opacity: .6;
+.iwb-diff-row.iwb-add:hover .iwb-diff-gutter { color: var(--iwb-add); background: rgba(79, 180, 119, .2); }
+.iwb-diff-row.iwb-del:hover .iwb-diff-gutter { color: var(--iwb-del); background: rgba(226, 104, 111, .2); }
+.iwb-diff-num {
+  width: 44px; flex: 0 0 44px; text-align: right; padding-right: 8px; color: var(--iwb-muted); opacity: .6;
   font-variant-numeric: tabular-nums; user-select: none;
 }
-.itw-diff-sign { width: 16px; flex: 0 0 16px; text-align: center; user-select: none; color: var(--itw-muted); }
-.itw-diff-text { flex: 1; padding-right: 24px; }
-.itw-diff-row.itw-selected { outline: 1px solid rgba(76, 154, 255, .55); background: rgba(76, 154, 255, .22) !important; }
-.itw-diff-row.itw-diff-find, .itw-diff-side.itw-diff-find { outline: 1px solid rgba(215,162,74,.65); outline-offset: -1px; }
-.itw-diff-row.itw-diff-find-active, .itw-diff-side.itw-diff-find-active { outline: 2px solid var(--itw-accent); outline-offset: -2px; background: rgba(76,154,255,.2); }
-.itw-word-add { background: rgba(79, 180, 119, .38); border-radius: 2px; }
-.itw-word-del { background: rgba(226, 104, 111, .38); border-radius: 2px; }
-.itw-diff-hunk { display: flex; align-items: center; height: 22px; background: rgba(127, 127, 127, .09); color: var(--itw-muted); font-size: 11.5px; }
-.itw-diff-collapsed {
+.iwb-diff-sign { width: 16px; flex: 0 0 16px; text-align: center; user-select: none; color: var(--iwb-muted); }
+.iwb-diff-text { flex: 1; padding-right: 24px; }
+.iwb-diff-row.iwb-selected { outline: 1px solid rgba(76, 154, 255, .55); background: rgba(76, 154, 255, .22) !important; }
+.iwb-diff-row.iwb-diff-find, .iwb-diff-side.iwb-diff-find { outline: 1px solid rgba(215,162,74,.65); outline-offset: -1px; }
+.iwb-diff-row.iwb-diff-find-active, .iwb-diff-side.iwb-diff-find-active { outline: 2px solid var(--iwb-accent); outline-offset: -2px; background: rgba(76,154,255,.2); }
+.iwb-word-add { background: rgba(79, 180, 119, .38); border-radius: 2px; }
+.iwb-word-del { background: rgba(226, 104, 111, .38); border-radius: 2px; }
+.iwb-diff-hunk { display: flex; align-items: center; height: 22px; background: rgba(127, 127, 127, .09); color: var(--iwb-muted); font-size: 11.5px; }
+.iwb-diff-collapsed {
   display: flex; align-items: center; justify-content: center; height: 20px; cursor: pointer;
-  color: var(--itw-muted); font-size: 11px; background: rgba(127, 127, 127, .07);
-  border-top: 1px dashed var(--itw-border); border-bottom: 1px dashed var(--itw-border);
+  color: var(--iwb-muted); font-size: 11px; background: rgba(127, 127, 127, .07);
+  border-top: 1px dashed var(--iwb-border); border-bottom: 1px dashed var(--iwb-border);
 }
-.itw-diff-collapsed:hover { color: var(--itw-fg); background: rgba(127, 127, 127, .14); }
-.itw-diff-hunk .itw-hunk-text { padding: 0 12px; flex: 1; overflow: hidden; text-overflow: ellipsis; }
-.itw-diff-hunk .itw-hunk-actions { display: none; padding-right: 6px; }
-.itw-diff-hunk:hover .itw-hunk-actions { display: flex; }
-.itw-diff-toolbar {
+.iwb-diff-collapsed:hover { color: var(--iwb-fg); background: rgba(127, 127, 127, .14); }
+.iwb-diff-hunk .iwb-hunk-text { padding: 0 12px; flex: 1; overflow: hidden; text-overflow: ellipsis; }
+.iwb-diff-hunk .iwb-hunk-actions { display: none; padding-right: 6px; }
+.iwb-diff-hunk:hover .iwb-hunk-actions { display: flex; }
+.iwb-diff-toolbar {
   height: 30px; flex: 0 0 30px; display: flex; align-items: center; gap: 8px; padding: 0 10px;
-  border-bottom: 1px solid var(--itw-border); background: var(--itw-bg); font-size: 11.5px; color: var(--itw-muted);
+  border-bottom: 1px solid var(--iwb-border); background: var(--iwb-bg); font-size: 11.5px; color: var(--iwb-muted);
 }
-.itw-diff-toolbar .itw-spacer { flex: 1; }
-.itw-diff-side { display: grid; grid-template-columns: 1fr 1fr; min-width: 100%; }
-.itw-diff-side-cell { display: flex; height: 20px; min-width: 0; border-right: 1px solid var(--itw-border); overflow: hidden; }
-.itw-diff-side-cell.itw-add { background: rgba(79, 180, 119, .12); }
-.itw-diff-side-cell.itw-del { background: rgba(226, 104, 111, .12); }
-.itw-diff-side-cell .itw-diff-text { overflow: hidden; }
-.itw-diff-side-cell.itw-blank { background: rgba(127, 127, 127, .05); }
-.itw-diff-side .itw-diff-num { width: 44px; flex: 0 0 44px; }
-.itw-diff-side-head { display: flex; align-items: center; gap: 6px; height: 24px; padding: 0 10px; color: var(--itw-muted); font-size: 11px; background: var(--itw-panel); border-bottom: 1px solid var(--itw-border); }
-.itw-binary { flex: 1; display: flex; align-items: center; justify-content: center; color: var(--itw-muted); }
+.iwb-diff-toolbar .iwb-spacer { flex: 1; }
+.iwb-diff-side { display: grid; grid-template-columns: 1fr 1fr; min-width: 100%; }
+.iwb-diff-side-cell { display: flex; height: 20px; min-width: 0; border-right: 1px solid var(--iwb-border); overflow: hidden; }
+.iwb-diff-side-cell.iwb-add { background: rgba(79, 180, 119, .12); }
+.iwb-diff-side-cell.iwb-del { background: rgba(226, 104, 111, .12); }
+.iwb-diff-side-cell .iwb-diff-text { overflow: hidden; }
+.iwb-diff-side-cell.iwb-blank { background: rgba(127, 127, 127, .05); }
+.iwb-diff-side .iwb-diff-num { width: 44px; flex: 0 0 44px; }
+.iwb-diff-side-head { display: flex; align-items: center; gap: 6px; height: 24px; padding: 0 10px; color: var(--iwb-muted); font-size: 11px; background: var(--iwb-panel); border-bottom: 1px solid var(--iwb-border); }
+.iwb-binary { flex: 1; display: flex; align-items: center; justify-content: center; color: var(--iwb-muted); }
 
-.itw-git { display: flex; flex-direction: column; height: 100%; min-height: 0; flex: 1 1 auto; width: 100%; min-width: 0; }
-.itw-git-filters { display: flex; align-items: center; gap: 6px; padding: 6px 8px; border-bottom: 1px solid var(--itw-border); flex-wrap: wrap; }
-.itw-path-chip {
+.iwb-git { display: flex; flex-direction: column; height: 100%; min-height: 0; flex: 1 1 auto; width: 100%; min-width: 0; }
+.iwb-git-filters { display: flex; align-items: center; gap: 6px; padding: 6px 8px; border-bottom: 1px solid var(--iwb-border); flex-wrap: wrap; }
+.iwb-path-chip {
   display: inline-flex; align-items: center; gap: 4px; max-width: 260px; height: 22px; padding: 0 4px 0 8px;
-  border: 1px solid var(--itw-border-strong); border-radius: 999px; background: var(--itw-panel-2);
-  color: var(--itw-fg); font-size: 11px;
+  border: 1px solid var(--iwb-border-strong); border-radius: 999px; background: var(--iwb-panel-2);
+  color: var(--iwb-fg); font-size: 11px;
 }
-.itw-path-chip-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--itw-mono); }
-.itw-path-chip-clear { width: 16px; height: 16px; border-radius: 50%; color: var(--itw-muted); font-size: 13px; line-height: 1; }
-.itw-path-chip-clear:hover { background: rgba(127, 127, 127, .2); color: var(--itw-fg); }
-.itw-select, .itw-input {
-  height: 24px; border-radius: 5px; border: 1px solid var(--itw-border); background: var(--itw-panel-2);
-  padding: 0 7px; font-size: 11.5px; outline: none; color: var(--itw-fg);
+.iwb-path-chip-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--iwb-mono); }
+.iwb-path-chip-clear { width: 16px; height: 16px; border-radius: 50%; color: var(--iwb-muted); font-size: 13px; line-height: 1; }
+.iwb-path-chip-clear:hover { background: rgba(127, 127, 127, .2); color: var(--iwb-fg); }
+.iwb-select, .iwb-input {
+  height: 24px; border-radius: 5px; border: 1px solid var(--iwb-border); background: var(--iwb-panel-2);
+  padding: 0 7px; font-size: 11.5px; outline: none; color: var(--iwb-fg);
 }
-.itw-input { width: 150px; }
-.itw-select:focus, .itw-input:focus { border-color: var(--itw-accent); }
-.itw-git-table { flex: 1; min-height: 0; display: flex; flex-direction: column; }
-.itw-git-head, .itw-git-row {
-  display: grid; grid-template-columns: var(--itw-graph-w, 96px) 70px minmax(160px, 1fr) 110px 120px;
+.iwb-input { width: 150px; }
+.iwb-select:focus, .iwb-input:focus { border-color: var(--iwb-accent); }
+.iwb-git-table { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.iwb-git-head, .iwb-git-row {
+  display: grid; grid-template-columns: var(--iwb-graph-w, 96px) 70px minmax(160px, 1fr) 110px 120px;
   align-items: center; height: 24px; padding-right: 10px; white-space: nowrap;
 }
-.itw-git-narrow .itw-git-head, .itw-git-narrow .itw-git-row {
-  grid-template-columns: var(--itw-graph-w, 96px) 54px minmax(60px, 1fr) 66px 78px;
+.iwb-git-narrow .iwb-git-head, .iwb-git-narrow .iwb-git-row {
+  grid-template-columns: var(--iwb-graph-w, 96px) 54px minmax(60px, 1fr) 66px 78px;
   padding-right: 4px;
 }
 /* Never remove the author/date columns; compress them instead. */
-.itw-git-head { height: 26px; flex: 0 0 26px; border-bottom: 1px solid var(--itw-border); color: var(--itw-muted); font-size: 10.5px; text-transform: uppercase; letter-spacing: .05em; background: var(--itw-panel); }
-.itw-git-head > span, .itw-git-row > span { overflow: hidden; text-overflow: ellipsis; }
-.itw-git-scroll { flex: 1; min-height: 0; overflow: auto; position: relative; }
-.itw-git-rows { position: relative; }
-.itw-git-row { position: absolute; left: 0; right: 0; cursor: pointer; font-size: 12px; }
-.itw-git-row:hover { background: rgba(127, 127, 127, .09); }
-.itw-git-row.itw-selected { background: rgba(76, 154, 255, .16); }
-.itw-git-row.itw-compare { box-shadow: inset 2px 0 0 var(--itw-warn); background: rgba(215, 162, 74, .12); }
-.itw-compare-chip {
+.iwb-git-head { height: 26px; flex: 0 0 26px; border-bottom: 1px solid var(--iwb-border); color: var(--iwb-muted); font-size: 10.5px; text-transform: uppercase; letter-spacing: .05em; background: var(--iwb-panel); }
+.iwb-git-head > span, .iwb-git-row > span { overflow: hidden; text-overflow: ellipsis; }
+.iwb-git-scroll { flex: 1; min-height: 0; overflow: auto; position: relative; }
+.iwb-git-rows { position: relative; }
+.iwb-git-row { position: absolute; left: 0; right: 0; cursor: pointer; font-size: 12px; }
+.iwb-git-row:hover { background: rgba(127, 127, 127, .09); }
+.iwb-git-row.iwb-selected { background: rgba(76, 154, 255, .16); }
+.iwb-git-row.iwb-compare { box-shadow: inset 2px 0 0 var(--iwb-warn); background: rgba(215, 162, 74, .12); }
+.iwb-compare-chip {
   display: inline-flex; align-items: center; gap: 4px; height: 22px; padding: 0 4px 0 8px;
-  border: 1px solid var(--itw-warn); border-radius: 999px; color: var(--itw-warn); font-size: 11px;
-  font-family: var(--itw-mono);
+  border: 1px solid var(--iwb-warn); border-radius: 999px; color: var(--iwb-warn); font-size: 11px;
+  font-family: var(--iwb-mono);
 }
-.itw-git-row .itw-sha { font-family: var(--itw-mono); color: var(--itw-accent); font-size: 11.5px; }
-.itw-git-row .itw-subject { font-size: 12.5px; }
-.itw-git-row .itw-author, .itw-git-row .itw-date { color: var(--itw-muted); font-size: 11px; }
-.itw-git-graph { height: 100%; display: flex; align-items: center; }
-.itw-git-empty { padding: 24px; text-align: center; color: var(--itw-muted); }
-.itw-git-detail {
-  flex: 0 0 auto; max-height: 42%; overflow: auto; border-top: 1px solid var(--itw-border);
-  background: var(--itw-panel); padding: 6px 10px 8px;
+.iwb-git-row .iwb-sha { font-family: var(--iwb-mono); color: var(--iwb-accent); font-size: 11.5px; }
+.iwb-git-row .iwb-subject { font-size: 12.5px; }
+.iwb-git-row .iwb-author, .iwb-git-row .iwb-date { color: var(--iwb-muted); font-size: 11px; }
+.iwb-git-graph { height: 100%; display: flex; align-items: center; }
+.iwb-git-empty { padding: 24px; text-align: center; color: var(--iwb-muted); }
+.iwb-git-detail {
+  flex: 0 0 auto; max-height: 42%; overflow: auto; border-top: 1px solid var(--iwb-border);
+  background: var(--iwb-panel); padding: 6px 10px 8px;
 }
-.itw-git-detail-head { display: flex; align-items: center; gap: 6px; }
-.itw-git-detail-subject { font-weight: 600; font-size: 12.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.itw-git-detail-meta { display: flex; gap: 10px; flex-wrap: wrap; color: var(--itw-muted); font-size: 11px; margin-top: 3px; }
-.itw-git-detail-sha { font-family: var(--itw-mono); color: var(--itw-accent); }
-.itw-git-detail-dim { opacity: .75; }
-.itw-git-detail-body { margin: 6px 0 0; white-space: pre-wrap; color: var(--itw-muted); font-size: 11.5px; font-family: var(--itw-font); }
-.itw-git-detail-foot { display: flex; align-items: center; gap: 10px; margin-top: 6px; font-size: 11px; }
-.itw-git-detail-hint { color: var(--itw-muted); margin-left: auto; }
-.itw-git-files { display: flex; flex-direction: column; gap: 1px; margin-top: 6px; max-height: 120px; overflow: auto; }
-.itw-git-file {
+.iwb-git-detail-head { display: flex; align-items: center; gap: 6px; }
+.iwb-git-detail-subject { font-weight: 600; font-size: 12.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.iwb-git-detail-meta { display: flex; gap: 10px; flex-wrap: wrap; color: var(--iwb-muted); font-size: 11px; margin-top: 3px; }
+.iwb-git-detail-sha { font-family: var(--iwb-mono); color: var(--iwb-accent); }
+.iwb-git-detail-dim { opacity: .75; }
+.iwb-git-detail-body { margin: 6px 0 0; white-space: pre-wrap; color: var(--iwb-muted); font-size: 11.5px; font-family: var(--iwb-font); }
+.iwb-git-detail-foot { display: flex; align-items: center; gap: 10px; margin-top: 6px; font-size: 11px; }
+.iwb-git-detail-hint { color: var(--iwb-muted); margin-left: auto; }
+.iwb-git-files { display: flex; flex-direction: column; gap: 1px; margin-top: 6px; max-height: 120px; overflow: auto; }
+.iwb-git-file {
   display: flex; align-items: center; gap: 6px; width: 100%; text-align: left; padding: 2px 6px; border-radius: 4px;
-  font-size: 11.5px; color: var(--itw-fg);
+  font-size: 11.5px; color: var(--iwb-fg);
 }
-.itw-git-file:hover { background: rgba(127, 127, 127, .14); }
-.itw-git-file-name { font-family: var(--itw-mono); }
-.itw-git-file-dir { color: var(--itw-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.iwb-git-file:hover { background: rgba(127, 127, 127, .14); }
+.iwb-git-file-name { font-family: var(--iwb-mono); }
+.iwb-git-file-dir { color: var(--iwb-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-.itw-term { display: flex; flex-direction: column; height: 100%; min-height: 0; }
-.itw-term-tabs { display: flex; align-items: center; gap: 2px; padding: 3px 6px; border-bottom: 1px solid var(--itw-border); overflow-x: auto; }
-.itw-term-tab {
+.iwb-term { display: flex; flex-direction: column; height: 100%; min-height: 0; }
+.iwb-term-tabs { display: flex; align-items: center; gap: 2px; padding: 3px 6px; border-bottom: 1px solid var(--iwb-border); overflow-x: auto; }
+.iwb-term-tab {
   display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 8px; border-radius: 5px;
-  color: var(--itw-muted); font-size: 11.5px; cursor: pointer; white-space: nowrap;
+  color: var(--iwb-muted); font-size: 11.5px; cursor: pointer; white-space: nowrap;
 }
-.itw-term-tab:hover { background: rgba(127, 127, 127, .12); }
-.itw-term-tab.itw-on { color: var(--itw-fg); background: rgba(76, 154, 255, .16); }
-.itw-term-tab .itw-term-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--itw-success); }
-.itw-term-tab .itw-term-dot.itw-exited { background: var(--itw-muted); }
-.itw-term-panes { flex: 1; min-height: 0; position: relative; }
-.itw-term-pane { position: absolute; inset: 0; padding: 4px 0 0 8px; }
-.itw-term-pane.itw-hidden { visibility: hidden; pointer-events: none; }
-.itw-term-host { width: 100%; height: 100%; }
-.itw-term-host .xterm { height: 100%; }
-.itw-term-error { padding: 16px; color: var(--itw-error); font-size: 12px; white-space: pre-wrap; user-select: text; }
+.iwb-term-tab:hover { background: rgba(127, 127, 127, .12); }
+.iwb-term-tab.iwb-on { color: var(--iwb-fg); background: rgba(76, 154, 255, .16); }
+.iwb-term-tab .iwb-term-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--iwb-success); }
+.iwb-term-tab .iwb-term-dot.iwb-exited { background: var(--iwb-muted); }
+.iwb-term-panes { flex: 1; min-height: 0; position: relative; }
+.iwb-term-pane { position: absolute; inset: 0; padding: 4px 0 0 8px; }
+.iwb-term-pane.iwb-hidden { visibility: hidden; pointer-events: none; }
+.iwb-term-host { width: 100%; height: 100%; }
+.iwb-term-host .xterm { height: 100%; }
+.iwb-term-error { padding: 16px; color: var(--iwb-error); font-size: 12px; white-space: pre-wrap; user-select: text; }
 
 /*
- * Settings also render outside the .itw-root pane (the native settings.section
+ * Settings also render outside the .iwb-root pane (the native settings.section
  * page), so the block above carries the design tokens and this section
  * re-declares only what it needs. Hierarchy: group title -> row title -> row
  * hint -> control.
  */
-.itw-settings-section { width: 100%; }
-.itw-settings {
+.iwb-settings-section { width: 100%; }
+.iwb-settings {
   container-type: inline-size;
-  container-name: itw-settings;
+  container-name: iwb-settings;
   width: 100%;
   max-width: 720px;
   padding: 8px 0;
-  color: var(--itw-fg);
-  font-family: var(--itw-font);
+  color: var(--iwb-fg);
+  font-family: var(--iwb-font);
   font-size: 14px;
   line-height: 1.45;
 }
-.itw-settings *, .itw-settings *::before, .itw-settings *::after { box-sizing: border-box; }
-.itw-settings :where(button, input, select) { font: inherit; color: inherit; }
-.itw-settings :where(button) { background: none; border: 0; padding: 0; cursor: pointer; }
-.itw-settings-group { margin: 0; }
-.itw-settings-group + .itw-settings-group {
-  margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--itw-divider);
+.iwb-settings *, .iwb-settings *::before, .iwb-settings *::after { box-sizing: border-box; }
+.iwb-settings :where(button, input, select) { font: inherit; color: inherit; }
+.iwb-settings :where(button) { background: none; border: 0; padding: 0; cursor: pointer; }
+.iwb-settings-group { margin: 0; }
+.iwb-settings-group + .iwb-settings-group {
+  margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--iwb-divider);
 }
-.itw-settings-group-title {
-  margin: 0; color: var(--itw-fg); font-size: 15px; font-weight: 600; line-height: 24px;
+.iwb-settings-group-title {
+  margin: 0; color: var(--iwb-fg); font-size: 15px; font-weight: 600; line-height: 24px;
   letter-spacing: 0; text-transform: none;
 }
-.itw-settings-group-desc { margin: 2px 0 0; max-width: 560px; color: var(--itw-muted); font-size: 12px; line-height: 18px; }
-.itw-settings-rows { display: flex; flex-direction: column; margin-top: 4px; }
-.itw-settings-row {
+.iwb-settings-group-desc { margin: 2px 0 0; max-width: 560px; color: var(--iwb-muted); font-size: 12px; line-height: 18px; }
+.iwb-settings-rows { display: flex; flex-direction: column; margin-top: 4px; }
+.iwb-settings-row {
   display: flex; align-items: center; gap: 24px; min-height: 48px; padding: 12px 0;
-  border-bottom: .5px solid var(--itw-divider);
+  border-bottom: .5px solid var(--iwb-divider);
 }
-.itw-settings-rows > .itw-settings-row:last-child { border-bottom: 0; }
-.itw-settings-label { flex: 1 1 auto; min-width: 0; }
-.itw-settings-title { color: var(--itw-fg); font-size: 14px; line-height: 22px; }
-.itw-settings-hint { margin-top: 2px; color: var(--itw-muted); font-size: 12px; line-height: 18px; }
-.itw-settings-control {
+.iwb-settings-rows > .iwb-settings-row:last-child { border-bottom: 0; }
+.iwb-settings-label { flex: 1 1 auto; min-width: 0; }
+.iwb-settings-title { color: var(--iwb-fg); font-size: 14px; line-height: 22px; }
+.iwb-settings-hint { margin-top: 2px; color: var(--iwb-muted); font-size: 12px; line-height: 18px; }
+.iwb-settings-control {
   flex: 0 0 auto; margin-left: auto; display: flex; align-items: center; justify-content: flex-end; gap: 8px;
 }
-.itw-settings-control input[type="text"], .itw-settings-control input[type="number"],
-.itw-settings-control select {
-  height: 32px; min-width: 0; padding: 0 10px; color: var(--itw-fg);
-  border: 1px solid var(--itw-border-strong); border-radius: 6px; background: var(--itw-bg);
+.iwb-settings-control input[type="text"], .iwb-settings-control input[type="number"],
+.iwb-settings-control select {
+  height: 32px; min-width: 0; padding: 0 10px; color: var(--iwb-fg);
+  border: 1px solid var(--iwb-border-strong); border-radius: 6px; background: var(--iwb-bg);
   font-size: 13px; outline: none; transition: border-color .12s ease, box-shadow .12s ease;
 }
-.itw-settings-control input[type="text"] { width: 300px; }
-.itw-settings-control select { width: 220px; padding-right: 26px; }
-.itw-settings-control input[type="number"] {
+.iwb-settings-control input[type="text"] { width: 300px; }
+.iwb-settings-control select { width: 220px; padding-right: 26px; }
+.iwb-settings-control input[type="number"] {
   width: 96px; padding-right: 8px; text-align: right; font-variant-numeric: tabular-nums;
 }
-.itw-settings-control :is(input[type="text"], input[type="number"], select):hover { border-color: var(--itw-muted); }
-.itw-settings-control :is(input[type="text"], input[type="number"], select):focus {
-  border-color: var(--itw-accent); box-shadow: 0 0 0 1px var(--itw-accent);
+.iwb-settings-control :is(input[type="text"], input[type="number"], select):hover { border-color: var(--iwb-muted); }
+.iwb-settings-control :is(input[type="text"], input[type="number"], select):focus {
+  border-color: var(--iwb-accent); box-shadow: 0 0 0 1px var(--iwb-accent);
 }
-.itw-settings-control input[type="checkbox"] {
-  width: 16px; height: 16px; margin: 0; accent-color: var(--itw-accent); cursor: pointer;
+.iwb-settings-control input[type="checkbox"] {
+  width: 16px; height: 16px; margin: 0; accent-color: var(--iwb-accent); cursor: pointer;
 }
-.itw-settings-value { color: var(--itw-muted); font-size: 13px; }
-.itw-settings-shortcut {
+.iwb-settings-value { color: var(--iwb-muted); font-size: 13px; }
+.iwb-settings-shortcut {
   display: inline-flex; align-items: center; justify-content: center; min-width: 150px; height: 32px; padding: 0 12px;
-  border: 1px solid var(--itw-border-strong); border-radius: 7px; background: var(--itw-panel-2);
-  color: var(--itw-fg); font-family: var(--itw-mono); font-size: 12px; letter-spacing: .02em;
+  border: 1px solid var(--iwb-border-strong); border-radius: 7px; background: var(--iwb-panel-2);
+  color: var(--iwb-fg); font-family: var(--iwb-mono); font-size: 12px; letter-spacing: .02em;
   cursor: pointer; transition: border-color .12s ease, background .12s ease, color .12s ease;
 }
-.itw-settings-shortcut:hover { border-color: var(--itw-muted); background: var(--itw-bg); }
-.itw-settings-shortcut:focus-visible { outline: 2px solid var(--itw-accent); outline-offset: 1px; }
-.itw-settings-shortcut.itw-capturing {
-  border-color: var(--itw-accent); color: var(--itw-accent); background: var(--itw-bg);
+.iwb-settings-shortcut:hover { border-color: var(--iwb-muted); background: var(--iwb-bg); }
+.iwb-settings-shortcut:focus-visible { outline: 2px solid var(--iwb-accent); outline-offset: 1px; }
+.iwb-settings-shortcut.iwb-capturing {
+  border-color: var(--iwb-accent); color: var(--iwb-accent); background: var(--iwb-bg);
 }
-.itw-settings .itw-textbtn {
+.iwb-settings .iwb-textbtn {
   display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px; border-radius: 6px;
-  border: 1px solid var(--itw-border-strong); color: var(--itw-fg); background: transparent; font-size: 12.5px;
+  border: 1px solid var(--iwb-border-strong); color: var(--iwb-fg); background: transparent; font-size: 12.5px;
 }
-.itw-settings .itw-textbtn:hover { border-color: var(--itw-muted); background: var(--itw-panel-2); }
-.itw-settings-footer {
+.iwb-settings .iwb-textbtn:hover { border-color: var(--iwb-muted); background: var(--iwb-panel-2); }
+.iwb-settings-footer {
   display: flex; align-items: center; gap: 12px; margin-top: 22px; padding-top: 16px;
-  border-top: 1px solid var(--itw-divider);
+  border-top: 1px solid var(--iwb-divider);
 }
-.itw-settings-saved { margin-left: auto; color: var(--itw-success); font-size: 12px; }
-@container itw-settings (max-width: 520px) {
-  .itw-settings-row { flex-wrap: wrap; gap: 8px 16px; padding: 12px 0; }
-  .itw-settings-control { width: 100%; justify-content: flex-start; }
-  .itw-settings-control input[type="text"] { width: 100%; }
-  .itw-settings-control select { width: 100%; }
-  .itw-settings-shortcut { min-width: 132px; }
+.iwb-settings-saved { margin-left: auto; color: var(--iwb-success); font-size: 12px; }
+@container iwb-settings (max-width: 520px) {
+  .iwb-settings-row { flex-wrap: wrap; gap: 8px 16px; padding: 12px 0; }
+  .iwb-settings-control { width: 100%; justify-content: flex-start; }
+  .iwb-settings-control input[type="text"] { width: 100%; }
+  .iwb-settings-control select { width: 100%; }
+  .iwb-settings-shortcut { min-width: 132px; }
 }
 
-.itw-modal-backdrop {
+.iwb-modal-backdrop {
   position: absolute; inset: 0; background: rgba(0, 0, 0, .45); display: flex; align-items: center; justify-content: center; z-index: 50;
 }
-.itw-modal {
-  width: min(440px, calc(100% - 40px)); border-radius: 10px; border: 1px solid var(--itw-border-strong);
-  background: var(--itw-overlay); box-shadow: 0 24px 60px rgba(0, 0, 0, .45); padding: 16px 18px;
+.iwb-modal {
+  width: min(440px, calc(100% - 40px)); border-radius: 10px; border: 1px solid var(--iwb-border-strong);
+  background: var(--iwb-overlay); box-shadow: 0 24px 60px rgba(0, 0, 0, .45); padding: 16px 18px;
 }
-.itw-modal h2 { font-size: 15px; margin: 0 0 8px; }
-.itw-modal p { margin: 0 0 16px; color: var(--itw-muted); font-size: 12.5px; white-space: pre-wrap; user-select: text; }
-.itw-modal-actions { display: flex; justify-content: flex-end; gap: 8px; }
-.itw-toast {
+.iwb-modal h2 { font-size: 15px; margin: 0 0 8px; }
+.iwb-modal p { margin: 0 0 16px; color: var(--iwb-muted); font-size: 12.5px; white-space: pre-wrap; user-select: text; }
+.iwb-modal-actions { display: flex; justify-content: flex-end; gap: 8px; }
+.iwb-toast {
   position: absolute; right: 14px; bottom: 34px; max-width: 420px; padding: 9px 12px; border-radius: 8px;
-  border: 1px solid var(--itw-border-strong); background: var(--itw-overlay); box-shadow: 0 10px 30px rgba(0,0,0,.4);
+  border: 1px solid var(--iwb-border-strong); background: var(--iwb-overlay); box-shadow: 0 10px 30px rgba(0,0,0,.4);
   font-size: 12px; z-index: 60; display: flex; gap: 8px; align-items: flex-start;
 }
-.itw-toast.itw-error { border-color: rgba(226, 104, 111, .55); }
-.itw-toast.itw-success { border-color: rgba(79, 180, 119, .55); }
-.itw-toast-text { min-width: 0; }
-.itw-toast-detail { color: var(--itw-muted); font-size: 11px; margin-top: 3px; white-space: pre-wrap; word-break: break-word; user-select: text; }
-.itw-root-picker { display: flex; flex-direction: column; gap: 8px; }
-.itw-root-list { display: flex; flex-direction: column; gap: 4px; max-height: 240px; overflow: auto; }
-.itw-root-item { display: flex; align-items: center; gap: 8px; padding: 7px 8px; border-radius: 6px; border: 1px solid var(--itw-border); text-align: left; }
-.itw-root-item:hover { background: rgba(127, 127, 127, .1); }
-.itw-root-item .itw-root-path { color: var(--itw-muted); font-size: 11px; overflow: hidden; text-overflow: ellipsis; }
-.itw-project-picker { width: min(620px, calc(100% - 40px)); max-height: min(80vh, 720px); display: flex; flex-direction: column; }
-.itw-modal-hint { color: var(--itw-muted); font-size: 12px; margin: -2px 0 12px; }
-.itw-project-picker-list { display: flex; flex-direction: column; gap: 3px; overflow: auto; min-height: 0; margin-bottom: 12px; }
-.itw-project-group { color: var(--itw-muted); font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 8px 4px 3px; }
-.itw-project-choice {
+.iwb-toast.iwb-error { border-color: rgba(226, 104, 111, .55); }
+.iwb-toast.iwb-success { border-color: rgba(79, 180, 119, .55); }
+.iwb-toast-text { min-width: 0; }
+.iwb-toast-detail { color: var(--iwb-muted); font-size: 11px; margin-top: 3px; white-space: pre-wrap; word-break: break-word; user-select: text; }
+.iwb-root-picker { display: flex; flex-direction: column; gap: 8px; }
+.iwb-root-list { display: flex; flex-direction: column; gap: 4px; max-height: 240px; overflow: auto; }
+.iwb-root-item { display: flex; align-items: center; gap: 8px; padding: 7px 8px; border-radius: 6px; border: 1px solid var(--iwb-border); text-align: left; }
+.iwb-root-item:hover { background: rgba(127, 127, 127, .1); }
+.iwb-root-item .iwb-root-path { color: var(--iwb-muted); font-size: 11px; overflow: hidden; text-overflow: ellipsis; }
+.iwb-project-picker { width: min(620px, calc(100% - 40px)); max-height: min(80vh, 720px); display: flex; flex-direction: column; }
+.iwb-modal-hint { color: var(--iwb-muted); font-size: 12px; margin: -2px 0 12px; }
+.iwb-project-picker-list { display: flex; flex-direction: column; gap: 3px; overflow: auto; min-height: 0; margin-bottom: 12px; }
+.iwb-project-group { color: var(--iwb-muted); font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 8px 4px 3px; }
+.iwb-project-choice {
   display: flex; align-items: center; gap: 9px; width: 100%; padding: 7px 8px; border-radius: 7px;
   border: 1px solid transparent; text-align: left;
 }
-.itw-project-choice:hover { background: rgba(127, 127, 127, .1); }
-.itw-project-choice.itw-current { border-color: var(--itw-border-strong); background: rgba(76, 154, 255, .07); }
-.itw-project-choice-icon { display: flex; align-items: center; justify-content: center; flex: 0 0 18px; color: var(--itw-muted); }
-.itw-project-choice-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
-.itw-project-choice-text b { font-size: 12.5px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.itw-project-choice-path { color: var(--itw-muted); font-size: 10.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.itw-project-repo-badge { font-size: 9.5px; color: var(--itw-git-add, #57a86b); border: 1px solid currentColor; border-radius: 999px; padding: 1px 6px; flex: 0 0 auto; }
-.itw-project-current-badge { font-size: 9.5px; color: var(--itw-accent); border: 1px solid currentColor; border-radius: 999px; padding: 1px 6px; flex: 0 0 auto; }
-.itw-project-empty { padding: 10px 8px; color: var(--itw-muted); font-size: 11.5px; }
-.itw-sidebar-open {
+.iwb-project-choice:hover { background: rgba(127, 127, 127, .1); }
+.iwb-project-choice.iwb-current { border-color: var(--iwb-border-strong); background: rgba(76, 154, 255, .07); }
+.iwb-project-choice-icon { display: flex; align-items: center; justify-content: center; flex: 0 0 18px; color: var(--iwb-muted); }
+.iwb-project-choice-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.iwb-project-choice-text b { font-size: 12.5px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.iwb-project-choice-path { color: var(--iwb-muted); font-size: 10.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.iwb-project-repo-badge { font-size: 9.5px; color: var(--iwb-git-add, #57a86b); border: 1px solid currentColor; border-radius: 999px; padding: 1px 6px; flex: 0 0 auto; }
+.iwb-project-current-badge { font-size: 9.5px; color: var(--iwb-accent); border: 1px solid currentColor; border-radius: 999px; padding: 1px 6px; flex: 0 0 auto; }
+.iwb-project-empty { padding: 10px 8px; color: var(--iwb-muted); font-size: 11.5px; }
+.iwb-sidebar-open {
   display: inline-flex; align-items: center; justify-content: center;
   width: 28px; height: 28px; border: 0; border-radius: 8px; padding: 0;
   color: var(--dsw-alias-label-secondary); background: transparent; cursor: pointer;
 }
-.itw-sidebar-open:hover { color: var(--dsw-alias-label-primary); background: var(--dsw-alias-bg-layer-2); }
-.itw-sidebar-open:focus-visible { outline: 2px solid var(--dsw-alias-brand-primary); outline-offset: 2px; }
-.itw-center { min-height: 0; }
+.iwb-sidebar-open:hover { color: var(--dsw-alias-label-primary); background: var(--dsw-alias-bg-layer-2); }
+.iwb-sidebar-open:focus-visible { outline: 2px solid var(--dsw-alias-brand-primary); outline-offset: 2px; }
+.iwb-center { min-height: 0; }
 
 /* \u2500\u2500 editor FindBar / Search / Quick Open \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
-.itw-findbar {
-  flex: 0 0 auto; padding: 4px 8px; border-bottom: 1px solid var(--itw-border);
-  background: var(--itw-panel); display: flex; flex-direction: column; gap: 4px;
+.iwb-findbar {
+  flex: 0 0 auto; padding: 4px 8px; border-bottom: 1px solid var(--iwb-border);
+  background: var(--iwb-panel); display: flex; flex-direction: column; gap: 4px;
 }
-.itw-find-row { display: flex; align-items: center; gap: 5px; min-width: 0; }
-.itw-find-label { width: 34px; flex: 0 0 34px; color: var(--itw-muted); font-size: 11px; text-align: right; }
-.itw-find-input {
+.iwb-find-row { display: flex; align-items: center; gap: 5px; min-width: 0; }
+.iwb-find-label { width: 34px; flex: 0 0 34px; color: var(--iwb-muted); font-size: 11px; text-align: right; }
+.iwb-find-input {
   flex: 1; min-width: 80px; height: 24px; padding: 0 7px; border-radius: 5px;
-  border: 1px solid var(--itw-border); background: var(--itw-panel-2); color: var(--itw-fg);
+  border: 1px solid var(--iwb-border); background: var(--iwb-panel-2); color: var(--iwb-fg);
   font-size: 12px; outline: none; user-select: text;
 }
-.itw-find-input:focus { border-color: var(--itw-accent); }
-.itw-find-input.itw-invalid { border-color: var(--itw-error); }
-.itw-find-count { min-width: 44px; text-align: center; color: var(--itw-muted); font-size: 11px; font-variant-numeric: tabular-nums; }
-.itw-find-count.itw-invalid { color: var(--itw-error); }
-.itw-find-btn {
-  width: 24px; height: 24px; border-radius: 5px; color: var(--itw-muted); display: inline-flex;
+.iwb-find-input:focus { border-color: var(--iwb-accent); }
+.iwb-find-input.iwb-invalid { border-color: var(--iwb-error); }
+.iwb-find-count { min-width: 44px; text-align: center; color: var(--iwb-muted); font-size: 11px; font-variant-numeric: tabular-nums; }
+.iwb-find-count.iwb-invalid { color: var(--iwb-error); }
+.iwb-find-btn {
+  width: 24px; height: 24px; border-radius: 5px; color: var(--iwb-muted); display: inline-flex;
   align-items: center; justify-content: center; font-size: 13px;
 }
-.itw-find-btn:hover:not(:disabled) { background: rgba(127,127,127,.14); color: var(--itw-fg); }
-.itw-find-btn:disabled { opacity: .35; }
-.itw-find-flag {
+.iwb-find-btn:hover:not(:disabled) { background: rgba(127,127,127,.14); color: var(--iwb-fg); }
+.iwb-find-btn:disabled { opacity: .35; }
+.iwb-find-flag {
   min-width: 26px; height: 22px; padding: 0 5px; border-radius: 4px; border: 1px solid transparent;
-  color: var(--itw-muted); font-family: var(--itw-mono); font-size: 10.5px;
+  color: var(--iwb-muted); font-family: var(--iwb-mono); font-size: 10.5px;
 }
-.itw-find-flag:hover { background: rgba(127,127,127,.14); color: var(--itw-fg); }
-.itw-find-flag.itw-on { border-color: var(--itw-accent); color: var(--itw-accent); background: rgba(76,154,255,.12); }
-.itw-dom-findbar { position: absolute; top: 0; left: 0; right: 0; z-index: 14; box-shadow: 0 4px 12px rgba(0,0,0,.25); }
-::highlight(itw-dom-find) { background-color: rgba(215, 162, 74, .38); }
-::highlight(itw-dom-find-active) { background-color: rgba(76, 154, 255, .55); color: inherit; }
-.itw-conflict-chip {
-  display: inline-flex; align-items: center; gap: 4px; color: var(--itw-warn); font-size: 11px;
+.iwb-find-flag:hover { background: rgba(127,127,127,.14); color: var(--iwb-fg); }
+.iwb-find-flag.iwb-on { border-color: var(--iwb-accent); color: var(--iwb-accent); background: rgba(76,154,255,.12); }
+.iwb-dom-findbar { position: absolute; top: 0; left: 0; right: 0; z-index: 14; box-shadow: 0 4px 12px rgba(0,0,0,.25); }
+::highlight(iwb-dom-find) { background-color: rgba(215, 162, 74, .38); }
+::highlight(iwb-dom-find-active) { background-color: rgba(76, 154, 255, .55); color: inherit; }
+.iwb-conflict-chip {
+  display: inline-flex; align-items: center; gap: 4px; color: var(--iwb-warn); font-size: 11px;
   padding: 0 4px; border: 1px solid rgba(215,162,74,.45); border-radius: 5px;
 }
 
-.itw-search { flex: 1; min-height: 0; display: flex; flex-direction: column; position: relative; z-index: 8; pointer-events: auto; }
-.itw-search * { pointer-events: auto; }
-.itw-search-head {
-  display: flex; align-items: center; gap: 6px; padding: 8px 10px; border-bottom: 1px solid var(--itw-border);
-  background: var(--itw-panel);
+.iwb-search { flex: 1; min-height: 0; display: flex; flex-direction: column; position: relative; z-index: 8; pointer-events: auto; }
+.iwb-search * { pointer-events: auto; }
+.iwb-search-head {
+  display: flex; align-items: center; gap: 6px; padding: 8px 10px; border-bottom: 1px solid var(--iwb-border);
+  background: var(--iwb-panel);
 }
-.itw-search-input {
+.iwb-search-input {
   flex: 1; min-width: 100px; height: 28px; padding: 0 9px; border-radius: 6px;
-  border: 1px solid var(--itw-border); background: var(--itw-panel-2); color: var(--itw-fg);
+  border: 1px solid var(--iwb-border); background: var(--iwb-panel-2); color: var(--iwb-fg);
   outline: none; font-size: 12.5px; user-select: text;
 }
-.itw-search-input:focus { border-color: var(--itw-accent); }
-.itw-search-meta { display: flex; align-items: center; gap: 8px; padding: 5px 12px; color: var(--itw-muted); font-size: 11px; border-bottom: 1px solid var(--itw-border); }
-.itw-search-warn { color: var(--itw-warn); }
-.itw-search-results { flex: 1; min-height: 0; overflow: auto; padding: 4px 0 20px; }
-.itw-search-file { border-bottom: 1px solid var(--itw-border); }
-.itw-search-file-head {
+.iwb-search-input:focus { border-color: var(--iwb-accent); }
+.iwb-search-meta { display: flex; align-items: center; gap: 8px; padding: 5px 12px; color: var(--iwb-muted); font-size: 11px; border-bottom: 1px solid var(--iwb-border); }
+.iwb-search-warn { color: var(--iwb-warn); }
+.iwb-search-results { flex: 1; min-height: 0; overflow: auto; padding: 4px 0 20px; }
+.iwb-search-file { border-bottom: 1px solid var(--iwb-border); }
+.iwb-search-file-head {
   display: flex; align-items: center; gap: 7px; height: 27px; padding: 0 12px;
   background: rgba(127,127,127,.06); position: sticky; top: 0; z-index: 1;
 }
-.itw-search-file-name { font-weight: 600; font-size: 12px; }
-.itw-search-file-dir { color: var(--itw-muted); font-size: 10.5px; overflow: hidden; text-overflow: ellipsis; }
-.itw-search-file-head .itw-count { margin-left: auto; }
-.itw-search-hit {
+.iwb-search-file-name { font-weight: 600; font-size: 12px; }
+.iwb-search-file-dir { color: var(--iwb-muted); font-size: 10.5px; overflow: hidden; text-overflow: ellipsis; }
+.iwb-search-file-head .iwb-count { margin-left: auto; }
+.iwb-search-hit {
   display: flex; align-items: center; gap: 10px; width: 100%; height: 23px; padding: 0 12px 0 20px;
-  text-align: left; font-family: var(--itw-mono); font-size: 11.5px; color: var(--itw-fg);
+  text-align: left; font-family: var(--iwb-mono); font-size: 11.5px; color: var(--iwb-fg);
 }
-.itw-search-hit:hover { background: rgba(76,154,255,.12); }
-.itw-search-line { width: 42px; flex: 0 0 42px; text-align: right; color: var(--itw-muted); font-variant-numeric: tabular-nums; }
-.itw-search-preview { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.itw-search-error { padding: 12px; color: var(--itw-error); font-size: 12px; white-space: pre-wrap; }
+.iwb-search-hit:hover { background: rgba(76,154,255,.12); }
+.iwb-search-line { width: 42px; flex: 0 0 42px; text-align: right; color: var(--iwb-muted); font-variant-numeric: tabular-nums; }
+.iwb-search-preview { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.iwb-search-error { padding: 12px; color: var(--iwb-error); font-size: 12px; white-space: pre-wrap; }
 
-.itw-quick-backdrop { position: absolute; inset: 0; z-index: 70; background: rgba(0,0,0,.38); display: flex; align-items: flex-start; justify-content: center; padding-top: 9vh; }
-.itw-quick {
+.iwb-quick-backdrop { position: absolute; inset: 0; z-index: 70; background: rgba(0,0,0,.38); display: flex; align-items: flex-start; justify-content: center; padding-top: 9vh; }
+.iwb-quick {
   width: min(680px, calc(100% - 32px)); max-height: 72%; display: flex; flex-direction: column;
-  border-radius: 10px; border: 1px solid var(--itw-border-strong); background: var(--itw-overlay);
+  border-radius: 10px; border: 1px solid var(--iwb-border-strong); background: var(--iwb-overlay);
   box-shadow: 0 24px 70px rgba(0,0,0,.5); overflow: hidden;
 }
-.itw-quick-head { display: flex; align-items: center; gap: 8px; padding: 9px 10px; border-bottom: 1px solid var(--itw-border); }
-.itw-quick-title { color: var(--itw-muted); font-size: 11px; white-space: nowrap; }
-.itw-quick-input { flex: 1; min-width: 80px; height: 30px; padding: 0 7px; border: 0; background: transparent; color: var(--itw-fg); outline: none; font-size: 14px; user-select: text; }
-.itw-quick-list { overflow: auto; padding: 4px; min-height: 40px; }
-.itw-quick-row { display: flex; align-items: center; gap: 10px; width: 100%; height: 27px; padding: 0 9px; border-radius: 5px; text-align: left; }
-.itw-quick-row.itw-selected { background: rgba(76,154,255,.2); }
-.itw-quick-name { font-size: 12.5px; white-space: nowrap; }
-.itw-quick-dir { color: var(--itw-muted); font-size: 10.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.itw-quick-empty { padding: 18px; text-align: center; color: var(--itw-muted); font-size: 12px; }
-.itw-quick-foot { padding: 6px 10px; border-top: 1px solid var(--itw-border); color: var(--itw-muted); font-size: 10.5px; }
+.iwb-quick-head { display: flex; align-items: center; gap: 8px; padding: 9px 10px; border-bottom: 1px solid var(--iwb-border); }
+.iwb-quick-title { color: var(--iwb-muted); font-size: 11px; white-space: nowrap; }
+.iwb-quick-input { flex: 1; min-width: 80px; height: 30px; padding: 0 7px; border: 0; background: transparent; color: var(--iwb-fg); outline: none; font-size: 14px; user-select: text; }
+.iwb-quick-list { overflow: auto; padding: 4px; min-height: 40px; }
+.iwb-quick-row { display: flex; align-items: center; gap: 10px; width: 100%; height: 27px; padding: 0 9px; border-radius: 5px; text-align: left; }
+.iwb-quick-row.iwb-selected { background: rgba(76,154,255,.2); }
+.iwb-quick-name { font-size: 12.5px; white-space: nowrap; }
+.iwb-quick-dir { color: var(--iwb-muted); font-size: 10.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.iwb-quick-empty { padding: 18px; text-align: center; color: var(--iwb-muted); font-size: 12px; }
+.iwb-quick-foot { padding: 6px 10px; border-top: 1px solid var(--iwb-border); color: var(--iwb-muted); font-size: 10.5px; }
 
 /* \u2500\u2500 Project filter modes / opened-vs-selected \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
-.itw-filter-mode { display: inline-flex; border: 1px solid var(--itw-border); border-radius: 4px; overflow: hidden; flex: 0 0 auto; }
-.itw-filter-mode button { height: 20px; padding: 0 6px; color: var(--itw-muted); font-size: 10.5px; }
-.itw-filter-mode button.itw-on { background: rgba(76,154,255,.18); color: var(--itw-fg); }
-.itw-filter-mode button + button { border-left: 1px solid var(--itw-border); }
-.itw-filter-hint { padding: 0 12px 5px; color: var(--itw-muted); font-size: 10.5px; }
-.itw-error-text { color: var(--itw-error); }
-.itw-tree-row.itw-opened .itw-tree-name { color: var(--itw-accent); font-weight: 600; }
-.itw-tree-row.itw-opened::before {
+.iwb-filter-mode { display: inline-flex; border: 1px solid var(--iwb-border); border-radius: 4px; overflow: hidden; flex: 0 0 auto; }
+.iwb-filter-mode button { height: 20px; padding: 0 6px; color: var(--iwb-muted); font-size: 10.5px; }
+.iwb-filter-mode button.iwb-on { background: rgba(76,154,255,.18); color: var(--iwb-fg); }
+.iwb-filter-mode button + button { border-left: 1px solid var(--iwb-border); }
+.iwb-filter-hint { padding: 0 12px 5px; color: var(--iwb-muted); font-size: 10.5px; }
+.iwb-error-text { color: var(--iwb-error); }
+.iwb-tree-row.iwb-opened .iwb-tree-name { color: var(--iwb-accent); font-weight: 600; }
+.iwb-tree-row.iwb-opened::before {
   content: ''; position: absolute; left: 0; top: 2px; bottom: 2px; width: 2px; border-radius: 2px;
-  background: var(--itw-accent);
+  background: var(--iwb-accent);
 }
-.itw-tree-relative { margin-left: auto; color: var(--itw-muted); font-size: 10.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 46%; }
+.iwb-tree-relative { margin-left: auto; color: var(--iwb-muted); font-size: 10.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 46%; }
 
 /* \u2500\u2500 Git Drawer \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
-.itw-branch-switch {
+.iwb-branch-switch {
   display: inline-flex; align-items: center; gap: 5px; height: 24px; padding: 0 7px; border-radius: 5px;
-  border: 1px solid var(--itw-border); color: var(--itw-fg); font-size: 11.5px; max-width: 210px;
+  border: 1px solid var(--iwb-border); color: var(--iwb-fg); font-size: 11.5px; max-width: 210px;
 }
-.itw-branch-switch:hover { border-color: var(--itw-border-strong); background: rgba(127,127,127,.08); }
-.itw-branch-caret { color: var(--itw-muted); font-size: 9px; }
-.itw-branch-popover {
+.iwb-branch-switch:hover { border-color: var(--iwb-border-strong); background: rgba(127,127,127,.08); }
+.iwb-branch-caret { color: var(--iwb-muted); font-size: 9px; }
+.iwb-branch-popover {
   position: fixed; z-index: 42; width: 260px; padding: 6px; border-radius: 8px;
-  border: 1px solid var(--itw-border-strong); background: var(--itw-overlay);
+  border: 1px solid var(--iwb-border-strong); background: var(--iwb-overlay);
   box-shadow: 0 14px 36px rgba(0,0,0,.4);
 }
-.itw-branch-list { max-height: 280px; overflow: auto; margin-top: 5px; }
-.itw-branch-row {
+.iwb-branch-list { max-height: 280px; overflow: auto; margin-top: 5px; }
+.iwb-branch-row {
   display: flex; align-items: center; gap: 6px; width: 100%; height: 25px; padding: 0 6px;
   border-radius: 4px; text-align: left; font-size: 12px;
 }
-.itw-branch-row.itw-selected { background: rgba(76,154,255,.2); }
-.itw-branch-check { width: 12px; flex: 0 0 12px; color: var(--itw-accent); }
-.itw-git-main { flex: 1; min-height: 0; display: flex; position: relative; }
-.itw-git-table { flex: 1; min-width: 0; }
-.itw-git-drawer {
+.iwb-branch-row.iwb-selected { background: rgba(76,154,255,.2); }
+.iwb-branch-check { width: 12px; flex: 0 0 12px; color: var(--iwb-accent); }
+.iwb-git-main { flex: 1; min-height: 0; display: flex; position: relative; }
+.iwb-git-table { flex: 1; min-width: 0; }
+.iwb-git-drawer {
   position: relative; flex: 0 0 auto; min-width: 300px; display: flex; flex-direction: column; min-height: 0;
-  border-left: 1px solid var(--itw-border-strong); background: var(--itw-panel);
+  border-left: 1px solid var(--iwb-border-strong); background: var(--iwb-panel);
 }
-.itw-git-drawer-overlay {
+.iwb-git-drawer-overlay {
   position: absolute; inset: 0; width: 100% !important; min-width: 0; z-index: 12; border-left: 0;
 }
-.itw-git-drawer-backdrop { position: absolute; inset: 0; z-index: 11; background: rgba(0,0,0,.42); }
-.itw-git-drawer-resizer { position: absolute; left: -3px; top: 0; bottom: 0; width: 6px; cursor: col-resize; z-index: 13; }
-.itw-git-drawer-resizer:hover { background: rgba(76,154,255,.28); }
-.itw-git-drawer-head {
+.iwb-git-drawer-backdrop { position: absolute; inset: 0; z-index: 11; background: rgba(0,0,0,.42); }
+.iwb-git-drawer-resizer { position: absolute; left: -3px; top: 0; bottom: 0; width: 6px; cursor: col-resize; z-index: 13; }
+.iwb-git-drawer-resizer:hover { background: rgba(76,154,255,.28); }
+.iwb-git-drawer-head {
   display: flex; align-items: center; gap: 6px; min-height: 34px; padding: 5px 6px 5px 10px;
-  border-bottom: 1px solid var(--itw-border); background: var(--itw-panel);
+  border-bottom: 1px solid var(--iwb-border); background: var(--iwb-panel);
 }
-.itw-git-drawer-title { font-weight: 600; font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.itw-git-drawer-head .itw-spacer { flex: 1; }
-.itw-git-drawer-body { flex: 1; min-height: 0; overflow: auto; padding: 8px 10px 24px; }
-.itw-git-drawer-meta { display: flex; flex-wrap: wrap; gap: 7px 10px; color: var(--itw-muted); font-size: 11px; }
-.itw-git-drawer-sha { font-family: var(--itw-mono); color: var(--itw-accent); }
-.itw-git-open-full { margin-top: 7px; }
-.itw-git-drawer-body-text {
-  margin: 7px 0 0; white-space: pre-wrap; color: var(--itw-muted); font-size: 11.5px;
-  font-family: var(--itw-font); max-height: 120px; overflow: auto; user-select: text;
+.iwb-git-drawer-title { font-weight: 600; font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.iwb-git-drawer-head .iwb-spacer { flex: 1; }
+.iwb-git-drawer-body { flex: 1; min-height: 0; overflow: auto; padding: 8px 10px 24px; }
+.iwb-git-drawer-meta { display: flex; flex-wrap: wrap; gap: 7px 10px; color: var(--iwb-muted); font-size: 11px; }
+.iwb-git-drawer-sha { font-family: var(--iwb-mono); color: var(--iwb-accent); }
+.iwb-git-open-full { margin-top: 7px; }
+.iwb-git-drawer-body-text {
+  margin: 7px 0 0; white-space: pre-wrap; color: var(--iwb-muted); font-size: 11.5px;
+  font-family: var(--iwb-font); max-height: 120px; overflow: auto; user-select: text;
 }
-.itw-git-drawer-section-title {
-  display: flex; align-items: center; gap: 5px; margin: 10px 0 4px; color: var(--itw-muted);
+.iwb-git-drawer-section-title {
+  display: flex; align-items: center; gap: 5px; margin: 10px 0 4px; color: var(--iwb-muted);
   font-size: 10.5px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
 }
-.itw-git-drawer-files { display: flex; flex-direction: column; gap: 1px; }
-.itw-git-drawer-file {
+.iwb-git-drawer-files { display: flex; flex-direction: column; gap: 1px; }
+.iwb-git-drawer-file {
   display: flex; align-items: center; gap: 5px; width: 100%; min-height: 23px; padding: 0 5px;
   border-radius: 4px; text-align: left; font-size: 11.5px;
 }
-.itw-git-drawer-file:hover { background: rgba(127,127,127,.12); }
-.itw-git-drawer-file.itw-selected { background: rgba(76,154,255,.16); }
-.itw-git-drawer-file .itw-git-file-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.itw-git-drawer-file .itw-git-file-dir { color: var(--itw-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.itw-git-drawer-file .itw-additions, .itw-git-drawer-file .itw-deletions { margin-left: 0; font-size: 10px; }
-.itw-git-file-status { width: 13px; flex: 0 0 13px; text-align: center; font-family: var(--itw-mono); font-size: 10px; color: var(--itw-muted); }
-.itw-status-A { color: var(--itw-add); } .itw-status-D { color: var(--itw-del); } .itw-status-R { color: var(--itw-warn); }
-.itw-git-drawer-inline { margin-top: 8px; border-top: 1px solid var(--itw-border); }
-.itw-git-inline-diff {
-  max-height: 320px; overflow: auto; border: 1px solid var(--itw-border); border-radius: 5px;
-  background: var(--itw-bg); font-family: var(--itw-mono); font-size: 11px; line-height: 17px;
+.iwb-git-drawer-file:hover { background: rgba(127,127,127,.12); }
+.iwb-git-drawer-file.iwb-selected { background: rgba(76,154,255,.16); }
+.iwb-git-drawer-file .iwb-git-file-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.iwb-git-drawer-file .iwb-git-file-dir { color: var(--iwb-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.iwb-git-drawer-file .iwb-additions, .iwb-git-drawer-file .iwb-deletions { margin-left: 0; font-size: 10px; }
+.iwb-git-file-status { width: 13px; flex: 0 0 13px; text-align: center; font-family: var(--iwb-mono); font-size: 10px; color: var(--iwb-muted); }
+.iwb-status-A { color: var(--iwb-add); } .iwb-status-D { color: var(--iwb-del); } .iwb-status-R { color: var(--iwb-warn); }
+.iwb-git-drawer-inline { margin-top: 8px; border-top: 1px solid var(--iwb-border); }
+.iwb-git-inline-diff {
+  max-height: 320px; overflow: auto; border: 1px solid var(--iwb-border); border-radius: 5px;
+  background: var(--iwb-bg); font-family: var(--iwb-mono); font-size: 11px; line-height: 17px;
   user-select: text; padding: 4px 0;
 }
-.itw-git-inline-line { white-space: pre; padding: 0 8px; }
-.itw-git-inline-line.itw-add { background: rgba(79,180,119,.12); }
-.itw-git-inline-line.itw-del { background: rgba(226,104,111,.12); }
-.itw-git-inline-line.itw-hunk { color: var(--itw-accent); background: rgba(76,154,255,.08); }
+.iwb-git-inline-line { white-space: pre; padding: 0 8px; }
+.iwb-git-inline-line.iwb-add { background: rgba(79,180,119,.12); }
+.iwb-git-inline-line.iwb-del { background: rgba(226,104,111,.12); }
+.iwb-git-inline-line.iwb-hunk { color: var(--iwb-accent); background: rgba(76,154,255,.08); }
 
 /* Read-only code / diff must be copyable despite the root user-select:none. */
-.itw-code, .itw-diff-text, .itw-diff-side-cell, .itw-diff-row { user-select: text; }
-.itw-diff-row .itw-diff-num, .itw-diff-row .itw-diff-sign, .itw-diff-row .itw-diff-gutter { user-select: none; }
+.iwb-code, .iwb-diff-text, .iwb-diff-side-cell, .iwb-diff-row { user-select: text; }
+.iwb-diff-row .iwb-diff-num, .iwb-diff-row .iwb-diff-sign, .iwb-diff-row .iwb-diff-gutter { user-select: none; }
 
 @container ide-workbench (max-width: 760px) {
-  .itw-topbar { gap: 4px; padding: 0 6px; }
-  .itw-project-select { flex: 1; padding: 0 3px; }
-  .itw-project-path, .itw-top-spacer { display: none; }
-  .itw-branch-chip { max-width: 100px; padding: 0 4px; }
-  .itw-topbar > button { flex-shrink: 0; }
+  .iwb-topbar { gap: 4px; padding: 0 6px; }
+  .iwb-project-select { flex: 1; padding: 0 3px; }
+  .iwb-project-path, .iwb-top-spacer { display: none; }
+  .iwb-branch-chip { max-width: 100px; padding: 0 4px; }
+  .iwb-topbar > button { flex-shrink: 0; }
   /* Keep a readable editor: below this width the left dock follows the pane
      instead of holding its remembered pixel width. */
-  .itw-left { width: min(var(--itw-left-width, 300px), ${LEFT_PANE_RATIO}cqw); }
-  .itw-statusbar { overflow-x: auto; white-space: nowrap; }
-  .itw-status-item { flex-shrink: 0; }
-  .itw-editor-toolbar { overflow-x: auto; flex-shrink: 0; }
-  .itw-modal { max-width: calc(100% - 16px); }
+  .iwb-left { width: min(var(--iwb-left-width, 300px), ${LEFT_PANE_RATIO}cqw); }
+  .iwb-statusbar { overflow-x: auto; white-space: nowrap; }
+  .iwb-status-item { flex-shrink: 0; }
+  .iwb-editor-toolbar { overflow-x: auto; flex-shrink: 0; }
+  .iwb-modal { max-width: calc(100% - 16px); }
 }
 
 /* Stack only when a side-by-side layout would leave the editor too narrow.
    Most laptop windows put the right sidebar at ~45% of the frame, well above
    this width; docking vertically is the fallback, not the normal mode. */
 @container ide-workbench (max-width: ${STACK_WIDTH}px) {
-  .itw-body { flex-direction: column; }
-  .itw-stripe { width: 100%; flex: 0 0 38px; flex-direction: row; padding: 2px 6px; border-right: 0; border-bottom: 1px solid var(--itw-border); }
-  .itw-stripe-spacer { flex: 1; }
-  .itw-stripe-btn { width: 30px; height: 30px; }
-  .itw-stripe-btn.itw-on::before { left: 6px; right: 6px; top: auto; bottom: -3px; width: auto; height: 2px; }
-  .itw-left { width: 100% !important; min-width: 0; max-width: none; flex: 0 1 38%; min-height: 120px; border-right: 0; border-bottom: 1px solid var(--itw-border); }
-  .itw-left-resizer { display: none; }
-  .itw-center { min-height: 140px; }
-  .itw-bottom { max-height: 65%; min-height: 100px; }
+  .iwb-body { flex-direction: column; }
+  .iwb-stripe { width: 100%; flex: 0 0 38px; flex-direction: row; padding: 2px 6px; border-right: 0; border-bottom: 1px solid var(--iwb-border); }
+  .iwb-stripe-spacer { flex: 1; }
+  .iwb-stripe-btn { width: 30px; height: 30px; }
+  .iwb-stripe-btn.iwb-on::before { left: 6px; right: 6px; top: auto; bottom: -3px; width: auto; height: 2px; }
+  .iwb-left { width: 100% !important; min-width: 0; max-width: none; flex: 0 1 38%; min-height: 120px; border-right: 0; border-bottom: 1px solid var(--iwb-border); }
+  .iwb-left-resizer { display: none; }
+  .iwb-center { min-height: 140px; }
+  .iwb-bottom { max-height: 65%; min-height: 100px; }
 }
 `;
 
 // src/client/index.jsx
 var inject = ["slots", "locale", "sidebarRight", "sidebarRightTabs", "sessions"];
-var PANEL_ID = "ide-toolwindows";
+var PANEL_ID = "ide-workbench";
 function PanelIcon({ size = 20 }) {
   return import_react18.default.createElement(
     "svg",
@@ -51146,16 +51146,16 @@ function FileLinkBridge({ store, tab: tab3, ctx, suppressSelf }) {
   const button = (key, label, extra, onClick) => import_react18.default.createElement("button", {
     key,
     type: "button",
-    className: `itw-textbtn ${extra}`.trim(),
+    className: `iwb-textbtn ${extra}`.trim(),
     onClick
   }, store.t(label));
   const card = (title, body, actions) => import_react18.default.createElement(
     "div",
-    { className: "itw-empty itw-link-prompt" },
-    import_react18.default.createElement("div", { className: "itw-empty-title" }, store.t(title)),
-    body === "" ? null : import_react18.default.createElement("div", { className: "itw-link-body" }, store.t(body)),
-    path2 === "" ? null : import_react18.default.createElement("div", { className: "itw-link-path" }, path2),
-    import_react18.default.createElement("div", { className: "itw-link-actions" }, actions)
+    { className: "iwb-empty iwb-link-prompt" },
+    import_react18.default.createElement("div", { className: "iwb-empty-title" }, store.t(title)),
+    body === "" ? null : import_react18.default.createElement("div", { className: "iwb-link-body" }, store.t(body)),
+    path2 === "" ? null : import_react18.default.createElement("div", { className: "iwb-link-path" }, path2),
+    import_react18.default.createElement("div", { className: "iwb-link-actions" }, actions)
   );
   const defaultButton = () => button("default", "links.openInDefaultSidebar", "", () => {
     if (!openDefault()) setView({ phase: "failed", absolute: path2 });
@@ -51164,12 +51164,12 @@ function FileLinkBridge({ store, tab: tab3, ctx, suppressSelf }) {
   if (view.phase === "opening") {
     content2 = import_react18.default.createElement(
       "div",
-      { className: "itw-empty" },
-      import_react18.default.createElement("div", { className: "itw-empty-title" }, store.t("common.loading"))
+      { className: "iwb-empty" },
+      import_react18.default.createElement("div", { className: "iwb-empty-title" }, store.t("common.loading"))
     );
   } else if (view.phase === "prompt") {
     content2 = card("links.switchProjectTitle", "links.switchProjectBody", [
-      button("yes", "links.switchProjectYes", "itw-primary", () => {
+      button("yes", "links.switchProjectYes", "iwb-primary", () => {
         void begin(true);
       }),
       defaultButton()
@@ -51191,7 +51191,7 @@ function FileLinkBridge({ store, tab: tab3, ctx, suppressSelf }) {
       button("close", "common.close", "", close)
     ]);
   }
-  return import_react18.default.createElement("div", { className: "itw-link-shell" }, content2);
+  return import_react18.default.createElement("div", { className: "iwb-link-shell" }, content2);
 }
 function BoundWorkbench({ getStore, sessionId, useTabInfo, ctx, reportVisible, suppressSelf }) {
   const { tab: tab3, sidebar } = useTabInfo();
@@ -51223,7 +51223,7 @@ function OpenButton({ open, t: t2 }) {
     type: "button",
     title: t2("panelLabel"),
     "aria-label": t2("panelLabel"),
-    className: "itw-sidebar-open",
+    className: "iwb-sidebar-open",
     onClick: open
   }, import_react18.default.createElement(PanelIcon, { size: 18 }));
 }
@@ -51236,7 +51236,7 @@ function apply(ctx) {
       offZh();
       offEn();
     };
-  }, "dsh-ide-toolwindows: dictionaries");
+  }, "dsh-ide-workbench: dictionaries");
   const settingsStore = new WorkbenchStore(ctx, t2);
   void settingsStore.init();
   let suppressFileLinkClaim = false;
@@ -51246,7 +51246,7 @@ function apply(ctx) {
       suppressFileLinkClaim = false;
     };
   };
-  const Styles = () => import_react18.default.createElement("style", { "data-dsh-ide-toolwindows": "" }, `${xterm_default}
+  const Styles = () => import_react18.default.createElement("style", { "data-dsh-ide-workbench": "" }, `${xterm_default}
 ${CSS2}`);
   const stores = /* @__PURE__ */ new Map();
   const hasMounted = typeof ctx.sidebarRight?.mounted?.getSnapshot === "function";
@@ -51344,7 +51344,7 @@ ${CSS2}`);
     setPrimitivesLoader(() => modules.import("@deepseek-ai/dsh-client-ui-primitives"));
   }
   ctx.effect(() => ctx.sidebarRightTabs.register({
-    id: "dsh-ide-toolwindows",
+    id: "dsh-ide-workbench",
     kind: PANEL_ID,
     title: (address) => isFileAddress(address) ? basenameOfFileAddress(address) ?? t2("panelLabel") : t2("panelLabel"),
     keepMounted: true,
@@ -51370,10 +51370,10 @@ ${CSS2}`);
       return isPathWithin(workspace, absolute);
     },
     guide: [{ id: PANEL_ID, title: () => t2("panelLabel"), icon: PanelIcon, order: 35 }]
-  }), "dsh-ide-toolwindows: sidebar tab type");
+  }), "dsh-ide-workbench: sidebar tab type");
   ctx.effect(() => ctx.slots.inject("sidebar.right.pane.tab", () => ctx.slots.register({
     name: "sidebar.right.pane.tab",
-    key: "dsh-ide-toolwindows"
+    key: "dsh-ide-workbench"
   }, (props) => import_react18.default.createElement(
     import_react18.default.Fragment,
     null,
@@ -51385,7 +51385,7 @@ ${CSS2}`);
       reportVisible,
       suppressSelf
     })
-  ))), "dsh-ide-toolwindows: sidebar body");
+  ))), "dsh-ide-workbench: sidebar body");
   ctx.effect(() => ctx.slots.inject("conversation.session.header.utilities", () => ctx.slots.register({
     name: "conversation.session.header.utilities",
     id: PANEL_ID,
@@ -51396,7 +51396,7 @@ ${CSS2}`);
     null,
     import_react18.default.createElement(Styles),
     import_react18.default.createElement(OpenButton, { open: toggle, t: t2 })
-  ))), "dsh-ide-toolwindows: sidebar entry");
+  ))), "dsh-ide-workbench: sidebar entry");
   ctx.effect(() => ctx.slots.inject("conversation.hero.options", () => ctx.slots.register({
     name: "conversation.hero.options",
     id: PANEL_ID,
@@ -51407,7 +51407,7 @@ ${CSS2}`);
     null,
     import_react18.default.createElement(Styles),
     import_react18.default.createElement(OpenButton, { open, t: t2 })
-  ))), "dsh-ide-toolwindows: new-session entry");
+  ))), "dsh-ide-workbench: new-session entry");
   ctx.effect(() => ctx.slots.inject("sidebar.footer.action", () => ctx.slots.register({
     name: "sidebar.footer.action",
     id: PANEL_ID,
@@ -51418,7 +51418,7 @@ ${CSS2}`);
     null,
     import_react18.default.createElement(Styles),
     import_react18.default.createElement(OpenButton, { open, t: t2 })
-  ))), "dsh-ide-toolwindows: sidebar footer entry");
+  ))), "dsh-ide-workbench: sidebar footer entry");
   ctx.effect(() => {
     const mounted = ctx.sidebarRight?.mounted;
     if (typeof mounted?.subscribe !== "function" || typeof mounted.getSnapshot !== "function") {
@@ -51441,7 +51441,7 @@ ${CSS2}`);
       unsubscribeTabs?.();
       clearPending();
     };
-  }, "dsh-ide-toolwindows: workspace continuity");
+  }, "dsh-ide-workbench: workspace continuity");
   ctx.effect(() => ctx.slots.inject("settings.section", () => ctx.slots.register({
     name: "settings.section",
     id: PANEL_ID,
@@ -51452,7 +51452,7 @@ ${CSS2}`);
     null,
     import_react18.default.createElement(Styles),
     import_react18.default.createElement(BoundSettings, { store: settingsStore })
-  ))), "dsh-ide-toolwindows: settings section");
+  ))), "dsh-ide-workbench: settings section");
   ctx.effect(() => {
     const onKeyDown = (event) => {
       if (event.repeat || ctx.sidebarRight.mounted.getSnapshot() === void 0) return;
@@ -51460,7 +51460,7 @@ ${CSS2}`);
       const shortcuts = (store ?? settingsStore).state.settings?.shortcuts;
       if (shortcuts == null) return;
       const target = event.target;
-      const inWorkbench = target instanceof Element && target.closest(".itw-root") !== null;
+      const inWorkbench = target instanceof Element && target.closest(".iwb-root") !== null;
       const inTerminal = isTerminalTarget(event.target);
       if (store?.state.active === true && inWorkbench) {
         if (matchesShortcut(shortcuts.findInFiles ?? "Ctrl+Shift+F", event) || matchesShortcut(shortcuts.findInFilesAlt ?? "Ctrl+Alt+F", event)) {
@@ -51540,14 +51540,14 @@ ${CSS2}`);
     };
     document.addEventListener("keydown", onKeyDown, true);
     return () => document.removeEventListener("keydown", onKeyDown, true);
-  }, "dsh-ide-toolwindows: shortcuts");
+  }, "dsh-ide-workbench: shortcuts");
   ctx.effect(() => () => {
     for (const store of [...stores.values(), settingsStore]) {
       store.deactivate();
       for (const unsubscribe of store.unsubscribers.splice(0)) unsubscribe();
     }
     stores.clear();
-  }, "dsh-ide-toolwindows: store teardown");
+  }, "dsh-ide-workbench: store teardown");
 }
 
     return module.exports;

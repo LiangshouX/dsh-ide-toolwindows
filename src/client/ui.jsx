@@ -60,20 +60,20 @@ export function ContextMenu({ x, y, items, onClose, depth = 0 }) {
   }, [position.left, position.top, viewportWidth, viewportHeight, hasWindow])
   return React.createElement('div', {
     ref,
-    className: `itw-menu ${depth === 0 ? 'itw-menu-root' : 'itw-menu-sub'}`,
+    className: `iwb-menu ${depth === 0 ? 'iwb-menu-root' : 'iwb-menu-sub'}`,
     style: { left: `${position.left}px`, top: `${position.top}px`, minWidth: `${width}px` },
     onContextMenu: event => event.preventDefault(),
   }, items.map((item, index) => {
-    if (item === null) return React.createElement('div', { key: `sep-${index}`, className: 'itw-menu-sep' })
+    if (item === null) return React.createElement('div', { key: `sep-${index}`, className: 'iwb-menu-sep' })
     if (item.label !== undefined && item.action === undefined) {
-      return React.createElement('div', { key: `label-${index}`, className: 'itw-menu-label' }, item.label)
+      return React.createElement('div', { key: `label-${index}`, className: 'iwb-menu-label' }, item.label)
     }
     const hasSubmenu = Array.isArray(item.submenu) && item.submenu.length > 0
     const open = hasSubmenu && openIndex === index
     const row = React.createElement('button', {
       key: item.key ?? `item-${index}`,
       type: 'button',
-      className: `itw-menu-item ${item.danger === true ? 'itw-menu-danger' : ''}`,
+      className: `iwb-menu-item ${item.danger === true ? 'iwb-menu-danger' : ''}`,
       disabled: item.disabled === true,
       'aria-haspopup': hasSubmenu ? 'menu' : undefined,
       'aria-expanded': hasSubmenu ? open : undefined,
@@ -96,11 +96,11 @@ export function ContextMenu({ x, y, items, onClose, depth = 0 }) {
         }
       },
     },
-      React.createElement('span', { className: 'itw-menu-check' }, item.checked === true ? '✓' : ''),
-      React.createElement('span', { className: 'itw-menu-icon' }, item.icon ?? null),
-      React.createElement('span', { className: 'itw-menu-text' }, item.text),
-      React.createElement('span', { className: 'itw-menu-shortcut' }, item.shortcut ?? ''),
-      React.createElement('span', { className: 'itw-menu-arrow' }, hasSubmenu ? '▸' : ''),
+      React.createElement('span', { className: 'iwb-menu-check' }, item.checked === true ? '✓' : ''),
+      React.createElement('span', { className: 'iwb-menu-icon' }, item.icon ?? null),
+      React.createElement('span', { className: 'iwb-menu-text' }, item.text),
+      React.createElement('span', { className: 'iwb-menu-shortcut' }, item.shortcut ?? ''),
+      React.createElement('span', { className: 'iwb-menu-arrow' }, hasSubmenu ? '▸' : ''),
     )
     if (!hasSubmenu || !open || subAnchor === null) return row
     return React.createElement(React.Fragment, { key: `group-${index}` },
@@ -145,16 +145,16 @@ export function ConfirmModal({ dialog, onClose }) {
           action: () => dialog.onConfirm?.(),
         },
       ]
-  return React.createElement('div', { className: 'itw-modal-backdrop', onMouseDown: event => { if (event.target === event.currentTarget) onClose() } },
-    React.createElement('div', { className: 'itw-modal', role: 'dialog', 'aria-modal': 'true', 'aria-label': dialog.title },
+  return React.createElement('div', { className: 'iwb-modal-backdrop', onMouseDown: event => { if (event.target === event.currentTarget) onClose() } },
+    React.createElement('div', { className: 'iwb-modal', role: 'dialog', 'aria-modal': 'true', 'aria-label': dialog.title },
       React.createElement('h2', null, dialog.title),
       React.createElement('p', null, dialog.body),
-      React.createElement('div', { className: 'itw-modal-actions' },
+      React.createElement('div', { className: 'iwb-modal-actions' },
         actions.map((action, index) => React.createElement('button', {
           key: action.key ?? index,
           ref: index === 0 ? cancelRef : undefined,
           type: 'button',
-          className: `itw-textbtn ${action.primary === true ? 'itw-primary' : ''} ${action.danger === true ? 'itw-danger-solid' : ''}`,
+          className: `iwb-textbtn ${action.primary === true ? 'iwb-primary' : ''} ${action.danger === true ? 'iwb-danger-solid' : ''}`,
           autoFocus: index === 0,
           onClick: () => { onClose(); action.action?.() },
         }, action.label)),
@@ -166,11 +166,11 @@ export function ConfirmModal({ dialog, onClose }) {
 /** Transient toast pinned above the status bar. */
 export function Toast({ toast }) {
   if (toast === null || toast === undefined) return null
-  return React.createElement('div', { className: `itw-toast itw-${toast.kind}` },
-    React.createElement('div', { className: 'itw-toast-text' },
+  return React.createElement('div', { className: `iwb-toast iwb-${toast.kind}` },
+    React.createElement('div', { className: 'iwb-toast-text' },
       React.createElement('div', null, toast.text),
       toast.detail !== '' && toast.detail !== undefined
-        ? React.createElement('div', { className: 'itw-toast-detail' }, toast.detail)
+        ? React.createElement('div', { className: 'iwb-toast-detail' }, toast.detail)
         : null,
     ),
   )
@@ -210,7 +210,7 @@ export function ShortcutCapture({
   }, [active])
   return React.createElement('button', {
     type: 'button',
-    className: `itw-settings-shortcut ${armed ? 'itw-capturing' : ''}`,
+    className: `iwb-settings-shortcut ${armed ? 'iwb-capturing' : ''}`,
     onClick: () => { setArmed(true); onActivate?.(true) },
     title: hint,
     'aria-label': hint,
@@ -218,7 +218,7 @@ export function ShortcutCapture({
 }
 
 export function Kbd({ children }) {
-  return React.createElement('span', { className: 'itw-kbd' }, children)
+  return React.createElement('span', { className: 'iwb-kbd' }, children)
 }
 
 /* ── icons used across panels (inline, 14px) ─────────────────────────── */

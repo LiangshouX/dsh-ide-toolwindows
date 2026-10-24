@@ -138,7 +138,7 @@ export function profileBase() {
 
 /** Absolute settings file path. */
 export function settingsFile() {
-  return join(profileBase(), 'ide-toolwindows', 'settings.json')
+  return join(profileBase(), 'ide-workbench', 'settings.json')
 }
 
 function isPlainObject(value) {

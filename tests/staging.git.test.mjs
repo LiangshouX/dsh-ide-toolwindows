@@ -18,7 +18,7 @@ test('line and hunk staging round-trip against real git', async (t) => {
     t.skip('git is not installed')
     return
   }
-  const dir = await mkdtemp(join(tmpdir(), 'itw-staging-'))
+  const dir = await mkdtemp(join(tmpdir(), 'iwb-staging-'))
   const git = (...args) => execFileSync('git', args, { cwd: dir, encoding: 'utf8' })
   const gitIn = (args, input) => execFileSync('git', args, { cwd: dir, encoding: 'utf8', input })
   try {
@@ -67,7 +67,7 @@ test('discard clears both the index and the worktree', async (t) => {
     t.skip('git is not installed')
     return
   }
-  const dir = await mkdtemp(join(tmpdir(), 'itw-discard-'))
+  const dir = await mkdtemp(join(tmpdir(), 'iwb-discard-'))
   const git = (...args) => execFileSync('git', args, { cwd: dir, encoding: 'utf8' })
   try {
     git('init', '-q', '-b', 'main')

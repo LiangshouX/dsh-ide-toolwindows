@@ -32,12 +32,12 @@ test('author/date columns stay visible when no Drawer is open', () => {
 })
 
 test('narrow Git CSS compresses author/date instead of hiding them', () => {
-  assert.match(CSS, /\.itw-git-narrow[^{]*\{[^}]*66px 78px/)
-  assert.doesNotMatch(CSS, /\.itw-git-narrow[^{]*nth-child\(4\)[^{]*\{[^}]*display:\s*none/)
+  assert.match(CSS, /\.iwb-git-narrow[^{]*\{[^}]*66px 78px/)
+  assert.doesNotMatch(CSS, /\.iwb-git-narrow[^{]*nth-child\(4\)[^{]*\{[^}]*display:\s*none/)
 })
 
 test('the Git root fills the bottom dock instead of shrink-wrapping its content', () => {
-  assert.match(CSS, /\.itw-git \{[^}]*flex: 1 1 auto[^}]*width: 100%/)
+  assert.match(CSS, /\.iwb-git \{[^}]*flex: 1 1 auto[^}]*width: 100%/)
 })
 
 test('compact Git date keeps month/day and time visible', () => {

@@ -1,15 +1,15 @@
 {
-  "name": "dsh-ide-toolwindows",
+  "name": "dsh-ide-workbench",
   "version": "0.3.0",
-  "description": "JetBrains-style tool windows for DeepSeek Harness: Project, Commit, Terminal and Git with IDE selection semantics, file operations, changelists, a bottom Git details pane, compare and word-level diff, in one shared repository model. | DSH 插件：JetBrains 式工具窗——Project / Commit / Terminal / Git 四窗共享同一份仓库状态，支持选中优先的文件操作、变更列表、Git 底部详情面板、比较与单词级差异。",
+  "description": "JetBrains-style IDE workbench for DeepSeek Harness: Project, Commit, Terminal and Git tool windows with IDE selection semantics, file operations, changelists, a bottom Git details pane, compare and word-level diff, in one shared repository model. | DSH 插件：JetBrains 式 IDE 工作台——Project / Commit / Terminal / Git 四窗共享同一份仓库状态，支持选中优先的文件操作、变更列表、Git 底部详情面板、比较与单词级差异。",
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/LiangshouX/dsh-ide-toolwindows.git"
+    "url": "git+https://github.com/LiangshouX/dsh-ide-workbench.git"
   },
-  "homepage": "https://github.com/LiangshouX/dsh-ide-toolwindows#readme",
+  "homepage": "https://github.com/LiangshouX/dsh-ide-workbench#readme",
   "bugs": {
-    "url": "https://github.com/LiangshouX/dsh-ide-toolwindows/issues"
+    "url": "https://github.com/LiangshouX/dsh-ide-workbench/issues"
   },
   "author": "LiangshouX",
   "main": "src/index.js",
@@ -62,7 +62,7 @@
     "deepseek-harness",
     "dsh-plugin",
     "ide",
-    "tool-windows",
+    "workbench",
     "project",
     "git",
     "terminal",

@@ -52,7 +52,7 @@ test('IDEA request uses the selected IDE project and the exact clicked file', as
   try {
     assert.deepEqual(await store.openInIdea(path), { accepted: true })
     assert.equal(requests.length, 1)
-    assert.match(requests[0].url, /\/ide-toolwindows\/api\/fs\.openInIde$/)
+    assert.match(requests[0].url, /\/ide-workbench\/api\/fs\.openInIde$/)
     assert.deepEqual(requests[0].body, { ide: 'idea', root: store.state.root, path })
     assert.deepEqual(toasts[0], ['success', 'project.ideRequested'])
   } finally {

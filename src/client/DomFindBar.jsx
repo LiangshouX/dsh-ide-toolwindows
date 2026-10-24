@@ -13,7 +13,7 @@ function textNodes(container) {
     acceptNode(node) {
       const parent = node.parentElement
       if (parent === null) return NodeFilter.FILTER_REJECT
-      if (parent.closest('script, style, .itw-outline, .itw-findbar')) return NodeFilter.FILTER_REJECT
+      if (parent.closest('script, style, .iwb-outline, .iwb-findbar')) return NodeFilter.FILTER_REJECT
       return node.nodeValue === '' ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT
     },
   })
@@ -83,12 +83,12 @@ export function DomFindBar({ containerRef, t, onClose }) {
   const paint = (ranges, index) => {
     rangesRef.current = ranges
     if (typeof CSS === 'undefined' || typeof Highlight === 'undefined' || CSS.highlights === undefined) return
-    CSS.highlights.delete('itw-dom-find')
-    CSS.highlights.delete('itw-dom-find-active')
+    CSS.highlights.delete('iwb-dom-find')
+    CSS.highlights.delete('iwb-dom-find-active')
     if (ranges.length === 0) return
-    CSS.highlights.set('itw-dom-find', new Highlight(...ranges))
+    CSS.highlights.set('iwb-dom-find', new Highlight(...ranges))
     if (index >= 0 && ranges[index] !== undefined) {
-      CSS.highlights.set('itw-dom-find-active', new Highlight(ranges[index]))
+      CSS.highlights.set('iwb-dom-find-active', new Highlight(ranges[index]))
     }
   }
 
@@ -136,8 +136,8 @@ export function DomFindBar({ containerRef, t, onClose }) {
   }, [query, caseSensitive, wholeWord, regexp])
   useEffect(() => () => {
     if (typeof CSS !== 'undefined' && CSS.highlights !== undefined) {
-      CSS.highlights.delete('itw-dom-find')
-      CSS.highlights.delete('itw-dom-find-active')
+      CSS.highlights.delete('iwb-dom-find')
+      CSS.highlights.delete('iwb-dom-find-active')
     }
   }, [])
 
@@ -155,11 +155,11 @@ export function DomFindBar({ containerRef, t, onClose }) {
   }
 
   const flag = (on, label, title, onClick) => React.createElement('button', {
-    type: 'button', className: `itw-find-flag ${on ? 'itw-on' : ''}`, title, 'aria-pressed': on, onClick,
+    type: 'button', className: `iwb-find-flag ${on ? 'iwb-on' : ''}`, title, 'aria-pressed': on, onClick,
   }, label)
 
   return React.createElement('div', {
-    className: 'itw-findbar itw-dom-findbar',
+    className: 'iwb-findbar iwb-dom-findbar',
     role: 'search',
     onKeyDown: (event) => {
       if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); close() }
@@ -167,23 +167,23 @@ export function DomFindBar({ containerRef, t, onClose }) {
       else if (event.key === 'Enter' && event.shiftKey) { event.preventDefault(); move(-1) }
     },
   },
-    React.createElement('div', { className: 'itw-find-row' },
-      React.createElement('span', { className: 'itw-find-label' }, t('editor.find')),
+    React.createElement('div', { className: 'iwb-find-row' },
+      React.createElement('span', { className: 'iwb-find-label' }, t('editor.find')),
       React.createElement('input', {
         ref: inputRef,
-        className: `itw-find-input ${error !== null ? 'itw-invalid' : ''}`,
+        className: `iwb-find-input ${error !== null ? 'iwb-invalid' : ''}`,
         value: query,
         placeholder: t('editor.findPlaceholder'),
         spellCheck: false,
         onChange: event => setQuery(event.target.value),
       }),
-      React.createElement('span', { className: `itw-find-count ${error !== null ? 'itw-invalid' : ''}` }, error !== null ? '!' : (query === '' ? '0/0' : `${active + 1}/${total}`)),
-      React.createElement('button', { type: 'button', className: 'itw-find-btn', title: t('editor.findPrevious'), disabled: total === 0, onClick: () => move(-1) }, '↑'),
-      React.createElement('button', { type: 'button', className: 'itw-find-btn', title: t('editor.findNext'), disabled: total === 0, onClick: () => move(1) }, '↓'),
+      React.createElement('span', { className: `iwb-find-count ${error !== null ? 'iwb-invalid' : ''}` }, error !== null ? '!' : (query === '' ? '0/0' : `${active + 1}/${total}`)),
+      React.createElement('button', { type: 'button', className: 'iwb-find-btn', title: t('editor.findPrevious'), disabled: total === 0, onClick: () => move(-1) }, '↑'),
+      React.createElement('button', { type: 'button', className: 'iwb-find-btn', title: t('editor.findNext'), disabled: total === 0, onClick: () => move(1) }, '↓'),
       flag(caseSensitive, 'Aa', t('editor.matchCase'), () => setCaseSensitive(value => !value)),
       flag(wholeWord, 'W', t('editor.wholeWord'), () => setWholeWord(value => !value)),
       flag(regexp, '.*', t('editor.regexp'), () => setRegexp(value => !value)),
-      React.createElement('button', { type: 'button', className: 'itw-find-btn', title: t('common.close'), onClick: close },
+      React.createElement('button', { type: 'button', className: 'iwb-find-btn', title: t('common.close'), onClick: close },
         React.createElement(IconClose, { width: 12, height: 12 })),
     ),
   )

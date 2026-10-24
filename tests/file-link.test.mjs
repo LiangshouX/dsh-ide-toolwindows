@@ -6,21 +6,21 @@ const ADDRESS = 'dsh-resource://file/session/s1/src/a.ts'
 
 test('defaultSidebarKind skips the IDE and names the next ranked type', () => {
   const ctx = {
-    sidebarRightTabs: { candidates: () => [{ kind: 'ide-toolwindows' }, { kind: 'editor' }, { kind: 'text' }] },
+    sidebarRightTabs: { candidates: () => [{ kind: 'ide-workbench' }, { kind: 'editor' }, { kind: 'text' }] },
   }
-  assert.equal(defaultSidebarKind(ctx, ADDRESS, 'ide-toolwindows'), 'editor')
-  const onlySelf = { sidebarRightTabs: { candidates: () => [{ kind: 'ide-toolwindows' }] } }
-  assert.equal(defaultSidebarKind(onlySelf, ADDRESS, 'ide-toolwindows'), undefined)
+  assert.equal(defaultSidebarKind(ctx, ADDRESS, 'ide-workbench'), 'editor')
+  const onlySelf = { sidebarRightTabs: { candidates: () => [{ kind: 'ide-workbench' }] } }
+  assert.equal(defaultSidebarKind(onlySelf, ADDRESS, 'ide-workbench'), undefined)
 })
 
 test('openInDefaultSidebar opens the default kind and carries the line and carrier tab', () => {
   const calls = []
   const ctx = {
-    sidebarRightTabs: { candidates: () => [{ kind: 'ide-toolwindows' }, { kind: 'editor' }] },
+    sidebarRightTabs: { candidates: () => [{ kind: 'ide-workbench' }, { kind: 'editor' }] },
     sidebarRight: { openResource: (address, options) => { calls.push({ address, options }) } },
   }
   const opened = openInDefaultSidebar(ctx, ADDRESS, {
-    ownKind: 'ide-toolwindows', line: 24, replaceTab: 'tab-1',
+    ownKind: 'ide-workbench', line: 24, replaceTab: 'tab-1',
   })
   assert.equal(opened, true)
   assert.equal(calls.length, 1)
@@ -34,10 +34,10 @@ test('openInDefaultSidebar opens the default kind and carries the line and carri
 test('openInDefaultSidebar honors an explicit viewer kind before the ranking', () => {
   const calls = []
   const ctx = {
-    sidebarRightTabs: { candidates: () => [{ kind: 'ide-toolwindows' }, { kind: 'editor' }] },
+    sidebarRightTabs: { candidates: () => [{ kind: 'ide-workbench' }, { kind: 'editor' }] },
     sidebarRight: { openResource: (address, options) => { calls.push({ address, options }) } },
   }
-  const opened = openInDefaultSidebar(ctx, ADDRESS, { ownKind: 'ide-toolwindows', kind: 'text' })
+  const opened = openInDefaultSidebar(ctx, ADDRESS, { ownKind: 'ide-workbench', kind: 'text' })
   assert.equal(opened, true)
   assert.equal(calls[0].options.kind, 'text')
 })
@@ -45,7 +45,7 @@ test('openInDefaultSidebar honors an explicit viewer kind before the ranking', (
 test('openInDefaultSidebar falls back to the ranked kind when the named viewer refuses', () => {
   const calls = []
   const ctx = {
-    sidebarRightTabs: { candidates: () => [{ kind: 'ide-toolwindows' }, { kind: 'editor' }] },
+    sidebarRightTabs: { candidates: () => [{ kind: 'ide-workbench' }, { kind: 'editor' }] },
     sidebarRight: {
       openResource: (address, options) => {
         calls.push(options.kind)
@@ -53,7 +53,7 @@ test('openInDefaultSidebar falls back to the ranked kind when the named viewer r
       },
     },
   }
-  const opened = openInDefaultSidebar(ctx, ADDRESS, { ownKind: 'ide-toolwindows', kind: 'text' })
+  const opened = openInDefaultSidebar(ctx, ADDRESS, { ownKind: 'ide-workbench', kind: 'text' })
   assert.equal(opened, true)
   assert.deepEqual(calls, ['text', 'editor'])
 })
@@ -65,7 +65,7 @@ test('openInDefaultSidebar declines its own address when candidates are unavaila
     sidebarRight: { openResource: (address, options) => { calls.push({ address, options }) } },
   }
   const opened = openInDefaultSidebar(ctx, ADDRESS, {
-    ownKind: 'ide-toolwindows',
+    ownKind: 'ide-workbench',
     suppressSelf: () => { released += 1; return () => { released += 1 } },
   })
   assert.equal(opened, true)
@@ -74,5 +74,5 @@ test('openInDefaultSidebar declines its own address when candidates are unavaila
 })
 
 test('openInDefaultSidebar reports failure without a sidebar service', () => {
-  assert.equal(openInDefaultSidebar({}, ADDRESS, { ownKind: 'ide-toolwindows' }), false)
+  assert.equal(openInDefaultSidebar({}, ADDRESS, { ownKind: 'ide-workbench' }), false)
 })

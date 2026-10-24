@@ -320,7 +320,7 @@ export async function writeFileText(root, path, content, encoding = 'utf-8', opt
   if (buffer.length > MAX_WRITE_BYTES) {
     throw new ApiError('too-large', `file exceeds the ${MAX_WRITE_BYTES} byte write limit`, 413)
   }
-  const temp = `${absolute}.dsh-itw-${process.pid}-${Date.now()}.tmp`
+  const temp = `${absolute}.dsh-iwb-${process.pid}-${Date.now()}.tmp`
   try {
     await writeFile(temp, buffer)
     await rename(temp, absolute)

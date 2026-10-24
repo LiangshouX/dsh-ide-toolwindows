@@ -140,7 +140,7 @@ export function DiffView({ store, state, tab }) {
       if (!(event.ctrlKey || event.metaKey) || event.altKey || event.shiftKey) return
       if (event.key.toLowerCase() !== 'f') return
       const target = event.target
-      if (!(target instanceof Element) || target.closest('.itw-root') === null) return
+      if (!(target instanceof Element) || target.closest('.iwb-root') === null) return
       event.preventDefault()
       event.stopPropagation()
       setFindOpen(true)
@@ -286,24 +286,24 @@ export function DiffView({ store, state, tab }) {
     if (row.kind === 'file') {
       return React.createElement('div', {
         key: `file:${row.text}:${offset}`,
-        className: 'itw-diff-hunk',
-        style: { ...rowStyle(offset), background: 'var(--itw-panel-2)', color: 'var(--itw-fg)' },
+        className: 'iwb-diff-hunk',
+        style: { ...rowStyle(offset), background: 'var(--iwb-panel-2)', color: 'var(--iwb-fg)' },
       },
-        React.createElement('span', { className: 'itw-hunk-text', style: { fontWeight: 600 } }, row.text),
-        React.createElement('span', { className: 'itw-additions', style: { marginRight: 10 } }, `+${row.additions}`),
-        React.createElement('span', { className: 'itw-deletions', style: { marginRight: 10 } }, `-${row.deletions}`),
+        React.createElement('span', { className: 'iwb-hunk-text', style: { fontWeight: 600 } }, row.text),
+        React.createElement('span', { className: 'iwb-additions', style: { marginRight: 10 } }, `+${row.additions}`),
+        React.createElement('span', { className: 'iwb-deletions', style: { marginRight: 10 } }, `-${row.deletions}`),
       )
     }
     if (row.kind === 'binary') {
-      return React.createElement('div', { key: `bin:${offset}`, className: 'itw-diff-hunk', style: rowStyle(offset) },
-        React.createElement('span', { className: 'itw-hunk-text' }, row.text))
+      return React.createElement('div', { key: `bin:${offset}`, className: 'iwb-diff-hunk', style: rowStyle(offset) },
+        React.createElement('span', { className: 'iwb-hunk-text' }, row.text))
     }
-    return React.createElement('div', { key: `hunk:${offset}`, className: 'itw-diff-hunk', style: rowStyle(offset) },
-      React.createElement('span', { className: 'itw-hunk-text' }, row.text),
+    return React.createElement('div', { key: `hunk:${offset}`, className: 'iwb-diff-hunk', style: rowStyle(offset) },
+      React.createElement('span', { className: 'iwb-hunk-text' }, row.text),
       source.stageable
-        ? React.createElement('span', { className: 'itw-hunk-actions' },
+        ? React.createElement('span', { className: 'iwb-hunk-actions' },
             React.createElement('button', {
-              type: 'button', className: 'itw-textbtn itw-small', disabled: applying,
+              type: 'button', className: 'iwb-textbtn iwb-small', disabled: applying,
               onClick: () => { void applySelection(hunkChangeIndexes(row.file, row.hunkIndex), hunkLabel) },
             }, hunkLabel),
           )
@@ -314,46 +314,46 @@ export function DiffView({ store, state, tab }) {
   const renderUnifiedRow = (row, offset) => {
     if (row.kind === 'file' || row.kind === 'binary' || row.kind === 'hunk') return renderChromeRow(row, offset)
     const selected = typeof row.index === 'number' && selection.has(row.index)
-    const cls = row.kind === 'add' ? 'itw-add' : row.kind === 'del' ? 'itw-del' : ''
+    const cls = row.kind === 'add' ? 'iwb-add' : row.kind === 'del' ? 'iwb-del' : ''
     return React.createElement('div', {
       key: `line:${row.index}`,
-      className: `itw-diff-row ${cls} ${selected ? 'itw-selected' : ''} ${findRows.has(offset) ? 'itw-diff-find' : ''} ${findActiveRow === offset ? 'itw-diff-find-active' : ''}`,
+      className: `iwb-diff-row ${cls} ${selected ? 'iwb-selected' : ''} ${findRows.has(offset) ? 'iwb-diff-find' : ''} ${findActiveRow === offset ? 'iwb-diff-find-active' : ''}`,
       style: rowStyle(offset),
     },
       React.createElement('span', {
-        className: 'itw-diff-gutter',
+        className: 'iwb-diff-gutter',
         onMouseDown: event => { if (source.stageable && row.kind !== 'context') onGutterDown(event, row.index) },
         onMouseEnter: () => { if (source.stageable && row.kind !== 'context') onGutterEnter(row.index) },
       }, row.kind === 'add' ? '+' : row.kind === 'del' ? '−' : ''),
-      React.createElement('span', { className: 'itw-diff-num' }, row.oldNo ?? ''),
-      React.createElement('span', { className: 'itw-diff-num' }, row.newNo ?? ''),
-      React.createElement('span', { className: 'itw-diff-sign' }, row.kind === 'add' ? '+' : row.kind === 'del' ? '-' : ' '),
-      React.createElement('span', { className: 'itw-diff-text' }, row.text === '' ? '\u00a0' : row.text),
+      React.createElement('span', { className: 'iwb-diff-num' }, row.oldNo ?? ''),
+      React.createElement('span', { className: 'iwb-diff-num' }, row.newNo ?? ''),
+      React.createElement('span', { className: 'iwb-diff-sign' }, row.kind === 'add' ? '+' : row.kind === 'del' ? '-' : ' '),
+      React.createElement('span', { className: 'iwb-diff-text' }, row.text === '' ? '\u00a0' : row.text),
     )
   }
 
   const renderSideCell = (side, isLeft, segments) => {
     if (side === null || side === undefined) {
-      return React.createElement('div', { className: 'itw-diff-side-cell itw-blank' },
-        React.createElement('span', { className: 'itw-diff-num' }),
-        React.createElement('span', { className: 'itw-diff-text' }),
+      return React.createElement('div', { className: 'iwb-diff-side-cell iwb-blank' },
+        React.createElement('span', { className: 'iwb-diff-num' }),
+        React.createElement('span', { className: 'iwb-diff-text' }),
       )
     }
     const selected = typeof side.index === 'number' && selection.has(side.index)
     return React.createElement('div', {
-      className: `itw-diff-side-cell ${isLeft ? 'itw-del' : 'itw-add'} ${selected ? 'itw-selected' : ''}`,
+      className: `iwb-diff-side-cell ${isLeft ? 'iwb-del' : 'iwb-add'} ${selected ? 'iwb-selected' : ''}`,
     },
       React.createElement('span', {
-        className: 'itw-diff-gutter',
+        className: 'iwb-diff-gutter',
         onMouseDown: event => { if (source.stageable) onGutterDown(event, side.index) },
         onMouseEnter: () => { if (source.stageable) onGutterEnter(side.index) },
       }, isLeft ? '−' : '+'),
-      React.createElement('span', { className: 'itw-diff-num' }, side.no ?? ''),
-      React.createElement('span', { className: 'itw-diff-text' },
+      React.createElement('span', { className: 'iwb-diff-num' }, side.no ?? ''),
+      React.createElement('span', { className: 'iwb-diff-text' },
         segments === null || segments === undefined
           ? (side.text === '' ? '\u00a0' : side.text)
           : segments.map((segment, index) => (segment.changed
-              ? React.createElement('span', { key: index, className: isLeft ? 'itw-word-del' : 'itw-word-add' }, segment.text)
+              ? React.createElement('span', { key: index, className: isLeft ? 'iwb-word-del' : 'iwb-word-add' }, segment.text)
               : segment.text))),
     )
   }
@@ -365,61 +365,61 @@ export function DiffView({ store, state, tab }) {
       : null
     return React.createElement('div', {
       key: `side:${row.left?.index ?? 'x'}:${row.right?.index ?? 'y'}`,
-      className: `itw-diff-side ${findRows.has(offset) ? 'itw-diff-find' : ''} ${findActiveRow === offset ? 'itw-diff-find-active' : ''}`,
+      className: `iwb-diff-side ${findRows.has(offset) ? 'iwb-diff-find' : ''} ${findActiveRow === offset ? 'iwb-diff-find-active' : ''}`,
       style: { ...rowStyle(offset), display: 'grid' },
     }, renderSideCell(row.left, true, segments?.left), renderSideCell(row.right, false, segments?.right))
   }
 
-  const toolbar = React.createElement('div', { className: 'itw-diff-toolbar' },
+  const toolbar = React.createElement('div', { className: 'iwb-diff-toolbar' },
     React.createElement(IconRefresh, { width: 13, height: 13 }),
-    React.createElement('span', { style: { color: 'var(--itw-fg)', marginLeft: 2 } }, source.path ?? ''),
-    React.createElement('span', { className: 'itw-additions' }, `+${additions}`),
-    React.createElement('span', { className: 'itw-deletions' }, `-${deletions}`),
-    React.createElement('span', { className: 'itw-spacer' }),
+    React.createElement('span', { style: { color: 'var(--iwb-fg)', marginLeft: 2 } }, source.path ?? ''),
+    React.createElement('span', { className: 'iwb-additions' }, `+${additions}`),
+    React.createElement('span', { className: 'iwb-deletions' }, `-${deletions}`),
+    React.createElement('span', { className: 'iwb-spacer' }),
     tab.kind !== 'commit'
-      ? React.createElement('div', { className: 'itw-seg' },
+      ? React.createElement('div', { className: 'iwb-seg' },
           React.createElement('button', {
-            type: 'button', className: mode === 'side' ? 'itw-on' : '',
+            type: 'button', className: mode === 'side' ? 'iwb-on' : '',
             onClick: () => store.setDiffMode('side'),
           }, t('commit.sideBySide')),
           React.createElement('button', {
-            type: 'button', className: mode === 'unified' ? 'itw-on' : '',
+            type: 'button', className: mode === 'unified' ? 'iwb-on' : '',
             onClick: () => store.setDiffMode('unified'),
           }, t('commit.unified')),
         )
       : null,
     React.createElement('button', {
-      type: 'button', className: `itw-textbtn itw-small ${wordLevel ? 'itw-primary' : ''}`,
+      type: 'button', className: `iwb-textbtn iwb-small ${wordLevel ? 'iwb-primary' : ''}`,
       title: t('commit.wordLevel'), onClick: () => setWordLevel(value => !value),
     }, 'Aa'),
     source.stageable && selection.size > 0
       ? React.createElement('button', {
-          type: 'button', className: 'itw-textbtn itw-primary itw-small', disabled: applying,
+          type: 'button', className: 'iwb-textbtn iwb-primary iwb-small', disabled: applying,
           onClick: () => { void applySelection([...selection], stageLabel) },
         }, `${stageLabel} (${selection.size})`)
       : null,
     source.stageable && singleFile !== null
       ? React.createElement('button', {
-          type: 'button', className: 'itw-textbtn itw-small',
+          type: 'button', className: 'iwb-textbtn iwb-small',
           onClick: () => { void applySelection(singleFile.hunks.flatMap((_, index) => hunkChangeIndexes(singleFile, index)), hunkLabel) },
         }, source.staged ? t('commit.unstageAll') : t('commit.stageAll'))
       : null,
   )
 
   const body = React.createElement('div', {
-    className: 'itw-diff-scroll',
+    className: 'iwb-diff-scroll',
     ref: scrollRef,
     onScroll: event => setScrollTop(event.currentTarget.scrollTop),
   },
     viewRows.length === 0
-      ? React.createElement('div', { className: 'itw-empty' }, t('commit.selectFile'))
-      : React.createElement('div', { className: 'itw-diff-inner', style: { height: `${viewRows.length * LINE_HEIGHT}px` } },
+      ? React.createElement('div', { className: 'iwb-empty' }, t('commit.selectFile'))
+      : React.createElement('div', { className: 'iwb-diff-inner', style: { height: `${viewRows.length * LINE_HEIGHT}px` } },
           viewRows.slice(start, end).map((row, index) => {
             const offset = start + index
             if (row.kind === 'collapsed') {
               return React.createElement('div', {
                 key: row.blockKey,
-                className: 'itw-diff-collapsed',
+                className: 'iwb-diff-collapsed',
                 onClick: () => setOpenBlocks(previous => new Set([...previous, row.blockKey])),
               }, `\u22ef ${row.count} ${t('diff.collapsedLines')}`)
             }
@@ -430,7 +430,7 @@ export function DiffView({ store, state, tab }) {
 
   // The commit metadata lives in the Git tool window's bottom details pane;
   // the editor area only shows the full diff (no duplicated header block).
-  return React.createElement('div', { className: 'itw-diff' }, toolbar,
+  return React.createElement('div', { className: 'iwb-diff' }, toolbar,
     findOpen === true
       ? React.createElement(FindBar, {
           store,

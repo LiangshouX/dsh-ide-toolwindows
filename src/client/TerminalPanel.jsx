@@ -11,7 +11,7 @@ import { dirName } from './util.js'
 
 /** Read one theme token from the workbench root (with a neutral fallback). */
 function token(root, name, fallback) {
-  const element = root?.current ?? document.querySelector('.itw-root')
+  const element = root?.current ?? document.querySelector('.iwb-root')
   if (element === null) return fallback
   const value = getComputedStyle(element).getPropertyValue(name).trim()
   return value === '' ? fallback : value
@@ -28,16 +28,16 @@ function TerminalView({ store, state, session, active, visible }) {
 
   useEffect(() => {
     if (hostRef.current === null) return undefined
-    rootRef.current = document.querySelector('.itw-root')
+    rootRef.current = document.querySelector('.iwb-root')
     const terminal = new Terminal({
       cursorBlink: true,
       fontSize: state.settings?.terminal?.fontSize ?? 13,
       fontFamily: '"JetBrains Mono", "Cascadia Code", "SF Mono", Consolas, monospace',
       allowProposedApi: true,
       theme: {
-        background: token(rootRef, '--itw-bg', '#15171c'),
-        foreground: token(rootRef, '--itw-fg', '#d8dce3'),
-        cursor: token(rootRef, '--itw-accent', '#4c9aff'),
+        background: token(rootRef, '--iwb-bg', '#15171c'),
+        foreground: token(rootRef, '--iwb-fg', '#d8dce3'),
+        cursor: token(rootRef, '--iwb-accent', '#4c9aff'),
         selectionBackground: 'rgba(76,154,255,.32)',
         black: '#1c1f26', red: '#e2686f', green: '#4fb477', yellow: '#d7a24a',
         blue: '#4c9aff', magenta: '#c678dd', cyan: '#56b6c2', white: '#d8dce3',
@@ -57,7 +57,7 @@ function TerminalView({ store, state, session, active, visible }) {
       if (socket !== null && socket.readyState === WebSocket.OPEN) socket.send(JSON.stringify(frame))
     }
     const connect = () => {
-      const url = wsUrl('ide-toolwindows/ws/terminal')
+      const url = wsUrl('ide-workbench/ws/terminal')
       url.searchParams.set('root', state.root)
       if (session.cwd !== undefined && session.cwd !== '') url.searchParams.set('cwd', session.cwd)
       if (session.shell !== undefined && session.shell !== '') url.searchParams.set('shell', session.shell)
@@ -167,13 +167,13 @@ function TerminalView({ store, state, session, active, visible }) {
   }, [active, visible])
 
   if (error !== null) {
-    return React.createElement('div', { className: 'itw-term-pane' },
-      React.createElement('div', { className: 'itw-term-error' }, `${t('terminal.failed')}\n${error}`),
+    return React.createElement('div', { className: 'iwb-term-pane' },
+      React.createElement('div', { className: 'iwb-term-error' }, `${t('terminal.failed')}\n${error}`),
     )
   }
 
-  return React.createElement('div', { className: `itw-term-pane ${active ? '' : 'itw-hidden'}` },
-    React.createElement('div', { className: 'itw-term-host', ref: hostRef }),
+  return React.createElement('div', { className: `iwb-term-pane ${active ? '' : 'iwb-hidden'}` },
+    React.createElement('div', { className: 'iwb-term-host', ref: hostRef }),
   )
 }
 
@@ -191,11 +191,11 @@ export function TerminalPanel({ store, state, visible = true }) {
     setRenaming(null)
   }
 
-  return React.createElement('div', { className: 'itw-term' },
-    React.createElement('div', { className: 'itw-term-tabs' },
+  return React.createElement('div', { className: 'iwb-term' },
+    React.createElement('div', { className: 'iwb-term-tabs' },
       sessions.map(session => React.createElement('div', {
         key: session.key,
-        className: `itw-term-tab ${session.key === activeKey ? 'itw-on' : ''}`,
+        className: `iwb-term-tab ${session.key === activeKey ? 'iwb-on' : ''}`,
         onClick: () => store.activateTerminal(session.key),
         onDoubleClick: () => { setRenaming(session.key); setRenameValue(session.title) },
         title: `${session.title} — ${session.cwd}`,
@@ -203,7 +203,7 @@ export function TerminalPanel({ store, state, visible = true }) {
         renaming === session.key
           ? React.createElement('input', {
               autoFocus: true,
-              className: 'itw-input',
+              className: 'iwb-input',
               style: { height: 20, width: 120, padding: '0 4px' },
               value: renameValue,
               onClick: event => event.stopPropagation(),
@@ -215,17 +215,17 @@ export function TerminalPanel({ store, state, visible = true }) {
               },
             })
           : React.createElement('span', null, session.title),
-        React.createElement('span', { className: `itw-term-dot ${session.status === 'running' ? '' : 'itw-exited'}` }),
+        React.createElement('span', { className: `iwb-term-dot ${session.status === 'running' ? '' : 'iwb-exited'}` }),
         React.createElement('button', {
-          type: 'button', className: 'itw-iconbtn', style: { width: 16, height: 16 }, title: t('terminal.close'),
+          type: 'button', className: 'iwb-iconbtn', style: { width: 16, height: 16 }, title: t('terminal.close'),
           onClick: event => { event.stopPropagation(); void store.closeTerminal(session.key) },
         }, React.createElement('span', { style: { fontSize: 13, lineHeight: 1 } }, '×')),
       )),
       React.createElement('button', {
-        type: 'button', className: 'itw-iconbtn', title: t('terminal.new'), onClick: () => store.addTerminal(),
+        type: 'button', className: 'iwb-iconbtn', title: t('terminal.new'), onClick: () => store.addTerminal(),
       }, React.createElement(IconPlus, { width: 13, height: 13 })),
       React.createElement('button', {
-        type: 'button', className: 'itw-iconbtn', title: t('terminal.atFile'),
+        type: 'button', className: 'iwb-iconbtn', title: t('terminal.atFile'),
         onClick: () => {
           const active = state.tabs.find(tab => tab.id === state.activeId)
           if (active?.kind === 'file') store.addTerminal({ cwd: dirName(active.path) })
@@ -233,16 +233,16 @@ export function TerminalPanel({ store, state, visible = true }) {
         },
       }, React.createElement(IconFolder, { width: 13, height: 13 })),
       React.createElement('span', { style: { flex: 1 } }),
-      React.createElement('span', { style: { color: 'var(--itw-muted)', fontSize: 11, marginRight: 6 } },
+      React.createElement('span', { style: { color: 'var(--iwb-muted)', fontSize: 11, marginRight: 6 } },
         activeKey !== null ? (sessions.find(session => session.key === activeKey)?.cwd ?? '') : '',
       ),
     ),
-    React.createElement('div', { className: 'itw-term-panes' },
+    React.createElement('div', { className: 'iwb-term-panes' },
       sessions.length === 0
-        ? React.createElement('div', { className: 'itw-empty' },
+        ? React.createElement('div', { className: 'iwb-empty' },
             React.createElement(IconTerminal, { width: 22, height: 22 }),
-            React.createElement('div', { className: 'itw-empty-title' }, t('terminal.hint')),
-            React.createElement('button', { type: 'button', className: 'itw-textbtn itw-primary', onClick: () => store.addTerminal() }, t('terminal.new')),
+            React.createElement('div', { className: 'iwb-empty-title' }, t('terminal.hint')),
+            React.createElement('button', { type: 'button', className: 'iwb-textbtn iwb-primary', onClick: () => store.addTerminal() }, t('terminal.new')),
           )
         : sessions.map(session => React.createElement(TerminalView, {
             key: session.key, store, state, session, active: session.key === activeKey, visible,

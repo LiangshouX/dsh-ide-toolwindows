@@ -8,7 +8,7 @@ import { listProjectCandidates } from '../src/host/workspace.js'
 import { status as gitStatus } from '../src/host/git.js'
 
 async function tempRoot(t) {
-  const dir = await mkdtemp(join(tmpdir(), 'itw-projects-'))
+  const dir = await mkdtemp(join(tmpdir(), 'iwb-projects-'))
   t.after(() => rm(dir, { recursive: true, force: true }))
   return dir
 }

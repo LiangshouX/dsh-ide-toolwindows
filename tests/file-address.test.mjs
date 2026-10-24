@@ -15,7 +15,7 @@ test('parses a session-scoped file address', () => {
   const parsed = parseFileAddress('dsh-resource://file/session/s1/src/main.ts')
   assert.deepEqual(parsed, { scope: 'session', sessionId: 's1', path: 'src/main.ts' })
   assert.equal(isFileAddress('dsh-resource://file/session/s1/src/main.ts'), true)
-  assert.equal(isFileAddress('sidebar://ide-toolwindows'), false)
+  assert.equal(isFileAddress('sidebar://ide-workbench'), false)
 })
 
 test('decodes encoded segments and ignores query/fragment suffixes', () => {

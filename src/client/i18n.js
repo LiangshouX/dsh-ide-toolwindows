@@ -4,14 +4,14 @@
  * Registered through `ctx.locale.register(NS, locale, dict)`; the bound
  * translate function follows the harness language preference live.
  */
-export const NS = 'ideToolWindows'
+export const NS = 'ideWorkbench'
 
 export const en = {
-  'meta.title': 'IDE Tool Windows',
+  'meta.title': 'IDE Workbench',
   'meta.description': 'JetBrains-style Project, Commit, Terminal and Git tool windows in one shared repository model.',
-  'panelLabel': 'IDE Tool Windows',
-  'settings.nav': 'IDE Tool Windows',
-  'settings.title': 'IDE Tool Windows Settings',
+  'panelLabel': 'IDE Workbench',
+  'settings.nav': 'IDE Workbench',
+  'settings.title': 'IDE Workbench Settings',
   'settings.saved': 'Saved',
   'settings.reset': 'Reset to defaults',
   'settings.shortcuts': 'Shortcuts',
@@ -50,7 +50,7 @@ export const en = {
   'settings.singleClickOpenHint': 'Single click opens a preview tab (edited files become real tabs)',
   'settings.chatFileLinks': 'Chat file links',
   'settings.chatFileLinksHint': 'Where links to files in the conversation open; files outside the workspace always use the sidebar',
-  'settings.chatFileLinksIde': 'IDE Tool Windows',
+  'settings.chatFileLinksIde': 'IDE Workbench',
   'settings.chatFileLinksSidebar': 'Sidebar (DSH default)',
   'links.openFailed': 'Could not open this file in the IDE',
   'links.outsideRoot': 'This file is outside the current IDE project',
@@ -353,7 +353,7 @@ export const en = {
   'terminal.noShell': 'No supported shell was found',
   'terminal.hint': 'Type a command to get started',
 
-  'welcome.title': 'IDE Tool Windows',
+  'welcome.title': 'IDE Workbench',
   'welcome.subtitle': 'Pick a file from the Project tool window, or use a shortcut.',
   'welcome.project': 'Project',
   'welcome.commit': 'Commit',
@@ -441,11 +441,11 @@ export const en = {
 }
 
 export const zh = {
-  'meta.title': 'IDE 工具窗口',
+  'meta.title': 'IDE 工作台',
   'meta.description': 'JetBrains 风格的 Project / Commit / Terminal / Git 工具窗，四窗共享同一份仓库状态。',
-  'panelLabel': 'IDE 工具窗口',
-  'settings.nav': 'IDE 工具窗口',
-  'settings.title': 'IDE 工具窗口设置',
+  'panelLabel': 'IDE 工作台',
+  'settings.nav': 'IDE 工作台',
+  'settings.title': 'IDE 工作台设置',
   'settings.saved': '已保存',
   'settings.reset': '恢复默认设置',
   'settings.shortcuts': '快捷键',
@@ -484,7 +484,7 @@ export const zh = {
   'settings.singleClickOpenHint': '单击打开预览标签，编辑后转为正式标签',
   'settings.chatFileLinks': '聊天文件链接',
   'settings.chatFileLinksHint': '聊天中的文件链接在哪里打开；工作区外的文件始终使用侧栏',
-  'settings.chatFileLinksIde': 'IDE 工具窗口',
+  'settings.chatFileLinksIde': 'IDE 工作台',
   'settings.chatFileLinksSidebar': '侧栏（DSH 默认）',
   'links.openFailed': '无法在 IDE 中打开该文件',
   'links.outsideRoot': '该文件不在当前 IDE 项目内',
@@ -502,8 +502,8 @@ export const zh = {
   'settings.useRecycleBin': '删除文件时移入回收站',
   'settings.useRecycleBinHint': '关闭则永久删除（始终二次确认）',
   'layout.hideAll': '收起全部工具窗（Ctrl+Shift+F12）',
-  'layout.fullscreen': 'IDE 工具窗口全屏（F11）',
-  'layout.exitFullscreen': '还原 IDE 工具窗口（F11）',
+  'layout.fullscreen': 'IDE 工作台全屏（F11）',
+  'layout.exitFullscreen': '还原 IDE 工作台（F11）',
   'project.openInIde': '在 IDE 中打开',
   'project.ideRequested': '已请求 IDE 打开项目和文件',
   'project.ideFailed': '无法在 IDE 中打开',
@@ -787,7 +787,7 @@ export const zh = {
   'terminal.noShell': '未找到可用的 Shell',
   'terminal.hint': '输入命令开始使用',
 
-  'welcome.title': 'IDE 工具窗口',
+  'welcome.title': 'IDE 工作台',
   'welcome.subtitle': '从 Project 工具窗选择文件，或使用快捷键。',
   'welcome.project': 'Project',
   'welcome.commit': 'Commit',

@@ -24,22 +24,22 @@ const SHORTCUT_FIELDS = [
 // making React unmount/remount the whole form. On a long settings page that
 // remount is what threw the page back to the top after a change.
 function Group({ title, description, children }) {
-  return React.createElement('section', { className: 'itw-settings-group' },
-    React.createElement('h3', { className: 'itw-settings-group-title' }, title),
+  return React.createElement('section', { className: 'iwb-settings-group' },
+    React.createElement('h3', { className: 'iwb-settings-group-title' }, title),
     description !== undefined
-      ? React.createElement('p', { className: 'itw-settings-group-desc' }, description)
+      ? React.createElement('p', { className: 'iwb-settings-group-desc' }, description)
       : null,
-    React.createElement('div', { className: 'itw-settings-rows' }, children),
+    React.createElement('div', { className: 'iwb-settings-rows' }, children),
   )
 }
 
 function Row({ label, hint, children }) {
-  return React.createElement('div', { className: 'itw-settings-row' },
-    React.createElement('div', { className: 'itw-settings-label' },
-      React.createElement('div', { className: 'itw-settings-title' }, label),
-      hint !== undefined ? React.createElement('div', { className: 'itw-settings-hint' }, hint) : null,
+  return React.createElement('div', { className: 'iwb-settings-row' },
+    React.createElement('div', { className: 'iwb-settings-label' },
+      React.createElement('div', { className: 'iwb-settings-title' }, label),
+      hint !== undefined ? React.createElement('div', { className: 'iwb-settings-hint' }, hint) : null,
     ),
-    React.createElement('div', { className: 'itw-settings-control' }, children),
+    React.createElement('div', { className: 'iwb-settings-control' }, children),
   )
 }
 
@@ -130,7 +130,7 @@ export function SettingsForm({ store, state, compact }) {
   // every row (instead of repeating the same hint under each control).
   // Label and hint form the reading column; every control sits in the same
   // right-hand column so switches, selects and text fields line up.
-  return React.createElement('div', { className: 'itw-settings', ref: rootRef },
+  return React.createElement('div', { className: 'iwb-settings', ref: rootRef },
     React.createElement(Group, {
       title: t('settings.shortcuts'),
       description: t('settings.shortcutsGroupHint'),
@@ -153,7 +153,7 @@ export function SettingsForm({ store, state, compact }) {
     React.createElement(Group, { title: t('settings.terminalGroup') },
       React.createElement(Row, { label: t('settings.defaultShell'), hint: t('settings.defaultShellHint') },
         React.createElement('select', {
-          className: 'itw-select',
+          className: 'iwb-select',
           value: draft.terminal?.shell ?? 'auto',
           onChange: event => update({ terminal: { shell: event.target.value } }),
         },
@@ -207,7 +207,7 @@ export function SettingsForm({ store, state, compact }) {
       ),
       React.createElement(Row, { label: t('settings.chatFileLinks'), hint: t('settings.chatFileLinksHint') },
         React.createElement('select', {
-          className: 'itw-select',
+          className: 'iwb-select',
           value: draft.links?.chatFiles === 'sidebar' ? 'sidebar' : 'ide',
           onChange: event => update({ links: { chatFiles: event.target.value } }),
         },
@@ -240,7 +240,7 @@ export function SettingsForm({ store, state, compact }) {
     React.createElement(Group, { title: t('settings.ideGroup'), description: t('settings.idePathHint') },
       IDE_OPTIONS.map(ide => React.createElement(Row, { key: ide.id, label: ide.title },
         React.createElement('input', {
-          type: 'text', className: 'itw-input', 'aria-label': ide.title,
+          type: 'text', className: 'iwb-input', 'aria-label': ide.title,
           value: draft[ide.id]?.path ?? '',
           placeholder: t('settings.ideAuto'),
           onChange: event => update({ [ide.id]: { path: event.target.value } }),
@@ -330,12 +330,12 @@ export function SettingsForm({ store, state, compact }) {
         }),
       ),
       React.createElement(Row, { label: t('settings.language'), hint: t('settings.languageHint') },
-        React.createElement('span', { className: 'itw-settings-value' }, t('settings.followDsh')),
+        React.createElement('span', { className: 'iwb-settings-value' }, t('settings.followDsh')),
       ),
     ),
-    React.createElement('div', { className: 'itw-settings-footer' },
+    React.createElement('div', { className: 'iwb-settings-footer' },
       compact === true ? null : React.createElement('button', {
-        type: 'button', className: 'itw-textbtn itw-small itw-settings-reset',
+        type: 'button', className: 'iwb-textbtn iwb-small iwb-settings-reset',
         onClick: () => {
           const reset = {
             git: { path: '', colors: true, commitTemplate: '' },
@@ -358,7 +358,7 @@ export function SettingsForm({ store, state, compact }) {
         },
       }, t('settings.reset')),
       saved === true
-        ? React.createElement('div', { className: 'itw-settings-saved', role: 'status' }, t('settings.saved'))
+        ? React.createElement('div', { className: 'iwb-settings-saved', role: 'status' }, t('settings.saved'))
         : null,
     ),
   )
@@ -366,7 +366,7 @@ export function SettingsForm({ store, state, compact }) {
 
 /** The native settings.section page: the shell already owns the close action. */
 export function SettingsSection({ store, state }) {
-  return React.createElement('div', { className: 'itw-settings-section' },
+  return React.createElement('div', { className: 'iwb-settings-section' },
     React.createElement(SettingsForm, { store, state }),
   )
 }

@@ -13,7 +13,7 @@ import {
 } from '../src/host/fileops.js'
 
 async function sandbox() {
-  const root = await mkdtemp(join(tmpdir(), 'itw-fileops-'))
+  const root = await mkdtemp(join(tmpdir(), 'iwb-fileops-'))
   return root
 }
 

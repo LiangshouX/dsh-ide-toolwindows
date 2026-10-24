@@ -413,7 +413,7 @@ export class WorkbenchStore {
     if (typeof path !== 'string' || path === '') return false
     const address = this.#sidebarAddressOf(path)
     const opened = address !== undefined
-      && openInDefaultSidebar(this.ctx, address, { kind: 'text', ownKind: 'ide-toolwindows' })
+      && openInDefaultSidebar(this.ctx, address, { kind: 'text', ownKind: 'ide-workbench' })
     if (!opened) {
       this.toast('error', this.t('sidebar.openFailed'), path)
       return false

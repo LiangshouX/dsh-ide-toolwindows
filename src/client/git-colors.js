@@ -42,12 +42,12 @@ export function fileStatusKind(entry) {
 /** CSS class carrying the colour for one status kind. */
 export function statusClass(kind) {
   switch (kind) {
-    case 'untracked': return 'itw-git-untracked'
-    case 'added': return 'itw-git-added'
-    case 'modified': return 'itw-git-modified'
-    case 'conflict': return 'itw-git-conflict'
-    case 'deleted': return 'itw-git-deleted'
-    case 'ignored': return 'itw-git-ignored'
+    case 'untracked': return 'iwb-git-untracked'
+    case 'added': return 'iwb-git-added'
+    case 'modified': return 'iwb-git-modified'
+    case 'conflict': return 'iwb-git-conflict'
+    case 'deleted': return 'iwb-git-deleted'
+    case 'ignored': return 'iwb-git-ignored'
     default: return ''
   }
 }

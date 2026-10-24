@@ -153,7 +153,7 @@ export function IconFolder(props = {}) {
   ], {
     width: props.width ?? props.size ?? 16,
     height: props.height ?? props.size ?? 16,
-    style: { color: 'var(--itw-icon-folder, #d7a24a)', ...(props.style ?? {}) },
+    style: { color: 'var(--iwb-icon-folder, #d7a24a)', ...(props.style ?? {}) },
   })
 }
 
@@ -194,7 +194,7 @@ const FILE_TINTS = {
   vue: '#2e8b57',
   xml: '#558b2f',
   log: '#6b7280',
-  file: 'var(--itw-icon-file, #6b7280)',
+  file: 'var(--iwb-icon-file, #6b7280)',
 }
 
 function monoLabel(text, tint, size = 4.6) {

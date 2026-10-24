@@ -51,7 +51,7 @@ export function isEditableTarget(target) {
 /** Whether the event target is inside the embedded terminal. */
 export function isTerminalTarget(target) {
   if (!(target instanceof HTMLElement)) return false
-  return target.closest('.itw-term-host') !== null
+  return target.closest('.iwb-term-host') !== null
 }
 
 /** Format a byte count for display. */

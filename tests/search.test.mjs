@@ -8,7 +8,7 @@ import { listFiles, searchFiles } from '../src/host/search.js'
 import { log } from '../src/host/git.js'
 
 async function temp(t) {
-  const dir = await mkdtemp(join(tmpdir(), 'itw-search-'))
+  const dir = await mkdtemp(join(tmpdir(), 'iwb-search-'))
   t.after(() => rm(dir, { recursive: true, force: true }))
   return dir
 }

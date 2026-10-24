@@ -1,6 +1,6 @@
 {
   "meta": {
-    "title": "IDE Tool Windows",
+    "title": "IDE Workbench",
     "description": "JetBrains-style Project, Commit, Terminal and Git tool windows sharing one repository model: preview tabs, git coloring, diff staging, commit graph and an embedded PTY."
   }
 }

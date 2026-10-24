@@ -8,7 +8,7 @@ import { IconSearch } from './icons.jsx'
 function Flag({ on, label, title, onClick }) {
   return React.createElement('button', {
     type: 'button',
-    className: `itw-find-flag ${on ? 'itw-on' : ''}`,
+    className: `iwb-find-flag ${on ? 'iwb-on' : ''}`,
     title,
     'aria-pressed': on,
     onClick,
@@ -80,12 +80,12 @@ export function SearchView({ store, state }) {
     return () => window.removeEventListener('keydown', onKey, true)
   }, [search.results, store])
 
-  return React.createElement('div', { className: 'itw-search' },
-    React.createElement('div', { className: 'itw-search-head' },
-      React.createElement(IconSearch, { width: 14, height: 14, style: { color: 'var(--itw-muted)' } }),
+  return React.createElement('div', { className: 'iwb-search' },
+    React.createElement('div', { className: 'iwb-search-head' },
+      React.createElement(IconSearch, { width: 14, height: 14, style: { color: 'var(--iwb-muted)' } }),
       React.createElement('input', {
         ref: inputRef,
-        className: 'itw-search-input',
+        className: 'iwb-search-input',
         value: query,
         placeholder: t('search.placeholder'),
         spellCheck: false,
@@ -106,7 +106,7 @@ export function SearchView({ store, state }) {
       Flag(wholeWord, 'W', t('search.wholeWord'), () => setWholeWord(value => !value)),
       Flag(regexp, '.*', t('search.regexp'), () => setRegexp(value => !value)),
     ),
-    React.createElement('div', { className: 'itw-search-meta' },
+    React.createElement('div', { className: 'iwb-search-meta' },
       search.loading === true
         ? t('search.searching')
         : (query === ''
@@ -114,28 +114,28 @@ export function SearchView({ store, state }) {
             : (search.error !== null
                 ? search.error
                 : `${totals.matches} ${t('search.resultCount')} · ${totals.files} · ${search.tookMs} ${t('search.took')}`)),
-      search.truncated === true ? React.createElement('span', { className: 'itw-search-warn' }, t('search.truncated')) : null,
+      search.truncated === true ? React.createElement('span', { className: 'iwb-search-warn' }, t('search.truncated')) : null,
     ),
-    React.createElement('div', { className: 'itw-search-results' },
+    React.createElement('div', { className: 'iwb-search-results' },
       search.error !== null && query !== ''
-        ? React.createElement('div', { className: 'itw-search-error' }, search.error)
+        ? React.createElement('div', { className: 'iwb-search-error' }, search.error)
         : (search.results.length === 0 && query !== '' && search.loading !== true
-            ? React.createElement('div', { className: 'itw-empty' }, t('search.noResults'))
-            : search.results.map(file => React.createElement('div', { key: file.path, className: 'itw-search-file' },
-                React.createElement('div', { className: 'itw-search-file-head', title: file.path },
-                  React.createElement('span', { className: 'itw-search-file-name' }, file.path.split('/').pop()),
-                  React.createElement('span', { className: 'itw-search-file-dir' }, file.path.includes('/') ? file.path.slice(0, file.path.lastIndexOf('/')) : ''),
-                  React.createElement('span', { className: 'itw-count' }, file.matches.length),
+            ? React.createElement('div', { className: 'iwb-empty' }, t('search.noResults'))
+            : search.results.map(file => React.createElement('div', { key: file.path, className: 'iwb-search-file' },
+                React.createElement('div', { className: 'iwb-search-file-head', title: file.path },
+                  React.createElement('span', { className: 'iwb-search-file-name' }, file.path.split('/').pop()),
+                  React.createElement('span', { className: 'iwb-search-file-dir' }, file.path.includes('/') ? file.path.slice(0, file.path.lastIndexOf('/')) : ''),
+                  React.createElement('span', { className: 'iwb-count' }, file.matches.length),
                 ),
                 file.matches.map((match, index) => React.createElement('button', {
                   key: `${file.path}:${match.line}:${match.column}:${index}`,
                   type: 'button',
-                  className: 'itw-search-hit',
+                  className: 'iwb-search-hit',
                   title: t('search.openResult'),
                   onClick: () => open(file, match),
                 },
-                  React.createElement('span', { className: 'itw-search-line' }, match.line),
-                  React.createElement('span', { className: 'itw-search-preview' }, match.preview),
+                  React.createElement('span', { className: 'iwb-search-line' }, match.line),
+                  React.createElement('span', { className: 'iwb-search-preview' }, match.preview),
                 )),
               ))),
     ),

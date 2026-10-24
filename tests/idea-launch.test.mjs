@@ -53,7 +53,7 @@ test('macOS accepts an app bundle and Linux resolves an executable launcher', as
 })
 
 async function fixture(t) {
-  const outer = await mkdtemp(join(tmpdir(), 'itw-idea-'))
+  const outer = await mkdtemp(join(tmpdir(), 'iwb-idea-'))
   t.after(() => rm(outer, { recursive: true, force: true }))
   const project = join(outer, '项目 with spaces')
   await mkdir(project)

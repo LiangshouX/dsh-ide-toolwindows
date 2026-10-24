@@ -92,14 +92,14 @@ export function FindBar({ store, editor, readOnly = false, initialQuery = '', on
 
   const flag = (on, label, title, onClick) => React.createElement('button', {
     type: 'button',
-    className: `itw-find-flag ${on ? 'itw-on' : ''}`,
+    className: `iwb-find-flag ${on ? 'iwb-on' : ''}`,
     title,
     'aria-pressed': on,
     onClick,
   }, label)
 
   return React.createElement('div', {
-    className: 'itw-findbar',
+    className: 'iwb-findbar',
     role: 'search',
     onKeyDown: (event) => {
       if (event.key === 'Escape') {
@@ -115,11 +115,11 @@ export function FindBar({ store, editor, readOnly = false, initialQuery = '', on
       }
     },
   },
-    React.createElement('div', { className: 'itw-find-row' },
-      React.createElement('span', { className: 'itw-find-label' }, t('editor.find')),
+    React.createElement('div', { className: 'iwb-find-row' },
+      React.createElement('span', { className: 'iwb-find-label' }, t('editor.find')),
       React.createElement('input', {
         ref: inputRef,
-        className: `itw-find-input ${error !== null ? 'itw-invalid' : ''}`,
+        className: `iwb-find-input ${error !== null ? 'iwb-invalid' : ''}`,
         value: query,
         placeholder: t('editor.findPlaceholder'),
         spellCheck: false,
@@ -132,30 +132,30 @@ export function FindBar({ store, editor, readOnly = false, initialQuery = '', on
         },
       }),
       React.createElement('span', {
-        className: `itw-find-count ${error !== null ? 'itw-invalid' : ''}`,
+        className: `iwb-find-count ${error !== null ? 'iwb-invalid' : ''}`,
         title: error ?? '',
       }, error !== null ? '!' : (query === '' ? '0/0' : `${active + 1}/${total}`)),
       React.createElement('button', {
-        type: 'button', className: 'itw-find-btn', title: t('editor.findPrevious'),
+        type: 'button', className: 'iwb-find-btn', title: t('editor.findPrevious'),
         disabled: total === 0, onClick: () => move(-1),
       }, '↑'),
       React.createElement('button', {
-        type: 'button', className: 'itw-find-btn', title: t('editor.findNext'),
+        type: 'button', className: 'iwb-find-btn', title: t('editor.findNext'),
         disabled: total === 0, onClick: () => move(1),
       }, '↓'),
       flag(caseSensitive, 'Aa', t('editor.matchCase'), () => setCaseSensitive(value => !value)),
       flag(wholeWord, 'W', t('editor.wholeWord'), () => setWholeWord(value => !value)),
       flag(regexp, '.*', t('editor.regexp'), () => setRegexp(value => !value)),
       React.createElement('button', {
-        type: 'button', className: 'itw-find-btn', title: t('common.close'),
+        type: 'button', className: 'iwb-find-btn', title: t('common.close'),
         onClick: close,
       }, React.createElement(IconClose, { width: 12, height: 12 })),
     ),
     readOnly !== true
-      ? React.createElement('div', { className: 'itw-find-row' },
-          React.createElement('span', { className: 'itw-find-label' }, t('editor.replace')),
+      ? React.createElement('div', { className: 'iwb-find-row' },
+          React.createElement('span', { className: 'iwb-find-label' }, t('editor.replace')),
           React.createElement('input', {
-            className: 'itw-find-input',
+            className: 'iwb-find-input',
             value: replacement,
             placeholder: t('editor.replacePlaceholder'),
             spellCheck: false,
@@ -165,11 +165,11 @@ export function FindBar({ store, editor, readOnly = false, initialQuery = '', on
             },
           }),
           React.createElement('button', {
-            type: 'button', className: 'itw-textbtn itw-small', disabled: total === 0,
+            type: 'button', className: 'iwb-textbtn iwb-small', disabled: total === 0,
             onClick: replaceCurrent,
           }, t('editor.replaceOne')),
           React.createElement('button', {
-            type: 'button', className: 'itw-textbtn itw-small', disabled: total === 0,
+            type: 'button', className: 'iwb-textbtn iwb-small', disabled: total === 0,
             onClick: replaceAll,
           }, t('editor.replaceAll')),
         )

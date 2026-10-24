@@ -136,7 +136,7 @@ function FallbackMarkdown({ text }) {
     }
     blocks.push(React.createElement('p', { key: key += 1 }, paragraph.join(' ')))
   }
-  return React.createElement('div', { className: 'itw-markdown-fallback' }, blocks)
+  return React.createElement('div', { className: 'iwb-markdown-fallback' }, blocks)
 }
 
 /**
@@ -157,7 +157,7 @@ export function MarkdownView({ text, outlineOpen, onToggleOutline, labels = {}, 
       if (!(event.ctrlKey || event.metaKey) || event.altKey || event.shiftKey) return
       if (event.key.toLowerCase() !== 'f') return
       const target = event.target
-      if (!(target instanceof Element) || target.closest('.itw-root') === null) return
+      if (!(target instanceof Element) || target.closest('.iwb-root') === null) return
       event.preventDefault()
       event.stopPropagation()
       setFindOpen(true)
@@ -217,32 +217,32 @@ export function MarkdownView({ text, outlineOpen, onToggleOutline, labels = {}, 
     }
   }
 
-  return React.createElement('div', { className: 'itw-markdown-wrap' },
+  return React.createElement('div', { className: 'iwb-markdown-wrap' },
     findOpen === true
       ? React.createElement(DomFindBar, { containerRef, t, onClose: () => setFindOpen(false) })
       : null,
-    React.createElement('div', { className: 'itw-markdown', ref: containerRef },
+    React.createElement('div', { className: 'iwb-markdown', ref: containerRef },
       MarkdownText !== null
         ? React.createElement(MarkdownText, { text, labels: markdownLabels(labels) })
         : React.createElement(FallbackMarkdown, { text }),
     ),
     outlineOpen === true
-      ? React.createElement('div', { className: 'itw-outline', role: 'navigation', 'aria-label': labels.outline ?? 'Outline' },
-          React.createElement('div', { className: 'itw-outline-head' },
+      ? React.createElement('div', { className: 'iwb-outline', role: 'navigation', 'aria-label': labels.outline ?? 'Outline' },
+          React.createElement('div', { className: 'iwb-outline-head' },
             React.createElement(IconOutline, { width: 13, height: 13 }),
             React.createElement('span', null, labels.outline ?? 'Outline'),
             React.createElement('button', {
-              type: 'button', className: 'itw-iconbtn', style: { width: 20, height: 20, marginLeft: 'auto' },
+              type: 'button', className: 'iwb-iconbtn', style: { width: 20, height: 20, marginLeft: 'auto' },
               onClick: onToggleOutline, title: labels.close ?? 'Close',
             }, React.createElement('span', { style: { fontSize: 14, lineHeight: 1 } }, '×')),
           ),
           headings.length === 0
-            ? React.createElement('div', { className: 'itw-outline-empty' }, labels.empty ?? 'No headings')
-            : React.createElement('div', { className: 'itw-outline-list' },
+            ? React.createElement('div', { className: 'iwb-outline-empty' }, labels.empty ?? 'No headings')
+            : React.createElement('div', { className: 'iwb-outline-list' },
                 headings.map((heading, index) => React.createElement('button', {
                   key: `${heading.slug}-${index}`,
                   type: 'button',
-                  className: `itw-outline-item ${activeSlug === heading.slug ? 'itw-active' : ''}`,
+                  className: `iwb-outline-item ${activeSlug === heading.slug ? 'iwb-active' : ''}`,
                   style: { paddingLeft: `${8 + (heading.level - 1) * 12}px` },
                   onClick: () => jump(heading.slug),
                 }, heading.text)),

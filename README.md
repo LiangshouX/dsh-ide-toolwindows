@@ -1,6 +1,6 @@
-# dsh-ide-toolwindows
+# dsh-ide-workbench
 
-**IDE Tool Windows** — a JetBrains-style tool-window suite for DeepSeek Harness:
+**IDE Workbench** — a JetBrains-style tool-window suite for DeepSeek Harness:
 **Project · Commit · Terminal · Git**, four windows sharing one live repository
 model, around an editor area this plugin owns (so Preview / Pinned tabs behave
 exactly like an IDE).
@@ -34,13 +34,13 @@ exactly like an IDE).
 | **Commit message** | `Ctrl+K` | Opens Commit and focuses the message box (IDEA parity). |
 | **Push** | `Ctrl+Shift+K` | Pushes the current branch from inside the workbench. |
 
-Every shortcut can be rebound in **Settings → IDE Tool Windows**.
+Every shortcut can be rebound in **Settings → IDE Workbench**.
 
 ### IDE fullscreen and external IDE integration
 
 - The workbench fullscreen button and `F11` switch its sidebar panel between fullscreen and the previous docked presentation, retaining the open tabs and split layout.
 - Right-click a file in Project or an editor file tab, hover **Open in IDE**, and choose **IntelliJ IDEA**, **WebStorm**, or **Visual Studio Code**. The launcher opens both the selected **IDE project root** and file, including spaces and Unicode names.
-- **Settings → IDE Tool Windows → External IDEs** accepts separate executable paths; empty enables auto-detection. On Windows select `idea64.exe`, `webstorm64.exe`, or `Code.exe`.
+- **Settings → IDE Workbench → External IDEs** accepts separate executable paths; empty enables auto-detection. On Windows select `idea64.exe`, `webstorm64.exe`, or `Code.exe`.
 - External IDEs open the saved file on disk. Save pending workbench edits first. Launch failures show their reason; success means the launch request was accepted.
 
 ### Workspace vs. IDE project root
@@ -62,7 +62,7 @@ any of them:
 
 ## How it fits the harness
 
-- Click **IDE Tool Windows** in the conversation header, or select it from the
+- Click **IDE Workbench** in the conversation header, or select it from the
   right sidebar's add-page guide. The workbench is a native
   `sidebar.right.pane.tab` beside the conversation. The New Session row also
   carries the same entry on Ctrl+N, and a compact footer action beside Settings
@@ -77,7 +77,7 @@ any of them:
   the IDE by default, reveal the file in the Project tree and land on `#L24`.
   A link outside the DSH workspace falls back to DSH's own sidebar; a link
   inside the workspace but outside the current IDE project asks before widening
-  the IDE project to the workspace root. Settings → IDE Tool Windows → Chat
+  the IDE project to the workspace root. Settings → IDE Workbench → Chat
   file links switches back to DSH's sidebar entirely.
 - Shortcuts open the sidebar. The workbench stays side-by-side (Project/Commit
   left, editor right, Git/Terminal below the editor) down to a 560 px pane —
@@ -97,7 +97,7 @@ any of them:
   Every HTTP/WebSocket route is admitted by the same Connection fence as `/api`.
 - Settings (shortcuts, shell profile, git path, UI geometry, per-workspace
   expanded folders and open tabs) persist in the DSH home at
-  `ide-toolwindows/settings.json` (`$DSH_HOME` / `~/.dsh`; the profile
+  `ide-workbench/settings.json` (`$DSH_HOME` / `~/.dsh`; the profile
   directory when the host exports `DSH_PROFILE_DIR`).
 - UI is rendered with React and styled exclusively with `--dsw-alias-*` theme
   tokens, so light/dark and skins follow the harness.
@@ -119,7 +119,7 @@ any of them:
 
 ```sh
 # from the package directory (already linked in this workspace)
-dsh plugin install /absolute/path/to/dsh-ide-toolwindows
+dsh plugin install /absolute/path/to/dsh-ide-workbench
 ```
 
 or use DSH Settings → Plugins → install from a directory. Install depends on
@@ -128,11 +128,11 @@ or use DSH Settings → Plugins → install from a directory. Install depends on
 
 ## Install from GitHub
 
-Repository: <https://github.com/LiangshouX/dsh-ide-toolwindows>
+Repository: <https://github.com/LiangshouX/dsh-ide-workbench>
 
 ```sh
-git clone https://github.com/LiangshouX/dsh-ide-toolwindows.git
-cd dsh-ide-toolwindows
+git clone https://github.com/LiangshouX/dsh-ide-workbench.git
+cd dsh-ide-workbench
 npm install --omit=dev    # only the host runtime dependency (ws)
 dsh plugin install .
 ```

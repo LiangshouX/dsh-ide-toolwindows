@@ -88,8 +88,8 @@ async function loadModule() {
 test('workbench renders the project window and welcome screen', async () => {
   const mod = await loadModule()
   const html = mod.renderProject()
-  assert.match(html, /itw-root/)
-  assert.match(html, /itw-stripe/)
+  assert.match(html, /iwb-root/)
+  assert.match(html, /iwb-stripe/)
   assert.match(html, /project\.title/)
   assert.match(html, /welcome\.title/)
   assert.match(html, /a\.ts/)
@@ -107,9 +107,9 @@ test('fullscreen IDE pane offers restore with pressed state', async () => {
 test('commit and git windows render their rows and graph', async () => {
   const mod = await loadModule()
   const html = mod.renderCommitAndGit()
-  assert.match(html, /itw-file-row/)
+  assert.match(html, /iwb-file-row/)
   assert.match(html, /a\.ts/)
-  assert.match(html, /itw-git-row/)
+  assert.match(html, /iwb-git-row/)
   assert.match(html, /first/)
   assert.match(html, /<svg/)
   assert.match(html, /commit\.title/)
@@ -118,51 +118,51 @@ test('commit and git windows render their rows and graph', async () => {
 test('a preview tab renders italic and a code surface', async () => {
   const mod = await loadModule()
   const html = mod.renderCode()
-  assert.match(html, /itw-preview/)
-  assert.match(html, /itw-codemirror/)
-  assert.match(html, /itw-opened/)
+  assert.match(html, /iwb-preview/)
+  assert.match(html, /iwb-codemirror/)
+  assert.match(html, /iwb-opened/)
 })
 
 test('diff view renders selected-file rows', async () => {
   const mod = await loadModule()
   const html = mod.renderDiff()
-  assert.match(html, /itw-diff-side/)
-  assert.match(html, /itw-diff-hunk/)
-  assert.match(html, /itw-diff-toolbar/)
+  assert.match(html, /iwb-diff-side/)
+  assert.match(html, /iwb-diff-hunk/)
+  assert.match(html, /iwb-diff-toolbar/)
 })
 
 test('diff component renders unified mode with hunk actions', async () => {
   const mod = await loadModule()
   const html = mod.renderDiffComponent()
-  assert.match(html, /itw-diff-hunk/)
+  assert.match(html, /iwb-diff-hunk/)
   assert.match(html, /commit\.stageAll/)
 })
 
 test('Git drawer renders the commit metadata and file list', async () => {
   const mod = await loadModule()
   const html = mod.renderGitDrawer()
-  assert.match(html, /itw-git-drawer/)
-  assert.match(html, /itw-git-drawer-files/)
+  assert.match(html, /iwb-git-drawer/)
+  assert.match(html, /iwb-git-drawer-files/)
   assert.match(html, /a\.ts/)
   assert.match(html, /git\.fileList/)
   // A normal dock keeps the log columns and the side Drawer.
-  assert.match(html, /itw-author/)
-  assert.match(html, /itw-date/)
-  assert.doesNotMatch(html, /itw-git-narrow/)
+  assert.match(html, /iwb-author/)
+  assert.match(html, /iwb-date/)
+  assert.doesNotMatch(html, /iwb-git-narrow/)
 })
 
 test('Find in Files renders grouped results', async () => {
   const mod = await loadModule()
   const html = mod.renderSearchTab()
-  assert.match(html, /itw-search/)
-  assert.match(html, /itw-search-hit/)
+  assert.match(html, /iwb-search/)
+  assert.match(html, /iwb-search-hit/)
   assert.match(html, /search\.title/)
 })
 
 test('Quick Open renders matching paths', async () => {
   const mod = await loadModule()
   const html = mod.renderQuickOpen()
-  assert.match(html, /itw-quick/)
+  assert.match(html, /iwb-quick/)
   assert.match(html, /main\.ts/)
   assert.match(html, /src/)
 })
@@ -170,15 +170,15 @@ test('Quick Open renders matching paths', async () => {
 test('Project file filter renders a flat quick-locate row', async () => {
   const mod = await loadModule()
   const html = mod.renderProjectQuickFilter()
-  assert.match(html, /itw-tree-relative/)
+  assert.match(html, /iwb-tree-relative/)
   assert.match(html, /src\/main\.ts/)
 })
 
 test('project picker lists the workspace root and first-level folders', async () => {
   const mod = await loadModule()
   const html = mod.renderProjectPicker()
-  assert.match(html, /itw-project-picker/)
-  assert.match(html, /itw-project-choice/)
+  assert.match(html, /iwb-project-picker/)
+  assert.match(html, /iwb-project-choice/)
   assert.match(html, /repo-a/)
   assert.match(html, /project\.gitRepo/)
   assert.match(html, /project\.current/)
@@ -195,10 +195,10 @@ test('Git window points a non-repository folder at the project picker', async ()
 test('markdown preview renders the fallback document and outline', async () => {
   const mod = await loadModule()
   const html = mod.renderMarkdown()
-  assert.match(html, /itw-markdown/)
+  assert.match(html, /iwb-markdown/)
   assert.match(html, /Sample Doc/)
-  assert.match(html, /itw-outline/)
-  assert.match(html, /itw-outline-item/)
+  assert.match(html, /iwb-outline/)
+  assert.match(html, /iwb-outline-item/)
   assert.match(html, /editor\.preview/)
   assert.match(html, /editor\.source/)
   assert.match(html, /editor\.edit/)
@@ -207,8 +207,8 @@ test('markdown preview renders the fallback document and outline', async () => {
 test('edit mode renders save/restore and the dirty marker', async () => {
   const mod = await loadModule()
   const html = mod.renderMarkdownEdit()
-  assert.match(html, /itw-codemirror/)
-  assert.match(html, /itw-tab-dirty/)
+  assert.match(html, /iwb-codemirror/)
+  assert.match(html, /iwb-tab-dirty/)
   assert.match(html, /editor\.save/)
   assert.match(html, /editor\.restore/)
   assert.match(html, /editor\.dirty/)
@@ -217,21 +217,21 @@ test('edit mode renders save/restore and the dirty marker', async () => {
 test('settings render grouped rows with a shared control column', async () => {
   const mod = await loadModule()
   const html = mod.renderSettings()
-  assert.match(html, /itw-settings-group-title/)
-  assert.match(html, /itw-settings-group-desc/)
-  assert.match(html, /itw-settings-control/)
+  assert.match(html, /iwb-settings-group-title/)
+  assert.match(html, /iwb-settings-group-desc/)
+  assert.match(html, /iwb-settings-control/)
   assert.match(html, /settings\.shortcutsGroupHint/)
-  assert.match(html, /itw-settings-shortcut/)
+  assert.match(html, /iwb-settings-shortcut/)
   // The external-IDE explanation is a group description, not repeated per row.
   assert.equal((html.match(/settings\.idePathHint/g) ?? []).length, 1)
 })
 
 test('HTML editor offers sidebar preview and default-browser actions', async () => {
   const html = (await loadModule()).renderHtmlEditor()
-  assert.match(html, /itw-html-actions/)
+  assert.match(html, /iwb-html-actions/)
   assert.match(html, /editor\.htmlPreviewSidebar/)
   assert.match(html, /editor\.htmlPreviewBrowser/)
-  assert.match(html, /itw-chrome/)
+  assert.match(html, /iwb-chrome/)
 })
 
 test('client opens a native sidebar tab without registering a central page', async () => {
@@ -288,7 +288,7 @@ test('client opens a native sidebar tab without registering a central page', asy
     mod.applyClient(ctx)
     await new Promise(resolve => setImmediate(resolve))
     assert.ok(mod.clientInject.includes('sidebarRightTabs'))
-    assert.equal(types[0].kind, 'ide-toolwindows')
+    assert.equal(types[0].kind, 'ide-workbench')
     assert.equal(types[0].guide[0].title(), 'panelLabel')
     assert.deepEqual(types[0].patterns, [
       'dsh-resource://file/session/**',
@@ -306,7 +306,7 @@ test('client opens a native sidebar tab without registering a central page', asy
     // A link owned by another Session's workspace is not claimed either.
     assert.equal(types[0].canOpen('dsh-resource://file/session/session-2/src/a.ts'), false)
     assert.equal(types[0].title('dsh-resource://file/session/session-1/src/a.ts'), 'a.ts')
-    assert.equal(types[0].title('sidebar://ide-toolwindows'), 'panelLabel')
+    assert.equal(types[0].title('sidebar://ide-workbench'), 'panelLabel')
     assert.ok(entries.some(entry => entry.name === 'sidebar.right.pane.tab'))
     assert.ok(entries.some(entry => entry.name === 'conversation.hero.options'))
     assert.ok(entries.some(entry => entry.name === 'sidebar.footer.action'))
@@ -316,7 +316,7 @@ test('client opens a native sidebar tab without registering a central page', asy
     const buttonComponent = fragment.props.children[1]
     const click = buttonComponent.type(buttonComponent.props).props.onClick
     click()
-    assert.deepEqual(opened, ['ide-toolwindows'])
+    assert.deepEqual(opened, ['ide-workbench'])
     assert.equal(expanded, true)
     click()
     assert.equal(expanded, false)
@@ -328,7 +328,7 @@ test('client opens a native sidebar tab without registering a central page', asy
     activeTab = { kind: 'files' }
     click()
     assert.equal(expanded, true)
-    assert.equal(activeTab.kind, 'ide-toolwindows')
+    assert.equal(activeTab.kind, 'ide-workbench')
     assert.equal(collapsed, 1)
     assert.equal(opened.length, 3)
   } finally {

@@ -1,8 +1,8 @@
 /**
- * dsh-ide-toolwindows — Host half.
+ * dsh-ide-workbench — Host half.
  *
- * One fenced HTTP surface (`/ide-toolwindows/api/<method>`) and one WebSocket
- * upgrade (`/ide-toolwindows/ws/terminal`) back the four tool windows:
+ * One fenced HTTP surface (`/ide-workbench/api/<method>`) and one WebSocket
+ * upgrade (`/ide-workbench/ws/terminal`) back the four tool windows:
  *
  *   Project   fs.tree / fs.read / fs.reveal / git.status
  *   Commit    git.status / diff / stage / unstage / discard / applyPatch / commit
@@ -35,13 +35,13 @@ import {
   writeError, writeOk,
 } from './host/wire.js'
 
-export const name = 'dsh-ide-toolwindows'
+export const name = 'dsh-ide-workbench'
 
 /** Services the host half needs before it can mount. */
 export const inject = ['webServer', 'connection', 'subprocess', 'workspaceRegistry']
 
-const API_PREFIX = '/ide-toolwindows/api/'
-const WS_PATH = '/ide-toolwindows/ws/terminal'
+const API_PREFIX = '/ide-workbench/api/'
+const WS_PATH = '/ide-workbench/ws/terminal'
 
 /** Clamp a numeric query parameter. */
 function clamp(value, min, max, fallback) {
@@ -435,7 +435,7 @@ export function apply(ctx) {
   // ── JSON API route ─────────────────────────────────────────────────────
   ctx.effect(() => ctx.webServer.register({
     kind: 'prefix',
-    path: '/ide-toolwindows/api',
+    path: '/ide-workbench/api',
     handler: async (req, res) => {
       if (!fence(req)) {
         writeError(res, new ApiError('forbidden', 'forbidden', 403))
@@ -461,7 +461,7 @@ export function apply(ctx) {
         writeError(res, error)
       }
     },
-  }), 'dsh-ide-toolwindows: JSON API')
+  }), 'dsh-ide-workbench: JSON API')
 
   // ── Terminal WebSocket ─────────────────────────────────────────────────
   const wss = new WebSocketServer({ noServer: true })
@@ -565,7 +565,7 @@ export function apply(ctx) {
         void attachTerminal(ws, req)
       })
     },
-  }), 'dsh-ide-toolwindows: terminal WebSocket')
+  }), 'dsh-ide-workbench: terminal WebSocket')
 
   // ── teardown ───────────────────────────────────────────────────────────
   ctx.effect(() => () => {
@@ -575,10 +575,10 @@ export function apply(ctx) {
       terminals.delete(id)
       void handle.terminate().catch(() => {})
     }
-  }, 'dsh-ide-toolwindows: teardown')
+  }, 'dsh-ide-workbench: teardown')
 
   ctx.effect(() => {
-    ctx.logger?.info?.('dsh-ide-toolwindows ready (API %s, terminal %s)', API_PREFIX, WS_PATH)
+    ctx.logger?.info?.('dsh-ide-workbench ready (API %s, terminal %s)', API_PREFIX, WS_PATH)
     return () => {}
-  }, 'dsh-ide-toolwindows: announce')
+  }, 'dsh-ide-workbench: announce')
 }
