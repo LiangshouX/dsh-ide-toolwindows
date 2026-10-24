@@ -1,0 +1,33 @@
+name: Publish
+# 发布到 npm：打 tag（v*）触发。
+# 自动发布需在 npm 包页面一次性配置 Trusted Publisher：
+#   Settings → Trusted Publisher → GitHub Actions
+#   owner: LiangshouX / repo: dsh-ide-workbench / workflow: publish.yml
+# 详见 https://docs.npmjs.com/trusted-publishers
+on:
+  push:
+    tags: ['v*']
+permissions:
+  contents: read
+  id-token: write        # OIDC 换取 npm 短期凭证所必需
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: 'https://registry.npmjs.org'
+      - run: npm install -g npm@latest   # OIDC 需要 npm >= 11.5.1
+      - run: npm ci
+      - run: npm test
+      - run: npm run build               # dist/client.js 必须在发布前重建
+      - name: Check tag matches package.json version
+        run: |
+          PKG_VERSION="v$(node -p "require('./package.json').version")"
+          if [ "$PKG_VERSION" != "$GITHUB_REF_NAME" ]; then
+            echo "tag $GITHUB_REF_NAME != package.json version $PKG_VERSION" >&2
+            exit 1
+          fi
+      - run: npm publish --access public

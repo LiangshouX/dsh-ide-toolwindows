@@ -32,7 +32,7 @@
     "docs/PRD-v1.md",
     "LICENSE",
     "README.md",
-    "README_ZH.md"
+    "README_EN.md"
   ],
   "scripts": {
     "build": "node scripts/build.mjs",
